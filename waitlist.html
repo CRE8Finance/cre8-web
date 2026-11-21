@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRE8 Waitlist</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#0B0F14;color:#EEF3F7;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{opacity:.85}input::placeholder{color:#6B7785}input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #5F849F;outline-offset:2px}button:disabled{cursor:not-allowed}</style></helmet>
+
+<header style="position:fixed;top:14px;left:0;right:0;z-index:50;padding:0 16px;pointer-events:none">
+<div style="pointer-events:auto;max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px;padding:0 8px 0 18px;background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:18px;box-shadow:0 1px 1px rgba(11,15,20,.03),0 8px 28px rgba(11,15,20,.08),0 0 0 1px rgba(11,15,20,.06)">
+<a href="index.html" style="display:flex"><img src="assets/cre8-logo-dark.svg" alt="CRE8 home" style="height:20px;display:block"></a>
+<div style="display:flex;align-items:center;gap:4px">
+<a href="index.html" style="padding:10px 14px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">Home</a>
+<a href="app.html" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">Open app <span>→</span></a>
+</div>
+</div>
+</header>
+
+<main style="position:relative;min-height:100vh;overflow:hidden;display:flex;flex-direction:column;background:#0B0F14">
+<img src="assets/ws-a.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 55%;filter:grayscale(1) contrast(1.1) brightness(.72)">
+<div style="position:absolute;inset:0;background:#14263A;mix-blend-mode:multiply;opacity:.55"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,17,26,.94) 0%,rgba(10,17,26,.74) 50%,rgba(10,17,26,.5) 100%),linear-gradient(0deg,rgba(10,17,26,.9) 0%,rgba(10,17,26,0) 55%)"></div>
+
+<div style="position:relative;z-index:1;flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(40px,5vw,88px);align-items:start;padding:clamp(112px,12vw,152px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) clamp(48px,6vw,88px)">
+
+<div style="min-width:0;padding-top:clamp(0px,3vw,48px)">
+<h1 style="margin:0;font-weight:500;font-size:clamp(44px,5.6vw,84px);line-height:1;letter-spacing:-.045em;color:#EEF3F7;text-wrap:balance">Be first in line for testnet.</h1>
+</div>
+
+<div style="min-width:0;width:100%;max-width:540px;justify-self:end;background:#fff;color:#0B0F14;border-radius:24px;padding:clamp(18px,3vw,36px);box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 40px 80px -24px rgba(0,0,0,.7),0 0 0 1px rgba(11,15,20,.06)">
+
+<sc-if value="{{ joined }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;margin-bottom:16px;border-radius:999px;background:#E6F6EE;font:500 12px 'Geist Mono';letter-spacing:.06em;color:#17714B"><span aria-hidden="true">✓</span>ON THE LIST</div></sc-if>
+<h2 style="margin:0;font-weight:400;font-size:clamp(26px,2.2vw,32px);line-height:1.1;letter-spacing:-.03em">{{ title }}</h2>
+<p style="margin:10px 0 0;font:400 15px/1.5 'Geist';color:#4A5563">{{ sub }}</p>
+
+<div style="margin-top:22px;border-radius:16px;background:#F2F5F7;padding:4px 16px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 0">
+<div style="flex:1 1 150px;display:flex;align-items:center;gap:12px;min-width:0"><span aria-hidden="true" style="flex:none;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:500 12px 'Geist Mono';background:{{ s1Bg }};color:{{ s1Col }}">{{ s1Mark }}</span><span style="font:500 15px 'Geist'">Connect X</span></div>
+<sc-if value="{{ notConnected }}" hint-placeholder-val="{{ true }}"><button type="button" onClick="{{ connectX }}" style="height:40px;padding:0 16px;border:0;border-radius:999px;cursor:pointer;background:#0B0F14;color:#fff;font:500 14px 'Geist';white-space:nowrap">Connect X</button></sc-if>
+<sc-if value="{{ connected }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist Mono';color:#17714B">@yourhandle</span></sc-if>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 0;border-top:1px solid rgba(11,15,20,.08)">
+<div style="flex:1 1 150px;display:flex;align-items:center;gap:12px;min-width:0"><span aria-hidden="true" style="flex:none;width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font:500 12px 'Geist Mono';background:{{ s2Bg }};color:{{ s2Col }}">{{ s2Mark }}</span><span style="font:500 15px/1.35 'Geist';min-width:0">Follow <span style="white-space:nowrap">@CRE8Finance</span></span></div>
+<sc-if value="{{ notFollowed }}" hint-placeholder-val="{{ true }}"><button type="button" disabled="{{ notConnected }}" onClick="{{ followX }}" style="height:40px;padding:0 16px;border:0;border-radius:999px;cursor:pointer;background:{{ followBg }};color:{{ followCol }};font:500 14px 'Geist';white-space:nowrap">Follow</button></sc-if>
+<sc-if value="{{ joined }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist';color:#17714B">Following</span></sc-if>
+</div>
+</div>
+
+<div style="margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px">
+<div><div style="font:500 12px 'Geist Mono';letter-spacing:.1em;color:#4A5B6A">BONUS POINTS</div><div style="font:400 14px/1.4 'Geist';color:#4A5563;margin-top:6px">{{ bonusHint }}</div></div>
+<div style="text-align:right;white-space:nowrap"><span style="font:300 44px/1 'Geist';letter-spacing:-.05em">{{ pts }}</span><span style="font:400 14px 'Geist Mono';color:#4A5B6A"> / 35</span></div>
+</div>
+<div role="img" aria-label="{{ ptsLabel }}" style="height:4px;border-radius:2px;background:#E3E8EC;margin-top:12px;overflow:hidden"><div style="height:100%;width:{{ ptsPct }}%;background:#C9A15A;border-radius:2px;transition:width .4s cubic-bezier(.16,1,.3,1)"></div></div>
+
+<div style="margin-top:8px;opacity:{{ tasksOpacity }};transition:opacity .3s">
+
+<div style="padding:16px 0;border-bottom:1px solid rgba(11,15,20,.08)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+<div style="flex:1 1 120px;min-width:0"><div style="font:500 15px/1.35 'Geist'">Post about <span style="white-space:nowrap">@CRE8Finance</span></div></div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px"><span style="font:500 12px 'Geist Mono';padding:5px 9px;border-radius:999px;background:{{ t1.pillBg }};color:{{ t1.pillCol }}">+5</span>
+<sc-if value="{{ postLocked }}" hint-placeholder-val="{{ true }}"><button type="button" disabled style="height:38px;padding:0 14px;border:0;border-radius:999px;background:#E3E8EC;color:#5A6673;font:500 14px 'Geist';white-space:nowrap">Post on X</button></sc-if>
+<sc-if value="{{ postReady }}" hint-placeholder-val="{{ false }}"><a href="https://x.com/intent/post?text=Just%20joined%20the%20%40CRE8Finance%20testnet%20waitlist." target="_blank" rel="noopener" onClick="{{ startPost }}" style="height:38px;padding:0 14px;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';white-space:nowrap;display:inline-flex;align-items:center;gap:6px">Post on X <span aria-hidden="true">↗</span></a></sc-if>
+<sc-if value="{{ t1.done }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist';color:#17714B;white-space:nowrap">✓ Verified</span></sc-if>
+</div>
+</div>
+<sc-if value="{{ postVerify }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px">
+<label for="wl-post" style="display:block;font:500 13px 'Geist';color:#3A4652">Paste the link to your post</label>
+<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap">
+<input id="wl-post" type="url" autocomplete="off" spellcheck="false" placeholder="https://x.com/yourhandle/status/…" value="{{ postUrl }}" onChange="{{ setPostUrl }}" onKeyDown="{{ postKey }}" style="flex:1 1 200px;min-width:0;height:44px;padding:0 14px;border:1px solid {{ postBorder }};border-radius:12px;background:#fff;color:#0B0F14;font:400 14px 'Geist Mono',monospace">
+<button type="button" onClick="{{ verifyPost }}" style="height:44px;padding:0 18px;border:0;border-radius:12px;cursor:pointer;background:#0B0F14;color:#fff;font:500 14px 'Geist';white-space:nowrap">Verify</button>
+</div>
+<sc-if value="{{ showPostErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:8px 0 0;font:500 13px/1.4 'Geist';color:#B42318">That doesn't look like a post link. It should contain /status/.</p></sc-if>
+</div></sc-if>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 0;border-bottom:1px solid rgba(11,15,20,.08)">
+<div style="flex:1 1 120px;min-width:0"><div style="font:500 15px/1.35 'Geist'">Connect Gmail</div></div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px"><span style="font:500 12px 'Geist Mono';padding:5px 9px;border-radius:999px;background:{{ t2.pillBg }};color:{{ t2.pillCol }}">+5</span>
+<sc-if value="{{ t2.todo }}" hint-placeholder-val="{{ true }}"><button type="button" disabled="{{ locked }}" onClick="{{ connectGmail }}" style="height:38px;padding:0 14px;border:0;border-radius:999px;cursor:pointer;background:{{ actBg }};color:{{ actCol }};font:500 14px 'Geist';white-space:nowrap">Connect</button></sc-if>
+<sc-if value="{{ t2.done }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist';color:#17714B;white-space:nowrap">✓ Connected</span></sc-if>
+</div>
+</div>
+
+<div style="padding:16px 0;border-bottom:1px solid rgba(11,15,20,.08)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+<div style="flex:1 1 120px;min-width:0"><div style="font:500 15px/1.35 'Geist'">Answer a few quick questions</div></div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px"><span style="font:500 12px 'Geist Mono';padding:5px 9px;border-radius:999px;background:{{ t3.pillBg }};color:{{ t3.pillCol }}">+15</span>
+<sc-if value="{{ qClosed }}" hint-placeholder-val="{{ true }}"><button type="button" disabled="{{ locked }}" onClick="{{ openQ }}" style="height:38px;padding:0 14px;border:0;border-radius:999px;cursor:pointer;background:{{ actBg }};color:{{ actCol }};font:500 14px 'Geist';white-space:nowrap">Start</button></sc-if>
+<sc-if value="{{ t3.done }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist';color:#17714B;white-space:nowrap">✓ Answered</span></sc-if>
+</div>
+</div>
+<sc-if value="{{ qOpen }}" hint-placeholder-val="{{ false }}"><div style="margin-top:4px">
+<sc-for list="{{ qs }}" as="q" hint-placeholder-count="3"><div style="margin-top:16px">
+<div id="{{ q.id }}" style="font:500 14px 'Geist';color:#0B0F14">{{ q.text }}</div>
+<div role="group" aria-labelledby="{{ q.id }}" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px"><sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3"><button type="button" aria-pressed="{{ o.on }}" onClick="{{ o.pick }}" style="height:38px;padding:0 14px;border-radius:999px;cursor:pointer;font:500 14px 'Geist';border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.color }};transition:background .15s,color .15s">{{ o.label }}</button></sc-for></div>
+</div></sc-for>
+<button type="button" disabled="{{ qIncomplete }}" onClick="{{ submitQ }}" style="height:44px;padding:0 20px;margin-top:18px;border:0;border-radius:999px;cursor:pointer;background:{{ qBtnBg }};color:{{ qBtnCol }};font:500 14px 'Geist'">Submit answers</button>
+</div></sc-if>
+</div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 0">
+<div style="flex:1 1 120px;min-width:0"><div style="font:500 15px/1.35 'Geist'">Join our Telegram</div></div>
+<div style="margin-left:auto;display:flex;align-items:center;gap:10px"><span style="font:500 12px 'Geist Mono';padding:5px 9px;border-radius:999px;background:{{ t4.pillBg }};color:{{ t4.pillCol }}">+10</span>
+<sc-if value="{{ t4.todo }}" hint-placeholder-val="{{ true }}"><button type="button" disabled="{{ locked }}" onClick="{{ joinTg }}" style="height:38px;padding:0 14px;border:0;border-radius:999px;cursor:pointer;background:{{ actBg }};color:{{ actCol }};font:500 14px 'Geist';white-space:nowrap">Join</button></sc-if>
+<sc-if value="{{ t4.done }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist';color:#17714B;white-space:nowrap">✓ Joined</span></sc-if>
+</div>
+</div>
+
+</div>
+
+<p style="margin:14px 0 0;text-align:center;font:400 13px/1.5 'Geist';color:#5A6673">Open to non-US persons where local rules allow. <a href="#" style="text-decoration:underline;color:#3A4652">Privacy</a></p>
+
+</div>
+</div>
+</main>
+
+<footer style="background:#000;color:#8A96A2;border-top:1px solid #1A2129;padding:48px max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px 48px;font:400 12px/1.7 'Geist'">
+<div style="display:flex;flex-direction:column;gap:18px"><img src="assets/cre8-logo-light.svg" alt="CRE8" style="height:24px;align-self:flex-start"><span>© 2026 CRE8</span></div>
+<nav style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font:400 13px 'Geist';color:#E3E8EC"><a href="#">Terms</a><a href="#">X</a><a href="#">Privacy</a><a href="#">Telegram</a><a href="#">Risk disclosure</a><a href="#">Docs</a></nav>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const QUESTIONS = [
+  ['hold', 'Do you hold any bStocks?', ['Yes', 'Not yet']],
+  ['where', 'Where do you hold them?', ['On-chain wallet', 'Binance', 'Both']],
+  ['other', 'Do you hold any other tokenized stocks?', ['Yes', 'No']],
+  ['otherWhere', 'Where do you hold them?', ['On-chain wallet', 'Exchange', 'Both']],
+  ['type', 'What kind of investor are you?', ['Passive', 'Active trader', 'Yield-focused', 'Just exploring']],
+];
+const POINTS = { post: 5, gmail: 5, quiz: 15, tg: 10 };
+class Component extends DCLogic {
+  state = { x: false, follow: false, done: {}, postStage: 0, postUrl: '', postErr: false, qOpen: false, ans: {} };
+  finish = id => this.setState(s => ({ done: { ...s.done, [id]: true } }));
+  connectX = () => this.setState({ x: true });
+  followX = () => this.setState({ follow: true });
+  startPost = () => this.setState({ postStage: 1 });
+  setPostUrl = e => this.setState({ postUrl: e.target.value, postErr: false });
+  verifyPost = () => {
+    if (!/^https?:\/\/(www\.)?(x|twitter)\.com\/[^\/\s]+\/status\/\d+/.test(this.state.postUrl.trim())) return this.setState({ postErr: true });
+    this.finish('post');
+  };
+  postKey = e => { if (e.key === 'Enter') this.verifyPost(); };
+  connectGmail = () => this.finish('gmail');
+  joinTg = () => this.finish('tg');
+  openQ = () => this.setState({ qOpen: true });
+  needed() {
+    const a = this.state.ans;
+    const show = { hold: true, where: a.hold === 'Yes', other: a.hold === 'Not yet', otherWhere: a.hold === 'Not yet' && a.other === 'Yes', type: true };
+    return QUESTIONS.filter(q => show[q[0]]);
+  }
+  submitQ = () => { if (this.needed().every(q => this.state.ans[q[0]])) { this.finish('quiz'); this.setState({ qOpen: false }); } };
+  renderVals() {
+    const s = this.state, joined = s.x && s.follow, locked = !joined;
+    const pts = Object.keys(POINTS).reduce((n, k) => n + (s.done[k] ? POINTS[k] : 0), 0);
+    const task = id => { const d = !!s.done[id]; return { done: d, todo: !d, pillBg: d ? '#E6F6EE' : '#F2F5F7', pillCol: d ? '#17714B' : '#3A4652' }; };
+    const need = this.needed(), qIncomplete = !need.every(q => s.ans[q[0]]);
+    const step = ok => ({ bg: ok ? '#17714B' : '#fff', col: ok ? '#fff' : '#3A4652' });
+    const s1 = step(s.x), s2 = step(joined);
+    return {
+      joined, locked, connected: s.x, notConnected: !s.x, notFollowed: !joined,
+      title: joined ? "You're on the list." : 'Join the waitlist',
+      sub: joined ? 'Your place is saved. Earn points below to move up.' : 'Two steps. No email or wallet needed.',
+      s1Bg: s1.bg, s1Col: s1.col, s1Mark: s.x ? '✓' : '1',
+      s2Bg: s2.bg, s2Col: s2.col, s2Mark: joined ? '✓' : '2',
+      followBg: s.x ? '#0B0F14' : '#E3E8EC', followCol: s.x ? '#fff' : '#5A6673',
+      bonusHint: locked ? 'Unlocks once you join.' : 'More points, earlier access.',
+      pts, ptsPct: Math.round(pts / 35 * 100), ptsLabel: pts + ' of 35 points earned',
+      tasksOpacity: locked ? .55 : 1,
+      actBg: locked ? '#E3E8EC' : '#0B0F14', actCol: locked ? '#5A6673' : '#fff',
+      t1: task('post'), t2: task('gmail'), t3: task('quiz'), t4: task('tg'),
+      postLocked: locked, postReady: joined && !s.done.post, postVerify: joined && s.postStage === 1 && !s.done.post,
+      postUrl: s.postUrl, showPostErr: s.postErr, postBorder: s.postErr ? '#B42318' : '#7E8A96',
+      qClosed: !s.done.quiz && !s.qOpen, qOpen: s.qOpen && !s.done.quiz, qIncomplete,
+      qBtnBg: qIncomplete ? '#E3E8EC' : '#0B0F14', qBtnCol: qIncomplete ? '#5A6673' : '#fff',
+      qs: need.map(([id, text, opts]) => ({
+        id: 'wl-q-' + id, text,
+        opts: opts.map(label => {
+          const on = s.ans[id] === label;
+          return {
+            label, on, bg: on ? '#0B0F14' : '#fff', color: on ? '#fff' : '#0B0F14', border: on ? '#0B0F14' : '#7E8A96',
+            pick: () => this.setState(p => ({ ans: { ...p.ans, [id]: label } })),
+          };
+        }),
+      })),
+      connectX: this.connectX, followX: this.followX, startPost: this.startPost, setPostUrl: this.setPostUrl,
+      verifyPost: this.verifyPost, postKey: this.postKey, connectGmail: this.connectGmail, joinTg: this.joinTg,
+      openQ: this.openQ, submitQ: this.submitQ,
+    };
+  }
+}
+</script>
+</body>
+</html>

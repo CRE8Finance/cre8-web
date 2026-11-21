@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>@media (max-width:560px){.bb-txt{display:none!important}.bb-btn{width:40px!important;padding:0!important;justify-content:center!important}}@media (max-width:400px){.bb-logos{display:none!important}}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{background:#F3F3F3}body{margin:0;background:#F3F3F3;color:#0B0F14;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}a{color:#2F6690;text-decoration:none}a:hover{color:#0B0F14}button{font-family:inherit;color:inherit}::-webkit-scrollbar{display:none}</style></helmet>
+
+<header style="position:sticky;top:0;z-index:50;background:rgba(243,243,243,.8);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(11,15,20,.06)">
+<div style="max-width:{{ L.max }}px;margin:0 auto;height:{{ L.hdrH }}px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 {{ L.pad }}px">
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ closeFund }}" aria-label="Back" style="width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if>
+<sc-if value="{{ showLogo }}" hint-placeholder-val="{{ true }}"><a href="index.html" aria-label="CRE8 home" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a></sc-if>
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><span style="flex:1;text-align:center;font:500 15px 'Geist';opacity:{{ hdrTitleO }};transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cur.name }}</span></sc-if>
+<sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><nav style="display:flex;gap:2px;padding:3px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="height:34px;padding:0 18px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';color:{{ t.tcol }};background:{{ t.tbg }};transition:background .2s,color .2s">{{ t.label }}</button></sc-for></nav></sc-if>
+<span style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 12px 'Geist Mono';color:#3C4651;white-space:nowrap">0xEEa7…D94F</span>
+</div>
+</header>
+
+<main style="max-width:{{ L.max }}px;margin:0 auto;padding:0 {{ L.mainPad }}px {{ L.bottom }}px">
+
+<sc-if value="{{ pageHome }}" hint-placeholder-val="{{ true }}">
+<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Discover</h1></div>
+<div style="display:flex;gap:8px;overflow-x:auto;padding:18px 16px 0">
+<sc-for list="{{ filters }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="flex:none;height:34px;padding:0 15px;border-radius:999px;cursor:pointer;font:500 14px 'Geist';border:1px solid {{ q.bd }};background:{{ q.bg }};color:{{ q.fg }};transition:background .2s,color .2s">{{ q.label }}</button></sc-for>
+</div>
+
+<sc-if value="{{ showPeople }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:26px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">Follow the famous</span></div>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:{{ L.pGap }}px;padding:0 16px">
+<sc-for list="{{ people }}" as="f" hint-placeholder-count="4">
+<button onClick="{{ f.open }}" style="position:relative;aspect-ratio:{{ L.pAR }};border:0;padding:0;border-radius:{{ L.pR }}px;overflow:hidden;cursor:pointer;text-align:left;background:#EDF0F3;transition:transform .25s cubic-bezier(.2,.8,.2,1)" style-active="transform:scale(.97)">
+<div role="img" style="position:absolute;inset:0;background:#EDF0F3 url({{ f.cover }}) 50% 22%/cover no-repeat"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.95) 0%,rgba(11,15,20,.3) 45%,rgba(11,15,20,0) 65%)"></div>
+<div style="position:absolute;left:{{ L.pIn }}px;right:{{ L.pIn }}px;bottom:{{ L.pIn }}px;min-width:0"><div style="font:500 {{ L.pName }}px/1.2 'Geist';color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px"><span style="font:500 {{ L.pRet }}px 'Geist Mono';color:#8BE3B5;white-space:nowrap">{{ f.retText }} <span style="font-size:{{ L.pApy }}px;letter-spacing:.06em;opacity:.75">APY</span></span></div></div>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="padding:{{ L.bTop }}px 16px 0"><button onClick="{{ goBuild }}" style="position:relative;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:{{ L.bPad }};border:0;border-radius:22px;cursor:pointer;text-align:left;overflow:hidden;background:radial-gradient(120% 140% at 100% 0%,#2F4A60 0%,#16222D 45%,#0B0F14 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)" style-active="transform:scale(.99)">
+<div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto">
+<div class="bb-logos" style="display:flex;flex:none"><img src="app/l-nvda.png" alt="" style="width:{{ L.bLogo }}px;height:{{ L.bLogo }}px;border-radius:50%;box-shadow:0 0 0 3px #16222D"><img src="app/l-tsla.png" alt="" style="width:{{ L.bLogo }}px;height:{{ L.bLogo }}px;border-radius:50%;margin-left:-10px;box-shadow:0 0 0 3px #16222D"><img src="app/l-btc.png" alt="" style="width:{{ L.bLogo }}px;height:{{ L.bLogo }}px;border-radius:50%;margin-left:-10px;box-shadow:0 0 0 3px #16222D"></div>
+<div style="min-width:0;white-space:nowrap;font:500 {{ L.bT }}px/1.15 'Geist';letter-spacing:-.025em">Build your own basket</div>
+</div>
+<span class="bb-btn" aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;white-space:nowrap;border-radius:999px;background:#fff;color:#0B0F14;font:600 15px 'Geist'"><span class="bb-txt">Start building</span><svg width="7" height="12" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+</button></div>
+<sc-if value="{{ showThemes }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:30px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">{{ themeTitle }}</span><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ themeCount }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax({{ L.tile }}px,1fr));gap:{{ L.gap }}px;padding:0 16px">
+<sc-for list="{{ themes }}" as="f" hint-placeholder-count="6">
+<button onClick="{{ f.open }}" style="border:1px solid #E6E9ED;padding:0;border-radius:18px;overflow:hidden;cursor:pointer;text-align:left;background:#FFFFFF;min-width:0;transition:transform .25s cubic-bezier(.2,.8,.2,1)" style-active="transform:scale(.97)">
+<div role="img" style="aspect-ratio:16/10;background:#EDF0F3 url({{ f.cover }}) 50% 18%/cover no-repeat"></div>
+<div style="padding:10px 12px 12px;min-width:0"><div style="font:500 14px/1.25 'Geist';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px"><span style="font:500 13px 'Geist Mono';color:{{ f.col }}">{{ f.retText }} <span style="font-size:10px;letter-spacing:.06em;color:#6B7785">APY</span></span></div></div>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+
+</sc-if>
+
+<sc-if value="{{ pageFund }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-wrap:wrap;gap:{{ L.colGap }}px;align-items:flex-start">
+<div style="flex:1 1 560px;min-width:0">
+<div style="display:flex;align-items:center;gap:14px;padding:20px 16px 0">
+<div role="img" style="width:56px;height:56px;flex:none;border-radius:14px;background:#EDF0F3 url({{ cur.cover }}) 50% 25%/cover no-repeat"></div>
+<div style="min-width:0"><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">{{ cur.kind }}</div><h1 style="margin:4px 0 0;font:500 26px/1.15 'Geist';letter-spacing:-.03em">{{ cur.name }}</h1></div>
+</div>
+<div style="padding:14px 16px 0">
+<div style="font:300 44px/1 'Geist';letter-spacing:-.045em">{{ fv.big }}</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ fv.col }}"><span>{{ fv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ fv.when }}</span></div>
+</div>
+<div onPointerMove="{{ fScrub }}" onPointerLeave="{{ fLeave }}" style="position:relative;height:190px;margin:18px 0 0;touch-action:pan-y;cursor:crosshair">
+<svg viewBox="0 0 600 190" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><defs><linearGradient id="fga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#16854F" stop-opacity=".2"></stop><stop offset="1" stop-color="#16854F" stop-opacity="0"></stop></linearGradient></defs><path d="{{ fc.area }}" fill="url(#fga)"></path><line x1="0" x2="600" y1="{{ fc.baseY }}" y2="{{ fc.baseY }}" stroke="#D6DCE2" stroke-dasharray="2 5" vector-effect="non-scaling-stroke"></line><path d="{{ fc.p }}" fill="none" stroke="#16854F" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
+<div style="position:absolute;top:0;bottom:0;left:{{ fc.hx }}%;width:1px;background:rgba(11,15,20,.25);opacity:{{ fc.ho }};pointer-events:none"></div>
+<div style="position:absolute;left:{{ fc.hx }}%;top:{{ fc.hy }}%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#16854F;box-shadow:0 0 0 4px rgba(30,158,99,.25);opacity:{{ fc.ho }};pointer-events:none"></div>
+</div>
+<div style="display:flex;justify-content:space-between;padding:10px 12px 0">
+<sc-for list="{{ ranges }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="flex:1;height:32px;border:0;border-radius:999px;cursor:pointer;font:500 12px 'Geist Mono';letter-spacing:.04em;background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:30px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">Holdings</span><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ cur.count }}</span></div>
+<div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
+<sc-for list="{{ cur.hold }}" as="h" hint-placeholder-count="4">
+<div style="display:grid;grid-template-columns:32px minmax(0,1fr) minmax(40px,110px) 44px;align-items:center;gap:12px;padding:0 14px;height:58px;border-bottom:{{ h.sep }}">
+<div role="img" style="width:32px;height:32px;border-radius:50%;background:#EDF0F3 url({{ h.logo }}) center/cover no-repeat"></div>
+<div style="min-width:0"><div style="font:500 15px 'Geist'">{{ h.t }}</div><div style="font:400 12px 'Geist';color:#6B7785;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.name }}</div></div>
+<div style="height:3px;border-radius:2px;background:#EDF0F3;overflow:hidden"><div style="height:3px;width:{{ h.bar }}%;background:#2F6690"></div></div>
+<span style="text-align:right;font:500 13px 'Geist Mono'">{{ h.w }}%</span>
+</div>
+</sc-for>
+</div>
+<p style="margin:18px 16px 0;font:400 15px/1.55 'Geist';color:#5E6A76;text-wrap:pretty">{{ cur.about }}</p>
+
+</div>
+<div style="flex:1 1 340px;min-width:0;max-width:{{ L.sideMax }};position:{{ L.sidePos }};top:86px;padding-top:{{ L.sideTop }}px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:{{ L.statsM }};background:#E6E9ED;border:1px solid #E6E9ED;border-radius:18px;overflow:hidden">
+<sc-for list="{{ cur.stats }}" as="st" hint-placeholder-count="6"><div style="background:#FFFFFF;padding:14px 14px 13px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ st.k }}</div><div style="font:400 19px 'Geist';letter-spacing:-.02em;margin-top:6px;color:{{ st.c }}">{{ st.v }}</div></div></sc-for>
+</div>
+
+<sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;flex-direction:column;gap:10px">
+<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 4px"><span style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ posLabel }}</span><span style="font:400 18px 'Geist';letter-spacing:-.02em">{{ posVal }}</span></div></sc-if>
+<button onClick="{{ openBuy }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Buy</button>
+<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSell }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer" style-active="transform:scale(.97)">Sell</button></sc-if>
+</div></sc-if>
+</div>
+</div>
+<sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}"><div style="position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(640px,100%);z-index:45;padding:12px 16px max(18px,env(safe-area-inset-bottom));background:rgba(243,243,243,.86);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-top:1px solid rgba(11,15,20,.06);display:flex;align-items:center;gap:14px">
+<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><div style="flex:1;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ posLabel }}</div><div style="font:400 17px 'Geist';letter-spacing:-.02em;margin-top:3px">{{ posVal }}</div></div></sc-if>
+<button onClick="{{ openBuy }}" style="flex:{{ buyFlex }};height:50px;padding:0 {{ buyPad }}px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Buy</button>
+<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSell }}" style="height:50px;padding:0 26px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer" style-active="transform:scale(.97)">Sell</button></sc-if>
+</div></sc-if>
+</sc-if>
+
+<sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.buildW }};margin:0 auto">
+<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Build</h1><p style="margin:6px 0 0;font:400 15px 'Geist';color:#5E6A76">Your picks. We keep the weights on target.</p></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">01 · PICK UP TO 10</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ pickCount }}</span></div>
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:{{ L.aGap }}px;padding:0 16px">
+<sc-for list="{{ assets }}" as="a" hint-placeholder-count="15">
+<button onClick="{{ a.toggle }}" style="position:relative;cursor:pointer;background:{{ a.bg }};border:1px solid {{ a.bd }};border-radius:16px;padding:12px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;transition:background .2s,border-color .2s" style-active="transform:scale(.95)">
+<div role="img" style="width:34px;height:34px;border-radius:50%;background:#EDF0F3 url({{ a.logo }}) center/cover no-repeat"></div>
+<span style="font:500 12px 'Geist Mono'">{{ a.t }}</span>
+<span style="position:absolute;top:6px;right:6px;width:16px;height:16px;border-radius:50%;background:#0B0F14;display:flex;align-items:center;justify-content:center;opacity:{{ a.on }};transform:scale({{ a.sc }});transition:opacity .2s,transform .25s cubic-bezier(.34,1.6,.5,1)"><svg width="9" height="7" viewBox="0 0 11 9"><path d="M1 4.5l3 3L10 1.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:30px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">02 · SET WEIGHTS</span><button onClick="{{ splitEven }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Split evenly</button></div>
+<div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
+<sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
+<div style="padding:12px 14px 10px;border-bottom:1px solid #E6E9ED">
+<div style="display:flex;align-items:center;gap:10px"><div role="img" style="width:28px;height:28px;flex:none;border-radius:50%;background:#EDF0F3 url({{ p.logo }}) center/cover no-repeat"></div><span style="flex:1;font:500 14px 'Geist Mono'">{{ p.t }}</span><span style="font:400 20px 'Geist';letter-spacing:-.02em">{{ p.w }}<span style="font-size:14px;color:#6B7785">%</span></span></div>
+<input type="range" min="0" max="100" step="1" value="{{ p.w }}" onInput="{{ p.slide }}" aria-label="{{ p.t }} weight" style="display:block;width:100%;margin:10px 0 0;accent-color:#0B0F14;height:28px;cursor:pointer">
+</div>
+</sc-for>
+<div style="display:flex;justify-content:space-between;padding:12px 14px;font:500 12px 'Geist Mono';letter-spacing:.06em"><span style="color:#6B7785">TOTAL</span><span style="color:{{ totalColor }}">{{ totalText }}</span></div>
+</div>
+<div style="padding:30px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">03 · REBALANCE</div>
+<div style="margin:0 16px;padding:3px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:999px;display:flex">
+<sc-for list="{{ freqs }}" as="q" hint-placeholder-count="3"><button onClick="{{ q.pick }}" style="flex:1;height:34px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
+</div>
+<p style="margin:12px 16px 0;font:400 14px/1.5 'Geist';color:#5E6A76">{{ freqNote }}</p>
+<div style="padding:30px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">04 · NAME IT</div>
+<label style="display:flex;align-items:center;gap:12px;margin:0 16px;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="My basket" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
+</sc-if>
+<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:{{ L.mixB }}px;transform:translateX(-50%);width:min(640px,100%);z-index:44;padding:0 16px">
+<button onClick="{{ buyMix }}" style="width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ mixBtn.bg }};color:{{ mixBtn.fg }};box-shadow:{{ mixBtn.sh }};transition:background .2s">{{ mixBtn.label }}</button>
+</div></sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ pageProfile }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.profW }};margin:0 auto">
+<div style="display:flex;align-items:center;gap:12px;padding:20px 16px 0">
+<button onClick="{{ openAcct }}" aria-label="Edit profile" style="width:44px;height:44px;flex:none;padding:0;border:0;cursor:pointer;border-radius:50%;background:{{ av.bg }};display:flex;align-items:center;justify-content:center;font:500 18px 'Geist';color:#fff">{{ av.letter }}</button>
+<div style="flex:1;min-width:0"><div style="font:500 17px 'Geist'">{{ profileName }}</div><div style="font:400 13px 'Geist';color:#6B7785">@0xJooe</div></div>
+<button onClick="{{ openAcct }}" aria-label="Account" style="width:38px;height:38px;border-radius:50%;border:0;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0F14" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg></button>
+</div>
+<div style="padding:26px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px"><div style="min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785">PORTFOLIO VALUE</div><div style="font:300 46px/1 'Geist';letter-spacing:-.045em;margin-top:10px">{{ pv.big }}</div><div style="display:flex;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ pv.col }}"><span>{{ pv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ pv.when }}</span></div></div><div style="display:flex;gap:8px;flex:none"><button style="height:42px;padding:0 20px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)">Add money</button><button style="height:42px;padding:0 20px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">Withdraw</button></div></div>
+<div onPointerMove="{{ pScrub }}" onPointerLeave="{{ pLeave }}" style="position:relative;height:{{ L.pcH }}px;margin:20px 16px 0;touch-action:pan-y;cursor:crosshair">
+<svg viewBox="0 0 600 160" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><defs><linearGradient id="pga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F6690" stop-opacity=".18"></stop><stop offset="1" stop-color="#2F6690" stop-opacity="0"></stop></linearGradient></defs><path d="{{ pc.area }}" fill="url(#pga)"></path><path d="{{ pc.p }}" fill="none" stroke="#2F6690" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
+<div style="position:absolute;top:0;bottom:0;left:{{ pc.hx }}%;width:1px;background:rgba(11,15,20,.25);opacity:{{ pc.ho }};pointer-events:none"></div>
+<div style="position:absolute;left:{{ pc.hx }}%;top:{{ pc.hy }}%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#2F6690;box-shadow:0 0 0 4px rgba(47,102,144,.25);opacity:{{ pc.ho }};pointer-events:none"></div>
+</div>
+<div style="display:flex;justify-content:space-between;gap:4px;padding:10px 16px 0">
+<sc-for list="{{ pranges }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="flex:1;height:32px;border:0;border-radius:999px;cursor:pointer;font:500 12px 'Geist Mono';letter-spacing:.04em;background:{{ q.bg }};color:{{ q.fg }}">{{ q.label }}</button></sc-for>
+</div>
+
+
+
+
+<div style="margin:28px 16px 0;padding:3px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:999px;display:flex">
+<sc-for list="{{ ptabs }}" as="q" hint-placeholder-count="2"><button onClick="{{ q.pick }}" style="flex:1;height:34px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }}">{{ q.label }}</button></sc-for>
+</div>
+<sc-if value="{{ showHold }}" hint-placeholder-val="{{ true }}">
+<div style="margin:12px 16px 0;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
+<sc-for list="{{ holdings }}" as="h" hint-placeholder-count="3">
+<button onClick="{{ h.open }}" style="width:100%;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px;border:0;border-bottom:1px solid #E6E9ED;background:transparent;cursor:pointer;text-align:left">
+<div role="img" style="width:40px;height:40px;border-radius:11px;background:#EDF0F3 url({{ h.cover }}) center/cover no-repeat"></div>
+<div style="min-width:0"><div style="font:500 15px 'Geist';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.name }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ h.sub }}</div></div>
+
+<div style="text-align:right"><div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap">{{ h.val }}</div><div style="font:500 12px 'Geist Mono';color:{{ h.col }};margin-top:2px">{{ h.ret }}</div></div>
+</button>
+</sc-for>
+<div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px">
+<img src="app/l-usdt.png" alt="" style="width:40px;height:40px;border-radius:50%">
+<div style="min-width:0"><div style="font:500 15px 'Geist'">Cash</div><div style="font:400 12px 'Geist';color:#16854F;margin-top:2px">Earning up to 6%</div></div>
+<div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap">{{ cashText }}</div>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ showAct }}" hint-placeholder-val="{{ false }}">
+<div style="margin:12px 16px 0;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
+<sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
+<div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:{{ a.sep }}">
+<span style="width:36px;height:36px;flex:none;border-radius:50%;background:#EDF0F3;color:{{ a.fg }};display:flex;align-items:center;justify-content:center;font:500 15px 'Geist Mono'">{{ a.g }}</span>
+<div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ a.t }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ a.d }}</div></div>
+<span style="font:500 13px 'Geist Mono';color:{{ a.vc }};white-space:nowrap">{{ a.v }}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-if>
+</main>
+
+<sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}"><nav style="position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,{{ navY }}px);transition:transform .4s cubic-bezier(.32,.72,0,1);z-index:60;display:flex;gap:2px;padding:5px;border-radius:999px;width:min(320px,calc(100vw - 32px));background:rgba(255,255,255,.72);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 .5px rgba(11,15,20,.06),0 12px 32px rgba(11,15,20,.14)">
+<sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="flex:1;height:54px;border:0;border-radius:999px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ t.col }};background:{{ t.bg }};transition:background .25s,color .25s"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"></path></svg><span style="font:500 10px 'Geist'">{{ t.label }}</span></button></sc-for>
+</nav></sc-if>
+
+<div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ modalO }};pointer-events:{{ modalPE }};transition:opacity .35s"></div>
+<div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ sheetY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(20px,env(safe-area-inset-bottom))">
+<div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px">
+<button onClick="{{ sheetLeft }}" style="border:0;background:transparent;font:400 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:left;padding:0">{{ sheetLeftLabel }}</button>
+<span style="font:500 16px 'Geist'">{{ modalTitle }}</span><span style="min-width:60px"></span>
+</div>
+
+<sc-if value="{{ mAmount }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;margin-top:clamp(6px,2vh,20px)"><div style="font:300 clamp(44px,8vh,60px)/1 'Geist';letter-spacing:-.05em;color:{{ amtColor }}">{{ amtText }}</div><div style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785;margin-top:12px">{{ availText }}</div></div>
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:clamp(12px,2.5vh,22px)"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.pick }}" style="height:36px;border:1px solid {{ q.bd }};border-radius:999px;cursor:pointer;font:500 13px 'Geist Mono';background:{{ q.bg }};color:{{ q.fg }}">{{ q.label }}</button></sc-for></div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px"><sc-for list="{{ keys }}" as="k" hint-placeholder-count="12"><button onClick="{{ k.press }}" style="height:clamp(38px,7.2vh,54px);border:0;background:transparent;border-radius:14px;font:300 26px 'Geist';cursor:pointer" style-active="background:#EDF0F3">{{ k.k }}</button></sc-for></div>
+<button onClick="{{ toReview }}" style="position:sticky;bottom:0;margin-top:6px;width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ amtBtn.bg }};color:{{ amtBtn.fg }};box-shadow:{{ amtBtn.sh }}">{{ amtBtn.label }}</button>
+</sc-if>
+
+<sc-if value="{{ mReview }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;margin-top:18px"><div role="img" style="width:64px;height:64px;margin:0 auto;border-radius:16px;background:#EDF0F3 url({{ sheetCover }}) center/cover no-repeat"></div><div style="font:500 15px 'Geist';margin-top:12px;color:#3C4651">{{ sheetName }}</div><div style="font:300 44px 'Geist';letter-spacing:-.045em;margin-top:6px">{{ amtText }} <span style="font:500 14px 'Geist Mono';letter-spacing:.06em;color:#6B7785">USDT</span></div></div>
+<div style="margin-top:22px;border-radius:16px;background:#F3F5F7;overflow:hidden"><sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;padding:0 14px;height:48px;border-bottom:{{ r.sep }};font:400 14px 'Geist'"><span style="color:#5E6A76">{{ r.k }}</span><span style="font-family:'Geist Mono';font-size:13px">{{ r.v }}</span></div></sc-for></div>
+<p style="margin:12px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785">{{ reviewNote }}</p>
+<button onClick="{{ confirm }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:{{ confBg }};color:{{ confFg }};font:600 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 8V5a2 2 0 012-2h3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3M9 9v1.5M15 9v1.5M12 9v4.5h-1M9 16.5c1.6 1.2 4.4 1.2 6 0"></path></svg>{{ confirmLabel }}</button>
+</sc-if>
+
+<sc-if value="{{ mProc }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:60px 0 80px"><svg width="84" height="84" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#EDF0F3" stroke-width="4"></circle><circle cx="48" cy="48" r="42" fill="none" stroke="#2F6690" stroke-width="4" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="{{ procOff }}" transform="rotate(-90 48 48)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)"></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76">CONFIRMING ON BNB CHAIN</div></div>
+</sc-if>
+
+<sc-if value="{{ mDone }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;align-items:center;padding:36px 0 0">
+<div style="width:80px;height:80px;border-radius:50%;background:#16854F;display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px rgba(30,158,99,.6)"><svg width="36" height="28" viewBox="0 0 46 36"><path d="M4 18l12 12L42 4" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="font:500 26px 'Geist';letter-spacing:-.03em;margin-top:22px">{{ doneTitle }}</div>
+<div style="font:500 12px 'Geist Mono';letter-spacing:.04em;color:#5E6A76;margin-top:8px">{{ doneText }}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;width:100%"><button onClick="{{ closeModal }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 15px 'Geist';cursor:pointer">Done</button><button onClick="{{ viewPort }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer">View portfolio</button></div>
+</div>
+</sc-if>
+</div>
+
+<div onClick="{{ closeAcct }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ acctO }};pointer-events:{{ acctPE }};transition:opacity .35s"></div>
+<div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ acctY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#F3F3F3;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
+<div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
+<div style="position:sticky;top:-8px;z-index:2;background:#F3F3F3;display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">Edit profile</span><button onClick="{{ closeAcct }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">Done</button></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 0 4px">
+<label style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer;background:{{ av.bg }};display:flex;align-items:center;justify-content:center;font:500 34px 'Geist';color:#fff">{{ av.letter }}<input type="file" accept="image/*" onChange="{{ onPhoto }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"><span style="position:absolute;right:-2px;bottom:-2px;width:30px;height:30px;border-radius:50%;background:#0B0F14;box-shadow:0 0 0 3px #F3F3F3;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span></label>
+<div style="display:flex;gap:10px">
+<sc-for list="{{ avOpts }}" as="o" hint-placeholder-count="5"><button onClick="{{ o.pick }}" aria-label="Avatar colour" style="width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;background:{{ o.bg }};box-shadow:{{ o.ring }}"></button></sc-for>
+</div>
+<sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removePhoto }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">Remove photo</button></sc-if>
+</div>
+<div style="margin-top:16px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">DISPLAY NAME</div>
+<label style="display:flex;align-items:center;gap:12px;padding:0 14px;height:52px;border-radius:16px;background:#F3F5F7"><input value="{{ profileName }}" onInput="{{ onPname }}" maxlength="24" placeholder="Your name" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ pnameLen }}/24</span></label>
+<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">SIGN-IN</div>
+<div style="border-radius:16px;background:#F3F5F7;overflow:hidden">
+<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px;border-bottom:1px solid #EDF0F3"><div style="flex:1"><div style="font:400 15px 'Geist'">Email</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ emailSub }}</div></div><sc-if value="{{ emailLinked }}" hint-placeholder-val="{{ false }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">LINKED</span></sc-if><sc-if value="{{ emailOpen }}" hint-placeholder-val="{{ true }}"><button onClick="{{ linkGoogle }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Link Google</button></sc-if></div>
+<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:400 15px 'Geist'">X</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">@0xJooe</div></div><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">LINKED</span></div>
+</div>
+<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">WALLET</div>
+<div style="border-radius:16px;background:#F3F5F7;display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:500 14px 'Geist Mono'">0xEEa7…D94F</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">Only you hold the key</div></div><button style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Export key</button></div>
+<button style="margin-top:22px;width:100%;height:52px;border:0;border-radius:16px;background:#F3F5F7;font:500 16px 'Geist';color:#D23F2E;cursor:pointer">Sign out</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const LOGO = t => 'app/l-' + t.toLowerCase() + '.png';
+const NAMES = { USDT: 'US Treasuries', NVDA: 'NVIDIA', AVGO: 'Broadcom', TSM: 'TSMC', AMD: 'AMD', AAPL: 'Apple', MSFT: 'Microsoft', TSLA: 'Tesla', GOOGL: 'Alphabet', META: 'Meta', AMZN: 'Amazon', PLTR: 'Palantir', COIN: 'Coinbase', BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB' };
+const F = (id, kind, cat, name, cover, ret, n, hold, about) => ({ id, kind, cat, name, cover, ret, n, hold, about });
+const FUNDS = [
+  F('pelosi', 'PEOPLE', 'people', 'Pelosi Portfolio', 'app/p-pelosi.jpg', 38.4, 14, [['NVDA', 22], ['AVGO', 14], ['GOOGL', 12], ['AAPL', 10], ['MSFT', 9]], 'Follows the stock trades Nancy Pelosi reports to Congress. Rebuilt within a day of each new filing.'),
+  F('trump', 'PEOPLE', 'people', 'Trump Holdings', 'app/p-trump.jpg', 12.1, 9, [['AAPL', 18], ['MSFT', 15], ['NVDA', 14], ['AMZN', 12], ['META', 10]], 'Follows the holdings Donald Trump discloses in his annual financial filings.'),
+  F('musk', 'PEOPLE', 'people', 'Musk Basket', 'app/p-musk.jpg', 21.7, 6, [['TSLA', 45], ['BTC', 20], ['NVDA', 15], ['COIN', 10]], 'Public companies and assets Elon Musk leads or has disclosed stakes in.'),
+  F('duan', 'PEOPLE', 'people', 'Duan Yongping', 'app/p-duan.jpg', 24.6, 8, [['AAPL', 55], ['GOOGL', 10], ['NVDA', 8], ['MSFT', 6]], 'Follows the US stocks Duan Yongping’s H&H discloses each quarter. Concentrated, long-term, Apple-heavy.'),
+  F('ai', 'THEME', 'ai', 'AI Buildout', 'app/p-ai.jpg', 46.2, 12, [['NVDA', 24], ['AVGO', 18], ['TSM', 16], ['AMD', 12]], 'The companies building the hardware and data centres behind AI.'),
+  F('aimem', 'THEME', 'ai', 'AI Memory', 'app/p-aimem.jpg', 54.3, 8, [['NVDA', 20], ['AMD', 15], ['TSM', 15], ['AVGO', 10]], 'Memory and storage makers riding AI demand.'),
+  F('aimodel', 'THEME', 'ai', 'AI Model Makers', 'app/p-aimodel.jpg', 33.5, 10, [['MSFT', 20], ['GOOGL', 18], ['META', 16], ['AMZN', 14]], 'Public companies closest to the leading AI model labs.'),
+  F('korea', 'THEME', 'ai', 'Korea Semis', 'app/p-korea.jpg', 27.4, 6, [['TSM', 20], ['NVDA', 15], ['AMD', 15], ['AVGO', 10]], 'Korea’s memory and semiconductor leaders.'),
+  F('mag7', 'THEME', 'markets', 'Mag7', 'app/p-mag7.jpg', 29.8, 7, [['AAPL', 15], ['MSFT', 15], ['NVDA', 14], ['GOOGL', 14], ['AMZN', 14], ['META', 14], ['TSLA', 14]], 'The seven largest US tech companies, held in equal weight.'),
+  F('btcplus', 'THEME', 'crypto', 'Bitcoin Plus', 'app/p-btcplus.jpg', 61, 5, [['BTC', 50], ['COIN', 20], ['ETH', 15], ['BNB', 15]], 'Bitcoin alongside the crypto and companies most exposed to it.'),
+  F('bnb', 'THEME', 'crypto', 'BNB Ecosystem', 'app/p-bnb.jpg', 24.6, 6, [['BNB', 50], ['BTC', 20], ['ETH', 15], ['COIN', 15]], 'BNB and the assets most tied to the BNB Chain ecosystem.'),
+  F('cinfra', 'THEME', 'crypto', 'Crypto Infrastructure', 'app/p-cinfra.jpg', 37.2, 9, [['COIN', 25], ['NVDA', 15], ['BTC', 15], ['ETH', 15]], 'The companies and networks that crypto runs on.'),
+  F('ctsy', 'THEME', 'crypto', 'Crypto Treasuries', 'app/p-ctsy.jpg', 41.9, 9, [['COIN', 22], ['TSLA', 15], ['BTC', 15], ['PLTR', 10]], 'Companies that keep Bitcoin and other crypto on their balance sheet.'),
+  F('goldbtc', 'THEME', 'crypto', 'Gold + Bitcoin', 'app/p-goldbtc.jpg', 28.3, 2, [['BTC', 50], ['USDT', 50]], 'Half gold, half Bitcoin: two ways to hold value outside the dollar.'),
+  F('meme', 'THEME', 'crypto', 'Meme', 'app/p-meme.jpg', 45, 8, [['TSLA', 20], ['COIN', 15], ['PLTR', 15], ['BTC', 10]], 'The stocks and coins the internet can’t stop talking about. High risk.'),
+  F('china', 'THEME', 'markets', 'China Tech', 'app/p-china.jpg', 18.6, 11, [['TSM', 15], ['AAPL', 10], ['NVDA', 10], ['AMD', 8]], 'Large Chinese and Greater China technology companies.'),
+  F('everyday', 'THEME', 'markets', 'Everyday Brands', 'app/p-everyday.jpg', 9.8, 12, [['AAPL', 15], ['AMZN', 14], ['META', 10], ['GOOGL', 10]], 'Household names people use and buy every day.'),
+  F('giants', 'THEME', 'markets', 'New Giants', 'app/p-giants.jpg', 35.9, 10, [['PLTR', 18], ['NVDA', 14], ['AVGO', 12], ['COIN', 10]], 'Fast-growing companies on their way to becoming the next giants.'),
+  F('us', 'THEME', 'markets', 'US Market', 'app/p-us.jpg', 14.2, 50, [['AAPL', 7], ['MSFT', 7], ['NVDA', 7], ['AMZN', 4]], 'The broad US stock market in one basket.'),
+  F('treasury', 'THEME', 'markets', 'Treasury Reserve', 'app/p-treasury.jpg', 5.1, 3, [['USDT', 100]], 'Short-term US Treasury exposure for a steady dollar return.'),
+  F('balanced', 'THEME', 'markets', 'Balanced', 'app/p-balanced.jpg', 12.7, 8, [['MSFT', 12], ['AAPL', 10], ['BTC', 8], ['NVDA', 8]], 'A diversified mix across stocks, bonds, gold and a little crypto.'),
+];
+const ASSETS = ['NVDA', 'TSLA', 'AAPL', 'MSFT', 'GOOGL', 'AMZN', 'META', 'AVGO', 'TSM', 'AMD', 'PLTR', 'COIN', 'BTC', 'ETH', 'BNB'];
+const AVC = ['linear-gradient(135deg,#6F93AE,#16222D)', 'linear-gradient(135deg,#E3B55B,#9A6B1E)', 'linear-gradient(135deg,#7FB59A,#1F5A41)', 'linear-gradient(135deg,#B9A2D6,#4B3A6E)', 'linear-gradient(135deg,#3C4651,#0B0F14)'];
+const RANGES = [['1W', .03, 7, 36, 'past week'], ['1M', .1, 30, 60, 'past month'], ['3M', .28, 90, 90, 'past 3 months'], ['1Y', 1, 365, 120, 'past year'], ['ALL', 1.7, 730, 140, 'since launch']];
+const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const TODAY = new Date(2026, 10, 22);
+const fmt = n => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pct = n => (n >= 0 ? '+' : '−') + Math.abs(n).toFixed(2) + '%';
+function series(seed, ret, n, vol) {
+  let s = (seed * 7919 + 104729) % 233280; const rnd = () => ((s = (s * 9301 + 49297) % 233280) / 233280) - .5;
+  let y = 0; const a = [0]; for (let i = 1; i < n; i++) { y += rnd() * vol; a.push(y); }
+  const end = a[n - 1];
+  return a.map((x, i) => 1 + (ret / 100) * i / (n - 1) + (x - end * i / (n - 1)) * .012);
+}
+function shape(v, W, H) {
+  const mn = Math.min(...v), mx = Math.max(...v), k = (H - 16) / ((mx - mn) || 1);
+  const ys = v.map(x => H - 8 - (x - mn) * k);
+  const p = ys.map((y, i) => (i ? 'L' : 'M') + (i / (v.length - 1) * W).toFixed(1) + ',' + y.toFixed(1)).join(' ');
+  return { p, area: p + ' L' + W + ',' + H + ' L0,' + H + ' Z', ys };
+}
+const spark = (seed, ret) => shape(series(seed, ret, 30, 1.6), 100, 30).p;
+const dateAt = (days, frac, withYear) => { const d = new Date(TODAY.getTime() - days * (1 - frac) * 864e5); return MON[d.getMonth()] + ' ' + d.getDate() + (withYear ? ', ' + d.getFullYear() : ''); };
+
+class Component extends DCLogic {
+  state = {
+    page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
+    modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
+    picks: [], weights: {}, freq: 1, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
+    holdings: [
+      { id: 'pelosi', name: 'Pelosi Portfolio', cover: 'app/p-pelosi.jpg', val: 4236.80, ret: 38.4 },
+      { id: 'ai', name: 'AI Buildout', cover: 'app/p-ai.jpg', val: 3104.12, ret: 46.2 },
+      { id: null, name: 'My mix', cover: 'app/cover-mag7.webp', val: 2759.40, ret: -2.1 },
+    ],
+  };
+  timers = [];
+  componentDidMount() { this.onRs = () => { const w = innerWidth >= 960; if (w !== this.state.wide) this.setState({ wide: w }); }; addEventListener('resize', this.onRs); this.onRs(); }
+  componentWillUnmount() { this.timers.forEach(clearTimeout); removeEventListener('resize', this.onRs); }
+  later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  go(page) { this.setState({ page, fund: null }); window.scrollTo(0, 0); }
+  open(id) { this.setState({ fund: id, range: 3, fh: null }); window.scrollTo(0, 0); }
+  scrub(key, n) { return e => { const r = e.currentTarget.getBoundingClientRect(); const i = Math.max(0, Math.min(n - 1, Math.round((e.clientX - r.left) / r.width * (n - 1)))); if (this.state[key] !== i) this.setState({ [key]: i }); }; }
+  evenWeights(picks) {
+    const n = picks.length, w = {}; if (!n) return w;
+    const base = Math.floor(100 / n / 5) * 5 || Math.floor(100 / n); let left = 100 - base * n;
+    picks.forEach(t => { w[t] = base; });
+    for (let i = 0; left > 0; i = (i + 1) % n) { const st = Math.min(5, left); w[picks[i]] += st; left -= st; }
+    return w;
+  }
+  rebalance(picks, w, t, v) {
+    const others = picks.filter(x => x !== t);
+    if (!others.length) return { [t]: 100 };
+    const rest = 100 - v, sum = others.reduce((a, x) => a + (w[x] || 0), 0);
+    const out = { [t]: v };
+    const raw = others.map(x => sum > 0 ? (w[x] || 0) / sum * rest : rest / others.length);
+    const fl = raw.map(Math.floor); let left = rest - fl.reduce((a, b) => a + b, 0);
+    raw.map((x, i) => [x - fl[i], i]).sort((a, b) => b[0] - a[0]).forEach(([, i]) => { if (left > 0) { fl[i]++; left--; } });
+    others.forEach((x, i) => out[x] = fl[i]);
+    return out;
+  }
+  toggleAsset(t) { this.setState(s => { const picks = s.picks.includes(t) ? s.picks.filter(x => x !== t) : s.picks.length >= 10 ? s.picks : [...s.picks, t]; return { picks, weights: this.evenWeights(picks) }; }); }
+  bump(t, d) { this.setState(s => ({ weights: { ...s.weights, [t]: Math.max(5, Math.min(100, (s.weights[t] || 0) + d)) } })); }
+  press(k) {
+    this.setState(s => {
+      let a = s.amount;
+      if (k === '⌫') a = a.slice(0, -1);
+      else if (k === '.') { if (!a.includes('.')) a = (a || '0') + '.'; }
+      else { if (a.includes('.') && a.split('.')[1].length >= 2) return null; if (a === '0') a = ''; if (a.replace('.', '').length >= 7) return null; a += k; }
+      return { amount: a };
+    });
+  }
+  confirm() {
+    this.setState({ step: 'proc', procOff: 264 });
+    this.later(() => this.setState({ procOff: 0 }), 60);
+    this.later(() => {
+      const amt = parseFloat(this.state.amount) || 0, t = this.state.target;
+      if (this.state.side === 'sell') { this.setState(s => { const hs = s.holdings.map(h => h.name === t.name ? { ...h, val: h.val - amt } : h).filter(h => h.val > 0.005); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash + amt }; }); this.later(() => this.setState({ doneSc: 1 }), 40); return; }
+      this.setState(s => { const hs = s.holdings.slice(); const i = hs.findIndex(h => h.name === t.name); if (i >= 0) hs[i] = { ...hs[i], val: hs[i].val + amt }; else hs.unshift({ id: t.id, name: t.name, cover: t.cover, val: amt, ret: 0 }); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash - amt }; });
+      this.later(() => this.setState({ doneSc: 1 }), 40);
+    }, 1600);
+  }
+  chart(seed, ret, R, hover, endVal, W, H) {
+    const vals = series(seed, ret, R[3], 1.4), sh = shape(vals, W, H), n = vals.length;
+    const scale = endVal / vals[n - 1], i = hover == null ? n - 1 : hover;
+    const v = vals[i] * scale, base = vals[0] * scale, chg = v - base, up = chg >= 0;
+    return {
+      c: { p: sh.p, area: sh.area, baseY: sh.ys[0].toFixed(1), hx: (i / (n - 1) * 100).toFixed(2), hy: (sh.ys[i] / H * 100).toFixed(2), ho: hover == null ? 0 : 1 },
+      v: { pctBig: pct(chg / base * 100), big: '$' + fmt(v), chg: (up ? '+' : '−') + '$' + fmt(Math.abs(chg)) + ' (' + pct(chg / base * 100) + ')', col: up ? '#16854F' : '#D23F2E', when: hover == null ? R[4] : dateAt(R[2], i / (n - 1), R[2] > 90) },
+      n,
+    };
+  }
+  renderVals() {
+    const s = this.state;
+    const cta = { bg: '#E3B55B', fg: '#0B0F14', sh: 'inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)' };
+    const off = { bg: '#EDF0F3', fg: '#9AA4AE', sh: 'none' };
+    const sepL = (i, a) => i < a.length - 1 ? '1px solid #E6E9ED' : '0';
+    const card = f => ({ ...f, retText: pct(f.ret), col: f.ret >= 0 ? '#16854F' : '#D23F2E', spark: spark(FUNDS.indexOf(f) + 2, f.ret), open: () => this.open(f.id) });
+    const FIL = [['All', null], ['People', 'people'], ['AI', 'ai'], ['Crypto', 'crypto'], ['Markets', 'markets']];
+    const fcat = FIL[s.filter][1];
+    const people = FUNDS.filter(f => f.kind === 'PEOPLE');
+    const themes = FUNDS.filter(f => f.kind === 'THEME' && (!fcat || f.cat === fcat));
+    const f = FUNDS.find(x => x.id === s.fund) || FUNDS[0];
+    const R = RANGES[s.range], nav = 10 * (1 + f.ret * 1.7 / 100);
+    const fch = this.chart(FUNDS.indexOf(f) * 3 + s.range + 5, f.ret * R[1], R, s.fh, nav, 600, 190);
+    const shown = f.hold.reduce((a, h) => a + h[1], 0);
+    const hold = f.hold.map(([t, w]) => ({ t, w, bar: w, name: NAMES[t], logo: LOGO(t) }));
+    if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: 'Rest of the basket', logo: 'app/l-usdt.png' });
+    hold.forEach((h, i, a) => h.sep = sepL(i, a));
+    const stats = [['APY', pct(f.ret), '#16854F'], ['EXTRA YIELD', '+~2%', '#A8791F'], ['VOLATILITY', (11 + f.ret * .28).toFixed(1) + '%', '#0B0F14'], ['MAX DRAWDOWN', '−' + (6 + f.ret * .24).toFixed(1) + '%', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', f.kind === 'PEOPLE' ? 'On new filing' : 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
+    const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
+    const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
+    const mixReady = s.picks.length > 0 && total === 100;
+    const mixBtn = s.picks.length === 0 ? { ...off, label: 'Pick at least 1' } : total !== 100 ? { ...off, label: total < 100 ? 'Add ' + (100 - total) + '% to continue' : 'Remove ' + (total - 100) + '% to continue' } : { ...cta, label: 'Buy this portfolio' };
+    const FREQ = ['Every week', 'Every month', 'Every quarter'];
+    const tgt = s.target || { name: f.name, cover: f.cover };
+    const sell = s.side === 'sell', posH = s.holdings.find(h => h.name === tgt.name), posMax = posH ? Math.floor(posH.val * 100) / 100 : 0;
+    const amt = parseFloat(s.amount) || 0;
+    const amtOk = sell ? amt > 0 && amt <= posMax : amt >= 50 && amt <= s.cash;
+    const amtBtn = amt === 0 ? { ...off, label: 'Enter an amount' } : sell ? (amt > posMax ? { ...off, label: 'More than you hold' } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: 'Review' }) : amt < 50 ? { ...off, label: 'Minimum 50 USDT' } : amt > s.cash ? { ...off, label: 'Not enough USDT' } : { ...cta, label: 'Review' };
+    const invested = s.holdings.reduce((a, h) => a + h.val, 0), totalVal = invested + s.cash;
+    const PR = RANGES[s.prange], pch = this.chart(41 + s.prange, 7.2 * PR[1], PR, s.ph, totalVal, 600, 160);
+    const own = s.holdings.find(h => h.id === f.id);
+    const SH = ['#0B0F14', '#2F4A60', '#6F93AE', '#DCE4EA'];
+    const allocSrc = [...s.holdings.map(h => [h.name, h.val, h.cover]), ['Cash · earning up to 6%', s.cash, null]];
+    const navDef = [['home', 'Discover', 'M12 3a9 9 0 100 18 9 9 0 000-18zM15.5 8.5l-2 5-5 2 2-5z'], ['build', 'Build', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16.5 13v7M13 16.5h7'], ['profile', 'Profile', 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6']];
+    const curPage = s.fund ? 'home' : s.page;
+    const W = !!s.wide;
+    const L = W ? { max: 1200, hdrH: 64, pad: 24, mainPad: 8, bottom: 80, tile: 210, gap: 14, buildMax: '560px', colGap: 8, sideMax: '420px', sidePos: 'sticky', sideTop: 20, statsM: '0 16px', mixB: 28, pcH: 260, abH: 92, profW: '760px', buildW: '720px', aGap: 10, bTop: 28, bPad: '26px 28px', bLogo: 40, bT: 24, pGap: 14, pAR: '4/5', pR: 18, pIn: 14, pName: 16, pRet: 14, pApy: 10 } : { max: 640, hdrH: 54, pad: 16, mainPad: 0, bottom: 150, tile: 150, gap: 10, buildMax: 'none', colGap: 0, sideMax: 'none', sidePos: 'static', sideTop: 0, statsM: '26px 16px 0', mixB: 96, pcH: 210, abH: 72, profW: 'none', buildW: 'none', aGap: 8, bTop: 24, bPad: '18px', bLogo: 32, bT: 18, pGap: 8, pAR: '3/4', pR: 14, pIn: 8, pName: 12, pRet: 11, pApy: 8 };
+    return {
+      wide: W, narrow: !W, L,
+      showBack: !!s.fund, showLogo: !s.fund, hdrTitleO: 1,
+      navTabs: navDef.map(([id, label, icon]) => ({ label, icon, go: () => this.go(id), col: curPage === id ? '#0B0F14' : '#6B7785', bg: curPage === id ? 'rgba(11,15,20,.07)' : 'transparent', tcol: curPage === id ? '#fff' : '#3C4651', tbg: curPage === id ? '#0B0F14' : 'transparent' })),
+      navY: s.fund || s.modal || s.acct ? 140 : 0,
+      pageHome: s.page === 'home' && !s.fund, pageFund: !!s.fund, pageBuild: s.page === 'build' && !s.fund, pageProfile: s.page === 'profile' && !s.fund,
+      goBuild: () => this.go('build'),
+      market: [['S&P 500', '6,842.10', '+0.62%', '#16854F'], ['NASDAQ', '23,418.55', '+0.94%', '#16854F'], ['BTC', '$98,214', '−1.12%', '#D23F2E'], ['US MARKET', 'Open', 'closes 4:00 ET', '#6B7785']].map(([k, v, d, c]) => ({ k, v, d, c })),
+      filters: FIL.map(([label], i) => ({ label, pick: () => this.setState({ filter: i }), bg: s.filter === i ? '#0B0F14' : '#FFFFFF', fg: s.filter === i ? '#fff' : '#3C4651', bd: s.filter === i ? '#0B0F14' : '#E6E9ED' })),
+      showPeople: !fcat || fcat === 'people', showThemes: fcat !== 'people',
+      people: people.map(card), themes: themes.map(card),
+      themeTitle: fcat ? FIL[s.filter][0] : 'Themes', themeCount: themes.length + ' PORTFOLIOS',
+      closeFund: () => this.setState({ fund: null }),
+      cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : 'THEME', count: f.n + ' ASSETS', hold, stats },
+      fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
+      ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
+      posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? '$' + fmt(own.val) : '50 USDT',
+      openBuy: () => this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
+      openSell: () => this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
+      hasPos: !!own, buyPad: own ? 26 : 34, buyFlex: own ? 'none' : '1',
+      assets: ASSETS.map(t => { const on = s.picks.includes(t); return { t, logo: LOGO(t), toggle: () => this.toggleAsset(t), on: on ? 1 : 0, sc: on ? 1 : .4, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
+      pickCount: s.picks.length + ' / 10', hasPicks: s.picks.length > 0,
+      picks: s.picks.map(t => ({ t, logo: LOGO(t), w: s.weights[t] || 0, bar: s.weights[t] || 0, slide: e => { const v = +e.target.value; this.setState(st => ({ weights: this.rebalance(st.picks, st.weights, t, v) })); } })),
+      mixName: s.mixName, nameLen: s.mixName.length, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
+      splitEven: () => this.setState(st => ({ weights: this.evenWeights(st.picks) })),
+      totalText: total + '%', totalColor: total === 100 ? '#16854F' : '#A8791F',
+      freqs: pills(['Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
+      freqNote: FREQ[s.freq] + ', we trim what grew and add to what fell, so your basket stays at these weights.',
+      mixBtn, buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }),
+      modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
+      closeModal: () => this.setState({ modal: false }),
+      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount' }) : s.step === 'amount' ? this.setState({ modal: false }) : null,
+      sheetLeftLabel: s.step === 'review' ? 'Back' : s.step === 'amount' ? 'Cancel' : '',
+      modalTitle: s.step === 'amount' ? (sell ? 'Sell ' : '') + tgt.name : s.step === 'review' ? (sell ? 'Review sale' : 'Review') : '',
+      availText: sell ? 'USDT · ' + fmt(posMax) + ' HELD' : 'USDT · ' + fmt(s.cash) + ' AVAILABLE',
+      reviewNote: sell ? 'Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.' : 'Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.',
+      confBg: sell ? '#0B0F14' : '#E3B55B', confFg: sell ? '#fff' : '#0B0F14', confirmLabel: sell ? 'Confirm sale' : 'Confirm purchase', doneTitle: sell ? 'Sold' : 'You own it',
+      mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done',
+      sheetCover: tgt.cover, sheetName: tgt.name,
+      amtText: s.amount === '' ? '0' : Number(s.amount.split('.')[0] || 0).toLocaleString('en-US') + (s.amount.includes('.') ? '.' + s.amount.split('.')[1] : ''),
+      amtColor: s.amount === '' ? '#C3CAD1' : '#0B0F14', balText: fmt(s.cash),
+      quick: (sell ? [['25%', posMax * .25], ['50%', posMax * .5], ['75%', posMax * .75], ['ALL', posMax]] : [['50', 50], ['100', 100], ['500', 500], ['MAX', s.cash]]).map(([label, v]) => { const vv = sell ? Math.floor(v * 100) / 100 : Math.floor(v); const on = amt === vv; return { label, pick: () => this.setState({ amount: String(vv) }), bg: on ? '#0B0F14' : '#FFFFFF', fg: on ? '#fff' : '#3C4651', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
+      keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'].map(k => ({ k, press: () => this.press(k) })),
+      amtBtn, toReview: () => amtOk && this.setState({ step: 'review' }),
+      reviewRows: (sell ? [['You get', fmt(amt) + ' USDT'], ['Paid to', 'Your wallet'], ['Left in portfolio', '$' + fmt(Math.max(0, posMax - amt))]] : [['You pay', fmt(amt) + ' USDT'], ['Held in', 'Your wallet'], ['Cash left', fmt(s.cash - amt) + ' USDT']]).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
+      confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, doneText: tgt.name.toUpperCase() + ' · ' + fmt(amt) + ' USDT',
+      viewPort: () => { this.setState({ modal: false, fund: null, page: 'profile', ptab: 0 }); window.scrollTo(0, 0); },
+      profileName: s.pname, pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
+      av: { bg: s.photo ? 'center/cover no-repeat url(' + s.photo + ')' : AVC[s.avc], letter: s.photo ? '' : (s.pname.trim()[0] || '?').toUpperCase() },
+      avOpts: AVC.map((bg, i) => ({ bg, pick: () => this.setState({ avc: i, photo: null }), ring: !s.photo && s.avc === i ? '0 0 0 2px #F3F3F3,0 0 0 4px #0B0F14' : '0 0 0 1px rgba(11,15,20,.08)' })),
+      hasPhoto: !!s.photo, removePhoto: () => this.setState({ photo: null }),
+      onPhoto: e => { const f = e.target.files && e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => this.setState({ photo: rd.result }); rd.readAsDataURL(f); e.target.value = ''; },
+      pv: pch.v, pc: pch.c, pScrub: this.scrub('ph', pch.n), pLeave: () => this.setState({ ph: null }),
+      pranges: pills(RANGES.map(r => r[0]), s.prange, i => this.setState({ prange: i, ph: null })),
+      fundCount: s.holdings.length + ' PORTFOLIOS + CASH',
+      alloc: allocSrc.map(([n, v, cv], i, a) => { const p = Math.max(1, Math.round(v / totalVal * 100)); return { n, pct: p, lo: p >= 9 ? 1 : 0, vt: '$' + fmt(v), bg: SH[Math.min(i, SH.length - 1)], fg: i < 3 ? '#fff' : '#0B0F14', ring: i >= 3 ? 'inset 0 0 0 1px #D6DCE2' : 'none', sep: i < a.length - 1 ? '1px solid #EEF0F2' : '0' }; }),
+      ptabs: pills(['Holdings', 'Activity'], s.ptab, i => this.setState({ ptab: i })),
+      showHold: s.ptab === 0, showAct: s.ptab === 1,
+      holdings: s.holdings.map((h, i) => ({ ...h, val: '$' + fmt(h.val), sub: Math.max(1, Math.round(h.val / totalVal * 100)) + '% of portfolio' + (h.ret === 0 ? ' · just bought' : h.id ? '' : ' · your basket'), ret: h.ret === 0 ? 'NEW' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', spark: spark(i + 9, h.ret || 1), open: () => h.id ? this.open(h.id) : this.go('build') })),
+      cashText: '$' + fmt(s.cash),
+      activity: [['+', 'Bought AI Buildout', 'Today · 10:42', '−500.00', '#16854F', '#0B0F14'], ['↻', 'My mix rebalanced', 'Yesterday · back to your weights', '', '#2F6690', '#0B0F14'], ['%', 'Interest on cash', 'Nov 19', '+1.86', '#16854F', '#16854F'], ['↓', 'Added USDT', 'Nov 18', '+3,000.00', '#3C4651', '#16854F'], ['+', 'Bought Pelosi Portfolio', 'Nov 18', '−1,000.00', '#16854F', '#0B0F14']].map(([g, t, d, v, fg, vc], i, a) => ({ g, t, d, v, fg, vc, sep: sepL(i, a) })),
+      openAcct: () => this.setState({ acct: true }), closeAcct: () => this.setState({ acct: false }),
+      acctO: s.acct ? 1 : 0, acctPE: s.acct ? 'auto' : 'none', acctY: s.acct ? 0 : 110,
+      emailLinked: s.emailLinked, emailOpen: !s.emailLinked, emailSub: s.emailLinked ? 'user@example.com' : 'Not linked', linkGoogle: () => this.setState({ emailLinked: true }),
+    };
+  }
+}
+</script>
+</body>
+</html>

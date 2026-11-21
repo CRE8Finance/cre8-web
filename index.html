@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./image-slot.js"></script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:#0B0F14;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{opacity:.85}summary{list-style:none;cursor:pointer}summary::-webkit-details-marker{display:none}details[open] .pm{transform:rotate(45deg)}@media (max-width:720px){.cre8-nav{display:none!important}}@media (max-width:960px){.hiw-grid{grid-template-columns:minmax(0,1fr)!important}.hiw-panel{display:none!important}.hiw-step{min-height:0!important;opacity:1!important;padding:48px 0 0!important}.hiw-art{display:block!important}}</style></helmet>
+
+<header style="position:fixed;top:14px;left:0;right:0;z-index:50;padding:0 16px;pointer-events:none">
+<div style="pointer-events:auto;position:relative;max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px;padding:0 8px 0 18px;background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:18px;box-shadow:0 1px 1px rgba(11,15,20,.03),0 8px 28px rgba(11,15,20,.08),0 0 0 1px rgba(11,15,20,.06)">
+
+<a href="#top" style="position:relative;flex:1;display:flex"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:20px;display:block"></a>
+<nav class="cre8-nav" onMouseLeave="{{ hovOut }}" style="position:relative;display:flex;align-items:center;gap:4px">
+<span style="position:absolute;top:50%;left:0;height:38px;width:{{ hp.w }}px;transform:translate({{ hp.x }}px,-50%);opacity:{{ hp.o }};border-radius:999px;pointer-events:none;background:linear-gradient(160deg,rgba(255,255,255,.95) 0%,rgba(226,234,241,.55) 55%,rgba(255,255,255,.75) 100%);backdrop-filter:blur(10px) saturate(200%);-webkit-backdrop-filter:blur(10px) saturate(200%);box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(255,255,255,.6),inset 0 0 0 1px rgba(11,15,20,.07),inset 0 -6px 12px rgba(95,132,159,.10),0 2px 6px rgba(11,15,20,.08),0 8px 18px -6px rgba(11,15,20,.14);transition:transform .45s cubic-bezier(.34,1.4,.5,1),width .45s cubic-bezier(.34,1.4,.5,1),opacity .25s ease"></span>
+<a href="#top" onMouseEnter="{{ hovIn }}" style="position:relative;padding:10px 14px;font:500 14px 'Geist';color:{{ cH }};transition:color .25s" style-hover="opacity:1">Home</a>
+<div onMouseEnter="{{ openP }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+<button onClick="{{ toggleP }}" style="position:relative;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;padding:10px 14px;font:500 14px 'Geist';color:{{ cP }}">Portfolios<span style="display:inline-block;font-size:10px;transform:rotate({{ rP }}deg);transition:transform .2s">▾</span></button>
+<sc-if value="{{ showP }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px"><div style="min-width:228px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 1px 2px rgba(11,15,20,.04),0 16px 40px rgba(11,15,20,.10),0 0 0 1px rgba(11,15,20,.06)"><a href="#funds" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">People portfolios</a><a href="#funds" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">Theme portfolios</a><a href="#build" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">Build your own</a><a href="#how" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">Yield vaults</a></div></div></sc-if>
+</div>
+<div onMouseEnter="{{ openR }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+<button onClick="{{ toggleR }}" style="position:relative;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;padding:10px 14px;font:500 14px 'Geist';color:{{ cR }}">Resources<span style="display:inline-block;font-size:10px;transform:rotate({{ rR }}deg);transition:transform .2s">▾</span></button>
+<sc-if value="{{ showR }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px"><div style="min-width:228px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 1px 2px rgba(11,15,20,.04),0 16px 40px rgba(11,15,20,.10),0 0 0 1px rgba(11,15,20,.06)"><a href="#how" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">How it works</a><a href="#faq" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">Questions</a><a href="#" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">Docs</a><a href="#" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">Risk disclosure</a></div></div></sc-if>
+</div>
+</nav>
+<div style="position:relative;flex:1;display:flex;justify-content:flex-end"><a href="app.html" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">Open app <span>→</span></a></div>
+</div>
+</header>
+
+<section id="top" style="position:relative;min-height:max(720px,100vh);overflow:hidden;display:flex;align-items:flex-end;background:#0B0F14;color:#fff">
+<img src="assets/ws-f.jpg" alt="New York Stock Exchange, Wall Street" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;filter:grayscale(.9) contrast(1.1) brightness(.72)">
+<div style="position:absolute;inset:0;background:#14263A;mix-blend-mode:multiply;opacity:.55"></div>
+<div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(10,17,26,.92) 0%,rgba(10,17,26,.62) 48%,rgba(10,17,26,.22) 80%),linear-gradient(0deg,rgba(10,17,26,.85) 0%,rgba(10,17,26,0) 50%)"></div>
+<div style="position:relative;z-index:1;padding:0 max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) clamp(28px,4vw,48px);width:100%">
+<h1 style="margin:0;font-weight:500;font-size:clamp(42px,8.6vw,136px);line-height:.98;letter-spacing:-.045em;max-width:9.5em;color:#EEF3F7"><span style="white-space:nowrap">Own the idea</span><br><span style="white-space:nowrap">you believe in.</span></h1>
+<p style="font:400 clamp(20px,1.7vw,24px)/1.4 'Geist';margin:24px 0 0;max-width:none;text-wrap:pretty;color:#AFBFCD">Buy what Wall Street's most-watched investors hold.</p>
+<div style="display:flex;gap:12px;margin-top:40px;flex-wrap:wrap;align-items:flex-end">
+<a href="app.html" style="height:52px;padding:0 24px;border-radius:999px;display:inline-flex;align-items:center;gap:10px;background:#C9A15A;color:#0B0F14;box-shadow:none" style-hover="background:#D4AE68;opacity:1"><span style="font:500 16px 'Geist'">Open the testnet</span><span style="font:400 16px/1 'Geist'">↗</span></a>
+</div>
+</div>
+</section>
+
+<section style="background:#0B0F14;color:#fff;padding:clamp(88px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2))">
+<p style="margin:0 auto;max-width:15em;text-align:center;font:400 clamp(32px,3.4vw,54px)/1.1 'Geist';letter-spacing:-.035em;text-wrap:balance"><span style="white-space:nowrap">Real US shares.</span> <span style="white-space:nowrap">Your account.</span> <span style="white-space:nowrap">One purchase.</span></p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin-top:clamp(64px,8vw,112px)">
+<a href="#funds" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden"><img src="assets/people-funds.png" alt="Nancy Pelosi, Donald Trump and Elon Musk" style="width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block"><div style="position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(0deg,#0E1318,rgba(14,19,24,0));pointer-events:none"></div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.8vw,24px) 'Geist';letter-spacing:-.01em">People portfolios</div><div style="font:400 16px 'Geist';color:#9AA7B4;margin-top:4px">Pelosi, Trump, Musk</div></div><span style="font:300 22px 'Geist';color:#9AA7B4">↗</span></div></a>
+<a href="#funds" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden;background:radial-gradient(80% 90% at 50% 100%,rgba(95,132,159,.28),transparent 70%);display:flex;align-items:center;justify-content:center;padding:16px"><div style="width:100%;max-width:260px;height:150px;display:flex;gap:3px;border-radius:6px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.5)">
+<div style="flex:24;background:#EEF3F7;color:#0B0F14;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12px;font-weight:500"><span>NVDA</span><span style="opacity:.7">24%</span></div>
+<div style="flex:36;display:flex;flex-direction:column;gap:3px"><div style="flex:18;background:#9FC0D8;color:#0B0F14;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12px;font-weight:500"><span>AVGO</span><span style="opacity:.7">18%</span></div><div style="flex:16;background:#6F93AE;color:#fff;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12px;font-weight:500"><span>TSM</span><span style="opacity:.7">16%</span></div></div>
+<div style="flex:40;display:flex;flex-direction:column;gap:3px"><div style="flex:12;background:#4A6B85;color:#fff;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12px;font-weight:500"><span>AMD</span><span style="opacity:.7">12%</span></div><div style="flex:10;background:#34506A;color:#fff;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12px;font-weight:500"><span>ASML</span><span style="opacity:.7">10%</span></div><div style="flex:18;background:#22384C;color:#C7D2DC;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono',monospace;font-size:12px;font-weight:500"><span>+7</span><span style="opacity:.7">18%</span></div></div>
+</div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.8vw,24px) 'Geist';letter-spacing:-.01em">Theme portfolios</div><div style="font:400 16px 'Geist';color:#9AA7B4;margin-top:4px">AI chips, Mag7, Bitcoin</div></div><span style="font:300 22px 'Geist';color:#9AA7B4">↗</span></div></a>
+<a href="#how" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden;background:radial-gradient(80% 90% at 50% 100%,rgba(95,132,159,.28),transparent 70%);display:flex;align-items:center;justify-content:center;padding:16px"><div style="width:100%;max-width:260px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px"><span style="font-family:'Geist Mono',monospace;font-size:11px;letter-spacing:.08em;color:#9AA7B4">IDLE USDT</span><span style="font:400 clamp(26px,2.6vw,34px) 'Geist';letter-spacing:-.04em;color:#D8F5E6;white-space:nowrap"><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#9AA7B4;margin-right:6px">UP TO</span>6%</span></div>
+<div style="height:70px;display:flex;align-items:flex-end;gap:4px;border-bottom:1px solid #2A333D"><div style="flex:1;height:22%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:28%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:34%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:38%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:46%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:52%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:58%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:66%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:74%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:82%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:90%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:100%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div></div>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#9AA7B4">bSTOCK STRATEGY</span><span style="font:400 clamp(26px,2.6vw,34px) 'Geist';letter-spacing:-.04em;color:#D8F5E6;white-space:nowrap">+~2%</span></div>
+</div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.8vw,24px) 'Geist';letter-spacing:-.01em">Yield</div><div style="font:400 16px 'Geist';color:#9AA7B4;margin-top:4px">Up to 6% on idle USDT</div></div><span style="font:300 22px 'Geist';color:#9AA7B4">↗</span></div></a>
+<a href="#custody" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden;background:radial-gradient(80% 90% at 50% 100%,rgba(95,132,159,.28),transparent 70%);display:flex;align-items:center;justify-content:center;padding:16px"><div style="width:100%;max-width:250px;background:#fff;color:#0B0F14;border-radius:10px;padding:14px 16px;font:400 13px 'Geist';box-shadow:0 18px 40px rgba(0,0,0,.5)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-family:'Geist Mono',monospace;font-size:11px;color:#6B7785">0x7a3…e91c</span><span style="font-family:'Geist Mono',monospace;font-size:10px;padding:3px 7px;border-radius:10px;background:#E6F6EE;color:#1E8A5C">OWNER: YOU</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #EEF0F3"><span style="font-weight:500">NVDA</span><span style="font-family:'Geist Mono',monospace">0.3214</span></div><div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #EEF0F3"><span style="font-weight:500">AVGO</span><span style="font-family:'Geist Mono',monospace">0.1902</span></div><div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #EEF0F3"><span style="font-weight:500">TSM</span><span style="font-family:'Geist Mono',monospace">0.1871</span></div>
+</div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.8vw,24px) 'Geist';letter-spacing:-.01em">Self-custody</div><div style="font:400 16px 'Geist';color:#9AA7B4;margin-top:4px">Only you hold the keys</div></div><span style="font:300 22px 'Geist';color:#9AA7B4">↗</span></div></a>
+</div>
+</section>
+
+<section id="how" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;scroll-margin-top:84px">
+<h2 style="margin:0;font-weight:400;font-size:clamp(34px,3.4vw,54px);letter-spacing:-.035em;line-height:1.05;margin-bottom:40px">How it works</h2>
+<div class="hiw-grid" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 24px;border-top:1px solid rgba(11,15,20,.1);align-items:start">
+<div class="hiw-panel" style="position:sticky;top:84px;height:calc(100vh - 100px);min-height:480px;background:radial-gradient(120% 100% at 50% 0%,#18212B,#0B0F14 70%);overflow:hidden;border-radius:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)"><div style="position:absolute;inset:0;opacity:{{ L0.o }};transform:translateY({{ L0.y }}px) scale({{ L0.s }});transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);pointer-events:none"><div style="position:absolute;inset:0;display:flex;gap:2px"><div style="position:relative;flex:1 1 0;min-width:0;overflow:hidden"><div role="img" style="position:absolute;inset:0;background:#16222D url(app/p-pelosi.jpg) 50% 22%/cover no-repeat"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.96) 0%,rgba(11,15,20,.35) 38%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:clamp(14px,1.6vw,22px);right:12px;bottom:64px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.12em;color:#9FC0D8">PEOPLE</div><div style="font:400 clamp(17px,1.5vw,22px)/1.15 'Geist';letter-spacing:-.02em;color:#fff;margin-top:8px">Pelosi Portfolio</div><div style="font:400 13px 'Geist Mono';color:#C9D6E0;margin-top:10px">+38.4% APY</div></div></div><div style="position:relative;flex:1 1 0;min-width:0;overflow:hidden"><div role="img" style="position:absolute;inset:0;background:#16222D url(app/p-ai.jpg) 50% 22%/cover no-repeat"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.96) 0%,rgba(11,15,20,.35) 38%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:clamp(14px,1.6vw,22px);right:12px;bottom:64px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.12em;color:#9FC0D8">THEME</div><div style="font:400 clamp(17px,1.5vw,22px)/1.15 'Geist';letter-spacing:-.02em;color:#fff;margin-top:8px">AI Buildout</div><div style="font:400 13px 'Geist Mono';color:#C9D6E0;margin-top:10px">+46.2% APY</div></div></div><div style="position:relative;flex:1 1 0;min-width:0;overflow:hidden"><div role="img" style="position:absolute;inset:0;background:#16222D url(app/p-btcplus.jpg) 50% 22%/cover no-repeat"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.96) 0%,rgba(11,15,20,.35) 38%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:clamp(14px,1.6vw,22px);right:12px;bottom:64px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.12em;color:#9FC0D8">THEME</div><div style="font:400 clamp(17px,1.5vw,22px)/1.15 'Geist';letter-spacing:-.02em;color:#fff;margin-top:8px">Bitcoin Plus</div><div style="font:400 13px 'Geist Mono';color:#C9D6E0;margin-top:10px">+61.0% APY</div></div></div></div></div><div style="position:absolute;inset:0;opacity:{{ L1.o }};transform:translateY({{ L1.y }}px) scale({{ L1.s }});transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);pointer-events:none"><div role="img" style="position:absolute;inset:0;background:#0B0F14 url(assets/ws-b.jpg) 50% 40%/cover no-repeat;filter:grayscale(.35) contrast(1.05)"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.97) 0%,rgba(11,15,20,.6) 45%,rgba(11,15,20,.25) 100%)"></div><div style="position:absolute;left:clamp(22px,3vw,40px);right:clamp(22px,3vw,40px);bottom:72px"><div style="font:500 11px 'Geist Mono';letter-spacing:.14em;color:#9FC0D8">ONE PAYMENT</div><div style="font:300 clamp(56px,6.4vw,104px)/.95 'Geist';letter-spacing:-.05em;color:#F2F4F6;margin-top:16px">50 USDT</div></div></div><div style="position:absolute;inset:0;opacity:{{ L2.o }};transform:translateY({{ L2.y }}px) scale({{ L2.s }});transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);pointer-events:none"><div role="img" style="position:absolute;inset:0;background:#0B0F14 url(assets/ws-d.jpg) 50% 40%/cover no-repeat;filter:grayscale(.35) contrast(1.05)"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.97) 0%,rgba(11,15,20,.6) 45%,rgba(11,15,20,.25) 100%)"></div><div style="position:absolute;left:clamp(22px,3vw,40px);right:clamp(22px,3vw,40px);bottom:72px"><div style="font:500 11px 'Geist Mono';letter-spacing:.14em;color:#9FC0D8">IN YOUR WALLET</div><div style="font:300 clamp(56px,6.4vw,104px)/.95 'Geist';letter-spacing:-.05em;color:#F2F4F6;margin-top:16px">100% yours</div></div></div>
+<div style="position:absolute;left:24px;right:24px;bottom:24px;display:flex;gap:6px;z-index:3">
+<div style="flex:1;height:2px;background:{{ P0 }};transition:background .4s"></div><div style="flex:1;height:2px;background:{{ P1 }};transition:background .4s"></div><div style="flex:1;height:2px;background:{{ P2 }};transition:background .4s"></div>
+</div>
+</div>
+<div>
+<div class="hiw-step" ref="{{ stepRef0 }}" data-step="0" style="min-height:max(92vh,560px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,64px);opacity:{{ T0 }};transition:opacity .5s ease;scroll-margin-top:84px">
+<div class="hiw-art" aria-hidden="true" style="display:none;height:220px;margin-bottom:28px;border-radius:20px;overflow:hidden;background:#0B0F14"><div style="display:flex;gap:2px;height:100%"><div style="position:relative;flex:1 1 0;min-width:0;background:#16222D url(app/p-pelosi.jpg) 50% 22%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.92) 0%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:10px;right:8px;bottom:12px;font:400 14px/1.15 'Geist';color:#fff">Pelosi Portfolio</div></div><div style="position:relative;flex:1 1 0;min-width:0;background:#16222D url(app/p-ai.jpg) 50% 22%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.92) 0%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:10px;right:8px;bottom:12px;font:400 14px/1.15 'Geist';color:#fff">AI Buildout</div></div><div style="position:relative;flex:1 1 0;min-width:0;background:#16222D url(app/p-btcplus.jpg) 50% 22%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.92) 0%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:10px;right:8px;bottom:12px;font:400 14px/1.15 'Geist';color:#fff">Bitcoin Plus</div></div></div></div>
+<div style="font:400 14px 'Geist Mono';color:#4A5B6A">01 / 03</div>
+<h3 style="margin:20px 0 0;font-weight:400;font-size:clamp(30px,2.8vw,44px);line-height:1.08;letter-spacing:-.035em;max-width:10em">Pick an idea</h3>
+<p style="font:400 17px/1.6 'Geist';color:#4A5563;margin:20px 0 0;max-width:26em">Follow what Pelosi, Trump or Musk disclose, back a theme like AI chips, or build your own basket.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));margin-top:36px;border-top:1px solid rgba(11,15,20,.08)"><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">6</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">people portfolios</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">15</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">theme portfolios</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">Yours</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">custom basket, we rebalance</div></div></div>
+<div style="margin-top:40px"><a href="#funds" style="height:46px;padding:0 20px;background:#0B0F14;color:#fff;display:inline-flex;align-items:center;gap:10px;font:500 15px 'Geist';border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)">Browse portfolios <span>↗</span></a></div>
+</div>
+<div class="hiw-step" ref="{{ stepRef1 }}" data-step="1" style="min-height:max(92vh,560px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,64px);opacity:{{ T1 }};transition:opacity .5s ease;scroll-margin-top:84px">
+<div class="hiw-art" aria-hidden="true" style="display:none;position:relative;height:220px;margin-bottom:28px;border-radius:20px;overflow:hidden;background:#0B0F14 url(assets/ws-b.jpg) 50% 40%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.95) 0%,rgba(11,15,20,.3) 100%)"></div><div style="position:absolute;left:20px;bottom:20px"><div style="font:500 11px 'Geist Mono';letter-spacing:.14em;color:#9FC0D8">ONE PAYMENT</div><div style="font:300 56px/.95 'Geist';letter-spacing:-.05em;color:#F2F4F6;margin-top:10px;white-space:nowrap">50 USDT</div></div></div>
+<div style="font:400 14px 'Geist Mono';color:#4A5B6A">02 / 03</div>
+<h3 style="margin:20px 0 0;font-weight:400;font-size:clamp(30px,2.8vw,44px);line-height:1.08;letter-spacing:-.035em;max-width:10em">Pay from 50 USDT</h3>
+<p style="font:400 17px/1.6 'Geist';color:#4A5563;margin:20px 0 0;max-width:26em">One payment buys every stock in the basket for you.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));margin-top:36px;border-top:1px solid rgba(11,15,20,.08)"><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">50</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">USDT minimum</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">1 tap</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">to buy a basket</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">Up to 6%</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">on cash waiting to invest</div></div></div>
+<div style="margin-top:40px"><a href="app.html" style="height:46px;padding:0 20px;background:#0B0F14;color:#fff;display:inline-flex;align-items:center;gap:10px;font:500 15px 'Geist';border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)">Get test USDT <span>↗</span></a></div>
+</div>
+<div class="hiw-step" ref="{{ stepRef2 }}" data-step="2" id="custody" style="min-height:max(92vh,560px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,64px);opacity:{{ T2 }};transition:opacity .5s ease;scroll-margin-top:84px">
+<div class="hiw-art" aria-hidden="true" style="display:none;position:relative;height:220px;margin-bottom:28px;border-radius:20px;overflow:hidden;background:#0B0F14 url(assets/ws-d.jpg) 50% 40%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.95) 0%,rgba(11,15,20,.3) 100%)"></div><div style="position:absolute;left:20px;bottom:20px"><div style="font:500 11px 'Geist Mono';letter-spacing:.14em;color:#9FC0D8">IN YOUR WALLET</div><div style="font:300 56px/.95 'Geist';letter-spacing:-.05em;color:#F2F4F6;margin-top:10px;white-space:nowrap">100% yours</div></div></div>
+<div style="font:400 14px 'Geist Mono';color:#4A5B6A">03 / 03</div>
+<h3 style="margin:20px 0 0;font-weight:400;font-size:clamp(30px,2.8vw,44px);line-height:1.08;letter-spacing:-.035em;max-width:10em">Hold the shares</h3>
+<p style="font:400 17px/1.6 'Geist';color:#4A5563;margin:20px 0 0;max-width:26em">Your stocks are held as bStock tokens in your own account, and can be put to work: borrow against them and earn in a USDT vault.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));margin-top:36px;border-top:1px solid rgba(11,15,20,.08)"><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">100%</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">yours, never pooled</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">+~2%</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">extra from bStock strategy</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2vw,30px)/1 'Geist';letter-spacing:-.03em">Any time</div><div style="font:400 15px/1.4 'Geist';color:#4A5B6A;margin-top:8px">sell back to USDT</div></div></div>
+<div style="margin-top:40px"><a href="app.html" style="height:46px;padding:0 20px;background:#0B0F14;color:#fff;display:inline-flex;align-items:center;gap:10px;font:500 15px 'Geist';border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)">Open the testnet <span>↗</span></a></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="yield" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;scroll-margin-top:84px">
+<div style="border-radius:28px;overflow:hidden;background:#0E1318;padding:clamp(28px,4.5vw,64px);color:#EEF3F7">
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:32px 48px;align-items:end">
+<div>
+<div style="font:500 12px 'Geist Mono';letter-spacing:.14em;color:#9FC0D8">bSTOCK STRATEGY</div>
+<h2 style="margin:16px 0 0;font-weight:400;font-size:clamp(34px,3.4vw,54px);letter-spacing:-.035em;line-height:1.05;max-width:11em">Where the extra yield comes from</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:24px 32px">
+<div style="padding-top:18px;border-top:1px solid rgba(255,255,255,.16)"><div style="font:300 clamp(48px,5vw,76px)/1 'Geist';letter-spacing:-.055em;color:#EEF3F7;white-space:nowrap">+~2%</div><div style="font:400 14px/1.4 'Geist';color:#9AA7B4;margin-top:12px">Extra from bStock strategy</div></div>
+<div style="padding-top:18px;border-top:1px solid rgba(255,255,255,.16)"><div style="font:300 clamp(48px,5vw,76px)/1 'Geist';letter-spacing:-.055em;color:#EEF3F7;white-space:nowrap">6%</div><div style="font:400 14px/1.4 'Geist';color:#9AA7B4;margin-top:12px">Max yield on idle USDT</div></div>
+</div>
+</div>
+
+<div style="margin-top:clamp(40px,5vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px">
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono';color:#9AA7B4"><span>01</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">→</span></div>
+<div style="height:132px;margin-top:16px;display:flex;flex-direction:column;justify-content:center;gap:6px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font:500 11px 'Geist Mono';color:#9AA7B4">0x7a3…e91c</span><span style="font:500 10px 'Geist Mono';padding:3px 7px;border-radius:10px;background:rgba(122,214,168,.14);color:#7AD6A8">OWNER: YOU</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono'"><span>bNVDA</span><span style="color:#9AA7B4">0.3214</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono'"><span>bTSLA</span><span style="color:#9AA7B4">0.1902</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono'"><span>bAAPL</span><span style="color:#9AA7B4">0.1871</span></div>
+</div>
+<div style="font:500 clamp(19px,1.6vw,22px)/1.2 'Geist';letter-spacing:-.02em;margin-top:20px">Your bStocks</div>
+<div style="font:400 15px/1.5 'Geist';color:#9AA7B4;margin-top:6px">Stay in your wallet.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono';color:#9AA7B4"><span>02</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">→</span></div>
+<div style="height:132px;margin-top:16px;display:flex;align-items:center;justify-content:center">
+<div style="position:relative;width:100%;border:1px dashed rgba(159,192,216,.45);border-radius:14px;padding:22px 14px 14px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+<span style="position:absolute;top:-10px;left:12px;display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;background:#121920;font:500 10px 'Geist Mono';letter-spacing:.08em;color:#9FC0D8"><svg aria-hidden="true" width="10" height="11" viewBox="0 0 10 11" fill="none"><rect x="1" y="4.5" width="8" height="6" rx="1.5" fill="#9FC0D8"/><path d="M3 4.5V3a2 2 0 0 1 4 0v1.5" stroke="#9FC0D8" stroke-width="1.3"/></svg>COLLATERAL</span>
+<span style="padding:8px 12px;border-radius:999px;background:#EEF3F7;color:#0B0F14;font:500 12px 'Geist Mono'">bNVDA</span><span style="padding:8px 12px;border-radius:999px;background:#9FC0D8;color:#0B0F14;font:500 12px 'Geist Mono'">bTSLA</span><span style="padding:8px 12px;border-radius:999px;background:#6F93AE;color:#0B0F14;font:500 12px 'Geist Mono'">bAAPL</span>
+</div>
+</div>
+<div style="font:500 clamp(19px,1.6vw,22px)/1.2 'Geist';letter-spacing:-.02em;margin-top:20px">Used as collateral</div>
+<div style="font:400 15px/1.5 'Geist';color:#9AA7B4;margin-top:6px">Instead of sitting idle.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono';color:#9AA7B4"><span>03</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">→</span></div>
+<div style="height:132px;margin-top:16px;display:flex;flex-direction:column;justify-content:center">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#9AA7B4">LTV</span><span style="display:inline-flex;align-items:center;gap:6px;font:500 11px 'Geist Mono';letter-spacing:.08em;color:#7AD6A8"><span style="width:6px;height:6px;border-radius:50%;background:#7AD6A8"></span>LOW · WATCHED</span></div>
+<div style="position:relative;margin-top:16px;height:8px;border-radius:4px;background:linear-gradient(90deg,#7AD6A8 0%,#7AD6A8 38%,#E3B55B 62%,#C2553F 100%);opacity:.9">
+<div style="position:absolute;top:50%;left:22%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(122,214,168,.25),0 2px 6px rgba(0,0,0,.5)"></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:10px;font:400 11px 'Geist Mono';color:#9AA7B4"><span>Safe</span><span>Liquidation</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono'"><span style="color:#9AA7B4">Borrowed</span><span>USDT</span></div>
+</div>
+<div style="font:500 clamp(19px,1.6vw,22px)/1.2 'Geist';letter-spacing:-.02em;margin-top:20px">Borrow USDT</div>
+<div style="font:400 15px/1.5 'Geist';color:#9AA7B4;margin-top:6px">Kept at a low, watched LTV.</div>
+</div>
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono';color:#9AA7B4"><span>04</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">✓</span></div>
+<div style="height:132px;margin-top:16px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#9AA7B4">USDT VAULT</span><span style="font:500 10px 'Geist Mono';padding:3px 7px;border-radius:10px;background:rgba(122,214,168,.14);color:#7AD6A8">INSTANT REDEEM</span></div>
+<div aria-hidden="true" style="height:76px;display:flex;align-items:flex-end;gap:4px;border-bottom:1px solid #2A333D"><div style="flex:1;height:24%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:32%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:38%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:47%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:55%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:64%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:74%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:86%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:100%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div></div>
+</div>
+<div style="font:500 clamp(19px,1.6vw,22px)/1.2 'Geist';letter-spacing:-.02em;margin-top:20px">Earn in a USDT vault</div>
+<div style="font:400 15px/1.5 'Geist';color:#9AA7B4;margin-top:6px">Instant-redeem vaults only.</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section id="funds" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;scroll-margin-top:84px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:32px"><h2 style="margin:0;font-weight:400;font-size:clamp(34px,3.4vw,54px);letter-spacing:-.035em;line-height:1.05">Top portfolios</h2>
+<div style="display:inline-flex;padding:3px;background:#F1F3F5;border-radius:999px;overflow:hidden;font:500 14px 'Geist'"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" style="border:0;cursor:pointer;padding:9px 18px;border-radius:999px;font:inherit;color:{{ t.color }};background:{{ t.bg }}">{{ t.label }}</button></sc-for></div></div>
+<sc-for list="{{ funds }}" as="f" hint-placeholder-count="4">
+<a href="app.html" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA">
+<span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="{{ f.name }}" style="display:block;width:100%;height:100%;background:#F1F3F5 url({{ f.img }}) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(20px,2.4vw,36px)/1.15 'Geist';letter-spacing:-.03em">{{ f.name }}</span></span>
+<span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(20px,2.4vw,36px) 'Geist';letter-spacing:-.03em;white-space:nowrap;color:{{ f.col }}">{{ f.ret }}</span><span style="font:300 24px 'Geist'">↗</span></span>
+</a>
+</sc-for>
+<div id="build" style="margin-top:48px;scroll-margin-top:84px;border-radius:24px;overflow:hidden;background:radial-gradient(120% 100% at 0% 0%,#18212B,#0B0F14 70%);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;padding:clamp(28px,4vw,56px);color:#fff">
+<div style="display:flex;flex-direction:column;justify-content:center">
+<div style="font:500 13px 'Geist Mono';letter-spacing:.06em;color:#9AA7B4">BUILD YOUR OWN</div>
+<h3 style="margin:16px 0 0;font-weight:400;font-size:clamp(30px,2.8vw,44px);line-height:1.08;letter-spacing:-.035em;max-width:11em"><span style="white-space:nowrap">Your picks.</span> <span style="white-space:nowrap">Our rebalancing.</span></h3>
+<p style="font:400 17px/1.6 'Geist';color:#AFBFCD;margin:18px 0 0;max-width:26em">Pick stocks and weights. We keep it on target.</p>
+<div style="margin-top:32px"><a href="app.html" style="height:46px;padding:0 20px;background:#fff;color:#0B0F14;display:inline-flex;align-items:center;gap:10px;font:500 15px 'Geist';border-radius:999px">Build a basket <span>↗</span></a></div>
+</div>
+<div style="background:linear-gradient(180deg,#151C24,#0E1318);border-radius:18px;padding:22px 24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 0 1px rgba(255,255,255,.06)">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 12px;margin-bottom:6px"><span style="font:500 18px 'Geist';white-space:nowrap">My basket</span><span style="white-space:nowrap;display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:999px;background:rgba(122,214,168,.12);font:500 12px 'Geist';color:#7AD6A8"><span style="width:6px;height:6px;border-radius:50%;background:#7AD6A8"></span>Auto-rebalance on</span></div>
+<div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono';color:#EEF3F7">NVDA</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:75%;border-radius:3px;background:linear-gradient(90deg,#9FC0D8,#EEF3F7)"></div><div style="position:absolute;top:50%;left:75%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono';color:#9AA7B4;text-align:right">30%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono';color:#EEF3F7">TSLA</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:62.5%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:62.5%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono';color:#9AA7B4;text-align:right">25%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono';color:#EEF3F7">AAPL</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:50%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono';color:#9AA7B4;text-align:right">20%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono';color:#EEF3F7">MSFT</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:37.5%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:37.5%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono';color:#9AA7B4;text-align:right">15%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono';color:#EEF3F7">BTC</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:25%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:25%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono';color:#9AA7B4;text-align:right">10%</span></div>
+<div style="display:flex;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);font:400 14px 'Geist';color:#9AA7B4"><span>Total</span><span style="font-family:'Geist Mono';color:#EEF3F7">100%</span></div>
+</div>
+</div>
+</section>
+
+<section id="faq" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;display:flex;flex-wrap:wrap;gap:32px 48px;scroll-margin-top:84px">
+<h2 style="flex:1 1 280px;margin:0;font-weight:400;font-size:clamp(34px,3.4vw,54px);letter-spacing:-.035em;line-height:1.05">Questions</h2>
+<div style="flex:2 1 min(100%,480px);min-width:0">
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(22px,1.9vw,26px) 'Geist';letter-spacing:-.02em">Is this real money?<span class="pm" style="font:300 28px 'Geist';transition:transform .2s">+</span></summary><p style="font:400 18px/1.6 'Geist';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">Not yet. CRE8 is on testnet. Test USDT is free.</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(22px,1.9vw,26px) 'Geist';letter-spacing:-.02em">Who holds my shares?<span class="pm" style="font:300 28px 'Geist';transition:transform .2s">+</span></summary><p style="font:400 18px/1.6 'Geist';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">You do. They sit in an on-chain account only you control.</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08);border-bottom:1px solid #D5DBE0"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(22px,1.9vw,26px) 'Geist';letter-spacing:-.02em">Who can use it?<span class="pm" style="font:300 28px 'Geist';transition:transform .2s">+</span></summary><p style="font:400 18px/1.6 'Geist';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">Anyone outside the US, where local rules allow.</p></details>
+</div>
+</section>
+
+<section style="margin-top:clamp(80px,9vw,128px);background:#000;color:#fff;position:relative;overflow:hidden;min-height:620px;display:flex;align-items:center;justify-content:center;text-align:center">
+<img src="assets/ws-f.jpg" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 78%;filter:grayscale(.35) contrast(1.08) brightness(.7)"><div style="position:absolute;inset:0;background:radial-gradient(70% 80% at 50% 50%,rgba(11,15,20,.55),rgba(11,15,20,.88))"></div>
+<div style="position:relative;z-index:1;padding:80px 20px">
+<h2 style="margin:0;font-weight:500;font-size:clamp(52px,7vw,112px);letter-spacing:-.045em;line-height:1;text-shadow:0 0 40px rgba(0,0,0,.8);text-wrap:balance">Start with <span style="white-space:nowrap">50 USDT.</span></h2>
+
+<div style="display:flex;gap:10px;justify-content:center;margin-top:32px;flex-wrap:wrap"><a href="app.html" style="height:52px;padding:0 24px;background:#C9A15A;color:#0B0F14;display:inline-flex;align-items:center;gap:10px;font:500 16px 'Geist';border-radius:999px" style-hover="background:#D4AE68;opacity:1">Open the testnet <span>↗</span></a></div>
+</div>
+</section>
+
+<div style="position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.05;mix-blend-mode:multiply;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E&quot;)"></div>
+<footer style="background:#000;color:#8A96A2;border-top:1px solid #1A2129;padding:48px max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px 48px;font:400 12px/1.7 'Geist'">
+<div style="display:flex;flex-direction:column;gap:18px"><img src="assets/cre8-logo-light.svg" alt="CRE8" style="height:24px;align-self:flex-start"><span>© 2026 CRE8</span></div>
+<nav style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font:400 13px 'Geist';color:#E3E8EC"><a href="#">Terms</a><a href="#">X</a><a href="#">Privacy</a><a href="#">Telegram</a><a href="#">Risk disclosure</a><a href="#">Docs</a></nav>
+
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const RETS = [38.4, 46.2, 29.8, 12.1, 61.0, 54.3, 21.7, 72.5, 33.5, 41.9, 27.4, 18.6, 14.2, -2.1, 8.4, 24.9, 5.6, 36.1, 16.3, 49.0, 10.2];
+function makeLines(cv, o) {
+  const ctx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const seeds = RETS.map((r, i) => ({ r, a: 1 + (i * 7.3) % 3, b: (i * 2.17) % 6.28, c: 2 + (i * 3.1) % 4, d: (i * 1.3) % 6.28 }));
+  let w = 0, h = 0, dpr = 1, raf, t0 = performance.now();
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr; };
+  const ro = new ResizeObserver(size); ro.observe(cv); size();
+  const ease = x => 1 - Math.pow(1 - x, 3);
+  const N = 240;
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647 - .5;
+  seeds.forEach(s => {
+    const a = [0]; for (let j = 1; j <= N; j++) a.push(a[j - 1] + rnd() + (rnd() * rnd()) * 1.4);
+    const end = a[N]; s.walk = a.map((v, j) => v - end * j / N);
+    const m = Math.max(...s.walk.map(Math.abs)) || 1; s.walk = s.walk.map(v => v / m);
+  });
+  const yAt = (s, u, time, x0, y0, span) => {
+    const f = Math.min(N, u * N), j = Math.floor(f), t = f - j;
+    const n = s.walk[j] * (1 - t) + s.walk[Math.min(N, j + 1)] * t;
+    const live = u > .96 ? Math.sin(time * 2.1 + s.b) * (u - .96) * 1.2 : 0;
+    return y0 - (s.r / 75) * span * u - (n * .16 + live) * Math.pow(u, .6) * span;
+  };
+  const frame = now => {
+    if (cv.width !== Math.round(cv.clientWidth * dpr) || !cv.width) size();
+    const time = (now - t0) / 1000, p = still ? 1 : ease(Math.min(1, time / 2.2));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const x0 = w * o.x0, y0 = h * o.y0, x1 = w - o.pad, span = h * o.span;
+    ctx.strokeStyle = o.grid; ctx.lineWidth = 1; ctx.fillStyle = o.label; ctx.font = "500 10px 'Geist Mono',monospace"; ctx.textAlign = 'right';
+    for (let g = 0; g <= 4; g++) { const gy = y0 - span * 1.05 * g / 4; ctx.beginPath(); ctx.moveTo(x0, gy + .5); ctx.lineTo(w, gy + .5); ctx.stroke(); if (o.axis) ctx.fillText('+' + Math.round(80 * g / 4) + '%', w - 8, gy - 6); }
+    const xe = x0 + (x1 - x0) * p, steps = 160;
+    seeds.forEach((s, i) => {
+      const hi = i === o.hi;
+      ctx.beginPath();
+      for (let j = 0; j <= steps; j++) { const x = x0 + (xe - x0) * j / steps, u = (x - x0) / (x1 - x0); const y = yAt(s, u, time, x0, y0, span); j ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.strokeStyle = hi ? o.hiCol : o.line; ctx.globalAlpha = hi ? 1 : o.alpha; ctx.lineWidth = hi ? 2 : 1; ctx.stroke(); ctx.globalAlpha = 1;
+      if (hi) {
+        const ye = yAt(s, (xe - x0) / (x1 - x0), time, x0, y0, span);
+        ctx.fillStyle = o.hiCol; ctx.beginPath(); ctx.arc(xe, ye, 4, 0, 7); ctx.fill();
+        ctx.globalAlpha = .18; ctx.beginPath(); ctx.arc(xe, ye, 4 + 6 * (1 + Math.sin(time * 3)) / 2 + 3, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+        if (p > .98 && o.tag) { ctx.font = "500 11px 'Geist Mono',monospace"; ctx.fillStyle = o.label; ctx.fillText(o.tag, xe - 12, ye - 14); }
+      }
+    });
+    ctx.fillStyle = o.hiCol; ctx.beginPath(); ctx.arc(x0, y0, 3, 0, 7); ctx.fill();
+    cancelAnimationFrame(raf);
+    if (!still) raf = requestAnimationFrame(frame);
+  };
+  frame(performance.now());
+  const kick = setTimeout(() => frame(performance.now() + 2500), 2600);
+  return () => { cancelAnimationFrame(raf); clearTimeout(kick); ro.disconnect(); };
+}
+function makeField(cv, opts) {
+  const ctx = cv.getContext('2d');
+  const pts = [];
+  const R = 1, r = 0.26;
+  for (const cy of [R, -R]) for (let i = 0; i < 2600; i++) {
+    const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI * 2;
+    pts.push([(R + r * Math.cos(v)) * Math.cos(u), (R + r * Math.cos(v)) * Math.sin(u) + cy, r * Math.sin(v), 1]);
+  }
+  for (let i = 0; i < opts.dust; i++) {
+    const a = Math.random() * Math.PI * 2, b = Math.acos(2 * Math.random() - 1), d = 2.4 + Math.random() * 1.8;
+    pts.push([d * Math.sin(b) * Math.cos(a), d * Math.cos(b), d * Math.sin(b) * Math.sin(a), 0.5]);
+  }
+  let w = 0, h = 0, dpr = 1, ang = 0.6, mx = 0, my = 0, raf;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr; };
+  const ro = new ResizeObserver(size); ro.observe(cv); size();
+  const onMove = e => { const b = cv.getBoundingClientRect(); mx = ((e.clientX - b.left) / b.width - .5); my = ((e.clientY - b.top) / b.height - .5); };
+  addEventListener('pointermove', onMove);
+  const [cr, cg, cb] = opts.rgb;
+  const frame = () => {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    const s = Math.min(w * opts.sw, h) / 6.6, cx = w * opts.cx, cy = h * opts.cy;
+    const ca = Math.cos(ang + mx * .6), sa = Math.sin(ang + mx * .6), t = 0.22 + my * .3, ct = Math.cos(t), st = Math.sin(t);
+    ctx.fillStyle = `rgb(${cr},${cg},${cb})`;
+    for (const p of pts) {
+      const x = p[0] * ca + p[2] * sa, z0 = -p[0] * sa + p[2] * ca;
+      const y = p[1] * ct - z0 * st, z = p[1] * st + z0 * ct;
+      const f = 5 / (5 + z);
+      const depth = Math.max(0, Math.min(1, 1 - (z + 1.4) / 2.8));
+      ctx.globalAlpha = (0.12 + 0.88 * depth) * p[3] * opts.alpha;
+      const sz = (0.6 + depth * 1.1) * f * (p[3] < 1 ? .7 : 1);
+      ctx.fillRect(cx + x * s * f, cy - y * s * f, sz, sz);
+    }
+    ctx.globalAlpha = 1;
+    ang += 0.0035;
+    if (!still) raf = requestAnimationFrame(frame);
+  };
+  frame();
+  return () => { cancelAnimationFrame(raf); ro.disconnect(); removeEventListener('pointermove', onMove); };
+}
+
+const PEOPLE = [
+  ['PEOPLE', 'Pelosi Portfolio', 'Follows House periodic transaction reports. Rebuilt within a day of each new filing.', 38.4, 14],
+  ['PEOPLE', 'Trump Holdings', 'Follows annual financial disclosures filed with the Office of Government Ethics.', 12.1, 9],
+  ['PEOPLE', 'Musk Basket', 'Public companies Elon Musk leads or has disclosed stakes in, equal weighted.', 21.7, 6],
+];
+const THEMES = [
+  ['THEME', 'AI Chips', 'Designers and manufacturers of the chips behind AI. Rebalanced monthly.', 46.2, 12],
+  ['THEME', 'Mag7', 'The seven largest US tech companies, held in equal weight.', 29.8, 7],
+  ['THEME', 'Bitcoin Plus', 'Bitcoin alongside the miners and treasuries most exposed to it.', 61.0, 5],
+  ['THEME · HIGH RISK', '3x Nasdaq', 'Leveraged daily exposure to the Nasdaq-100. Can lose most of its value quickly.', 72.5, 1],
+];
+
+class Component extends DCLogic {
+  state = { tab: 'people', step: 0, menu: null, hov: null };
+  hovIn = e => { const el = e.currentTarget; this.setState({ hov: { x: el.offsetLeft, w: el.offsetWidth, id: 'H' } }); };
+  hovOut = () => this.setState(s => ({ hov: s.hov ? { ...s.hov, o: 0 } : null }));
+  componentDidMount() {
+    
+  }
+  menuVals() {
+    const m = this.state.menu, o = { closeMenu: () => this.setState({ menu: null }) };
+    ['P', 'R'].forEach(k => {
+      o['open' + k] = e => { const el = e.currentTarget; this.setState({ menu: k, hov: { x: el.offsetLeft, w: el.offsetWidth, id: k } }); };
+      o['toggle' + k] = () => this.setState(s => ({ menu: s.menu === k ? null : k }));
+      o['show' + k] = m === k; o['r' + k] = m === k ? 180 : 0; o['c' + k] = (m === k || (this.state.hov && this.state.hov.o !== 0 && this.state.hov.id === k)) ? '#0B0F14' : '#4A5563';
+    });
+    return o;
+  }
+  stepEls = [];
+  mkStepRef = i => el => {
+    if (!el || this.stepEls[i] === el) return;
+    this.stepEls[i] = el;
+    if (!this.onScroll) {
+      this.onScroll = () => {
+        const mid = innerHeight / 2; let best = 0, bd = Infinity;
+        this.stepEls.forEach((e, k) => { if (!e) return; const b = e.getBoundingClientRect(); const d = Math.abs(b.top + b.height / 2 - mid); if (d < bd) { bd = d; best = k; } });
+        if (best !== this.state.step) this.setState({ step: best });
+      };
+      addEventListener('scroll', this.onScroll, { passive: true });
+      addEventListener('resize', this.onScroll);
+    }
+    requestAnimationFrame(() => this.onScroll && this.onScroll());
+  };
+  stepRef0 = this.mkStepRef(0); stepRef1 = this.mkStepRef(1); stepRef2 = this.mkStepRef(2);
+  live = new Map();
+  attach(key, el, opts) {
+    const cur = this.live.get(key);
+    if (cur && cur.el === el) return;
+    if (cur) cur.stop();
+    if (el) this.live.set(key, { el, stop: makeLines(el, opts) }); else this.live.delete(key);
+  }
+  heroCv = el => this.attach('hero', el, { x0: .34, y0: .86, span: .62, pad: 64, line: '#0B0F14', alpha: .42, grid: 'rgba(11,15,20,.07)', label: '#3A4652', hiCol: '#2F5B7C', hi: 0, axis: true, tag: 'PELOSI PORTFOLIO  +38.4%' });
+  endCv = el => this.attach('end', el, { x0: 0, y0: .92, span: .7, pad: 0, line: '#9FB6C8', alpha: .22, grid: 'rgba(255,255,255,.05)', label: '#AEB9C3', hiCol: '#CFE0EC', hi: 1, axis: false, tag: '' });
+  componentWillUnmount() { this.onNav && removeEventListener('scroll', this.onNav); this.live.forEach(v => v.stop()); this.live.clear(); if (this.onScroll) { removeEventListener('scroll', this.onScroll); removeEventListener('resize', this.onScroll); } }
+  renderVals() {
+    const tab = (id, label) => { const on = this.state.tab === id; return { label, onClick: () => this.setState({ tab: id }), color: on ? '#fff' : '#0B0F14', bg: on ? '#0B0F14' : 'transparent' }; };
+    const list = this.state.tab === 'people' ? PEOPLE : THEMES;
+    return {
+      ...this.menuVals(),
+      hovIn: this.hovIn, hovOut: this.hovOut,
+      hp: this.state.hov ? { x: this.state.hov.x, w: this.state.hov.w, o: this.state.hov.o === 0 ? 0 : 1 } : { x: 0, w: 60, o: 0 },
+      cH: this.state.hov && this.state.hov.o !== 0 && this.state.hov.id === 'H' ? '#0B0F14' : '#4A5563',
+      ...(() => { const st = this.state.step, o = {}; [0, 1, 2].forEach(i => { const d = i - st; o['L' + i] = { o: d === 0 ? 1 : 0, y: d * 40, s: d === 0 ? 1 : .96 }; o['T' + i] = d === 0 ? 1 : .3; o['P' + i] = i <= st ? '#EEF3F7' : '#2A333D'; o['stepRef' + i] = this['stepRef' + i]; }); return o; })(),
+      tabs: [tab('people', 'People'), tab('themes', 'Themes')],
+      funds: list.map(([kind, name, desc, r, n]) => ({ img: 'app/p-' + ({ 'Pelosi Portfolio': 'pelosi', 'Trump Holdings': 'trump', 'Musk Basket': 'musk', 'AI Chips': 'ai', 'Mag7': 'mag7', 'Bitcoin Plus': 'btcplus', '3x Nasdaq': 'us' }[name] || 'us') + '.jpg', key: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'), kind, name, desc, n, ret: '+' + r.toFixed(1) + '%', col: '#1E8A5C' })),
+    };
+  }
+}
+</script>
+</body>
+</html>
