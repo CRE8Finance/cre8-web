@@ -5,7 +5,7 @@ Static pages for CRE8, exported from the design project.
 | Page | File |
 |---|---|
 | Landing | `index.html` |
-| Testnet waitlist | `waitlist.html` |
+| Testnet waitlist (not deployed) | `waitlist.html` |
 | Web app (prototype) | `app.html` |
 
 ## Run locally
@@ -29,3 +29,13 @@ Each page is a self-contained HTML file. `support.js` renders the markup inside 
 ## Status
 
 These are design prototypes. The waitlist's X connect, post check, Gmail, quiz and Telegram steps only simulate the flow in the browser. Nothing is sent anywhere yet.
+
+## Deploy
+
+Cloudflare Worker `cre8-web` (`wrangler.jsonc`, `_worker.js`). Run `npx wrangler deploy` in this folder.
+
+- `cre8.finance`, `www.cre8.finance` → `index.html`
+- `tst.cre8.finance` → `app.html`
+- `waitlist.html` is left out (`.assetsignore`).
+
+The 21 portfolios in `app.html` follow the launch lineup on tst (catalog keys, holdings and weights from `/api/strategies`, English copy from cre8-app `src/lib/fund-copy.ts`). The APY shown is the backend's `modelReturns.annualized` as of 2026-11-20.
