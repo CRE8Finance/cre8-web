@@ -6,6 +6,11 @@
   "compatibility_date": "2026-11-10",
   "workers_dev": true,
   "preview_urls": false,
+  // 2026-11-22 從 cre8-app-migration-preview 移過來（使用者：新 UI 取代 landing 與 tst）。
+  "routes": [
+    { "pattern": "cre8.finance", "custom_domain": true },
+    { "pattern": "tst.cre8.finance", "custom_domain": true }
+  ],
   "assets": {
     "directory": ".",
     "binding": "ASSETS",
