@@ -120,6 +120,11 @@
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.buildW }};margin:0 auto">
 <div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Build</h1><p style="margin:6px 0 0;font:400 15px 'Geist';color:#5E6A76">Your picks. We keep the weights on target.</p></div>
 <div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">01 · PICK UP TO 10</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ pickCount }}</span></div>
+<div style="display:flex;gap:8px;align-items:center;padding:0 16px 12px">
+<sc-for list="{{ bcats }}" as="q" hint-placeholder-count="2"><button onClick="{{ q.pick }}" style="flex:none;height:38px;padding:0 16px;border-radius:999px;cursor:pointer;font:500 14px 'Geist';border:1px solid {{ q.bd }};background:{{ q.bg }};color:{{ q.fg }};transition:background .2s,color .2s">{{ q.label }}</button></sc-for>
+<label style="flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:8px;padding:0 14px;border:1px solid #E6E9ED;border-radius:999px;background:#fff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7785" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" value="{{ q }}" onInput="{{ onQ }}" placeholder="Search" aria-label="Search assets" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"></label>
+</div>
+<sc-if value="{{ noAssets }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 16px;font:400 15px 'Geist';color:#6B7785;text-align:center">No match</div></sc-if>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:{{ L.aGap }}px;padding:0 16px">
 <sc-for list="{{ assets }}" as="a" hint-placeholder-count="15">
 <button onClick="{{ a.toggle }}" style="position:relative;cursor:pointer;background:{{ a.bg }};border:1px solid {{ a.bd }};border-radius:16px;padding:12px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;transition:background .2s,border-color .2s" style-active="transform:scale(.95)">
@@ -273,7 +278,7 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const LOGO = t => 'app/l-' + t.toLowerCase() + '.png';
-const NAMES = { USDT: 'US Treasuries', NVDA: 'NVIDIA', AVGO: 'Broadcom', TSM: 'TSMC', AMD: 'AMD', AAPL: 'Apple', MSFT: 'Microsoft', TSLA: 'Tesla', GOOGL: 'Alphabet', META: 'Meta', AMZN: 'Amazon', PLTR: 'Palantir', COIN: 'Coinbase', BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB', INTC: 'Intel', NFLX: 'Netflix', PDD: 'PDD Holdings', SPCX: 'SpaceX', DOGE: 'Dogecoin', SKHY: 'SK hynix', MRVL: 'Marvell', PENG: 'Penguin Solutions', MU: 'Micron', SNDK: 'SanDisk', ANT: 'Anthropic', EWY: 'South Korea ETF', MSTR: 'Strategy', BNC: 'BNC', CRCL: 'Circle', HOOD: 'Robinhood', BMNR: 'BitMine', CYPH: 'CYPH', XAUT: 'Tether Gold', GME: 'GameStop', AMC: 'AMC', DJT: 'Trump Media', BABA: 'Alibaba', RDDT: 'Reddit', QQQ: 'Nasdaq-100 ETF', SPY: 'S&P 500 ETF', SOXL: '3x Semiconductors', TQQQ: '3x Nasdaq-100' };
+const NAMES = { USDT: 'US Treasuries', NVDA: 'NVIDIA', AVGO: 'Broadcom', TSM: 'TSMC', AMD: 'AMD', AAPL: 'Apple', MSFT: 'Microsoft', TSLA: 'Tesla', GOOGL: 'Alphabet', META: 'Meta', AMZN: 'Amazon', PLTR: 'Palantir', COIN: 'Coinbase', BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB', INTC: 'Intel', NFLX: 'Netflix', PDD: 'PDD Holdings', SPCX: 'SpaceX', DOGE: 'Dogecoin', SKHY: 'SK hynix', MRVL: 'Marvell', PENG: 'Penguin Solutions', MU: 'Micron', SNDK: 'SanDisk', ANT: 'Anthropic', EWY: 'South Korea ETF', MSTR: 'Strategy', BNC: 'BNC', CRCL: 'Circle', HOOD: 'Robinhood', BMNR: 'BitMine', CYPH: 'CYPH', XAUT: 'Tether Gold', GME: 'GameStop', AMC: 'AMC', DJT: 'Trump Media', BABA: 'Alibaba', RDDT: 'Reddit', QQQ: 'Nasdaq-100 ETF', SPY: 'S&P 500 ETF', SOXL: '3x Semiconductors', TQQQ: '3x Nasdaq-100', ABBV: 'AbbVie', ALAB: 'Astera Labs', AMAT: 'Applied Materials', APH: 'Amphenol', APLD: 'Applied Digital', AXP: 'American Express Company', BE: 'Bloom Energy', BLK: 'BlackRock', CBRS: 'Cerebras Systems', CEG: 'Constellation Energy', CIEN: 'Ciena', COHR: 'Coherent', CORZ: 'Core Scientific', CRDO: 'Credo Technology Group Holding Ltd', CRM: 'Salesforce', CRWV: 'CoreWeave', CVX: 'Chevron', GEV: 'GE Vernova', GOOG: 'Alphabet', GPRO: 'GoPro', IREN: 'IREN Limited', KO: 'Coca-Cola Company (The)', LLY: 'Eli Lilly and Company', MA: 'Mastercard Incorporated', MRNA: 'Moderna', NBIS: 'Nebius Group', NEM: 'Newmont', NOK: 'Nokia', ORCL: 'Oracle', PANW: 'Palo Alto Networks', PYPL: 'PayPal', SHAZ: 'SharonAI', STX: 'Seagate Technology Holdings PLC', UBER: 'Uber Technologies', V: 'Visa', VRT: 'Vertiv Holdings, LLC', VST: 'Vistra', GLD: 'SPDR Gold Shares', IEF: 'iShares 7-10 Year Treasury Bond ETF', IVV: 'iShares Core S&P 500 ETF', SGOV: 'iShares 0-3 Month Treasury Bond ETF', TLT: 'iShares 20+ Year Treasury Bond ETF', SOL: 'Solana', XRP: 'XRP', ADA: 'Cardano', TRX: 'TRON', TON: 'Toncoin', LINK: 'Chainlink', AVAX: 'Avalanche', DOT: 'Polkadot', LTC: 'Litecoin', BCH: 'Bitcoin Cash', NEAR: 'NEAR', UNI: 'Uniswap', AAVE: 'Aave', ATOM: 'Cosmos', FIL: 'Filecoin', CAKE: 'PancakeSwap', SHIB: 'Shiba Inu', PEPE: 'Pepe', ZEC: 'Zcash' };
 const F = (id, kind, cat, name, cover, ret, n, hold, about) => ({ id, kind, cat, name, cover, ret, n, hold, about });
 const FUNDS = [
   F('pelosi', 'PEOPLE', 'people', 'Pelosi Portfolio', 'app/p-pelosi.jpg', 23.7, 6, [['NVDA', 19], ['GOOGL', 19], ['MSFT', 19], ['AMZN', 19], ['INTC', 19], ['AVGO', 5]], 'Built from the stock trades Nancy Pelosi’s household discloses to Congress. NVIDIA, Alphabet, Microsoft, Amazon and Intel make up the core, with a small position in Broadcom.'),
@@ -298,8 +303,9 @@ const FUNDS = [
   F('soxl', 'THEME', 'leveraged', '3x Semiconductors', 'app/p-soxl.jpg', 7.2, 1, [['SOXL', 100]], 'Three times the daily move of US semiconductor stocks, through a single 3x leveraged token (SOXL).'),
   F('tqqq', 'THEME', 'leveraged', '3x Nasdaq', 'app/p-tqqq.jpg', 4.2, 1, [['TQQQ', 100]], 'Three times the daily move of the Nasdaq-100, through a single 3x leveraged token (TQQQ).'),
 ];
-// 測試網上可以買的 105 個標的（cre8-app src/lib/testnet-97.ts），股票、ETF、加密貨幣依序。
-const ASSETS = ['AAPL', 'ABBV', 'ALAB', 'AMAT', 'AMC', 'AMD', 'AMZN', 'ANT', 'APH', 'APLD', 'AVGO', 'AXP', 'BABA', 'BE', 'BLK', 'BMNR', 'BNC', 'CBRS', 'CEG', 'CIEN', 'COHR', 'COIN', 'CORZ', 'CRCL', 'CRDO', 'CRM', 'CRWV', 'CVX', 'CYPH', 'DJT', 'GEV', 'GME', 'GOOG', 'GOOGL', 'GPRO', 'HOOD', 'INTC', 'IREN', 'KO', 'LLY', 'MA', 'META', 'MRNA', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NEM', 'NFLX', 'NOK', 'NVDA', 'ORCL', 'PANW', 'PDD', 'PENG', 'PYPL', 'RDDT', 'SHAZ', 'SKHY', 'SNDK', 'SPCX', 'STX', 'TSLA', 'TSM', 'UBER', 'V', 'VRT', 'VST', 'EWY', 'GLD', 'IEF', 'IVV', 'QQQ', 'SGOV', 'SPY', 'TLT', 'SOXL', 'TQQQ', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC', 'XAUT', 'USDC', 'DAI'];
+// 測試網上可以買的標的（cre8-app src/lib/testnet-97.ts，不含穩定幣）。Build 分 Stock（股票、ETF、XAUt）與 Crypto 兩頁，可搜尋代號或名稱（搜尋時兩頁一起找）。
+const CRYPTO = new Set(['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC']);
+const ASSETS = ['AAPL', 'ABBV', 'ALAB', 'AMAT', 'AMC', 'AMD', 'AMZN', 'ANT', 'APH', 'APLD', 'AVGO', 'AXP', 'BABA', 'BE', 'BLK', 'BMNR', 'BNC', 'CBRS', 'CEG', 'CIEN', 'COHR', 'COIN', 'CORZ', 'CRCL', 'CRDO', 'CRM', 'CRWV', 'CVX', 'CYPH', 'DJT', 'GEV', 'GME', 'GOOG', 'GOOGL', 'GPRO', 'HOOD', 'INTC', 'IREN', 'KO', 'LLY', 'MA', 'META', 'MRNA', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NEM', 'NFLX', 'NOK', 'NVDA', 'ORCL', 'PANW', 'PDD', 'PENG', 'PYPL', 'RDDT', 'SHAZ', 'SKHY', 'SNDK', 'SPCX', 'STX', 'TSLA', 'TSM', 'UBER', 'V', 'VRT', 'VST', 'EWY', 'GLD', 'IEF', 'IVV', 'QQQ', 'SGOV', 'SPY', 'TLT', 'SOXL', 'TQQQ', 'XAUT', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC'];
 const AVC = ['linear-gradient(135deg,#6F93AE,#16222D)', 'linear-gradient(135deg,#E3B55B,#9A6B1E)', 'linear-gradient(135deg,#7FB59A,#1F5A41)', 'linear-gradient(135deg,#B9A2D6,#4B3A6E)', 'linear-gradient(135deg,#3C4651,#0B0F14)'];
 const RANGES = [['1W', .03, 7, 36, 'past week'], ['1M', .1, 30, 60, 'past month'], ['3M', .28, 90, 90, 'past 3 months'], ['1Y', 1, 365, 120, 'past year'], ['ALL', 1.7, 730, 140, 'since launch']];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -325,7 +331,7 @@ class Component extends DCLogic {
   state = {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
-    picks: [], weights: {}, freq: 1, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
+    picks: [], weights: {}, bcat: 0, q: '', freq: 1, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
     holdings: [
       { id: 'pelosi', name: 'Pelosi Portfolio', cover: 'app/p-pelosi.jpg', val: 4236.80, ret: 23.7 },
       { id: 'ai-chips', name: 'AI Chips', cover: 'app/p-ai.jpg', val: 3104.12, ret: 62.3 },
@@ -420,6 +426,8 @@ class Component extends DCLogic {
     const off = { bg: '#EDF0F3', fg: '#9AA4AE', sh: 'none' };
     const sepL = (i, a) => i < a.length - 1 ? '1px solid #E6E9ED' : '0';
     const card = f => ({ ...f, retText: pct(f.ret), col: f.ret >= 0 ? '#16854F' : '#D23F2E', pcol: f.ret >= 0 ? '#8BE3B5' : '#FF9B8F', spark: spark(FUNDS.indexOf(f) + 2, f.ret), open: () => this.open(f.id) });
+    const qq = s.q.trim().toLowerCase();
+    const shownAssets = qq ? ASSETS.filter(t => t.toLowerCase().includes(qq) || (NAMES[t] || '').toLowerCase().includes(qq)) : ASSETS.filter(t => CRYPTO.has(t) === (s.bcat === 1));
     const FIL = [['All', null], ['People', 'people'], ['AI', 'ai'], ['Crypto', 'crypto'], ['Markets', 'markets'], ['Leveraged', 'leveraged']];
     const fcat = FIL[s.filter][1];
     const people = FUNDS.filter(f => f.kind === 'PEOPLE');
@@ -471,7 +479,9 @@ class Component extends DCLogic {
       openBuy: () => this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
       openSell: () => this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
       hasPos: !!own, buyPad: own ? 26 : 34, buyFlex: own ? 'none' : '1',
-      assets: ASSETS.map(t => { const on = s.picks.includes(t); return { t, logo: LOGO(t), toggle: () => this.toggleAsset(t), on: on ? 1 : 0, sc: on ? 1 : .4, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
+      bcats: ['Stock', 'Crypto'].map((label, i) => ({ label, pick: () => this.setState({ bcat: i }), bg: s.bcat === i ? '#0B0F14' : '#FFFFFF', fg: s.bcat === i ? '#fff' : '#3C4651', bd: s.bcat === i ? '#0B0F14' : '#E6E9ED' })),
+      q: s.q, onQ: e => this.setState({ q: e.target.value }), noAssets: shownAssets.length === 0,
+      assets: shownAssets.map(t => { const on = s.picks.includes(t); return { t, logo: LOGO(t), toggle: () => this.toggleAsset(t), on: on ? 1 : 0, sc: on ? 1 : .4, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       pickCount: s.picks.length + ' / 10', hasPicks: s.picks.length > 0,
       picks: s.picks.map(t => ({ t, logo: LOGO(t), w: s.weights[t] || 0, bar: s.weights[t] || 0, slide: e => { const v = +e.target.value; this.setState(st => ({ weights: this.rebalance(st.picks, st.weights, t, v) })); } })),
       mixName: s.mixName, nameLen: s.mixName.length, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
