@@ -84,7 +84,7 @@
 <sc-for list="{{ ranges }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="flex:1;height:32px;border:0;border-radius:999px;cursor:pointer;font:500 12px 'Geist Mono';letter-spacing:.04em;background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
 </div>
 
-<div style="display:flex;justify-content:space-between;align-items:baseline;padding:30px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">Holdings</span><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ cur.count }}</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:30px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">Holdings</span><sc-if value="{{ isMix }}" hint-placeholder-val="{{ false }}"><button onClick="{{ editMix }}" style="height:32px;padding:0 16px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 14px 'Geist';cursor:pointer" style-active="transform:scale(.97)">Edit</button></sc-if><sc-if value="{{ notMix }}" hint-placeholder-val="{{ true }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ cur.count }}</span></sc-if></div>
 <div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
 <sc-for list="{{ cur.hold }}" as="h" hint-placeholder-count="4">
 <div style="display:grid;grid-template-columns:32px minmax(0,1fr) minmax(40px,110px) 44px;align-items:center;gap:12px;padding:0 14px;height:58px;border-bottom:{{ h.sep }}">
@@ -348,7 +348,7 @@ class Component extends DCLogic {
   state = {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
-    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, freq: 2, start: null, calOff: 0, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
+    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, editing: null, freq: 2, start: null, calOff: 0, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
     // 用戶自己建的組合：點進去是跟基金一樣的專屬頁。
     mixes: [{ id: 'mix-1', name: 'My mix', picks: [['NVDA', 40], ['AAPL', 30], ['BTC', 30]], freq: 2, start: new Date(2026, 10, 1).getTime(), ret: -2.1 }],
     holdings: [
@@ -387,7 +387,7 @@ class Component extends DCLogic {
   }
   back(fallback) { if (history.state && history.state.d > 0) history.back(); else this.setState(fallback); }
   later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
-  go(page) { this.leaveY = window.scrollY; this.setState({ page, fund: null }); window.scrollTo(0, 0); }
+  go(page) { this.leaveY = window.scrollY; this.setState(s => ({ page, fund: null, ...(page === 'build' && s.editing ? { editing: null, bstep: 0, picks: [], weights: {}, mixName: '', start: null } : {}) })); window.scrollTo(0, 0); }
   open(id) { this.leaveY = window.scrollY; this.setState({ fund: id, range: 3, fh: null }); window.scrollTo(0, 0); }
   scrub(key, n) { return e => { const r = e.currentTarget.getBoundingClientRect(); const i = Math.max(0, Math.min(n - 1, Math.round((e.clientX - r.left) / r.width * (n - 1)))); if (this.state[key] !== i) this.setState({ [key]: i }); }; }
   evenWeights(picks) {
@@ -476,9 +476,14 @@ class Component extends DCLogic {
     const startText = MON[start.getMonth()] + ' ' + start.getDate() + ', ' + start.getFullYear();
     // Build 分四頁：選標的 → 設比例 → 再平衡頻率 → 取名買入。
     const inBuild = s.page === 'build' && !s.fund, bs = s.bstep;
-    const B_TITLES = [['Build', 'Your picks. We keep the weights on target.'], ['Set weights', 'How much of each, adding up to 100%.'], ['Rebalance', 'How often we bring it back to your weights.'], ['Name it', 'Give your basket a name, then buy.']];
-    const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: 'Next step' } : { ...off, label: 'Pick at least 1' }) : bs === 1 ? (total === 100 ? { ...cta, label: 'Next step' } : mixBtn) : bs === 2 ? { ...cta, label: 'Next step' } : mixBtn;
-    const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady) { const id = 'mix-' + Date.now(); this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp', mix: { id, name: s.mixName.trim() || 'My basket', picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } } }); } };
+    const B_TITLES = [[s.editing ? 'Edit basket' : 'Build', 'Your picks. We keep the weights on target.'], ['Set weights', 'How much of each, adding up to 100%.'], ['Rebalance', 'How often we bring it back to your weights.'], ['Name it', s.editing ? 'Rename it if you like, then save.' : 'Give your basket a name, then buy.']];
+    const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: 'Next step' } : { ...off, label: 'Pick at least 1' }) : bs === 1 ? (total === 100 ? { ...cta, label: 'Next step' } : mixBtn) : bs === 2 ? { ...cta, label: 'Next step' } : s.editing && mixReady ? { ...cta, label: 'Save changes' } : mixBtn;
+    const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady && s.editing) {
+      // 改組合：立即生效，存回原本那一筆，回到它的專屬頁。
+      const id = s.editing, name = s.mixName.trim() || 'My basket';
+      this.setState(st => ({ mixes: st.mixes.map(m => m.id === id ? { ...m, name, picks: st.picks.map(t => [t, st.weights[t]]), freq: st.freq, start: st.start || m.start } : m), holdings: st.holdings.map(h => h.id === id ? { ...h, name } : h), editing: null, picks: [], weights: {}, mixName: '', start: null }));
+      history.go(-(bs + 1));
+    } else if (mixReady) { const id = 'mix-' + Date.now(); this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp', mix: { id, name: s.mixName.trim() || 'My basket', picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } } }); } };
     const tgt = s.target || { name: f.name, cover: f.cover };
     const sell = s.side === 'sell', posH = s.holdings.find(h => h.name === tgt.name), posMax = posH ? Math.floor(posH.val * 100) / 100 : 0;
     const amt = parseFloat(s.amount) || 0;
@@ -495,7 +500,7 @@ class Component extends DCLogic {
     const L = W ? { max: 1200, hdrH: 64, pad: 24, mainPad: 8, bottom: 80, tile: 210, gap: 14, buildMax: '560px', colGap: 8, sideMax: '420px', sidePos: 'sticky', sideTop: 20, statsM: '0 16px', mixB: 28, pcH: 260, abH: 92, profW: '760px', buildW: '720px', aGap: 10, bTop: 28, bPad: '26px 28px', bLogo: 40, bT: 24, pGap: 14, pCols: 4, pAR: '4/5', pR: 18, pIn: 14, pName: 16, pRet: 14, pApy: 10 } : { max: 640, hdrH: 54, pad: 16, mainPad: 0, bottom: 150, tile: 150, gap: 10, buildMax: 'none', colGap: 0, sideMax: 'none', sidePos: 'static', sideTop: 0, statsM: '26px 16px 0', mixB: 96, pcH: 210, abH: 72, profW: 'none', buildW: 'none', aGap: 8, bTop: 24, bPad: '18px', bLogo: 32, bT: 18, pGap: 10, pCols: 2, pAR: '4/5', pR: 16, pIn: 12, pName: 15, pRet: 13, pApy: 9 };
     return {
       wide: W, narrow: !W, L,
-      showBack: !!s.fund || (inBuild && bs > 0), showLogo: !s.fund && !(inBuild && bs > 0), hdrTitleO: 1, hdrTitle: s.fund ? f.name : 'Build',
+      showBack: !!s.fund || (inBuild && (bs > 0 || !!s.editing)), showLogo: !s.fund && !(inBuild && (bs > 0 || !!s.editing)), hdrTitleO: 1, hdrTitle: s.fund ? f.name : s.editing ? 'Edit basket' : 'Build',
       b0: bs === 0, b1: bs === 1, b2: bs === 2, b3: bs === 3, bTitle: B_TITLES[bs][0], bSub: B_TITLES[bs][1], bNext, mixBtn: bNextBtn,
       navTabs: navDef.map(([id, label, icon]) => ({ label, icon, go: () => this.go(id), col: curPage === id ? '#0B0F14' : '#6B7785', bg: curPage === id ? 'rgba(11,15,20,.07)' : 'transparent', tcol: curPage === id ? '#fff' : '#3C4651', tbg: curPage === id ? '#0B0F14' : 'transparent' })),
       navY: s.fund || s.modal || s.acct ? 140 : 0,
@@ -506,11 +511,13 @@ class Component extends DCLogic {
       showPeople: !fcat || fcat === 'people', showThemes: fcat !== 'people',
       people: people.map(card), themes: themes.map(card),
       themeTitle: fcat ? FIL[s.filter][0] : 'Themes', themeCount: themes.length + ' PORTFOLIOS',
-      closeFund: () => s.fund ? this.back({ fund: null }) : this.back({ bstep: Math.max(0, bs - 1) }),
+      closeFund: () => s.fund ? this.back({ fund: null }) : this.back(bs > 0 ? { bstep: bs - 1 } : { fund: s.editing, editing: null }),
       cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : f.kind === 'MINE' ? 'YOUR BASKET' : 'THEME', count: f.n + ' ASSETS', hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
       posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? '$' + fmt(own.val) : '50 USDT',
+      isMix: f.kind === 'MINE', notMix: f.kind !== 'MINE',
+      editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, q: '', calOff: 0 }); window.scrollTo(0, 0); },
       openBuy: () => this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
       openSell: () => this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
       hasPos: !!own, buyPad: own ? 26 : 34, buyFlex: own ? 'none' : '1',
