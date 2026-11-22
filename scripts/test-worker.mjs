@@ -50,7 +50,7 @@ test('首頁仍是 index.html', async () => {
 });
 
 test('不存在的頁面 301 回 /', async () => {
-  for (const p of ['/nope', '/portfolios/nope', '/zh/nope', '/funds/pelosi', '/waitlist']) {
+  for (const p of ['/nope', '/portfolios/nope', '/zh/nope', '/funds/pelosi']) {
     const res = await get('https://cre8.finance' + p);
     assert.equal(res.status, 301, p);
     assert.equal(loc(res), 'https://cre8.finance/', p);
@@ -109,4 +109,37 @@ test('workers.dev 也 noindex', async () => {
 test('scripts/ 不會被當成靜態檔送出', async () => {
   const res = await get('https://cre8.finance/scripts/build-pages.mjs');
   assert.equal(res.status, 404);
+});
+
+test('waitlist：cre8.finance/waitlist 回 waitlist.html，其他網址轉過去', async () => {
+  const res = await get('https://cre8.finance/waitlist');
+  assert.equal(res.status, 200);
+  const html = await res.text();
+  assert.match(html, /<link rel="canonical" href="https:\/\/cre8\.finance\/waitlist">/);
+  assert.equal(res.headers.get('x-robots-tag'), null);
+  for (const [u, to] of [['https://cre8.finance/waitlist.html', 'https://cre8.finance/waitlist'], ['https://cre8.finance/waitlist/', 'https://cre8.finance/waitlist'], ['https://tst.cre8.finance/waitlist', 'https://cre8.finance/waitlist']]) {
+    const r = await get(u);
+    assert.ok([301, 302].includes(r.status), u);
+    assert.equal(loc(r), to, u);
+  }
+  assert.ok((await (await get('https://cre8.finance/sitemap.xml')).text()).includes('<loc>https://cre8.finance/waitlist</loc>'));
+});
+
+test('/api 在 tst 與本機轉發，首頁網域只轉 auth 與 waitlist', async () => {
+  const real = globalThis.fetch;
+  const seen = [];
+  globalThis.fetch = async (u, init) => { seen.push([String(u), init.headers.get('authorization'), init.headers.get('cookie')]); return new Response('{"ok":true}', { headers: { 'set-cookie': 'a=b', 'content-type': 'application/json' } }); };
+  try {
+    const res = await worker.fetch(new Request('https://tst.cre8.finance/api/strategies?limit=1', { headers: { authorization: 'Bearer x', cookie: 'c=d' } }), env);
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.get('set-cookie'), null);
+    assert.deepEqual(seen[0], ['https://website-production-d8e9f7cc.up.railway.app/api/strategies?limit=1', 'Bearer x', null]);
+    const landing = await get('https://cre8.finance/api/strategies');
+    assert.notEqual(landing.status, 200);
+    assert.equal(seen.length, 1);
+    // waitlist 頁要用的兩組在首頁網域可以轉
+    assert.equal((await get('https://cre8.finance/api/waitlist/me')).status, 200);
+    assert.equal((await worker.fetch(new Request('https://cre8.finance/api/auth/privy', { method: 'POST', body: '{}' }), env)).status, 200);
+    assert.equal(seen.length, 3);
+  } finally { globalThis.fetch = real; }
 });

@@ -81,6 +81,8 @@ function snapshot() {
     errorText: p.phase === 'error' && err ? String(err.message ?? err) : null,
     oauthError: p.oauthError ? String((p.oauthError as Error).message ?? p.oauthError) : null,
     linkError: p.linkError,
+    hasX: p.methods.some((m) => m.kind === 'x'),
+    identityReady: p.identityToken !== null,
     waitlist,
   };
 }
@@ -92,7 +94,10 @@ function emit(): void {
 
 // 後端回 403 WAITLIST_PENDING：有邀請碼就用碼放行（/waitlist/redeem），沒有就排隊（/waitlist/join）。放行後讓 PrivyRoot 重換 session。
 let waitlistFor: string | null = null;
+/** waitlist 頁自己控制「追蹤後才加入」：manual 時不自動 join／redeem。 */
+let manualWaitlist = false;
 async function handleWaitlist(): Promise<void> {
+  if (manualWaitlist) return;
   const p = usePrivyAuth.getState();
   if (p.phase !== 'error' || !isWaitlistPending(p.error) || p.identityToken === null) return;
   if (waitlistFor === p.identityToken) return;
@@ -131,7 +136,8 @@ async function handleWaitlist(): Promise<void> {
 }
 
 let mounted = false;
-export function mount(): void {
+export function mount(options: { waitlist?: 'auto' | 'manual' } = {}): void {
+  manualWaitlist = options.waitlist === 'manual';
   if (mounted) return;
   mounted = true;
   const host = document.createElement('div');
@@ -182,6 +188,28 @@ function need(): { token: string; wallet: RenewalWallet; owner: Address } {
     throw new Error('Your wallet is still connecting. Try again in a moment.');
   }
   return { token: s.token, wallet: { kind: 'injected', address: w.address as Address, provider: w.provider }, owner: w.address as Address };
+}
+
+// ---- Waitlist 頁（cre8.finance/waitlist）：用 Privy identity token，不需要 CRE8 session --------------------
+const identityToken = () => usePrivyAuth.getState().identityToken;
+/** 自己的排隊紀錄（`GET /waitlist/me`）；還沒加入回 null。 */
+export async function waitlistMe() {
+  const t = identityToken();
+  if (t === null) return null;
+  try {
+    return parseWaitlist(await apiRequest<unknown>('/waitlist/me', { headers: { authorization: `Bearer ${t}` } }));
+  } catch (cause) {
+    if (cause instanceof ApiError && cause.status === 404) return null;
+    throw cause;
+  }
+}
+/** 加入（`POST /waitlist/join`，冪等）。已放行就讓 PrivyRoot 重換 session。 */
+export async function joinWaitlist() {
+  const t = identityToken();
+  if (t === null) throw new Error('Connect X first.');
+  const record = parseWaitlist(await postWaitlistJoin(t));
+  if (record?.status === 'approved') signalWaitlistApproved();
+  return record;
 }
 
 // ---- 讀資料 ----------------------------------------------------------------------------------
@@ -393,7 +421,7 @@ export { transferCalldata };
 
 // IIFE 沒有匯出：掛到 window，通知 app.html。
 (window as unknown as { CRE8W: unknown }).CRE8W = {
-  mount, subscribe, get, setInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
+  mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, chain,
 };
 window.dispatchEvent(new Event('cre8w:ready'));
