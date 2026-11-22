@@ -5,7 +5,7 @@ Static pages for CRE8, exported from the design project.
 | Page | File |
 |---|---|
 | Landing | `index.html` |
-| Testnet waitlist (not deployed) | `waitlist.html` |
+| Waitlist (`cre8.finance/waitlist`) | `waitlist.html` |
 | Web app (prototype) | `app.html` |
 | Portfolios, How it works, Compare (EN + 简体 `/zh`) | `portfolios/`, `how-it-works/`, `compare/`, `zh/` (generated) |
 
@@ -29,7 +29,8 @@ Each page is a self-contained HTML file. `support.js` renders the markup inside 
 
 ## Status
 
-These are design prototypes. The waitlist's X connect, post check, Gmail, quiz and Telegram steps only simulate the flow in the browser. Nothing is sent anywhere yet.
+- Waitlist: Connect X (Privy, through `assets/vendor/cre8-wallet.js`), then Follow @CRE8Finance adds you with `POST /api/waitlist/join`; joined users see `GET /api/waitlist/me`. The bonus tasks (post, Gmail, quiz, Telegram) have no backend yet: they stay on the page, disabled, marked “coming soon” (`TASKS_LIVE` in `waitlist.html`).
+- App (`tst.cre8.finance`): invite-only. The first screen is the sign-in gate (invite code + X for new users; X, Google or email for approved users); nothing else renders until you're signed in.
 
 ## Static content pages
 
@@ -48,7 +49,8 @@ Cloudflare Worker `cre8-web` (`wrangler.jsonc`, `_worker.js`). Run `npx wrangler
 
 - `cre8.finance`, `www.cre8.finance` → `index.html`; content pages serve `<path>/index.html`, unknown paths 301 to `/`
 - `tst.cre8.finance` → `app.html`
-- `waitlist.html` is left out (`.assetsignore`).
+- `cre8.finance/waitlist` → `waitlist.html` (`/waitlist.html` and `tst.cre8.finance/waitlist` redirect there). On the landing domain `/api` only forwards `/api/auth/*` and `/api/waitlist/*`, which the waitlist page needs.
+- All landing and content-page CTAs say “Join waitlist” and link to `/waitlist` (content pages: `scripts/build-pages.mjs`).
 - `/api/*` on `tst.cre8.finance` and `localhost` is forwarded to the testnet backend (Railway `website` service, see `API_ORIGIN` in `_worker.js`). The landing domain doesn't forward it.
 
 ## Testnet data in `app.html`

@@ -24,6 +24,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const API = (process.env.CRE8_API || 'https://website-production-d8e9f7cc.up.railway.app').replace(/\/$/, '');
 const SITE = 'https://cre8.finance';
 const APP = 'https://tst.cre8.finance/';
+// 測試網要邀請碼（使用者 2026-11-23）：所有 CTA 改成 Join waitlist，連到 cre8.finance/waitlist。
+const WAITLIST = 'https://cre8.finance/waitlist';
 const X = 'https://x.com/CRE8Finance';
 const BUILT = new Date().toISOString().slice(0, 10);
 
@@ -149,13 +151,13 @@ const ld = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).re
 const T = {
   en: {
     lang: 'en', htmlLang: 'en', locale: 'en_US', home: 'Home', portfolios: 'Portfolios', how: 'How it works', compare: 'Compare', faq: 'Questions',
-    openApp: 'Open app', other: '中文', otherLabel: '简体中文', openTestnet: 'Open the testnet', apyLabel: 'Model APY', min: 'USDT minimum',
+    openApp: 'Join waitlist', other: '中文', otherLabel: '简体中文', openTestnet: 'Open the testnet', apyLabel: 'Model APY', min: 'USDT minimum',
     kinds: { person: 'People', theme: 'Theme', leveraged: 'Leveraged' },
     groups: { person: 'People portfolios', theme: 'Theme portfolios', leveraged: 'Leveraged portfolios' },
   },
   zh: {
     lang: 'zh', htmlLang: 'zh-Hans', locale: 'zh_CN', home: '首页', portfolios: '组合', how: '怎么运作', compare: '对比', faq: '常见问题',
-    openApp: '打开应用', other: 'EN', otherLabel: 'English', openTestnet: '打开测试网', apyLabel: '模型年化', min: 'USDT 起投',
+    openApp: '加入等候名单', other: 'EN', otherLabel: 'English', openTestnet: '打开测试网', apyLabel: '模型年化', min: 'USDT 起投',
     kinds: { person: '人物', theme: '主题', leveraged: '杠杆' },
     groups: { person: '人物组合', theme: '主题组合', leveraged: '杠杆组合' },
   },
@@ -198,7 +200,9 @@ ${schema.map(ld).join('\n')}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="/assets/pages.css">
-${extraHead}</head>
+${extraHead}<link rel="stylesheet" href="/assets/press.css">
+<script src="/assets/press.js" defer></script>
+</head>
 <body>
 ${siteHead(lang, path)}`;
 }
@@ -210,7 +214,7 @@ function siteHead(lang, path) {
   return `<header class="site-head"><div class="site-head__bar">
 <a class="site-head__logo" href="${P(lang, '/')}"><img src="/assets/cre8-logo-dark.svg" alt="CRE8" width="107" height="20"></a>
 <nav aria-label="${lang === 'zh' ? '主导航' : 'Main'}"><a href="${P(lang, '/portfolios')}"${cur('/portfolios')}>${t.portfolios}</a><a href="${P(lang, '/how-it-works')}"${cur('/how-it-works')}>${t.how}</a><a href="${P(lang, '/compare')}"${cur('/compare')}>${t.compare}</a></nav>
-<div class="site-head__right"><a class="site-head__lang" href="${other}" hreflang="${lang === 'zh' ? 'en' : 'zh-Hans'}" lang="${lang === 'zh' ? 'en' : 'zh-Hans'}">${t.other}</a><a class="btn btn--gold btn--sm" href="${APP}">${t.openApp} <span aria-hidden="true">→</span></a></div>
+<div class="site-head__right"><a class="site-head__lang" href="${other}" hreflang="${lang === 'zh' ? 'en' : 'zh-Hans'}" lang="${lang === 'zh' ? 'en' : 'zh-Hans'}">${t.other}</a><a class="btn btn--gold btn--sm" href="${WAITLIST}">${t.openApp} <span aria-hidden="true">→</span></a></div>
 </div></header>`;
 }
 
@@ -243,8 +247,8 @@ function fundRow(f, lang, opts = {}) {
 
 const ctaBand = (lang) =>
   lang === 'zh'
-    ? `<section class="cta"><h2>从 50 USDT 开始。</h2><p>现在是测试网，测试 USDT 免费，登录需要邀请码。</p><div class="actions"><a class="btn btn--light" href="${APP}">打开测试网 <span aria-hidden="true">↗︎</span></a></div></section>`
-    : `<section class="cta"><h2>Start with 50 USDT.</h2><p>CRE8 is on testnet. Test USDT is free, and signing in needs an invite code.</p><div class="actions"><a class="btn btn--light" href="${APP}">Open the testnet <span aria-hidden="true">↗︎</span></a></div></section>`;
+    ? `<section class="cta"><h2>从 50 USDT 开始。</h2><p>现在是测试网，测试 USDT 免费，登录需要邀请码。</p><div class="actions"><a class="btn btn--light" href="${WAITLIST}">加入等候名单 <span aria-hidden="true">→</span></a></div></section>`
+    : `<section class="cta"><h2>Start with 50 USDT.</h2><p>CRE8 is on testnet. Test USDT is free, and signing in needs an invite code.</p><div class="actions"><a class="btn btn--light" href="${WAITLIST}">Join waitlist <span aria-hidden="true">→</span></a></div></section>`;
 
 // ---------------------------------------------------------------- 基金頁
 function sourceText(f, lang) {
@@ -347,8 +351,8 @@ function fundPage(f, funds, lang) {
   const related = funds.filter((x) => x.category === f.category && x.key !== f.key).slice(0, 4);
   const crown = f.category === 'leveraged' ? `<div class="note note--risk"><p>${riskText(f, lang)[0]}</p></div>` : '';
   const steps = zh
-    ? [['打开测试网', `到 <a class="link" href="${APP}">tst.cre8.finance</a> 用邮箱登录。测试网期间登录需要邀请码。`], ['领测试 USDT', '在应用里免费领取测试 USDT。'], [`买入${m.name}`, `打开这个组合，输入金额（最低 ${f.min} USDT）并确认。一笔付款按目标权重买齐所有资产。`], ['持有或卖出', '在你的账户里查看持仓，美股开盘时可以随时卖回 USDT。']]
-    : [['Open the testnet', `Go to <a class="link" href="${APP}">tst.cre8.finance</a> and sign in with email. During testnet you need an invite code.`], ['Get test USDT', 'Claim free test USDT in the app.'], [`Buy ${m.name}`, `Open the portfolio, enter an amount (${f.min} USDT minimum) and confirm. One payment buys every asset at its target weight.`], ['Hold or sell', 'Track it in your account and sell back to USDT whenever the US market is open.']];
+    ? [['加入等候名单', `到 <a class="link" href="${WAITLIST}">cre8.finance/waitlist</a> 连接 X 加入。拿到邀请码后，在 tst.cre8.finance 登录。`], ['领测试 USDT', '在应用里免费领取测试 USDT。'], [`买入${m.name}`, `打开这个组合，输入金额（最低 ${f.min} USDT）并确认。一笔付款按目标权重买齐所有资产。`], ['持有或卖出', '在你的账户里查看持仓，美股开盘时可以随时卖回 USDT。']]
+    : [['Join the waitlist', `Go to <a class="link" href="${WAITLIST}">cre8.finance/waitlist</a> and connect X. With an invite code, sign in at tst.cre8.finance.`], ['Get test USDT', 'Claim free test USDT in the app.'], [`Buy ${m.name}`, `Open the portfolio, enter an amount (${f.min} USDT minimum) and confirm. One payment buys every asset at its target weight.`], ['Hold or sell', 'Track it in your account and sell back to USDT whenever the US market is open.']];
   const retLabels = zh ? [['7 天', 'd7'], ['30 天', 'd30'], ['90 天', 'd90'], ['1 年', 'y1'], [`自 ${date(f.start, 'zh')}`, 'all']] : [['7 days', 'd7'], ['30 days', 'd30'], ['90 days', 'd90'], ['1 year', 'y1'], [`Since ${date(f.start, 'en')}`, 'all']];
   const risks = riskText(f, lang).slice(f.category === 'leveraged' ? 1 : 0);
 
@@ -365,7 +369,7 @@ ${c.html}
 <div><b>${f.holdings.length}</b><span>${zh ? '个资产' : f.holdings.length > 1 ? 'assets' : 'asset'}</span></div>
 <div><b>${f.min}</b><span>${t.min}</span></div>
 </div>
-<div class="actions"><a class="btn btn--gold" href="${APP}">${zh ? '在测试网买入' : 'Buy on testnet'} <span aria-hidden="true">↗︎</span></a><a class="btn btn--line" href="${P(lang, '/how-it-works')}">${t.how}</a></div>
+<div class="actions"><a class="btn btn--gold" href="${WAITLIST}">${zh ? '加入等候名单' : 'Join waitlist'} <span aria-hidden="true">→</span></a><a class="btn btn--line" href="${P(lang, '/how-it-works')}">${t.how}</a></div>
 ${crown}
 </div>
 <div class="hero__art"><img src="/app/${f.meta.img}.jpg" alt="${esc(m.name)}" width="1200" height="900" fetchpriority="high"></div>
@@ -653,7 +657,7 @@ function zhHome(funds) {
 <section class="home-hero wrap">
 <h1>美股与加密，<br>一篮子买齐</h1>
 <p class="lede">bStock 与加密资产组合，闲置资金也能生息。</p>
-<div class="actions"><a class="btn btn--gold" href="${APP}">打开测试网 <span aria-hidden="true">↗︎</span></a><a class="btn btn--line" href="/zh/portfolios">全部组合</a></div>
+<div class="actions"><a class="btn btn--gold" href="${WAITLIST}">加入等候名单 <span aria-hidden="true">→</span></a><a class="btn btn--line" href="/zh/portfolios">全部组合</a></div>
 </section>
 <section class="dark-band wrap">
 <h2 style="text-align:center;max-width:22em;margin:0 auto">美股代币。你自己的账户。一次买齐。</h2>
@@ -682,7 +686,7 @@ ${card('自托管', '资产在你自己的链上账户', '/zh/how-it-works')}
 <p class="small muted" style="margin-top:16px">模型年化收益：用当前权重和历史价格回测，截至 ${date(funds[0]?.asOf, 'zh')}，不是实际战绩。</p>
 </section>
 <section class="section" id="build">
-<div class="cta" style="margin-top:0"><div class="eyebrow" style="color:#9AA7B4">自建组合</div><h2 style="margin-top:16px">你来选，我们来再平衡。</h2><p>挑股票和比例，CRE8 帮你维持在目标上。</p><div class="actions"><a class="btn btn--light" href="${APP}">建一个组合 <span aria-hidden="true">↗︎</span></a></div></div>
+<div class="cta" style="margin-top:0"><div class="eyebrow" style="color:#9AA7B4">自建组合</div><h2 style="margin-top:16px">你来选，我们来再平衡。</h2><p>挑股票和比例，CRE8 帮你维持在目标上。</p><div class="actions"><a class="btn btn--light" href="${WAITLIST}">加入等候名单 <span aria-hidden="true">→</span></a></div></div>
 </section>
 <section class="section faq" id="faq">
 <h2>常见问题</h2>
@@ -734,6 +738,8 @@ function sitemap(paths) {
     const alt = `<xhtml:link rel="alternate" hreflang="en" href="${en}"/><xhtml:link rel="alternate" hreflang="zh-Hans" href="${zh}"/><xhtml:link rel="alternate" hreflang="x-default" href="${en}"/>`;
     return `  <url><loc>${en}</loc><lastmod>${BUILT}</lastmod>${alt}</url>\n  <url><loc>${zh}</loc><lastmod>${BUILT}</lastmod>${alt}</url>`;
   });
+  // 只有英文的頁面（waitlist.html，不是產生器寫的）：沒有 zh 對應。
+  urls.push(`  <url><loc>${WAITLIST}</loc><lastmod>${BUILT}</lastmod></url>`);
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls.join('\n')}
@@ -775,7 +781,8 @@ ${g('leveraged')}
 
 ## Links
 - Website: ${SITE}/
-- App (testnet): ${APP}
+- Waitlist: ${WAITLIST}
+- App (testnet, invite only): ${APP}
 - X: ${X}
 `;
 }

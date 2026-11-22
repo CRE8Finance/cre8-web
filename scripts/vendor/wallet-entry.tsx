@@ -81,6 +81,10 @@ function snapshot() {
     errorText: p.phase === 'error' && err ? String(err.message ?? err) : null,
     oauthError: p.oauthError ? String((p.oauthError as Error).message ?? p.oauthError) : null,
     linkError: p.linkError,
+    hasX: p.methods.some((m) => m.kind === 'x'),
+    /** 登入了 Privy，但還沒放行（後端 403 WAITLIST_PENDING）：入口頁顯示邀請碼輸入框。 */
+    pending: p.phase === 'error' && isWaitlistPending(p.error),
+    identityReady: p.identityToken !== null,
     waitlist,
   };
 }
@@ -92,7 +96,10 @@ function emit(): void {
 
 // 後端回 403 WAITLIST_PENDING：有邀請碼就用碼放行（/waitlist/redeem），沒有就排隊（/waitlist/join）。放行後讓 PrivyRoot 重換 session。
 let waitlistFor: string | null = null;
+/** waitlist 頁自己控制「追蹤後才加入」：manual 時不自動 join／redeem。 */
+let manualWaitlist = false;
 async function handleWaitlist(): Promise<void> {
+  if (manualWaitlist) return;
   const p = usePrivyAuth.getState();
   if (p.phase !== 'error' || !isWaitlistPending(p.error) || p.identityToken === null) return;
   if (waitlistFor === p.identityToken) return;
@@ -109,7 +116,7 @@ async function handleWaitlist(): Promise<void> {
       } catch (cause) {
         try { sessionStorage.removeItem(INVITE_KEY); } catch { /* */ }
         if (!(cause instanceof ApiError)) throw cause;
-        if (cause.code === 'X_REQUIRED') { waitlist = { state: 'error', message: 'Invite codes work with X. Sign in with X to use yours.' }; emit(); return; }
+        if (cause.code === 'X_REQUIRED') { waitlist = { state: 'error', message: 'Right now invite codes only work with X. Sign out and continue with X.' }; emit(); return; }
         // 碼不能用（錯、用過、過期）：照一般排隊，並說明。
         body = await postWaitlistJoin(p.identityToken);
         const r = parseWaitlist(body);
@@ -131,7 +138,8 @@ async function handleWaitlist(): Promise<void> {
 }
 
 let mounted = false;
-export function mount(): void {
+export function mount(options: { waitlist?: 'auto' | 'manual' } = {}): void {
+  manualWaitlist = options.waitlist === 'manual';
   if (mounted) return;
   mounted = true;
   const host = document.createElement('div');
@@ -182,6 +190,74 @@ function need(): { token: string; wallet: RenewalWallet; owner: Address } {
     throw new Error('Your wallet is still connecting. Try again in a moment.');
   }
   return { token: s.token, wallet: { kind: 'injected', address: w.address as Address, provider: w.provider }, owner: w.address as Address };
+}
+
+// ---- Waitlist 頁（cre8.finance/waitlist）：用 Privy identity token，不需要 CRE8 session --------------------
+const identityToken = () => usePrivyAuth.getState().identityToken;
+/** 自己的排隊紀錄（`GET /waitlist/me`）；還沒加入回 null。 */
+export async function waitlistMe() {
+  const t = identityToken();
+  if (t === null) return null;
+  try {
+    return parseWaitlist(await apiRequest<unknown>('/waitlist/me', { headers: { authorization: `Bearer ${t}` } }));
+  } catch (cause) {
+    if (cause instanceof ApiError && cause.status === 404) return null;
+    throw cause;
+  }
+}
+/**
+ * 登入後用邀請碼放行（`POST /waitlist/redeem`）。成功（或本來就放行）就讓 PrivyRoot 重換 session，入口頁自己會進 app。
+ * 失敗丟一句白話（碼錯、用過、過期、要 X）。
+ */
+export async function redeemInvite(text: string) {
+  const code = normalizeInviteCode(text);
+  if (code === null) throw new Error('That code isn’t valid.');
+  const t = identityToken();
+  if (t === null) throw new Error('Sign in first.');
+  try {
+    const record = parseWaitlist(await postWaitlistRedeem(t, code));
+    if (record?.status === 'approved') signalWaitlistApproved();
+    return record;
+  } catch (cause) {
+    if (!(cause instanceof ApiError)) throw cause;
+    if (cause.code === 'ALREADY_APPROVED') { signalWaitlistApproved(); return { status: 'approved' as const, xHandle: null, joinedAt: null }; }
+    const msg: Record<string, string> = { INVITE_INVALID: 'That code isn’t valid.', INVITE_USED: 'That code was already used.', INVITE_EXPIRED: 'That code has expired.', X_REQUIRED: 'Invite codes only work with X for now.' };
+    throw new Error(msg[cause.code] ?? (cause.status === 429 ? 'Too many tries. Wait a minute.' : 'Couldn’t check the code. Try again.'));
+  }
+}
+/** 加入（`POST /waitlist/join`，冪等）。已放行就讓 PrivyRoot 重換 session。 */
+export async function joinWaitlist() {
+  const t = identityToken();
+  if (t === null) throw new Error('Connect X first.');
+  const record = parseWaitlist(await postWaitlistJoin(t));
+  if (record?.status === 'approved') signalWaitlistApproved();
+  return record;
+}
+
+/**
+ * 等候名單加分任務（`GET /waitlist/tasks`、`POST /waitlist/tasks/:id`，用 Privy identity token）。
+ * 後端還沒上這組端點時 GET 回 404 → 傳回 null，頁面就把任務按鈕停用，不假裝完成。
+ */
+export async function waitlistTasks() {
+  const t = identityToken();
+  if (t === null) return null;
+  try {
+    return await apiRequest<unknown>('/waitlist/tasks', { headers: { authorization: `Bearer ${t}` } });
+  } catch (cause) {
+    if (cause instanceof ApiError && cause.status === 404) return null;
+    throw cause;
+  }
+}
+export async function completeWaitlistTask(id: 'post' | 'gmail' | 'quiz' | 'tg', body: Record<string, unknown> = {}) {
+  const t = identityToken();
+  if (t === null) throw new Error('Connect X first.');
+  try {
+    return await apiRequest<unknown>(`/waitlist/tasks/${id}`, { method: 'POST', headers: { authorization: `Bearer ${t}`, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  } catch (cause) {
+    if (!(cause instanceof ApiError)) throw cause;
+    const msg: Record<string, string> = { TASK_INVALID_URL: 'That isn’t a post from your X account.', TASK_NOT_LINKED: 'Connect Google first.', NOT_JOINED: 'Join the waitlist first.' };
+    throw new Error(msg[cause.code] ?? (cause.status === 429 ? 'Too many tries. Wait a minute.' : 'Couldn’t save that. Try again.'));
+  }
 }
 
 // ---- 讀資料 ----------------------------------------------------------------------------------
@@ -393,7 +469,7 @@ export { transferCalldata };
 
 // IIFE 沒有匯出：掛到 window，通知 app.html。
 (window as unknown as { CRE8W: unknown }).CRE8W = {
-  mount, subscribe, get, setInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
+  mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, chain,
 };
 window.dispatchEvent(new Event('cre8w:ready'));

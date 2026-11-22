@@ -1,6 +1,6 @@
 /**
  * Cloudflare Worker `cre8-web`：cre8.finance 是首頁（index.html），tst.cre8.finance 是 app（app.html）。
- * waitlist.html 不上線（.assetsignore 排除）。其他檔案照原路徑回靜態資源。
+ * cre8.finance/waitlist 回 waitlist.html（tst 的 /waitlist 轉到那裡）。其他檔案照原路徑回靜態資源。
  * SEO：一律 https；首頁網域的內容頁（/portfolios/...、/how-it-works、/compare、/zh/...）各回自己的 <路徑>/index.html，
  * 這些頁面由 scripts/build-pages.mjs 產生；不存在的頁面路徑 301 回 /。tst 與 workers.dev 不給收錄。
  */
@@ -76,8 +76,9 @@ export default {
     if (url.protocol === 'http:' && !local) { url.protocol = 'https:'; return Response.redirect(url.toString(), 301); }
     if (host === 'www.cre8.finance') return Response.redirect(LANDING + path + url.search, 301);
 
-    // app（tst）與本機：/api/* 轉給後端。首頁網域不開。
+    // app（tst）與本機：/api/* 轉給後端。首頁網域只開 waitlist 頁要用的登入與排隊（/api/auth/*、/api/waitlist/*）。
     if ((app || local) && (path === '/api' || path.startsWith('/api/'))) return proxyApi(request, url);
+    if (landing && (path.startsWith('/api/auth/') || path.startsWith('/api/waitlist/'))) return proxyApi(request, url);
 
     // 兩個網域之間的連結：首頁的 app.html 到 tst，app 的 index.html 回首頁。
     if (landing && path === '/app.html') return Response.redirect(APP + '/', 302);
@@ -87,6 +88,14 @@ export default {
     if (path === '/robots.txt') return text(noindex ? ROBOTS_NOINDEX : ROBOTS_LANDING, 'text/plain; charset=utf-8');
     // sitemap.xml 是產生器寫的靜態檔，只給首頁網域。
     if (path === '/sitemap.xml' && noindex) return new Response('Not found', { status: 404 });
+
+    // Waitlist：只在首頁網域（與本機）；/waitlist.html 301 到 /waitlist，tst 的 /waitlist 轉過去。
+    if (path === '/waitlist.html') return Response.redirect((app ? LANDING : url.origin) + '/waitlist', 301);
+    if (path === '/waitlist' || path === '/waitlist/') {
+      if (!landing && !local) return Response.redirect(LANDING + '/waitlist', 302);
+      if (path.endsWith('/')) return Response.redirect((landing ? LANDING : url.origin) + '/waitlist', 301);
+      return withHeaders(await env.ASSETS.fetch(new Request(new URL('/waitlist.html', url), request)), path, noindex);
+    }
 
     // 每頁只有一個網址：/x/index.html 與結尾斜線 301 到 /x。
     if (landing && /(^|\/)index\.html$/.test(path)) return Response.redirect(LANDING + (path.slice(0, -'/index.html'.length) || '/'), 301);
