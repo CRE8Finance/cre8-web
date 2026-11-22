@@ -1,15 +1,15 @@
 {
   "_": "簡體首頁 /zh 的翻譯表。build-pages.mjs 讀 index.html、套這張表、寫出 zh/index.html。text：整段文字（前後要是 > < 或引號）；raw：原樣字串替換，用在同一句英文要翻成不同中文的地方。每一條都必須在 index.html 找得到，翻完還有英文單字（allow 以外）就報錯。基金名稱、FAQ 由程式從 FUND_META、faqs('zh') 帶入，不在這裡。",
-  "title": "CRE8 | 用 USDT 一篮子买美股和加密资产",
+  "title": "CRE8 | 让你的组合，不再闲着",
   "description": "用 USDT 一键买入美股代币和加密资产组合：跟投佩洛西、特朗普、马斯克，也能自己配。闲置 USDT 可以生息，资产放在你自己的链上钱包。现已上线测试网。",
   "raw": {
     "margin-bottom:40px\">How it works</h2>": "margin-bottom:40px\">三步上手</h2>"
   },
   "text": {
-    "CRE8 | The Home of Productive Portfolios": "CRE8 | 用 USDT 一篮子买美股和加密资产",
+    "CRE8 | The Home of Productive Portfolios": "CRE8 | 让你的组合，不再闲着",
     "Buy baskets of US stocks and crypto with USDT. Follow Pelosi, Trump and Musk, or build your own. Yield on idle capital, in your own wallet. Now on testnet.": "用 USDT 一键买入美股代币和加密资产组合：跟投佩洛西、特朗普、马斯克，也能自己配。闲置 USDT 可以生息，资产放在你自己的链上钱包。现已上线测试网。",
-    "CRE8: The Home of Productive Portfolios": "CRE8：美股和加密，一篮子买齐",
-    "The Home of <br>Productive Portfolios": "美股和加密，<br>一篮子买齐",
+    "CRE8: The Home of Productive Portfolios": "CRE8：让你的组合，不再闲着",
+    "The Home of <br>Productive Portfolios": "让你的组合，<br>不再闲着",
     "bStock and crypto baskets, with yield on idle capital.": "bStock 美股代币和加密资产组合，闲置 USDT 也能生息。",
     "Join waitlist": "加入等候名单",
     "Home": "首页",
