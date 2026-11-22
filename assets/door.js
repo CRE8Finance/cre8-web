@@ -45,9 +45,29 @@
   function init() {
     el = { sec: $('door'), stick: $('door-stick'), stage: $('door-stage'), l: $('door-l'), r: $('door-r'), glow: $('door-glow'), white: $('door-white'), hall: $('door-hall'), copy: $('door-copy') };
     if (!el.sec) return;
-    addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(draw); } }, { passive: true });
+    addEventListener('scroll', () => { gate(); if (!ticking) { ticking = true; requestAnimationFrame(draw); } }, { passive: true });
     addEventListener('resize', size);
+    // 最後一幕卡一拍：從上面滑下來的那一下停在文案，要再滑一次才往下。
+    const begin = () => { fromAbove = scrollY < end() - 2; };
+    addEventListener('touchstart', begin, { passive: true });
+    addEventListener('wheel', () => { const t = performance.now(); if (t - lastWheel > 220) begin(); lastWheel = t; }, { passive: true });
+    addEventListener('keydown', begin);
+    addEventListener('click', e => { if (e.target.closest && e.target.closest('a[href^="#"]')) fromAbove = false; }, true);
     size();
+    fromAbove = scrollY < end() - 2;
+  }
+  let fromAbove = true, lastWheel = 0, freezing = false;
+  const end = () => el.sec.offsetTop + el.sec.offsetHeight - vh;
+  function gate() {
+    const e = end();
+    if (!fromAbove || scrollY <= e) return;
+    window.scrollTo({ top: e, behavior: 'instant' });
+    // iOS 的慣性捲動要暫停 overflow 才停得住。
+    if (!freezing && 'ontouchstart' in window) {
+      freezing = true; const r = document.documentElement;
+      r.style.overflow = 'hidden';
+      setTimeout(() => { r.style.overflow = ''; freezing = false; }, 350);
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
