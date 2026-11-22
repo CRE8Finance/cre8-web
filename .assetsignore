@@ -5,5 +5,5 @@
 _worker.js
 wrangler.jsonc
 README.md
-waitlist.html
 scripts
+node_modules

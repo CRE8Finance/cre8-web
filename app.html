@@ -28,22 +28,41 @@
 <link rel="preload" as="script" href="assets/vendor/react-dom.production.min.js">
 <script>window.__resources={"https://unpkg.com/react@18.3.1/umd/react.production.min.js":"assets/vendor/react.production.min.js","https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js":"assets/vendor/react-dom.production.min.js"};</script>
 <script src="./support.js"></script>
+<link rel="stylesheet" href="/assets/press.css">
+<script src="/assets/press.js" defer></script>
 </head>
 <body>
 <x-dc>
 <helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>@media (max-width:560px){.bb-txt{display:none!important}.bb-btn{width:40px!important;padding:0!important;justify-content:center!important}}@media (max-width:400px){.bb-logos{display:none!important}}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{background:#F3F3F3}body{margin:0;background:#F3F3F3;color:#0B0F14;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}a{color:#2F6690;text-decoration:none}a:hover{color:#0B0F14}button{font-family:inherit;color:inherit}::-webkit-scrollbar{display:none}</style></helmet>
 
-<header style="position:sticky;top:0;z-index:50;background:rgba(243,243,243,.8);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(11,15,20,.06)">
+<sc-if value="{{ gated }}" hint-placeholder-val="{{ false }}"><div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:max(24px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));background:#F3F3F3">
+<div style="width:100%;max-width:460px;flex:1;display:flex;flex-direction:column">
+<div style="height:40px;display:flex;align-items:center;justify-content:space-between"><a href="https://cre8.finance/" aria-label="CRE8 home" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a><sc-if value="{{ gBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gBackGo }}" aria-label="Back" style="width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#6B7785" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if></div>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 0 64px">
+<h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ gTitle }}</h1>
+<div style="display:flex;flex-direction:column;gap:10px;margin-top:32px">
+<sc-if value="{{ siBusy }}" hint-placeholder-val="{{ false }}"><div style="height:52px;display:flex;align-items:center;justify-content:center" aria-label="Loading"><svg width="28" height="28" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="#E6E9ED" stroke-width="10"></circle><circle cx="48" cy="48" r="40" fill="none" stroke="#2F6690" stroke-width="10" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="180"><animateTransform attributeName="transform" type="rotate" from="0 48 48" to="360 48 48" dur="1s" repeatCount="indefinite"></animateTransform></circle></svg></div></sc-if>
+<sc-if value="{{ gStart }}" hint-placeholder-val="{{ true }}"><a href="https://cre8.finance/waitlist" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7);display:flex;align-items:center;justify-content:center">Join waitlist</a><button onClick="{{ gToSignIn }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Sign in</button></sc-if>
+<sc-if value="{{ gMethods }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gX }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with X</button><button onClick="{{ signInGoogle }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with Google</button><button onClick="{{ showEmail }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with Email</button>
+<sc-if value="{{ siEmail }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input type="{{ emailType }}" inputmode="{{ emailMode }}" value="{{ emailVal }}" onInput="{{ onEmail }}" placeholder="{{ emailPh }}" autocomplete="off" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><button onClick="{{ emailGo }}" style="height:44px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ emailBtn }}</button></label></sc-if></sc-if>
+<sc-if value="{{ gCode }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;padding:0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" onKeyDown="{{ inviteKey }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Invite code" aria-label="Invite code" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 18px 'Geist Mono';letter-spacing:.1em;color:#0B0F14;padding:0"></label><sc-if value="{{ codeErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ codeErr }}</p></sc-if><button onClick="{{ gCodeGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ codeBtn }}</button><a href="https://cre8.finance/waitlist" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center">Join waitlist</a></sc-if>
+<sc-if value="{{ siErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:4px 2px 0;font:400 14px/1.5 'Geist';color:#D23F2E">{{ siErr }}</p></sc-if>
+<sc-if value="{{ siRetry }}" hint-placeholder-val="{{ false }}"><button onClick="{{ siRetryGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">Try again</button></sc-if>
+</div>
+</div>
+</div>
+</div></sc-if>
+<sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><header style="position:sticky;top:0;z-index:50;background:rgba(243,243,243,.8);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(11,15,20,.06)">
 <div style="max-width:{{ L.max }}px;margin:0 auto;height:{{ L.hdrH }}px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 {{ L.pad }}px">
 <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ closeFund }}" aria-label="Back" style="width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if>
 <sc-if value="{{ showLogo }}" hint-placeholder-val="{{ true }}"><a href="index.html" aria-label="CRE8 home" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a></sc-if>
 <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><span style="flex:1;text-align:center;font:500 15px 'Geist';opacity:{{ hdrTitleO }};transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ hdrTitle }}</span></sc-if>
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><nav style="display:flex;gap:2px;padding:3px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="height:34px;padding:0 18px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';color:{{ t.tcol }};background:{{ t.tbg }};transition:background .2s,color .2s">{{ t.label }}</button></sc-for></nav></sc-if>
-<span style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 12px 'Geist Mono';color:#3C4651;white-space:nowrap">0xEEa7…D94F</span>
+<button onClick="{{ pillClick }}" style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:0;cursor:pointer;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 12px 'Geist Mono';color:#3C4651;white-space:nowrap">{{ pillText }}</button>
 </div>
-</header>
+</header></sc-if>
 
-<main style="max-width:{{ L.max }}px;margin:0 auto;padding:0 {{ L.mainPad }}px {{ L.bottom }}px">
+<sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><main style="max-width:{{ L.max }}px;margin:0 auto;padding:0 {{ L.mainPad }}px {{ L.bottom }}px">
 
 <sc-if value="{{ pageHome }}" hint-placeholder-val="{{ true }}">
 <div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Discover</h1></div>
@@ -125,6 +144,7 @@
 <sc-for list="{{ cur.stats }}" as="st" hint-placeholder-count="6"><div style="background:#FFFFFF;padding:14px 14px 13px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ st.k }}</div><div style="font:400 19px 'Geist';letter-spacing:-.02em;margin-top:6px;color:{{ st.c }}">{{ st.v }}</div></div></sc-for>
 </div>
 
+<sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">Earn extra</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div></div><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="Earn extra" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;flex-direction:column;gap:10px">
 <sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 4px"><span style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ posLabel }}</span><span style="font:400 18px 'Geist';letter-spacing:-.02em">{{ posVal }}</span></div></sc-if>
 <button onClick="{{ openBuy }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Buy</button>
@@ -200,13 +220,17 @@
 </div>
 </sc-if>
 
+<sc-if value="{{ pageProfileOut }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.profW }};margin:0 auto">
+<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Profile</h1></div>
+<div style="margin:24px 16px 0;padding:20px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;flex-direction:column;gap:14px"><div style="font:400 15px/1.5 'Geist';color:#5E6A76">{{ outText }}</div><button onClick="{{ signInProfile }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">{{ outBtn }}</button></div>
+</div></sc-if>
 <sc-if value="{{ pageProfile }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.profW }};margin:0 auto">
 <div style="display:flex;align-items:center;gap:12px;padding:20px 16px 0">
 <button onClick="{{ openAcct }}" aria-label="Edit profile" style="width:44px;height:44px;flex:none;padding:0;border:0;cursor:pointer;border-radius:50%;background:{{ av.bg }};display:flex;align-items:center;justify-content:center;font:500 18px 'Geist';color:#fff">{{ av.letter }}</button>
-<div style="flex:1;min-width:0"><div style="font:500 17px 'Geist'">{{ profileName }}</div><div style="font:400 13px 'Geist';color:#6B7785">@0xJooe</div></div>
+<div style="flex:1;min-width:0"><div style="font:500 17px 'Geist'">{{ profileName }}</div><div style="font:400 13px 'Geist';color:#6B7785">{{ handleText }}</div></div>
 <button onClick="{{ openAcct }}" aria-label="Account" style="width:38px;height:38px;border-radius:50%;border:0;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0F14" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg></button>
 </div>
-<div style="padding:26px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px"><div style="min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785">PORTFOLIO VALUE</div><div style="font:300 46px/1 'Geist';letter-spacing:-.045em;margin-top:10px">{{ pv.big }}</div><div style="display:flex;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ pv.col }}"><span>{{ pv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ pv.when }}</span></div></div><div style="display:flex;gap:8px;flex:none"><button style="height:42px;padding:0 20px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)">Add money</button><button style="height:42px;padding:0 20px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">Withdraw</button></div></div>
+<div style="padding:26px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px"><div style="min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785">PORTFOLIO VALUE</div><div style="font:300 46px/1 'Geist';letter-spacing:-.045em;margin-top:10px">{{ pv.big }}</div><div style="display:flex;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ pv.col }}"><span>{{ pv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ pv.when }}</span></div></div><div style="display:flex;gap:8px;flex:none"><button onClick="{{ addMoney }}" style="height:42px;padding:0 20px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)">Add money</button><button style="height:42px;padding:0 20px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">Withdraw</button></div></div>
 <div onPointerMove="{{ pScrub }}" onPointerLeave="{{ pLeave }}" style="position:relative;height:{{ L.pcH }}px;margin:20px 16px 0;touch-action:pan-y;cursor:crosshair">
 <svg viewBox="0 0 600 160" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><defs><linearGradient id="pga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F6690" stop-opacity=".18"></stop><stop offset="1" stop-color="#2F6690" stop-opacity="0"></stop></linearGradient></defs><path d="{{ pc.area }}" fill="url(#pga)"></path><path d="{{ pc.p }}" fill="none" stroke="#2F6690" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
 <div style="position:absolute;top:0;bottom:0;left:{{ pc.hx }}%;width:1px;background:rgba(11,15,20,.25);opacity:{{ pc.ho }};pointer-events:none"></div>
@@ -224,6 +248,7 @@
 </div>
 <sc-if value="{{ showHold }}" hint-placeholder-val="{{ true }}">
 <div style="margin:12px 16px 0;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
+<sc-if value="{{ holdNote }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 14px;border-bottom:1px solid #E6E9ED;font:400 14px 'Geist';color:#6B7785">{{ holdNote }}</div></sc-if>
 <sc-for list="{{ holdings }}" as="h" hint-placeholder-count="3">
 <button onClick="{{ h.open }}" style="width:100%;display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px;border:0;border-bottom:1px solid #E6E9ED;background:transparent;cursor:pointer;text-align:left">
 <div role="img" style="width:40px;height:40px;border-radius:11px;background:#EDF0F3 url({{ h.cover }}) center/cover no-repeat"></div>
@@ -232,15 +257,23 @@
 <div style="text-align:right"><div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap">{{ h.val }}</div><div style="font:500 12px 'Geist Mono';color:{{ h.col }};margin-top:2px">{{ h.ret }}</div></div>
 </button>
 </sc-for>
-<div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto;align-items:center;gap:12px;padding:12px 14px">
+<div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:12px 14px">
 <img src="app/l-usdt.png" alt="" style="width:40px;height:40px;border-radius:50%">
-<div style="min-width:0"><div style="font:500 15px 'Geist'">Cash</div><div style="font:400 12px 'Geist';color:#16854F;margin-top:2px">Earning up to 6%</div></div>
+<div style="min-width:0"><div style="font:500 15px 'Geist'">Cash</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ cashSub }}</div></div>
 <div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap">{{ cashText }}</div>
+<button onClick="{{ openEarn }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Earn</button>
 </div>
+<sc-if value="{{ earning }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid #E6E9ED">
+<span style="width:40px;height:40px;border-radius:50%;background:#EDF0F3;color:#16854F;display:flex;align-items:center;justify-content:center;font:500 15px 'Geist Mono'">%</span>
+<div style="min-width:0"><div style="font:500 15px 'Geist'">Earning</div><div style="font:400 12px 'Geist';color:#16854F;margin-top:2px">{{ earnSub }}</div></div>
+<div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap">{{ earnText }}</div>
+<button onClick="{{ openEarnOut }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Withdraw</button>
+</div></sc-if>
 </div>
 </sc-if>
 <sc-if value="{{ showAct }}" hint-placeholder-val="{{ false }}">
 <div style="margin:12px 16px 0;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
+<sc-if value="{{ actNote }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 14px;font:400 14px 'Geist';color:#6B7785">{{ actNote }}</div></sc-if>
 <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
 <div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:{{ a.sep }}">
 <span style="width:36px;height:36px;flex:none;border-radius:50%;background:#EDF0F3;color:{{ a.fg }};display:flex;align-items:center;justify-content:center;font:500 15px 'Geist Mono'">{{ a.g }}</span>
@@ -252,13 +285,13 @@
 </sc-if>
 </div>
 </sc-if>
-</main>
+</main></sc-if>
 
-<sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}"><nav style="position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,{{ navY }}px);transition:transform .4s cubic-bezier(.32,.72,0,1);z-index:60;display:flex;gap:2px;padding:5px;border-radius:999px;width:min(320px,calc(100vw - 32px));background:rgba(255,255,255,.72);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 .5px rgba(11,15,20,.06),0 12px 32px rgba(11,15,20,.14)">
+<sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}"><nav style="position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translate(-50%,{{ navY }}px);transition:transform .4s cubic-bezier(.32,.72,0,1);z-index:60;display:flex;gap:2px;padding:5px;border-radius:999px;width:min(320px,calc(100vw - 32px));background:rgba(255,255,255,.72);backdrop-filter:blur(28px) saturate(180%);-webkit-backdrop-filter:blur(28px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 .5px rgba(11,15,20,.06),0 12px 32px rgba(11,15,20,.14)">
 <sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="flex:1;height:54px;border:0;border-radius:999px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:{{ t.col }};background:{{ t.bg }};transition:background .25s,color .25s"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ t.icon }}"></path></svg><span style="font:500 10px 'Geist'">{{ t.label }}</span></button></sc-for>
-</nav></sc-if>
+</nav></sc-if></sc-if>
 
-<div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ modalO }};pointer-events:{{ modalPE }};transition:opacity .35s"></div>
+<sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ modalO }};pointer-events:{{ modalPE }};transition:opacity .35s"></div>
 <div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ sheetY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(20px,env(safe-area-inset-bottom))">
 <div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
 <div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px">
@@ -267,7 +300,7 @@
 </div>
 
 <sc-if value="{{ mAmount }}" hint-placeholder-val="{{ false }}">
-<div style="text-align:center;margin-top:clamp(6px,2vh,20px)"><div style="font:300 clamp(44px,8vh,60px)/1 'Geist';letter-spacing:-.05em;color:{{ amtColor }}">{{ amtText }}</div><div style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785;margin-top:12px">{{ availText }}</div></div>
+<div style="text-align:center;margin-top:clamp(6px,2vh,20px)"><div style="font:300 clamp(44px,8vh,60px)/1 'Geist';letter-spacing:-.05em;color:{{ amtColor }}">{{ amtText }}</div><div style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785;margin-top:12px">{{ availText }}</div><sc-if value="{{ showFaucet }}" hint-placeholder-val="{{ false }}"><button onClick="{{ useFaucet }}" style="margin-top:10px;border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Use free test USDT instead</button></sc-if></div>
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:clamp(12px,2.5vh,22px)"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.pick }}" style="height:36px;border:1px solid {{ q.bd }};border-radius:999px;cursor:pointer;font:500 13px 'Geist Mono';background:{{ q.bg }};color:{{ q.fg }}">{{ q.label }}</button></sc-for></div>
 <div style="display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px"><sc-for list="{{ keys }}" as="k" hint-placeholder-count="12"><button onClick="{{ k.press }}" style="height:clamp(38px,7.2vh,54px);border:0;background:transparent;border-radius:14px;font:300 26px 'Geist';cursor:pointer" style-active="background:#EDF0F3">{{ k.k }}</button></sc-for></div>
 <button onClick="{{ toReview }}" style="position:sticky;bottom:0;margin-top:6px;width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ amtBtn.bg }};color:{{ amtBtn.fg }};box-shadow:{{ amtBtn.sh }}">{{ amtBtn.label }}</button>
@@ -276,20 +309,22 @@
 <sc-if value="{{ mReview }}" hint-placeholder-val="{{ false }}">
 <div style="text-align:center;margin-top:18px"><div role="img" style="width:64px;height:64px;margin:0 auto;border-radius:16px;background:#EDF0F3 url({{ sheetCover }}) center/cover no-repeat"></div><div style="font:500 15px 'Geist';margin-top:12px;color:#3C4651">{{ sheetName }}</div><div style="font:300 44px 'Geist';letter-spacing:-.045em;margin-top:6px">{{ amtText }} <span style="font:500 14px 'Geist Mono';letter-spacing:.06em;color:#6B7785">USDT</span></div></div>
 <div style="margin-top:22px;border-radius:16px;background:#F3F5F7;overflow:hidden"><sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;padding:0 14px;height:48px;border-bottom:{{ r.sep }};font:400 14px 'Geist'"><span style="color:#5E6A76">{{ r.k }}</span><span style="font-family:'Geist Mono';font-size:13px">{{ r.v }}</span></div></sc-for></div>
+<sc-if value="{{ showSE }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;padding:14px;border-radius:16px;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ seTitle }}</div><div style="font:400 12px/1.45 'Geist';color:#6B7785;margin-top:3px">{{ seSub }}</div></div><button onClick="{{ seToggle }}" role="switch" aria-checked="{{ seOn }}" aria-label="Earn extra" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seCur }};background:{{ seBg }};display:flex;justify-content:{{ seJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
 <p style="margin:12px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785">{{ reviewNote }}</p>
 <button onClick="{{ confirm }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:{{ confBg }};color:{{ confFg }};font:600 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 8V5a2 2 0 012-2h3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3M9 9v1.5M15 9v1.5M12 9v4.5h-1M9 16.5c1.6 1.2 4.4 1.2 6 0"></path></svg>{{ confirmLabel }}</button>
 </sc-if>
 
 <sc-if value="{{ mProc }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:60px 0 80px"><svg width="84" height="84" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#EDF0F3" stroke-width="4"></circle><circle cx="48" cy="48" r="42" fill="none" stroke="#2F6690" stroke-width="4" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="{{ procOff }}" transform="rotate(-90 48 48)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)"></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76">CONFIRMING ON BNB CHAIN</div></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:60px 0 80px"><svg width="84" height="84" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#EDF0F3" stroke-width="4"></circle><circle cx="48" cy="48" r="42" fill="none" stroke="#2F6690" stroke-width="4" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="{{ procOff }}" transform="rotate(-90 48 48)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)"></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76;text-align:center;padding:0 12px">{{ procText }}</div></div>
 </sc-if>
 
 <sc-if value="{{ mDone }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;align-items:center;padding:36px 0 0">
-<div style="width:80px;height:80px;border-radius:50%;background:#16854F;display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px rgba(30,158,99,.6)"><svg width="36" height="28" viewBox="0 0 46 36"><path d="M4 18l12 12L42 4" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="width:80px;height:80px;border-radius:50%;background:{{ doneBg }};display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px {{ doneSh }}"><svg width="36" height="28" viewBox="0 0 46 36"><path d="{{ doneIcon }}" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
 <div style="font:500 26px 'Geist';letter-spacing:-.03em;margin-top:22px">{{ doneTitle }}</div>
-<div style="font:500 12px 'Geist Mono';letter-spacing:.04em;color:#5E6A76;margin-top:8px">{{ doneText }}</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;width:100%"><button onClick="{{ closeModal }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 15px 'Geist';cursor:pointer">Done</button><button onClick="{{ viewPort }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer">View portfolio</button></div>
+<div style="font:500 12px 'Geist Mono';letter-spacing:.04em;color:#5E6A76;margin-top:8px;text-align:center">{{ doneText }}</div>
+<sc-if value="{{ doneNote }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785;text-align:center">{{ doneNote }}</p></sc-if>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;width:100%"><button onClick="{{ closeModal }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 15px 'Geist';cursor:pointer">Done</button><button onClick="{{ doneRight }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer">{{ doneRightLabel }}</button></div>
 </div>
 </sc-if>
 </div>
@@ -310,12 +345,53 @@
 <div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">SIGN-IN</div>
 <div style="border-radius:16px;background:#F3F5F7;overflow:hidden">
 <div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px;border-bottom:1px solid #EDF0F3"><div style="flex:1"><div style="font:400 15px 'Geist'">Email</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ emailSub }}</div></div><sc-if value="{{ emailLinked }}" hint-placeholder-val="{{ false }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">LINKED</span></sc-if><sc-if value="{{ emailOpen }}" hint-placeholder-val="{{ true }}"><button onClick="{{ linkGoogle }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Link Google</button></sc-if></div>
-<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:400 15px 'Geist'">X</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">@0xJooe</div></div><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">LINKED</span></div>
+<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:400 15px 'Geist'">X</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ xSub }}</div></div><sc-if value="{{ xLinked }}" hint-placeholder-val="{{ true }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">LINKED</span></sc-if><sc-if value="{{ xOpen }}" hint-placeholder-val="{{ false }}"><button onClick="{{ linkX }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Link X</button></sc-if></div>
 </div>
 <div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">WALLET</div>
-<div style="border-radius:16px;background:#F3F5F7;display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:500 14px 'Geist Mono'">0xEEa7…D94F</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">Only you hold the key</div></div><button style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Export key</button></div>
-<button style="margin-top:22px;width:100%;height:52px;border:0;border-radius:16px;background:#F3F5F7;font:500 16px 'Geist';color:#D23F2E;cursor:pointer">Sign out</button>
+<div style="border-radius:16px;background:#F3F5F7;display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:500 14px 'Geist Mono'">{{ addrShort }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">Only you hold the key</div></div><button onClick="{{ exportKey }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Export key</button></div>
+<sc-if value="{{ linkErr }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 4px 0;font:400 13px/1.5 'Geist';color:#D23F2E">{{ linkErr }}</p></sc-if>
+<button onClick="{{ signOut }}" style="margin-top:22px;width:100%;height:52px;border:0;border-radius:16px;background:#F3F5F7;font:500 16px 'Geist';color:#D23F2E;cursor:pointer">Sign out</button>
 </div>
+
+<div onClick="{{ closeSignIn }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ siO }};pointer-events:{{ siPE }};transition:opacity .35s"></div>
+<div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);min-height:min(640px,calc(100dvh - 8px));max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ siY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#F3F3F3;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
+<div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><button onClick="{{ closeSignIn }}" style="border:0;background:transparent;font:400 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:left;padding:0">Cancel</button><span style="font:500 16px 'Geist'">Sign in</span><span style="min-width:60px"></span></div>
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 0 6px;text-align:center"><img src="assets/cre8-mark-512.png" alt="" style="width:56px;height:56px;border-radius:14px"><div style="font:500 22px/1.2 'Geist';letter-spacing:-.02em">{{ siTitle }}</div><div style="font:400 14px/1.5 'Geist';color:#5E6A76;max-width:340px">{{ siSub }}</div></div>
+<sc-if value="{{ sh_siBusy }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:30px 0"><svg width="56" height="56" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#EDF0F3" stroke-width="5"></circle><circle cx="48" cy="48" r="42" fill="none" stroke="#2F6690" stroke-width="5" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="190" transform="rotate(-90 48 48)"></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76">{{ siBusyText }}</div></div></sc-if>
+<sc-if value="{{ sh_siForm }}" hint-placeholder-val="{{ true }}">
+<div style="margin-top:16px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">INVITE CODE</div>
+<label style="display:flex;align-items:center;gap:12px;padding:0 14px;height:52px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="New here? Enter your code" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 16px 'Geist Mono';letter-spacing:.06em;color:#0B0F14;padding:0"></label>
+<button onClick="{{ signInX }}" style="margin-top:14px;width:100%;height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Continue with X</button>
+<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">ALREADY HAVE ACCESS</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button onClick="{{ signInGoogle }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">Google</button><button onClick="{{ showEmail }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">Email</button></div>
+<sc-if value="{{ sh_siEmail }}" hint-placeholder-val="{{ false }}"><label style="margin-top:12px;display:flex;align-items:center;gap:12px;padding:0 6px 0 14px;height:52px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input type="{{ emailType }}" inputmode="{{ emailMode }}" value="{{ emailVal }}" onInput="{{ onEmail }}" placeholder="{{ emailPh }}" autocomplete="off" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><button onClick="{{ emailGo }}" style="height:40px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ emailBtn }}</button></label></sc-if>
+</sc-if>
+<sc-if value="{{ sh_siErr }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 4px 0;font:400 13px/1.5 'Geist';color:#D23F2E;text-align:center">{{ siErr }}</p></sc-if>
+<sc-if value="{{ sh_siRetry }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button onClick="{{ signOut }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">Sign out</button><button onClick="{{ siRetryGo }}" style="height:50px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:600 15px 'Geist';cursor:pointer">Try again</button></div></sc-if>
+<p style="margin:22px 4px 0;font:400 12px/1.5 'Geist';color:#6B7785;text-align:center">Testnet. Test USDT has no value.</p>
+</div>
+
+ <div onClick="{{ closeEarn }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ ernO }};pointer-events:{{ ernPE }};transition:opacity .35s"></div>
+<div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ ernY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
+<div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">{{ ernTitle }}</span><button onClick="{{ closeEarn }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">Done</button></div>
+<p style="margin:6px 2px 14px;font:400 14px/1.5 'Geist';color:#5E6A76">{{ ernSub }}</p>
+<sc-if value="{{ ernSoon }}" hint-placeholder-val="{{ true }}"><div style="padding:22px 16px;border-radius:16px;background:#F3F5F7;text-align:center"><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">COMING SOON</div><div style="font:400 14px/1.5 'Geist';color:#5E6A76;margin-top:8px">Live rates from our partner vaults will show here. Your cash stays put until you choose to earn.</div></div></sc-if>
+<sc-if value="{{ hasVaults }}" hint-placeholder-val="{{ false }}"><div style="border-radius:16px;border:1px solid #E6E9ED;overflow:hidden">
+<sc-for list="{{ vaults }}" as="v" hint-placeholder-count="0"><button onClick="{{ v.pick }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;border:0;border-bottom:{{ v.sep }};background:{{ v.bg }};cursor:pointer;text-align:left"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><span style="font:500 15px 'Geist'">{{ v.name }}</span><sc-if value="{{ v.best }}" hint-placeholder-val="{{ false }}"><span style="font:500 10px 'Geist Mono';letter-spacing:.06em;color:#16854F">BEST RATE</span></sc-if></div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ v.about }}</div></div><span style="font:400 22px 'Geist';letter-spacing:-.02em;color:#16854F">{{ v.apy }}</span></button></sc-for>
+</div></sc-if>
+</div>
+<div onClick="{{ closeRecv }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ rcO }};pointer-events:{{ rcPE }};transition:opacity .35s"></div>
+<div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);transform:translate(-50%,{{ rcY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
+<div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">Add money</span><button onClick="{{ closeRecv }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">Done</button></div>
+<div style="margin-top:10px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">SEND USDT ON BNB CHAIN TESTNET TO</div>
+<div style="border-radius:16px;background:#F3F5F7;padding:14px;font:500 14px/1.5 'Geist Mono';word-break:break-all">{{ addrFull }}</div>
+<button onClick="{{ copyAddr }}" style="margin-top:12px;width:100%;height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">{{ copyLabel }}</button>
+<p style="margin:14px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785">No test USDT yet? When you buy, choose “Use free test USDT”: 10,000 on your first buy, then 1,000 a day.</p>
+</div>
+</sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const LOGO = t => 'app/l-' + t.toLowerCase() + '.png';
@@ -350,6 +426,34 @@ const MIX_FREQ_TEXT = ['every day', 'every week', 'every month', 'every quarter'
 const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, m.cover || 'app/cover-cre8.png', m.ret, m.picks.length, m.picks, 'Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + '.'), freqLabel: FREQ_LABEL[m.freq] }; };
 const CRYPTO = new Set(['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC']);
 const ASSETS = ['AAPL', 'ABBV', 'ALAB', 'AMAT', 'AMC', 'AMD', 'AMZN', 'ANT', 'APH', 'APLD', 'AVGO', 'AXP', 'BABA', 'BE', 'BLK', 'BMNR', 'BNC', 'CBRS', 'CEG', 'CIEN', 'COHR', 'COIN', 'CORZ', 'CRCL', 'CRDO', 'CRM', 'CRWV', 'CVX', 'CYPH', 'DJT', 'GEV', 'GME', 'GOOG', 'GOOGL', 'GPRO', 'HOOD', 'INTC', 'IREN', 'KO', 'LLY', 'MA', 'META', 'MRNA', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NEM', 'NFLX', 'NOK', 'NVDA', 'ORCL', 'PANW', 'PDD', 'PENG', 'PYPL', 'RDDT', 'SHAZ', 'SKHY', 'SNDK', 'SPCX', 'STX', 'TSLA', 'TSM', 'UBER', 'V', 'VRT', 'VST', 'EWY', 'GLD', 'IEF', 'IVV', 'QQQ', 'SGOV', 'SPY', 'TLT', 'SOXL', 'TQQQ', 'XAUT', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC'];
+// ---- 測試網真資料（BSC testnet 97，經 /api 轉到後端） ---------------------------------------------
+// 代號 → 代幣地址（cre8-app `src/lib/testnet-97.ts`，來源 cre8-contracts deployments/testnet-97.json @cbc671d）。
+// 後端的持股、My mix 都用地址；畫面用代號。
+const ADDR = { AAPL:'0xe74be2091540ebae4a045d8313952b5da0a4f076', AAVE:'0xe1058ec3999a770e3ffae507e154761753e63dbe', ABBV:'0x5a5c59f17574157958badb349bf5d28c379ddbe1', ADA:'0x867cd6bb9e2627a03814e202b11759fdf955d172', ALAB:'0x961d5542671d2e8d3bec7af13f19c385aaa486df', AMAT:'0xc510de52596ca9854e476306def86a8c53545183', AMC:'0x4aaf0123b58892d1fb6b5fec38a9bf778049b94a', AMD:'0x8a50b09be476697e11e826bdc22d31ce9d7f2d5b', AMZN:'0x0c0013994c9927656238cbfcf0c5d15c30222df9', ANT:'0x4d6c73bc22f83074aba8601d919cfea744899798', APH:'0xc8193cdfa83acdedef06fc5d402651ce03e063d7', APLD:'0xee8de9fa8da8c5d72ee5405ade1db95312440721', ATOM:'0x5db3b368e2fb73f87a889d1faefb9ee1ae363eeb', AVAX:'0x5117576756fcbab8f96d8a4ec8968dadeb3a9092', AVGO:'0xe6f77231bba44aa3bb86cfb8a1cb5f0d2a14d68b', AXP:'0xe438f13e4b63356259559af5852c2aa2185130ec', BABA:'0x169cc77a8cea0f375ff20f324dcf4c5cd64dad1e', BCH:'0x3f2905ce60d4f01e62d7feefa4aff977bc377c90', BE:'0xe5dac8758c0207481ca306e86692f57d5e13f8ab', BLK:'0xccbb02fd8f8f588adfb26cf7f95b82e70a57a934', BMNR:'0xd416e9e9699a0150d2a5b3aa8dbd416058bdbc7e', BNC:'0x4b761cafbdaba93d23e1e7fe07b2fad5a6106713', BTC:'0x2bacaad9ebc8a2827689f7abbffcbfcbe63c70c1', CAKE:'0x8e074498dff76847f0cb6790d0aec1295e2d80de', CBRS:'0xd55babce7b68ed90e9ca61abbea1bc6553cc7c70', CEG:'0xb7969da31c0a6241d3004c3f734fefb897fcb924', CIEN:'0x9184d33424e330f95bca1e40109797aa08417438', COHR:'0xb2eb9b1b88ba8264b131c3529f559b26af272b7d', COIN:'0x585173422c84d80481fd260cdc20e68dfd7099d7', CORZ:'0x76bd5c8d5bbbb4067298253c8cc3f2db21d58854', CRCL:'0x5eb65e289a8a49d37aba782a380aa33f886787d2', CRDO:'0xe7f69457b587183b8ddc06c5b42a2d20b46e1987', CRM:'0x1f32b7d0c62e09ad55b97ca6aa62383c8c968cf5', CRWV:'0x89d58dd2468711c82310047d86f39d4ea58951ed', CVX:'0xcc6414c038011a60f4537e948d5ec201a81e2280', CYPH:'0x7584deddeabd63ebe33a641b4dbb81ca41e8a603', DJT:'0xbf69ed967c8f9b3fb7e2bb81ffe38a16c12620d9', DOGE:'0xccf96d9561e93af8a1c24d9b23c4091f2299dfa5', DOT:'0xb68d847d182e4568ff4620ff3023ecd8c9b99506', ETH:'0x6a42bf6ad662aa00de6d00a3da448f4b20b95f3b', EWY:'0x4b56eeb8188de1a1694b9079b22f18dd95e3872d', FIL:'0xcba5d83434b978b860dd7e0f1e16eefd16840c2e', GEV:'0x4ff5ab0cb11f34993638515a3b9a028df51f42dd', GLD:'0x7db43d35c2189dd02eb8c7447d870b4fe9b5abfb', GME:'0x7036c9bcb891291d5ba68c70536b99dcb6d529de', GOOGL:'0x779b65299f72836bb2b6704fc4dd440bb8a44bc6', GOOG:'0x08f7a7cb550775b82b481d8587477273e867ed9c', GPRO:'0x8bb9b683bba797c4393c2d4ac6408dff7369bc3d', HOOD:'0x47bb06f7cbf4916c2e5e7de7ea7c679d54a3e469', IEF:'0x17d654ff3a60dc796a98a35a0c2eacc572c30dc3', INTC:'0x10245cc0e9d01055943efef39020cf8567171f03', IREN:'0x8024d2cb004914c391a9dc2bb6da230ca4179d52', IVV:'0x7eb69c0d3326adc83b8e8068ae05700c2d030b01', KO:'0xf329154ab96244f117248a7c3cf82a7a5effb3b6', LINK:'0x723e405f4e2437e250355541fefc24bf4ce44740', LLY:'0x703f2f23959d1b79f4a858bc84c7845dcbc17eaf', LTC:'0xe2bd04b678f547ff82cf630ad502ab46720a6e6d', MA:'0x49dd99a62646140ce0b68732b6a2953b95e296ef', META:'0xd19fd9f3702c25bd8c71f638d90b93986af011c2', MRNA:'0x58aa989f7deceb57a9f36bb5245d070bd3f0e357', MRVL:'0x53fab7d8a7c53403c2cc315499d19320911c4da7', MSFT:'0x728537c8b32bddfc41fb8c82049c0157778aa584', MSTR:'0x4a77cda9a91376a6d6e0f69f807335e0dab8fc5f', MU:'0x1b3b4d9d5008b048632ff4a5b7ec995e605d8a92', NBIS:'0x2c4158fde426b3d3c7381b4272727cb6504aa184', NEAR:'0x230400b7fa9ae881d40b79476cc956cc4e979993', NEM:'0xadbaa06290cdd1661b1acf0f573ac7bae1477923', NFLX:'0x11980583d92fd8d1e1c97f29a2677bce1fd47d64', NOK:'0x9635b105852d3e38050a9a32dbf5545719c85343', NVDA:'0x5d63b93e50ef9f8851e1de71d8255c2f0beab397', ORCL:'0x290ed74a4b81507341100db493d323972aa32596', PANW:'0xbb5d4c0f2315a2fed7533f5a671c793ec83de837', PDD:'0x73d9908eded64f0b6674164269bf61fe7f2279e8', PENG:'0x854798edf972e627908e8c98e5ff69588fe8e644', PEPE:'0x935f9257683d15f694a47b9036bff7faaec85a99', PYPL:'0x11a9001eb0a46da74b1ffd99d0e7bf3a34d7447b', QQQ:'0x6a8be9e4f52925a6dba021bcb8728891a3777d3e', RDDT:'0xbd7d0075c8a4a1f2335461bb5b04f983a8b56932', SGOV:'0xdd4b48b8d50a93daabc78e923e3364d4305d9714', SHAZ:'0x83156ead0cc7043f30a52518c78a2a1c2c31f8b5', SHIB:'0x127c1a2532fcf935058eac9d04fcf6f7825e139a', SKHY:'0x2ca74a25cc86ef38b0d34e8e479c799695d323c5', SNDK:'0xe0135453761a1ee81cac538581674fab3232afcc', SOL:'0x16d201d507dfd0f459662bb2c3d061784c2264ed', SOXL:'0xd54d97fc8861a8dbb0f59ff1b79492c270159595', SPCX:'0xe7020b7e3adadd3e701a704817b52917c0cc6ce2', SPY:'0xee59f124652b4d9beaf15d58f84e638be541592e', STX:'0x0b26efddf3b0c7b4cd7bd0739c73dd05ce3613da', TLT:'0x4082047eaccd3c993c078f2586ae5c6b92d16012', TON:'0x74e4a11a24cd0fe978c984a59d2a7079f8c2e3ef', TQQQ:'0xb82d787d3cebaa1d8410c262fb062c31076816f8', TRX:'0xe3148b7ab627c5ea9e1d3e3808d888ac44b643d4', TSLA:'0x587cb8fe057344490a28390c7986e1beff5ad36e', TSM:'0x5790eb27bece957f098fa8191b3cc6bc4850157f', UBER:'0xd135e14ca3d2784f6145f16b0909541ec9582931', UNI:'0x38d82ca0b87815a1740b200771df30ed3b10d9b8', V:'0x5d9b5eece54660ee028ce2fccc9e7ee4986d1b58', VRT:'0x981977a27e3193f1699f9882ca02a8f50c00684c', VST:'0xc480848007322be7ae4bb0f1b1073e49218029c8', BNB:'0xbe3f4c2e58e74fbce8e1c5e9360d7abe85aec0f7', XAUT:'0x75d1d411afe409f8cd56446b2e9f4a0b8e8a4d4c', XRP:'0x37aca01e7cae39a0acaf2d240d5466eaed1d7901', ZEC:'0x93afb889a7a8fec56a160d3605892f0e0751bb73' };
+const USDT_ADDR = '0x7ad6e310b0f6744b66d97cb7cb525bd974501cb5';
+const TICKER = Object.fromEntries(Object.entries(ADDR).map(([t, a]) => [a, t]));
+// 後端 API（同源 /api，由 _worker.js 轉發）。錯誤丟 { status, code, message }。登入後的 token 由 wallet bundle 提供。
+async function api(path, { method = 'GET', body, token, headers = {} } = {}) {
+  const h = { accept: 'application/json', ...headers };
+  if (body !== undefined) h['content-type'] = 'application/json';
+  if (token) h.authorization = 'Bearer ' + token;
+  const res = await fetch('/api' + path, { method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) });
+  const text = await res.text(); let data = null; try { data = text ? JSON.parse(text) : null; } catch (_) {}
+  if (!res.ok) { const e = new Error((data && data.error && data.error.message) || ('HTTP ' + res.status)); e.status = res.status; e.code = data && data.error && data.error.code; throw e; }
+  return data;
+}
+// 模型淨值（日線）→ 指定天數的區間；ALL 是全部。
+const navRange = (nav, days) => { if (!nav || nav.length < 2) return null; if (days >= 730) return nav; const end = Date.parse(nav[nav.length - 1].date), from = end - days * 864e5; const r = nav.filter(p => Date.parse(p.date) >= from); return r.length >= 2 ? r : nav.slice(-2); };
+// 年化波動（日報酬標準差 × √365，資料是日曆日）與最大回撤（全期）。
+function navStats(nav) {
+  if (!nav || nav.length < 3) return null;
+  const v = navRange(nav, 365).map(p => p.value), r = v.slice(1).map((x, i) => x / v[i] - 1), m = r.reduce((a, b) => a + b, 0) / r.length;
+  const vol = Math.sqrt(r.reduce((a, b) => a + (b - m) ** 2, 0) / (r.length - 1) * 365) * 100;
+  let peak = -Infinity, mdd = 0; nav.forEach(p => { peak = Math.max(peak, p.value); mdd = Math.min(mdd, p.value / peak - 1); });
+  return { vol, mdd: mdd * 100 };
+}
+const fmtDate = (iso, withYear) => { const d = new Date(iso + 'T00:00:00'); return MON[d.getMonth()] + ' ' + d.getDate() + (withYear ? ', ' + d.getFullYear() : ''); };
+const REBAL_LABEL = { monthly_drift: 'Monthly', weekly_drift: 'Weekly', daily_drift: 'Daily', quarterly_drift: 'Quarterly' };
 const AVC = ['linear-gradient(135deg,#6F93AE,#16222D)', 'linear-gradient(135deg,#E3B55B,#9A6B1E)', 'linear-gradient(135deg,#7FB59A,#1F5A41)', 'linear-gradient(135deg,#B9A2D6,#4B3A6E)', 'linear-gradient(135deg,#3C4651,#0B0F14)'];
 const RANGES = [['1W', .03, 7, 36, 'past week'], ['1M', .1, 30, 60, 'past month'], ['3M', .28, 90, 90, 'past 3 months'], ['1Y', 1, 365, 120, 'past year'], ['ALL', 1.7, 730, 140, 'since launch']];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -375,14 +479,16 @@ class Component extends DCLogic {
   state = {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
-    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, editing: null, freq: 2, start: null, calOff: 0, mixName: '', mixCover: null, cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
-    // 用戶自己建的組合：點進去是跟基金一樣的專屬頁。
-    mixes: [{ id: 'mix-1', name: 'My mix', picks: [['NVDA', 40], ['AAPL', 30], ['BTC', 30]], freq: 2, start: new Date(2026, 10, 1).getTime(), ret: -2.1 }],
-    holdings: [
-      { id: 'pelosi', name: 'Pelosi Portfolio', cover: 'app/p-pelosi.jpg', val: 4236.80, ret: 23.7 },
-      { id: 'ai-chips', name: 'AI Chips', cover: 'app/p-ai.jpg', val: 3104.12, ret: 62.3 },
-      { id: 'mix-1', name: 'My mix', cover: 'app/cover-cre8.png', val: 2759.40, ret: -2.1 },
-    ],
+    live: null, det: {}, // 測試網真資料：live＝/strategies 列表（依 catalogKey），det＝/strategies/:id（淨值、持股）
+    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, editing: null, freq: 2, start: null, calOff: 0, mixName: '', mixCover: null, acct: false, ptab: 0, pname: '', photo: null, avc: 0,
+    // 登入後的真資料（window.CRE8W，assets/vendor/cre8-wallet.js）：w＝登入狀態快照，pf＝/portfolios，pst＝各投組 /status 的總值，
+    // cashWei＝錢包 USDT（鏈上），smx＝/me/mixes，acts＝合併的活動。null＝還沒載入（畫面顯示載入中，不顯示 0）。
+    w: null, pf: null, pst: {}, cashWei: null, smx: null, acts: null, mixCovers: {},
+    si: null, gStep: 'start', invite: '', siEmail: false, emailVal: '', siErr: null, rc: false, copied: false,
+    payFaucet: false, procText: '', result: null,
+    // Earn（docs/EARN_UX.zh-TW.md）：後端端點還在做。vaults＝白名單 USDT vault 列表 [{ id, name, about, apy }]，earnPos＝現金生息部位
+    // { amount, apy, today }，seRates＝每檔策略加息 { [fundId]: apy }。待接：端點出來後在 loadEarn() 填入；現在一律 null，畫面顯示 Coming soon，不放假數字。
+    ern: false, vaults: null, earnPos: null, seRates: {}, se: false,
   };
   timers = [];
   componentDidMount() {
@@ -396,9 +502,37 @@ class Component extends DCLogic {
       const y = e.state.y || 0; requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
     };
     addEventListener('popstate', this.onPop);
+    this.loadFunds();
+    // tst 一進來就要登入（邀請碼）：錢包程式馬上載。
+    this.loadWallet(true);
   }
-  componentDidUpdate() { this.syncNav(); }
-  componentWillUnmount() { this.timers.forEach(clearTimeout); removeEventListener('resize', this.onRs); removeEventListener('popstate', this.onPop); }
+  componentDidUpdate() {
+    this.syncNav(); if (this.state.fund) this.loadDetail(this.state.fund);
+    if (this.state.ptab === 1 && this.state.acts === null && this.state.pf && !this.actLoading) { this.actLoading = true; this.loadActivity().finally(() => { this.actLoading = false; }); }
+  }
+  // 基金列表：APY＝後端 modelReturns.annualized（模型淨值頭尾年化），最低金額＝minDepositUsdtWei。
+  async loadFunds() {
+    try {
+      const d = await api('/strategies?limit=100'), live = {};
+      (d.items || []).forEach(x => { if (x.catalogKey) live[x.catalogKey] = { sid: x.id, onchainId: x.onchainId, apy: x.modelReturns && x.modelReturns.annualized != null ? Number(x.modelReturns.annualized) : null, min: x.minDepositUsdtWei ? Number(x.minDepositUsdtWei) / 1e18 : 50 }; });
+      this.setState({ live, liveErr: null });
+    } catch (e) { this.setState({ liveErr: e.message }); }
+  }
+  // 基金頁：模型淨值日線（畫走勢）、目前生效版本的持股與權重。
+  async loadDetail(key) {
+    if (key.startsWith('mix-')) return this.loadMixDetail(key);
+    const L = this.state.live && this.state.live[key];
+    if (!L || this.state.det[key] || (this.detLoading || {})[key]) return;
+    this.detLoading = { ...(this.detLoading || {}), [key]: true };
+    try {
+      const d = await api('/strategies/' + L.sid);
+      const vs = d.versions || [], ver = vs.find(v => v.status === 'active') || vs[vs.length - 1];
+      const hold = ver ? ver.allocation.assets.filter(a => a.weightBps > 0 && a.address.toLowerCase() !== USDT_ADDR).sort((a, b) => b.weightBps - a.weightBps).map(a => [TICKER[a.address.toLowerCase()] || a.address.slice(0, 6), Math.round(a.weightBps) / 100]) : null;
+      const nav = (d.modelNav || []).map(p => ({ date: p.date, value: Number(p.value) })).filter(p => p.value > 0);
+      this.setState(st => ({ det: { ...st.det, [key]: { nav, hold, stats: navStats(nav), rebal: ver && ver.execution && REBAL_LABEL[ver.execution.rebalance], version: ver && ver.version, configHash: ver && ver.configHash } } }));
+    } catch (e) { this.detLoading[key] = false; }
+  }
+  componentWillUnmount() { if (this.unsubW) this.unsubW(); this.timers.forEach(clearTimeout); removeEventListener('resize', this.onRs); removeEventListener('popstate', this.onPop); }
   navOf(s) { return { page: s.page, fund: s.fund, modal: !!s.modal, acct: !!s.acct, bstep: s.bstep }; }
   syncNav() {
     const n = this.navOf(this.state), k = JSON.stringify(n);
@@ -487,15 +621,198 @@ class Component extends DCLogic {
       return { amount: a };
     });
   }
-  confirm() {
-    this.setState({ step: 'proc', procOff: 264 });
-    this.later(() => this.setState({ procOff: 0 }), 60);
-    this.later(() => {
-      const amt = parseFloat(this.state.amount) || 0, t = this.state.target;
-      if (this.state.side === 'sell') { this.setState(s => { const hs = s.holdings.map(h => (t.id ? h.id === t.id : h.name === t.name) ? { ...h, val: h.val - amt } : h).filter(h => h.val > 0.005); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash + amt }; }); this.later(() => this.setState({ doneSc: 1 }), 40); return; }
-      this.setState(s => { const hs = s.holdings.slice(); const i = hs.findIndex(h => t.id ? h.id === t.id : h.name === t.name); if (i >= 0) hs[i] = { ...hs[i], val: hs[i].val + amt }; else hs.unshift({ id: t.id, name: t.name, cover: t.cover, val: amt, ret: 0 }); const built = t.mix && !s.mixes.some(m => m.id === t.mix.id); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash - amt, ...(built ? { mixes: [t.mix, ...s.mixes], picks: [], weights: {}, mixName: '', mixCover: null, start: null } : {}) }; });
-      this.later(() => this.setState({ doneSc: 1 }), 40);
-    }, 1600);
+  // ---- 錢包／登入（assets/vendor/cre8-wallet.js，約 6MB：有登入紀錄或要登入時才載） ----
+  loadWallet(now) {
+    if (this.walletLoading) return; this.walletLoading = true;
+    const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
+    if (window.CRE8W) return go();
+    addEventListener('cre8w:ready', go, { once: true });
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js'; el.async = true; document.head.appendChild(el); };
+    if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
+  }
+  onWallet(w) {
+    const was = this.state.w, inNow = w.signedIn && w.address;
+    this.setState({ w, ...(w.signedIn ? { redeeming: false } : {}) });
+    if (inNow && (!was || was.address !== w.address || !was.signedIn)) { this.refresh(); this.resumeIntent(); }
+    if (!w.signedIn && was && was.signedIn) this.setState({ pf: null, pst: {}, cashWei: null, smx: null, acts: null });
+    if (w.signedIn && this.state.si && !this.intentPending()) this.setState({ si: null });
+  }
+  // 待接：GET 白名單 vault（名稱、APY、一句介紹）、現金生息部位、每檔策略加息 APY。端點名稱等後端定了再填。
+  async loadEarn() {}
+  async refresh() {
+    this.loadEarn();
+    const W = window.CRE8W; if (!W || !W.get().signedIn) return;
+    const [pf, mx, cash] = await Promise.all([W.portfolios().catch(() => null), W.mixes().catch(() => null), W.walletUsdt().catch(() => null)]);
+    this.setState({ pf, smx: mx ? mx.mixes : null, cashWei: cash, acts: null });
+    // 每檔的總值要 2–3 秒（後端讀鏈上價格）：一檔一檔進來，沒回來的顯示載入中。
+    (pf || []).forEach(p => W.status(p.id).then(st => this.setState(x => ({ pst: { ...x.pst, [p.id]: { usd: Number(st.totalUsdE8 || 0) / 1e8 } } }))).catch(() => this.setState(x => ({ pst: { ...x.pst, [p.id]: { err: true } } }))));
+    if (this.state.ptab === 1) this.loadActivity();
+  }
+  // 活動：每個投組 /portfolios/:id/activity（交易回合）＋ My mix 的事件，合併成一個列表（新的在上）。
+  async loadActivity() {
+    const W = window.CRE8W; if (!W || !this.state.pf) return;
+    const names = this.holdingNames();
+    const rows = [];
+    await Promise.all(this.state.pf.map(p => W.activity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || 'Portfolio', state: a.state, usd: a.usdAfterE8 != null ? Number(a.usdAfterE8) / 1e8 : null }))).catch(() => {})));
+    (this.state.smx || []).forEach(m => (m.events || []).forEach(e => rows.push({ at: e.at, name: m.name, kind: e.kind })));
+    rows.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
+    this.setState({ acts: rows.slice(0, 50) });
+  }
+  holdingNames() { const out = {}; this.holdingsOf(this.state).forEach(h => { out[h.pid] = h.name; }); return out; }
+  // 投組 → 畫面上的一列：基金用 strategyId 對回 FUNDS（/strategies 的 catalogKey），My mix 用 /me/mixes。
+  holdingsOf(s) {
+    const bySid = {}; if (s.live) Object.keys(s.live).forEach(k => { bySid[s.live[k].sid] = k; });
+    const mixes = this.mixesOf(s);
+    return (s.pf || []).map(p => {
+      const fund = FUNDS.find(x => x.id === bySid[p.strategyId]), m = mixes.find(x => x.portfolioId === p.id || x.strategyId === p.strategyId);
+      const st = s.pst[p.id];
+      return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || 'Portfolio'), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd : null, loading: !st, ret: m && m.ret != null ? m.ret : null };
+    }).filter(h => h.loading || h.val >= 0.01 || h.val == null);
+  }
+  // /me/mixes → 畫面用的組合（代號、百分比、頻率索引）。封面、頭像存伺服器的端點還沒有：封面先只留在這個分頁。
+  mixesOf(s) {
+    const FQ = ['daily', 'weekly', 'monthly', 'quarterly'];
+    return (s.smx || []).filter(m => m.status !== 'exited').map(m => ({ id: 'mix-' + m.id, mixId: m.id, strategyId: m.strategyId, portfolioId: m.portfolioId, account: m.account, status: m.status, name: m.name, cover: s.mixCovers[m.id] || null,
+      picks: (m.assets || []).map(a => [TICKER[String(a.assetId).toLowerCase()] || String(a.assetId).slice(0, 6), a.weightBps / 100]), freq: Math.max(0, FQ.indexOf(m.rebalance && m.rebalance.frequency)), start: m.rebalance && m.rebalance.startDate ? Date.parse(m.rebalance.startDate + 'T00:00:00') : Date.parse(m.createdAt), ret: m.returnBps != null ? Number(m.returnBps) / 100 : 0 }));
+  }
+  // 要簽名或動錢才登入：記下要做的事（Privy 的 X／Google 登入會整頁轉走再回來），登入完接著做。
+  needSignIn(intent) {
+    const w = this.state.w;
+    if (w && w.signedIn) return false;
+    try { sessionStorage.setItem('cre8.intent', JSON.stringify(intent)); } catch (_) {}
+    this.setState({ si: intent, siErr: null }); this.loadWallet(true);
+    return true;
+  }
+  intentPending() { try { return !!sessionStorage.getItem('cre8.intent'); } catch (_) { return false; } }
+  resumeIntent() {
+    let it = null; try { it = JSON.parse(sessionStorage.getItem('cre8.intent') || 'null'); sessionStorage.removeItem('cre8.intent'); } catch (_) {}
+    this.setState({ si: null });
+    if (!it) return;
+    if (it.for === 'buy' || it.for === 'sell') this.setState({ fund: it.fund, page: 'home', modal: true, side: it.for, step: 'amount', amount: '', target: it.target, payFaucet: false });
+    else if (it.for === 'build') this.setState({ page: 'build', fund: null, bstep: 3, picks: it.picks || [], weights: it.weights || {}, freq: it.freq != null ? it.freq : 2, start: it.start || null, mixName: it.mixName || '', modal: true, side: 'buy', step: 'amount', amount: '', target: it.target, payFaucet: false });
+  }
+  step(text) { this.setState({ procText: String(text).toUpperCase() }); }
+  finish(result) { this.setState({ step: 'done', doneSc: .4, result }); this.later(() => this.setState({ doneSc: 1 }), 40); this.refresh(); }
+  fail(e) { this.setState({ step: 'done', doneSc: .4, result: { error: (e && e.message ? e.message : String(e)).split('\n')[0].slice(0, 220) } }); this.later(() => this.setState({ doneSc: 1 }), 40); this.refresh(); }
+  // 確認：真的送出。買＝第一次開帳戶（簽一次）→ 錢包轉 USDT 或領測試 USDT → 記成投入 → 下單；美股收盤時等開盤成交。
+  async confirm() {
+    const W = window.CRE8W, s = this.state, t = s.target, amt = s.amount;
+    this.setState({ step: 'proc', procOff: 264, procText: 'PREPARING' }); this.later(() => this.setState({ procOff: 70 }), 60);
+    const onStep = x => this.step(x);
+    try {
+      if (!W) throw new Error('Sign-in is still loading.');
+      // 待接：現金生息存入／領回（一次確認）。後端與合約還沒好，不送任何交易。
+      if (s.side === 'earn' || s.side === 'earn-out') throw new Error('Earn isn’t open on testnet yet. Nothing was moved.');
+      if (s.side === 'sell') {
+        const h = this.holdingsOf(s).find(x => x.id === t.id);
+        if (!h) throw new Error('You don’t hold this portfolio.');
+        const all = (parseFloat(amt) || 0) >= Math.floor((h.val || 0) * 100) / 100;
+        const r = await W.sell({ portfolioId: h.pid, usd: parseFloat(amt) || 0, all, onStep });
+        return this.finish({ sold: true, sent: Number(r.sentUsdt), note: r.note });
+      }
+      if (t.mix) {
+        // My mix：第一次＝建立（簽一次），再放錢進去。後端記成投入後排程買入（美股開盤時段）。
+        let mixId = t.mixId, portfolioId = t.portfolioId, account = t.account;
+        if (!mixId) {
+          const FQ = ['daily', 'weekly', 'monthly', 'quarterly'], d = new Date(t.mix.start);
+          const input = { name: t.mix.name, assets: t.mix.picks.map(([tk, w]) => ({ assetId: ADDR[tk], weightBps: Math.round(w * 100) })), rebalance: { frequency: FQ[t.mix.freq], startDate: d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0') } };
+          if (!this.mixKey) this.mixKey = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random());
+          const made = await W.createMix({ input, key: this.mixKey, onStep });
+          this.mixKey = null; mixId = made.mixId; portfolioId = made.portfolioId; account = made.account;
+          if (s.mixCover) this.setState(x => ({ mixCovers: { ...x.mixCovers, [mixId]: s.mixCover } }));
+          this.setState(x => ({ target: { ...x.target, id: 'mix-' + mixId, mixId, portfolioId, account }, picks: [], weights: {}, mixName: '', mixCover: null, start: null }));
+          if (portfolioId == null) return this.finish({ filled: false, note: 'Your basket is set up. It takes a minute to get ready — then open it and press Buy to add money.' });
+        }
+        const r = await W.fundMixBasket({ mixId, portfolioId, account, pay: s.payFaucet ? 'faucet' : 'wallet', amount: amt, onStep });
+        return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: r.recorded ? null : 'Your USDT arrived. We’ll schedule it to buy shortly.' });
+      }
+      const LV = s.live && s.live[t.id], D = s.det[t.id];
+      if (!LV) throw new Error('This portfolio isn’t available right now.');
+      const r = await W.buy({ strategyId: LV.sid, onchainId: LV.onchainId, shown: D && D.version ? { version: D.version, configHash: D.configHash } : null, amount: amt, pay: s.payFaucet ? 'faucet' : 'wallet', onStep });
+      this.finish({ filled: r.filled, pending: r.pending, amount: Number(r.amountUsdt), note: r.note });
+    } catch (e) { this.fail(e); }
+  }
+  // 登入頁（要買、賣、建立時才出現）：新用戶輸入邀請碼後用 X 登入（後端要求 X＋放行名單）；已放行的人可以用 Google 或 Email。
+  // gate：tst 一進來的入口頁（使用者 2026-11-23：通過前看不到 app 內容）。open：app 內要簽名時 session 過期的備用登入頁。
+  // 邀請碼格式（同 cre8-app normalizeInviteCode）：8–10 個字母數字，不含易混淆字。先記在分頁，登入回來後兌換（/waitlist/redeem）。
+  // 入口頁：登入後還沒放行 → 輸入邀請碼（/waitlist/redeem）。成功後等換好 session 就進 app（redeeming 期間顯示載入中）。
+  async gCodeGo() {
+    const W = window.CRE8W; if (!W || this.state.redeeming) return;
+    this.setState({ redeeming: true, siErr: null });
+    try { await W.redeemInvite(this.state.invite); this.later(() => this.setState({ redeeming: false }), 25000); }
+    catch (e) { this.setState({ redeeming: false, siErr: e.message }); }
+  }
+  signInView(s) {
+    const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn), open = gate || !!it, gs = s.gStep || 'start';
+    const what = it && it.for === 'buy' ? 'buy ' + (it.target && it.target.name || 'this portfolio') : it && it.for === 'sell' ? 'sell' : it && it.for === 'build' ? 'start your basket' : 'see your portfolio';
+    const ph = w ? w.phase : 'loading', wl = w && w.waitlist ? w.waitlist : { state: 'idle' };
+    const waiting = wl.state === 'waiting';
+    // 入口頁：錢包程式還在載時照樣顯示按鈕（Join waitlist 不需要它）；只有剛從 X／Google 轉回來時才顯示載入中。
+    const oauthBack = /privy_oauth/.test(location.search);
+    const busy = open && !waiting && ((gate && !oauthBack) ? (w && W && (ph === 'creating-wallet' || ph === 'exchanging' || wl.state === 'checking')) : (!w || !W || ph === 'loading' || ph === 'creating-wallet' || ph === 'exchanging' || wl.state === 'checking' || (w.signedIn && this.intentPending())));
+    // 入口頁（gate）的狀態：載入中 → start（Join waitlist／Sign in）→ signin（X／Google／Email）→ 沒放行就 code（邀請碼＋Join waitlist）。
+    const gBusy = !!(s.redeeming || (w && (ph === 'creating-wallet' || ph === 'exchanging')) || (oauthBack && (!w || ph === 'loading')));
+    const gPending = !gBusy && !!(w && w.pending), gErr = !gBusy && !gPending && ph === 'error';
+    const gForm = gate && !gBusy && !gPending && !gErr;
+    const codeStep = w && (w.emailStep === 'awaiting-code-input' || w.emailStep === 'submitting-code');
+    const err = s.siErr || (wl.state === 'error' ? wl.message : null) || (waiting ? wl.message : null) || (w && (w.oauthError || w.emailError)) || (w && ph === 'error' && !waiting && wl.state !== 'checking' ? (w.errorText || 'Sign-in didn’t finish.') : null);
+    const W2 = fn => () => { if (!W) return this.setState({ siErr: 'Sign-in is still loading. Try again in a moment.' }); try { const r = fn(); if (r && r.catch) r.catch(e => this.setState({ siErr: e.message })); } catch (e) { this.setState({ siErr: e.message }); } };
+    return {
+      gated: gate, inApp: !gate,
+      // 入口頁每一步自己的標題（invite‑only 用不斷行連字號）。
+      gTitle: gBusy ? (s.redeeming ? 'Checking your code…' : 'Signing you in…') : gPending ? 'Enter your invite code' : gErr ? 'Sign-in didn’t finish' : gs === 'signin' ? (s.siEmail ? (codeStep ? 'Check your email' : 'Sign in with email') : 'Sign in') : 'CRE8 testnet is invite\u2011only.',
+      // 同一組欄位給入口頁與 app 內的登入頁；入口頁顯示時，登入頁的內容不畫（免得同一個按鈕出現兩次）。
+      sh_siBusy: !gate && busy, sh_siForm: !gate && open && !busy && !waiting && ph !== 'error', sh_siRetry: !gate && open && !busy && (waiting || ph === 'error'), sh_siEmail: !gate && s.siEmail, sh_siErr: !gate && open ? err : null,
+      siO: !gate && it ? 1 : 0, siPE: !gate && it ? 'auto' : 'none', siY: !gate && it ? 0 : 110,
+      closeSignIn: () => { try { sessionStorage.removeItem('cre8.intent'); } catch (_) {} this.setState({ si: null, siErr: null }); },
+      siTitle: waiting ? 'You’re on the waitlist.' : busy ? (gate ? 'Signing you in…' : 'Setting up your account') : gate ? 'CRE8 testnet is invite-only.' : 'Sign in to ' + what,
+      siSub: waiting ? 'We’ll let you in soon.' : busy ? (gate ? null : 'This takes a few seconds.') : gate ? ({ code: 'Enter your invite code.', methods: 'Sign in to use your code.', signin: 'Welcome back.' })[gs] || null : 'You’ll come right back here. We create a wallet for you; only you hold the key.',
+      // 入口頁的步驟：start（Join waitlist／I have an invite code）→ code（輸入碼）→ methods（X／Google／Email）；signin＝已放行的人直接登入。
+      gStart: gForm && gs !== 'signin', gMethods: gForm && gs === 'signin', gCode: gate && gPending, gBack: gate && !gBusy && (gs === 'signin' || gPending || gErr),
+      // 返回：還沒登入就回第一頁；已登入（等邀請碼或出錯）就登出再回第一頁。
+      gBackGo: () => { this.setState({ gStep: 'start', siErr: null, siEmail: false, invite: '' }); if ((gPending || gErr) && W) W.logout(); },
+      gToSignIn: () => this.setState({ gStep: 'signin', siErr: null, siEmail: false }),
+      gCodeGo: () => this.gCodeGo(), inviteKey: e => { if (e.key === 'Enter') this.gCodeGo(); }, codeBtn: 'Continue',
+      gX: W2(() => W.signInWith('twitter')),
+      siBusy: gate ? gBusy : busy, siBusyText: !w || ph === 'loading' ? 'LOADING' : ph === 'creating-wallet' ? 'CREATING YOUR WALLET' : wl.state === 'checking' ? 'CHECKING YOUR INVITE' : 'SIGNING YOU IN',
+      siForm: open && !busy && !waiting && ph !== 'error', siRetry: gate ? gErr : open && !busy && (waiting || ph === 'error'),
+      siRetryGo: W2(() => W.retry()),
+      invite: s.invite, onInvite: e => this.setState({ invite: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10), siErr: null }),
+      signInX: W2(() => { if (!W.setInvite(s.invite)) return this.setState({ siErr: 'Check the code: it’s 8 to 10 letters and numbers.' }); return W.signInWith('twitter'); }),
+      signInGoogle: W2(() => W.signInWith('google')), signInXBack: W2(() => { W.setInvite(''); return W.signInWith('twitter'); }), showEmail: () => this.setState({ siEmail: true, emailVal: '' }),
+      siEmail: s.siEmail, emailType: codeStep ? 'text' : 'email', emailMode: codeStep ? 'numeric' : 'email', emailVal: s.emailVal, emailPh: codeStep ? 'Code from your email' : 'you@email.com', emailBtn: codeStep ? 'Sign in' : 'Send code',
+      onEmail: e => this.setState({ emailVal: e.target.value, siErr: null }),
+      emailGo: W2(() => { const v = s.emailVal.trim(); if (!v) return; if (codeStep) return W.submitEmailCode(v); this.setState({ emailVal: '' }); return W.sendEmailCode(v); }),
+      codeErr: gate && gPending ? s.siErr : null,
+      siErr: gate ? (gPending ? null : s.siErr || (gForm && w && (w.oauthError || w.emailError)) || (gErr ? 'Couldn’t sign you in.' : null)) : open ? err : null,
+    };
+  }
+  async saveMix(id, patch, back) {
+    const W = window.CRE8W, m = this.mixesOf(this.state).find(x => x.id === id);
+    if (!W || !m) return;
+    this.setState({ modal: true, side: 'edit', step: 'proc', procOff: 264, procText: 'SAVING', target: { id, name: patch.name || m.name, cover: m.cover || 'app/cover-cre8.png' } });
+    this.later(() => this.setState({ procOff: 70 }), 60);
+    try { await W.patchMix({ id: m.mixId, patch, onStep: x => this.step(x) }); this.finish({ saved: true }); } catch (e) { this.fail(e); }
+  }
+  // My mix 的走勢：用同一組成分問 /mixes/preview 的模型淨值（一年回測）。成分改了就重問。
+  async loadMixDetail(key) {
+    const m = this.mixesOf(this.state).find(x => x.id === key); if (!m) return;
+    const sig = m.picks.map(p => p.join(':')).join(',');
+    if ((this.state.det[key] && this.state.det[key].sig === sig) || (this.detLoading || {})[key + sig]) return;
+    this.detLoading = { ...(this.detLoading || {}), [key + sig]: true };
+    try {
+      const d = await api('/mixes/preview', { method: 'POST', body: { assets: m.picks.map(([t, w]) => ({ assetId: ADDR[t], weightBps: Math.round(w * 100) })) } });
+      const nav = (d.modelNav || []).map(p => ({ date: p.date, value: Number(p.value) })).filter(p => p.value > 0);
+      this.setState(st => ({ det: { ...st.det, [key]: { sig, nav, stats: navStats(nav), apy: d.modelReturns && d.modelReturns.annualized != null ? Number(d.modelReturns.annualized) : null } } }));
+    } catch (e) { this.detLoading[key + sig] = false; }
+  }
+  // 真的淨值走勢：R[2] 是天數。沒有資料（載入中）畫一條平線、數字顯示 —。
+  navChart(nav, R, hover, W, H) {
+    const pts = navRange(nav, R[2]);
+    if (!pts) return { c: { p: 'M0,' + (H / 2) + ' L' + W + ',' + (H / 2), area: '', baseY: H / 2, hx: 0, hy: 50, ho: 0 }, v: { pctBig: '—', col: '#6B7785', when: R[4] }, n: 2 };
+    const vals = pts.map(p => p.value), sh = shape(vals, W, H), n = vals.length, i = hover == null ? n - 1 : Math.min(hover, n - 1);
+    const chg = vals[i] / vals[0] - 1;
+    return { c: { p: sh.p, area: sh.area, baseY: sh.ys[0].toFixed(1), hx: (i / (n - 1) * 100).toFixed(2), hy: (sh.ys[i] / H * 100).toFixed(2), ho: hover == null ? 0 : 1 }, v: { pctBig: pct(chg * 100), col: chg >= 0 ? '#16854F' : '#D23F2E', when: hover == null ? R[4] : fmtDate(pts[i].date, R[2] > 90) }, n };
   }
   chart(seed, ret, R, hover, endVal, W, H) {
     const vals = series(seed, ret, R[3], 1.4), sh = shape(vals, W, H), n = vals.length;
@@ -508,25 +825,37 @@ class Component extends DCLogic {
     };
   }
   renderVals() {
-    const s = this.state;
+    // 持倉、現金、My mix 都是登入後的真資料（holdingsOf／mixesOf）；沒登入時是空的。
+    const s0 = this.state, w = s0.w, signedIn = !!(w && w.signedIn);
+    const cashNum = s0.cashWei != null ? Number(s0.cashWei) / 1e18 : null;
+    const s = { ...s0, holdings: this.holdingsOf(s0), mixes: this.mixesOf(s0), cash: cashNum || 0 };
+    const shortAddr = a => a ? a.slice(0, 6) + '…' + a.slice(-4) : '';
+    const WL = window.CRE8W;
     const cta = { bg: '#E3B55B', fg: '#0B0F14', sh: 'inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)' };
     const off = { bg: '#EDF0F3', fg: '#9AA4AE', sh: 'none' };
     const sepL = (i, a) => i < a.length - 1 ? '1px solid #E6E9ED' : '0';
-    const card = f => ({ ...f, retText: pct(f.ret), col: f.ret >= 0 ? '#16854F' : '#D23F2E', pcol: f.ret >= 0 ? '#8BE3B5' : '#FF9B8F', spark: spark(FUNDS.indexOf(f) + 2, f.ret), open: () => this.open(f.id) });
+    // APY：有後端的數字就用（modelReturns.annualized）；列表還沒回來時先用 FUNDS 裡 2026-11-20 從同一個 API 抄的值。
+    const apyOf = f => s.live && s.live[f.id] && s.live[f.id].apy != null ? s.live[f.id].apy : f.ret;
+    const card = f => { const r = apyOf(f); return { ...f, retText: pct(r), col: r >= 0 ? '#16854F' : '#D23F2E', pcol: r >= 0 ? '#8BE3B5' : '#FF9B8F', spark: spark(FUNDS.indexOf(f) + 2, r), open: () => this.open(f.id) }; };
     const qq = s.q.trim().toLowerCase();
     const shownAssets = qq ? ASSETS.filter(t => t.toLowerCase().includes(qq) || (NAMES[t] || '').toLowerCase().includes(qq)) : ASSETS.filter(t => CRYPTO.has(t) === (s.bcat === 1));
     const FIL = [['All', null], ['People', 'people'], ['AI', 'ai'], ['Crypto', 'crypto'], ['Markets', 'markets'], ['Leveraged', 'leveraged']];
     const fcat = FIL[s.filter][1];
     const people = FUNDS.filter(f => f.kind === 'PEOPLE');
     const themes = FUNDS.filter(f => f.kind === 'THEME' && (!fcat || f.cat === fcat));
-    const f = FUNDS.find(x => x.id === s.fund) || s.mixes.map(mixFund).find(x => x.id === s.fund) || FUNDS[0];
-    const R = RANGES[s.range], nav = 10 * (1 + f.ret * 1.7 / 100);
-    const fch = this.chart(FUNDS.indexOf(f) * 3 + s.range + 5, f.ret * R[1], R, s.fh, nav, 600, 190);
+    const f0 = FUNDS.find(x => x.id === s.fund) || s.mixes.map(mixFund).find(x => x.id === s.fund) || FUNDS[0];
+    const D = s.det[f0.id], LV = s.live && s.live[f0.id];
+    // 基金：持股與權重用後端目前生效的版本、APY 用後端的；My mix 還是原型資料（待接 /me/mixes）。
+    const f = f0.kind === 'MINE' ? { ...f0, ret: D && D.apy != null ? D.apy : f0.ret } : { ...f0, ret: apyOf(f0), ...(D && D.hold && D.hold.length ? { hold: D.hold, n: D.hold.length } : {}) };
+    const R = RANGES[s.range];
+    const fch = this.navChart(D && D.nav, R, s.fh, 600, 190);
     const shown = f.hold.reduce((a, h) => a + h[1], 0);
     const hold = f.hold.map(([t, w]) => ({ t, w, bar: w, name: NAMES[t], logo: LOGO(t) }));
     if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: 'Rest of the basket', logo: 'app/l-usdt.png' });
     hold.forEach((h, i, a) => h.sep = sepL(i, a));
-    const stats = [['APY', pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], ['EXTRA YIELD', '+~2%', '#A8791F'], ['VOLATILITY', (11 + Math.abs(f.ret) * .28).toFixed(1) + '%', '#0B0F14'], ['MAX DRAWDOWN', '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', f.freqLabel || 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
+    // 波動與最大回撤由模型淨值算（navStats）；載入中顯示 —。EXTRA YIELD 待接後端的現金生息 APY（還沒有端點，先保留原本的字）。
+    const NS = D && D.stats, mineStat = false;
+    const stats = [['APY', pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], ['EXTRA YIELD', f.cat === 'leveraged' ? '—' : typeof s0.seRates[f.id] === 'number' ? '+~' + s0.seRates[f.id].toFixed(1) + '%' : 'Soon', '#A8791F'], ['VOLATILITY', mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], ['MAX DRAWDOWN', mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', f.freqLabel || (D && D.rebal) || 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
@@ -548,20 +877,37 @@ class Component extends DCLogic {
     const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: 'Next step' } : { ...off, label: 'Pick at least 1' }) : bs === 1 ? (total === 100 ? { ...cta, label: 'Next step' } : mixBtn) : bs === 2 ? { ...cta, label: 'Next step' } : s.editing && mixReady ? { ...cta, label: 'Save changes' } : mixBtn;
     const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady && s.editing) {
       // 改組合：立即生效，存回原本那一筆，回到它的專屬頁。
-      const id = s.editing, name = s.mixName.trim() || 'My basket';
-      this.setState(st => ({ mixes: st.mixes.map(m => m.id === id ? { ...m, name, picks: st.picks.map(t => [t, st.weights[t]]), freq: st.freq, start: st.start || m.start, cover: st.mixCover } : m), holdings: st.holdings.map(h => h.id === id ? { ...h, name, cover: st.mixCover || 'app/cover-cre8.png' } : h), editing: null, picks: [], weights: {}, mixName: '', mixCover: null, start: null }));
+      // 後端 PATCH /me/mixes/:id：名稱、頻率不用簽；成分改了要簽一次（立刻生效）。
+      const id = s.editing, name = s.mixName.trim() || 'My basket', m = s.mixes.find(x => x.id === id), FQ = ['daily', 'weekly', 'monthly', 'quarterly'];
+      if (!m) return;
+      const picks = s.picks.map(t => [t, s.weights[t]]), patch = {};
+      if (name !== m.name) patch.name = name;
+      if (picks.map(p => p.join(':')).join(',') !== m.picks.map(p => p.join(':')).join(',')) patch.assets = picks.map(([t, w]) => ({ assetId: ADDR[t], weightBps: Math.round(w * 100) }));
+      const sd = new Date(s.start || m.start), sds = sd.getFullYear() + '-' + String(sd.getMonth() + 1).padStart(2, '0') + '-' + String(sd.getDate()).padStart(2, '0');
+      if (s.freq !== m.freq || (s.start && s.start !== m.start)) patch.rebalance = { frequency: FQ[s.freq], startDate: sds };
+      if (s.mixCover !== (m.cover || null)) this.setState(x => ({ mixCovers: { ...x.mixCovers, [m.mixId]: s.mixCover } }));
+      this.setState({ editing: null, picks: [], weights: {}, mixName: '', mixCover: null, start: null });
       history.go(-(bs + 1));
-    } else if (mixReady) { const id = 'mix-' + Date.now(); this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id, name: s.mixName.trim() || 'My basket', cover: s.mixCover || 'app/cover-cre8.png', mix: { id, name: s.mixName.trim() || 'My basket', cover: s.mixCover, picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } } }); } };
+      if (Object.keys(patch).length) this.saveMix(id, patch);
+    } else if (mixReady) {
+      const id = 'mix-new', name = s.mixName.trim() || 'My basket';
+      const target = { id, name, cover: s.mixCover || 'app/cover-cre8.png', mix: { id, name, cover: s.mixCover, picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } };
+      if (this.needSignIn({ for: 'build', picks: s.picks, weights: s.weights, freq: s.freq, start: s.start, mixName: s.mixName, target })) return;
+      this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', payFaucet: false, target });
+    } };
     const tgt = s.target || { name: f.name, cover: f.cover };
-    const sell = s.side === 'sell', posH = s.holdings.find(h => h.name === tgt.name), posMax = posH ? Math.floor(posH.val * 100) / 100 : 0;
+    const sell = s.side === 'sell', posH = s.holdings.find(h => h.id === tgt.id), posMax = posH && posH.val ? Math.floor(posH.val * 100) / 100 : 0;
+    const tLive = s.live && s.live[tgt.id], minBuy = tLive ? tLive.min : 50, faucet = s.payFaucet && !sell;
+    const R0 = s.result || {}, isMixBuild = !!(tgt.mix && !tgt.mixId), seRate = typeof s0.seRates[tgt.id] === 'number' ? s0.seRates[tgt.id] : null, seOff = s0.seRates[tgt.id] === 'unavailable';
     const amt = parseFloat(s.amount) || 0;
-    const amtOk = sell ? amt > 0 && amt <= posMax : amt >= 50 && amt <= s.cash;
-    const amtBtn = amt === 0 ? { ...off, label: 'Enter an amount' } : sell ? (amt > posMax ? { ...off, label: 'More than you hold' } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: 'Review' }) : amt < 50 ? { ...off, label: 'Minimum 50 USDT' } : amt > s.cash ? { ...off, label: 'Not enough USDT' } : { ...cta, label: 'Review' };
-    const invested = s.holdings.reduce((a, h) => a + h.val, 0), totalVal = invested + s.cash;
-    const PR = RANGES[s.prange], pch = this.chart(41 + s.prange, 7.2 * PR[1], PR, s.ph, totalVal, 600, 160);
+    const amtOk = sell ? amt > 0 && amt <= posMax : amt >= minBuy && amt <= s.cash;
+    const amtBtn = amt === 0 ? { ...off, label: 'Enter an amount' } : sell ? (amt > posMax ? { ...off, label: 'More than you hold' } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: 'Review' }) : amt < minBuy ? { ...off, label: 'Minimum ' + minBuy + ' USDT' } : amt > s.cash ? { ...off, label: 'Not enough USDT' } : { ...cta, label: 'Review' };
+    const invested = s.holdings.reduce((a, h) => a + (h.val || 0), 0), totalVal = invested + s.cash;
+    // 總資產的歷史走勢後端還沒有端點：先畫平線、變化顯示 —（待接）。
+    const PR = RANGES[s.prange], pch = this.navChart(null, PR, s.ph, 600, 160);
     const own = s.holdings.find(h => h.id === f.id);
     const SH = ['#0B0F14', '#2F4A60', '#6F93AE', '#DCE4EA'];
-    const allocSrc = [...s.holdings.map(h => [h.name, h.val, h.cover]), ['Cash · earning up to 6%', s.cash, null]];
+    const allocSrc = [...s.holdings.map(h => [h.name, h.val, h.cover]), ['Cash', s.cash, null]];
     const navDef = [['home', 'Discover', 'M12 3a9 9 0 100 18 9 9 0 000-18zM15.5 8.5l-2 5-5 2 2-5z'], ['build', 'Build', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16.5 13v7M13 16.5h7'], ['profile', 'Profile', 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6']];
     const curPage = s.fund ? 'home' : s.page;
     const W = !!s.wide;
@@ -572,7 +918,10 @@ class Component extends DCLogic {
       b0: bs === 0, b1: bs === 1, b2: bs === 2, b3: bs === 3, bTitle: B_TITLES[bs], bNext, mixBtn: bNextBtn,
       navTabs: navDef.map(([id, label, icon]) => ({ label, icon, go: () => this.go(id), col: curPage === id ? '#0B0F14' : '#6B7785', bg: curPage === id ? 'rgba(11,15,20,.07)' : 'transparent', tcol: curPage === id ? '#fff' : '#3C4651', tbg: curPage === id ? '#0B0F14' : 'transparent' })),
       navY: s.fund || s.modal || s.acct ? 140 : 0,
-      pageHome: s.page === 'home' && !s.fund, pageFund: !!s.fund, pageBuild: s.page === 'build' && !s.fund, pageProfile: s.page === 'profile' && !s.fund,
+      pageHome: s.page === 'home' && !s.fund, pageFund: !!s.fund, pageBuild: s.page === 'build' && !s.fund, pageProfile: s.page === 'profile' && !s.fund && signedIn, pageProfileOut: s.page === 'profile' && !s.fund && !signedIn,
+      outText: w && w.waitlist && w.waitlist.state === 'waiting' ? 'You’re on the waitlist. We’ll let you in soon.' : 'Sign in to see your portfolios, cash and activity.', outBtn: 'Sign in', signInProfile: () => this.needSignIn({ for: 'profile' }),
+      pillText: signedIn ? shortAddr(w.address) : 'Sign in', pillClick: () => signedIn ? this.go('profile') : this.needSignIn({ for: 'profile' }),
+      handleText: w && w.profile && w.profile.handle ? '@' + w.profile.handle : signedIn ? shortAddr(w.address) : '',
       goBuild: () => this.go('build'),
       market: [['S&P 500', '6,842.10', '+0.62%', '#16854F'], ['NASDAQ', '23,418.55', '+0.94%', '#16854F'], ['BTC', '$98,214', '−1.12%', '#D23F2E'], ['US MARKET', 'Open', 'closes 4:00 ET', '#6B7785']].map(([k, v, d, c]) => ({ k, v, d, c })),
       filters: FIL.map(([label], i) => ({ label, pick: () => this.setState({ filter: i }), bg: s.filter === i ? '#0B0F14' : '#FFFFFF', fg: s.filter === i ? '#fff' : '#3C4651', bd: s.filter === i ? '#0B0F14' : '#E6E9ED' })),
@@ -583,11 +932,11 @@ class Component extends DCLogic {
       cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : f.kind === 'MINE' ? 'YOUR BASKET' : 'THEME', count: f.n + ' ASSETS', hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
-      posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? '$' + fmt(own.val) : '50 USDT',
+      posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? (own.val == null ? '—' : '$' + fmt(own.val)) : (LV ? LV.min : 50) + ' USDT',
       isMix: f.kind === 'MINE', notMix: f.kind !== 'MINE',
       editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, mixCover: m.cover || null, q: '', calOff: 0 }); window.scrollTo(0, 0); },
-      openBuy: () => this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
-      openSell: () => this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
+      openBuy: () => { const m = f.kind === 'MINE' ? s.mixes.find(x => x.id === f.id) : null; const target = { id: f.id, name: f.name, cover: f.cover, ...(m ? { mix: { id: m.id }, mixId: m.mixId, portfolioId: m.portfolioId, account: m.account } : {}) }; if (this.needSignIn({ for: 'buy', fund: f.id, target })) return; this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', payFaucet: false, target }); },
+      openSell: () => { const target = { id: f.id, name: f.name, cover: f.cover }; if (this.needSignIn({ for: 'sell', fund: f.id, target })) return; this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target }); },
       hasPos: !!own, buyPad: own ? 26 : 34, buyFlex: own ? 'none' : '1',
       bcats: ['Stock', 'Crypto'].map((label, i) => ({ label, pick: () => this.setState({ bcat: i }), bg: s.bcat === i ? '#0B0F14' : '#FFFFFF', fg: s.bcat === i ? '#fff' : '#3C4651', bd: s.bcat === i ? '#0B0F14' : '#E6E9ED' })),
       q: s.q, onQ: e => this.setState({ q: e.target.value }), noAssets: shownAssets.length === 0,
@@ -600,40 +949,79 @@ class Component extends DCLogic {
       calTitle: MON[calM.getMonth()] + ' ' + calM.getFullYear(), calCells, calPrev: () => s.calOff > 0 && this.setState({ calOff: s.calOff - 1 }), calNext: () => s.calOff < 12 && this.setState({ calOff: s.calOff + 1 }), calPrevO: s.calOff > 0 ? 1 : .25, calNextO: s.calOff < 12 ? 1 : .25, startText,
       buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: s.mixCover || 'app/cover-cre8.png' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
-      closeModal: () => s.step === 'done' && s.target && s.target.mix ? this.setState({ modal: false, bstep: 0 }) : this.back({ modal: false }),
-      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount' }) : s.step === 'amount' ? this.back({ modal: false }) : null,
+      // 處理中不能關（錢包可能正要簽名）；做完或失敗才關。
+      closeModal: () => s.step === 'proc' ? null : s.step === 'done' && s.target && s.target.mix && s.page === 'build' ? this.setState({ modal: false, bstep: 0, ...(R0.error ? {} : { page: 'profile' }) }) : this.back({ modal: false }),
+      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' ? this.back({ modal: false }) : null,
       sheetLeftLabel: s.step === 'review' ? 'Back' : s.step === 'amount' ? 'Cancel' : '',
       modalTitle: s.step === 'amount' ? (sell ? 'Sell ' : '') + tgt.name : s.step === 'review' ? (sell ? 'Review sale' : 'Review') : '',
-      availText: sell ? 'USDT · ' + fmt(posMax) + ' HELD' : 'USDT · ' + fmt(s.cash) + ' AVAILABLE',
+      availText: sell ? 'USDT · ' + fmt(posMax) + ' HELD' : 'USDT · ' + (cashNum == null ? '—' : fmt(s.cash)) + ' AVAILABLE',
+      // 測試網：錢包沒有 USDT（或不夠）時，可以改用免費測試 USDT（第一次 10,000，之後每天 1,000，直接進這一檔）。
+      showFaucet: !sell && cashNum != null && s.cash < Math.max(minBuy, amt || 0), useFaucet: () => this.setState({ payFaucet: true, step: 'review' }),
       reviewNote: sell ? 'Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.' : 'Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.',
       confBg: sell ? '#0B0F14' : '#E3B55B', confFg: sell ? '#fff' : '#0B0F14', confirmLabel: sell ? 'Confirm sale' : 'Confirm purchase', doneTitle: sell ? 'Sold' : 'You own it',
       mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done',
       sheetCover: tgt.cover, sheetName: tgt.name,
-      amtText: s.amount === '' ? '0' : Number(s.amount.split('.')[0] || 0).toLocaleString('en-US') + (s.amount.includes('.') ? '.' + s.amount.split('.')[1] : ''),
+      amtText: faucet ? (isMixBuild || tgt.mixId ? '1,000' : '10,000') : s.amount === '' ? '0' : Number(s.amount.split('.')[0] || 0).toLocaleString('en-US') + (s.amount.includes('.') ? '.' + s.amount.split('.')[1] : ''),
       amtColor: s.amount === '' ? '#C3CAD1' : '#0B0F14', balText: fmt(s.cash),
       quick: (sell ? [['25%', posMax * .25], ['50%', posMax * .5], ['75%', posMax * .75], ['ALL', posMax]] : [['50', 50], ['100', 100], ['500', 500], ['MAX', s.cash]]).map(([label, v]) => { const vv = sell ? Math.floor(v * 100) / 100 : Math.floor(v); const on = amt === vv; return { label, pick: () => this.setState({ amount: String(vv) }), bg: on ? '#0B0F14' : '#FFFFFF', fg: on ? '#fff' : '#3C4651', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'].map(k => ({ k, press: () => this.press(k) })),
       amtBtn, toReview: () => amtOk && this.setState({ step: 'review' }),
-      reviewRows: (sell ? [['You get', fmt(amt) + ' USDT'], ['Paid to', 'Your wallet'], ['Left in portfolio', '$' + fmt(Math.max(0, posMax - amt))]] : [['You pay', fmt(amt) + ' USDT'], ['Held in', 'Your wallet'], ['Cash left', fmt(s.cash - amt) + ' USDT']]).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
-      confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, doneText: tgt.name.toUpperCase() + ' · ' + fmt(amt) + ' USDT',
-      viewPort: () => { this.setState({ modal: false, fund: null, page: 'profile', ptab: 0, bstep: 0 }); window.scrollTo(0, 0); },
-      profileName: s.pname, pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
-      av: { bg: s.photo ? 'center/cover no-repeat url(' + s.photo + ')' : AVC[s.avc], letter: s.photo ? '' : (s.pname.trim()[0] || '?').toUpperCase() },
+      reviewRows: (sell ? [['You get about', fmt(amt) + ' USDT'], ['Paid to', 'Your wallet'], ['Left in portfolio', '$' + fmt(Math.max(0, posMax - amt))]] : faucet ? [['You pay', 'Free test USDT'], ['Amount', tgt.mixId || isMixBuild ? '1,000 a day' : '10,000 first buy · then 1,000 a day'], ['Held in', 'Your account']] : [['You pay', fmt(amt) + ' USDT'], ['Held in', 'Your account'], ['Cash left', fmt(s.cash - amt) + ' USDT']]).concat(!sell && tLive && tLive.apy != null ? [['APY', '~' + pct(tLive.apy).replace('+', '') + (s.se && seRate != null ? ' + ~' + seRate.toFixed(1) + '% extra' : '')]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
+      confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, procText: s.procText || 'PREPARING',
+      // 結果：成交＝You own it；錢已進帳戶但還沒成交＝Order placed（美股開盤後成交）；失敗＝紅色。
+      doneTitle: R0.error ? (sell ? 'Sale not completed' : s.side === 'edit' ? 'Not saved' : 'Not completed') : R0.saved ? 'Saved' : R0.sold ? 'Sold' : R0.pending ? 'Almost there' : R0.filled ? 'You own it' : 'Order placed',
+      doneText: R0.error ? tgt.name.toUpperCase() : R0.saved ? tgt.name.toUpperCase() : R0.sold ? tgt.name.toUpperCase() + ' · ' + fmt(R0.sent || 0) + ' USDT TO YOUR WALLET' : tgt.name.toUpperCase() + (R0.amount ? ' · ' + fmt(R0.amount) + ' USDT' : '') + (R0.filled ? '' : R0.pending ? '' : ' · WAITING TO FILL'),
+      doneNote: R0.error || R0.note || (!R0.error && !R0.filled && !R0.sold && !R0.saved && !R0.pending ? 'Crypto buys right away. Stocks buy when the US market is open (9:30–16:00 ET).' : null),
+      doneBg: R0.error ? '#D23F2E' : R0.filled || R0.sold || R0.saved ? '#16854F' : '#2F6690', doneSh: R0.error ? 'rgba(210,63,46,.5)' : R0.filled || R0.sold || R0.saved ? 'rgba(30,158,99,.6)' : 'rgba(47,102,144,.5)',
+      doneIcon: R0.error ? 'M23 6v14M23 29v1' : R0.filled || R0.sold || R0.saved ? 'M4 18l12 12L42 4' : 'M11 18h.01M23 18h.01M35 18h.01',
+      doneRight: () => R0.error ? this.setState({ step: s.side === 'edit' ? 'done' : 'review', ...(s.side === 'edit' ? { modal: false } : {}) }) : (this.setState({ modal: false, fund: null, page: 'profile', ptab: 0, bstep: 0 }), window.scrollTo(0, 0)),
+      doneRightLabel: R0.error ? (s.side === 'edit' ? 'Close' : 'Try again') : 'View portfolio',
+      profileName: s.pname || (w && w.profile && w.profile.name) || 'You', pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
+      // 名稱、頭像存伺服器的端點還沒有：先用 Privy 的名字與 X 頭像當預設，改了只留在這個分頁（待接）。
+      av: (() => { const ph = s.photo || (w && w.profile && w.profile.avatarUrl); const nm = s.pname || (w && w.profile && w.profile.name) || '?'; return { bg: ph ? 'center/cover no-repeat url(' + ph + ')' : AVC[s.avc], letter: ph ? '' : (nm.trim()[0] || '?').toUpperCase() }; })(),
       avOpts: AVC.map((bg, i) => ({ bg, pick: () => this.setState({ avc: i, photo: null }), ring: !s.photo && s.avc === i ? '0 0 0 2px #F3F3F3,0 0 0 4px #0B0F14' : '0 0 0 1px rgba(11,15,20,.08)' })),
       hasPhoto: !!s.photo, removePhoto: () => this.setState({ photo: null }),
       onPhoto: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ photo: URL.createObjectURL(f) }); e.target.value = ''; },
-      pv: pch.v, pc: pch.c, pScrub: this.scrub('ph', pch.n), pLeave: () => this.setState({ ph: null }),
+      pv: { big: signedIn && (s0.pf === null || s.holdings.some(h => h.loading) || cashNum == null) ? '—' : '$' + fmt(totalVal), chg: '—', col: '#6B7785', when: '' }, pc: pch.c, pScrub: this.scrub('ph', pch.n), pLeave: () => this.setState({ ph: null }),
       pranges: pills(RANGES.map(r => r[0]), s.prange, i => this.setState({ prange: i, ph: null })),
       fundCount: s.holdings.length + ' PORTFOLIOS + CASH',
-      alloc: allocSrc.map(([n, v, cv], i, a) => { const p = Math.max(1, Math.round(v / totalVal * 100)); return { n, pct: p, lo: p >= 9 ? 1 : 0, vt: '$' + fmt(v), bg: SH[Math.min(i, SH.length - 1)], fg: i < 3 ? '#fff' : '#0B0F14', ring: i >= 3 ? 'inset 0 0 0 1px #D6DCE2' : 'none', sep: i < a.length - 1 ? '1px solid #EEF0F2' : '0' }; }),
+      alloc: allocSrc.map(([n, v0, cv], i, a) => { const v = v0 || 0, p = Math.max(1, Math.round(v / (totalVal || 1) * 100)); return { n, pct: p, lo: p >= 9 ? 1 : 0, vt: '$' + fmt(v), bg: SH[Math.min(i, SH.length - 1)], fg: i < 3 ? '#fff' : '#0B0F14', ring: i >= 3 ? 'inset 0 0 0 1px #D6DCE2' : 'none', sep: i < a.length - 1 ? '1px solid #EEF0F2' : '0' }; }),
       ptabs: pills(['Holdings', 'Activity'], s.ptab, i => this.setState({ ptab: i })),
       showHold: s.ptab === 0, showAct: s.ptab === 1,
-      holdings: s.holdings.map((h, i) => ({ ...h, val: '$' + fmt(h.val), sub: Math.max(1, Math.round(h.val / totalVal * 100)) + '% of portfolio' + (h.ret === 0 ? ' · just bought' : h.id ? '' : ' · your basket'), ret: h.ret === 0 ? 'NEW' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', spark: spark(i + 9, h.ret || 1), open: () => this.open(h.id) })),
-      cashText: '$' + fmt(s.cash),
-      activity: [['+', 'Bought AI Chips', 'Today · 10:42', '−500.00', '#16854F', '#0B0F14'], ['↻', 'My mix rebalanced', 'Yesterday · back to your weights', '', '#2F6690', '#0B0F14'], ['%', 'Interest on cash', 'Nov 19', '+1.86', '#16854F', '#16854F'], ['↓', 'Added USDT', 'Nov 18', '+3,000.00', '#3C4651', '#16854F'], ['+', 'Bought Pelosi Portfolio', 'Nov 18', '−1,000.00', '#16854F', '#0B0F14']].map(([g, t, d, v, fg, vc], i, a) => ({ g, t, d, v, fg, vc, sep: sepL(i, a) })),
+      holdings: s.holdings.map((h, i) => ({ ...h, val: h.val == null ? '—' : '$' + fmt(h.val), sub: h.loading ? 'Loading…' : h.val == null ? 'Couldn’t load' : Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '% of portfolio', ret: h.ret == null ? '' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', open: () => h.id.startsWith('p') ? null : this.open(h.id) })),
+      holdNote: !signedIn ? null : s0.pf === null ? 'Loading your portfolios…' : s.holdings.length === 0 ? 'No portfolios yet. Pick one on Discover to start.' : null,
+      cashText: cashNum == null ? '—' : '$' + fmt(s.cash),
+      // 現金區：錢包現金（Available）與現金生息（Earning）分兩行，永遠不加總；投組的借款不會出現在這裡。
+      cashSub: 'Available',
+      openEarn: () => signedIn ? this.setState({ ern: true }) : this.needSignIn({ for: 'profile' }),
+      earning: !!s0.earnPos, earnSub: s0.earnPos ? '~' + s0.earnPos.apy.toFixed(1) + '% APY · +' + fmt(s0.earnPos.today) + ' USDT today' : '', earnText: s0.earnPos ? '$' + fmt(s0.earnPos.amount) : '',
+      openEarnOut: () => this.setState({ modal: true, side: 'earn-out', step: 'amount', amount: '', target: { id: 'earn', name: 'Withdraw from Earn', cover: 'app/l-usdt.png' } }),
+      ernO: s.ern ? 1 : 0, ernPE: s.ern ? 'auto' : 'none', ernY: s.ern ? 0 : 110, closeEarn: () => this.setState({ ern: false }),
+      ernTitle: 'Earn on your cash', ernSub: 'Your USDT earns interest. Withdraw any time, interest included.', ernSoon: !s0.vaults || s0.vaults.length === 0, hasVaults: !!(s0.vaults && s0.vaults.length),
+      // vault 使用率太高時後端回 available: false：寫「Temporarily unavailable」，不能選，不顯示錯誤碼。
+      vaults: (s0.vaults || []).map((v, i, a) => ({ ...v, apy: v.available === false ? 'Unavailable' : '~' + v.apy.toFixed(1) + '%', about: v.available === false ? 'Temporarily unavailable. Try again later.' : v.about, best: v.available !== false && v.apy === Math.max(...a.filter(x => x.available !== false).map(x => x.apy)), sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0', bg: '#FFFFFF', pick: () => v.available !== false && this.setState({ ern: false, modal: true, side: 'earn', step: 'amount', amount: '', target: { id: 'earn:' + v.id, name: v.name, cover: 'app/l-usdt.png' } }) })),
+      // 策略加息（買入確認畫面的開關，預設關）。利率還沒有：顯示 Coming soon，開關停用。
+      // 槓桿類（3x）不提供策略加息。後端回「暫時無法使用」（使用率太高）時 seRates[id] = 'unavailable'。
+      showSE: s.side === 'buy' && !tgt.mix && !faucet && !!tLive && (FUNDS.find(x => x.id === tgt.id) || {}).cat !== 'leveraged', seOn: !!(s.se && seRate != null), seCur: seRate != null ? 'pointer' : 'default',
+      seTitle: seRate != null ? 'Earn extra ~' + seRate.toFixed(1) + '% on this portfolio' : 'Earn extra on this portfolio', seSub: seRate != null ? 'We use your shares to earn more. If prices fall fast, we automatically sell a little to keep you safe.' : seOff ? 'Temporarily unavailable. Try again later.' : 'Coming soon',
+      seToggle: () => seRate != null && this.setState({ se: !s.se }), seBg: s.se && seRate != null ? '#16854F' : seRate != null ? '#C3CAD1' : '#EDF0F3', seJust: s.se && seRate != null ? 'flex-end' : 'flex-start',
+      seRow: !!own && f.cat !== 'leveraged' && f.kind !== 'MINE',
+      seLine: typeof s0.seRates[f.id] === 'number' ? '~' + s0.seRates[f.id].toFixed(1) + '% extra' : s0.seRates[f.id] === 'unavailable' ? 'Temporarily unavailable' : 'Coming soon', seFundOn: false, seFundBg: '#EDF0F3', seFundJust: 'flex-start', seFundToggle: () => {},
+      activity: (s0.acts || []).map(a => { const d = new Date(a.at), when = MON[d.getMonth()] + ' ' + d.getDate() + ' · ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+        const ok = a.state === 'executed' || a.state === 'confirmed' || a.state === 'succeeded';
+        return a.kind ? ['↻', a.name, when + ' · ' + String(a.kind).replace(/_/g, ' '), '', '#2F6690', '#0B0F14'] : [ok ? '↻' : '·', a.name + (ok ? ' traded' : ''), when + ' · ' + String(a.state).replace(/_/g, ' '), a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14']; }).map(([g, t, d, v, fg, vc], i, a) => ({ g, t, d, v, fg, vc, sep: sepL(i, a) })),
+      actNote: s0.acts === null ? 'Loading…' : s0.acts.length === 0 ? 'No activity yet.' : null,
       openAcct: () => this.setState({ acct: true }), closeAcct: () => this.back({ acct: false }),
       acctO: s.acct ? 1 : 0, acctPE: s.acct ? 'auto' : 'none', acctY: s.acct ? 0 : 110,
-      emailLinked: s.emailLinked, emailOpen: !s.emailLinked, emailSub: s.emailLinked ? 'user@example.com' : 'Not linked', linkGoogle: () => this.setState({ emailLinked: true }),
+      // 帳號：Email 一列（email 或 Google 都算）、X 一列、一個錢包（使用者原則）。
+      ...(() => { const ms = (w && w.methods) || [], em = ms.find(m => m.kind === 'email' || m.kind === 'google'), x = ms.find(m => m.kind === 'x');
+        return { emailLinked: !!em, emailOpen: !em, emailSub: em ? em.detail : 'Not linked', linkGoogle: () => WL && WL.link('google'), xLinked: !!x, xOpen: !x, xSub: x ? x.detail : 'Not linked', linkX: () => WL && WL.link('x') }; })(),
+      addrShort: signedIn ? shortAddr(w.address) : '', addrFull: signedIn ? w.address : '', linkErr: w && w.linkError,
+      exportKey: () => WL && WL.exportWallet(), signOut: () => { this.setState({ acct: false, si: null, page: 'home', fund: null }); try { sessionStorage.removeItem('cre8.intent'); } catch (_) {} if (WL) WL.logout(); },
+      addMoney: () => signedIn ? this.setState({ rc: true, copied: false }) : this.needSignIn({ for: 'profile' }),
+      rcO: s.rc ? 1 : 0, rcPE: s.rc ? 'auto' : 'none', rcY: s.rc ? 0 : 110, closeRecv: () => this.setState({ rc: false }),
+      copyAddr: () => { try { navigator.clipboard.writeText(w.address); this.setState({ copied: true }); } catch (_) {} }, copyLabel: s.copied ? 'Copied' : 'Copy address',
+      ...this.signInView(s0),
     };
   }
 }

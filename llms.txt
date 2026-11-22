@@ -48,5 +48,6 @@
 
 ## Links
 - Website: https://cre8.finance/
-- App (testnet): https://tst.cre8.finance/
+- Waitlist: https://cre8.finance/waitlist
+- App (testnet, invite only): https://tst.cre8.finance/
 - X: https://x.com/CRE8Finance
