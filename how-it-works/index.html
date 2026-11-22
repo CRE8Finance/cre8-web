@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How CRE8 works: buying, custody, fees and withdrawals</title>
+<meta name="description" content="How buying a CRE8 portfolio with USDT works: who holds the assets, what it costs, how to sell and withdraw, what happens when the US market is closed, and how idle USDT earns. CRE8 is on testnet.">
+<link rel="canonical" href="https://cre8.finance/how-it-works">
+<link rel="alternate" hreflang="en" href="https://cre8.finance/how-it-works">
+<link rel="alternate" hreflang="zh-Hans" href="https://cre8.finance/zh/how-it-works">
+<link rel="alternate" hreflang="x-default" href="https://cre8.finance/how-it-works">
+<meta name="theme-color" content="#F3F5F7">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CRE8">
+<meta property="og:locale" content="en_US">
+<meta property="og:url" content="https://cre8.finance/how-it-works">
+<meta property="og:title" content="How CRE8 works: buying, custody, fees and withdrawals">
+<meta property="og:description" content="How buying a CRE8 portfolio with USDT works: who holds the assets, what it costs, how to sell and withdraw, what happens when the US market is closed, and how idle USDT earns. CRE8 is on testnet.">
+<meta property="og:image" content="https://cre8.finance/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@CRE8Finance">
+<meta name="twitter:title" content="How CRE8 works: buying, custody, fees and withdrawals">
+<meta name="twitter:description" content="How buying a CRE8 portfolio with USDT works: who holds the assets, what it costs, how to sell and withdraw, what happens when the US market is closed, and how idle USDT earns. CRE8 is on testnet.">
+<meta name="twitter:image" content="https://cre8.finance/assets/og.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"How CRE8 works: buying, custody, fees and withdrawals","description":"How buying a CRE8 portfolio with USDT works: who holds the assets, what it costs, how to sell and withdraw, what happens when the US market is closed, and how idle USDT earns. CRE8 is on testnet.","url":"https://cre8.finance/how-it-works","inLanguage":"en","isPartOf":{"@type":"WebSite","name":"CRE8","url":"https://cre8.finance/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://cre8.finance/"},{"@type":"ListItem","position":2,"name":"How it works","item":"https://cre8.finance/how-it-works"}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="/assets/pages.css">
+</head>
+<body>
+<header class="site-head"><div class="site-head__bar">
+<a class="site-head__logo" href="/"><img src="/assets/cre8-logo-dark.svg" alt="CRE8" width="107" height="20"></a>
+<nav aria-label="Main"><a href="/portfolios">Portfolios</a><a href="/how-it-works" aria-current="page">How it works</a><a href="/compare">Compare</a></nav>
+<div class="site-head__right"><a class="site-head__lang" href="/zh/how-it-works" hreflang="zh-Hans" lang="zh-Hans">中文</a><a class="btn btn--gold btn--sm" href="https://tst.cre8.finance/">Open app <span aria-hidden="true">→</span></a></div>
+</div></header>
+<main class="wrap">
+<ol class="crumbs"><li><a href="/">Home</a></li><li><span aria-current="page">How it works</span></li></ol>
+<h1>How it works</h1>
+<p class="lede">CRE8 lets you buy a basket of US stock tokens and crypto with USDT, in one payment, and keep it in an on-chain account that belongs to you. Cash you haven’t invested can earn in the meantime.</p>
+<div class="section prose">
+<h2>Buying</h2>
+<ol>
+<li>Sign in with email (or Google). CRE8 opens a smart account for you on BNB Chain, owned by the wallet you signed in with.</li>
+<li>Add USDT. On testnet you can claim free test USDT in the app.</li>
+<li>Pick a portfolio and enter an amount, 50 USDT minimum. One payment buys every asset in the basket at its target weight.</li>
+</ol>
+<p>Trades go through an allowlist of on-chain venues (PancakeSwap, KyberSwap and OpenOcean). Each asset has a per-trade cap, so large orders are split into several trades.</p>
+<p>After that the portfolio keeps its shape: it rebalances once a month, and whenever an asset drifts more than 5 points from its target weight. You can also build your own basket of stocks and weights, and CRE8 rebalances that too.</p>
+
+<h2 style="margin-top:56px">Who holds the assets</h2>
+<p>You do. Every user has their own smart account on BNB Chain, and the tokens sit there, never pooled with anyone else’s, where any block explorer can show them. CRE8’s automation can only run trades inside your account. Moving anything out of it takes your signature.</p>
+<p>US stocks are held as bStock, Binance’s tokenized US stocks on BNB Chain. Each bStock is backed by shares held by the issuer, a Binance affiliate, which publishes a daily proof of reserves and can freeze tokens. Holding bStock isn’t the same as owning shares at a broker: there are no voting rights, and dividends and splits show up in the token balance rather than as cash.</p>
+
+<h2 style="margin-top:56px">Fees</h2>
+<ul>
+<li><strong>Testnet:</strong> no fees, and CRE8 pays the gas.</li>
+<li><strong>Mainnet:</strong> 0.1% on each buy and sell. Network gas is charged at cost from a small USDT reserve kept in each portfolio. Venue pool fees and slippage apply on top.</li>
+</ul>
+
+<h2 style="margin-top:56px">Selling and withdrawing</h2>
+<p>Sell some or all of a portfolio back to USDT and the money lands in your account. From there you can withdraw USDT to any BNB Chain address, including an exchange deposit address. Large sales go through in a few trades because of the per-asset cap.</p>
+
+<h2 style="margin-top:56px">When the US market is closed</h2>
+<p>Stock tokens only trade during US market hours, and CRE8 doesn’t force trades outside them. An order placed while the market is closed waits in your account and goes through at the next open. Until then your USDT stays in your own account.</p>
+
+<h2 style="margin-top:56px">Earning on idle USDT</h2>
+<p>Cash in your account can just sit there, or you can press <strong>Earn</strong> to put it in one of CRE8’s allowlisted USDT vaults (Lista, Venus, Aave). Each vault shows its APY, which follows market rates; CRE8 doesn’t promise a rate. Withdraw any amount, interest included, whenever you like. CRE8 never moves your cash unless you ask it to.</p>
+<h3>Extra yield on a portfolio</h3>
+<p>When you buy a portfolio you can also turn on extra yield. It stays off unless you switch it on. CRE8 then uses the portfolio’s shares to earn a bit more: it deposits them in a lending market, takes out a small, conservative amount of USDT against them and puts that in a USDT vault. If prices fall fast, the system automatically sells a little to stay safe, and your activity log tells you afterwards what was sold. You can switch it off at any time and the shares stay in the portfolio.</p>
+<p>CRE8 takes out only a small part of what the market would allow, which keeps the risk low but can’t remove it entirely. Leveraged portfolios don’t offer extra yield.</p>
+<p>Your cash and each portfolio’s money are always kept apart. USDT a portfolio uses to earn extra belongs to that portfolio only: it never counts as your cash and never mixes with another portfolio.</p>
+<p>On testnet the vaults and rates are simulated, so treat the numbers as illustrations.</p>
+
+<h2 style="margin-top:56px">It’s a testnet</h2>
+<ul>
+<li>CRE8 runs on BNB Chain testnet with test versions of the tokens and simulated prices. No real money is involved.</li>
+<li>Test USDT is free. Signing in needs an invite code.</li>
+<li>There’s no mainnet date yet. The contracts get an external audit before mainnet.</li>
+<li>Anyone outside the US can use it, where local rules allow.</li>
+</ul>
+</div>
+<section class="section"><div class="section__head"><h2>Start with a portfolio</h2><a class="link" href="/portfolios">All portfolios →</a></div><div class="fund-list"><a class="fund-row" href="/portfolios/pelosi"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-pelosi.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">Pelosi Portfolio</span></span><span class="fund-row__r"><span class="pos">+24.3%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/portfolios/ai-chips"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-ai.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">AI Chips</span></span><span class="fund-row__r"><span class="pos">+61.6%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/portfolios/mag7"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-mag7.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">Mag7</span></span><span class="fund-row__r"><span class="pos">+13.0%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/portfolios/us-market"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-us.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">US Market</span></span><span class="fund-row__r"><span class="pos">+9.8%</span><i aria-hidden="true">↗︎</i></span></a></div></section>
+<section class="cta"><h2>Start with 50 USDT.</h2><p>CRE8 is on testnet. Test USDT is free, and signing in needs an invite code.</p><div class="actions"><a class="btn btn--light" href="https://tst.cre8.finance/">Open the testnet <span aria-hidden="true">↗︎</span></a></div></section>
+</main>
+<footer class="site-foot wrap">
+<div class="site-foot__brand"><img src="/assets/cre8-logo-light.svg" alt="CRE8" width="129" height="24"><span>© 2026 CRE8</span></div>
+<nav aria-label="Footer"><a href="/portfolios">All portfolios</a><a href="/portfolios/pelosi">Pelosi Portfolio</a><a href="/portfolios/trump">Trump Holdings</a><a href="/portfolios/ai-chips">AI Chips</a><a href="/portfolios/mag7">Mag7</a><a href="/how-it-works">How it works</a><a href="/compare">Compare</a><a href="/zh" lang="zh-Hans">简体中文</a><a href="https://tst.cre8.finance/">Testnet app</a><a href="https://x.com/CRE8Finance" rel="noopener">X</a></nav>
+</footer>
+</body>
+</html>
