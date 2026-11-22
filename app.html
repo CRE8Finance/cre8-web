@@ -15,7 +15,7 @@
 <div style="max-width:{{ L.max }}px;margin:0 auto;height:{{ L.hdrH }}px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 {{ L.pad }}px">
 <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ closeFund }}" aria-label="Back" style="width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if>
 <sc-if value="{{ showLogo }}" hint-placeholder-val="{{ true }}"><a href="index.html" aria-label="CRE8 home" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a></sc-if>
-<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><span style="flex:1;text-align:center;font:500 15px 'Geist';opacity:{{ hdrTitleO }};transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ cur.name }}</span></sc-if>
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><span style="flex:1;text-align:center;font:500 15px 'Geist';opacity:{{ hdrTitleO }};transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ hdrTitle }}</span></sc-if>
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><nav style="display:flex;gap:2px;padding:3px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="height:34px;padding:0 18px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';color:{{ t.tcol }};background:{{ t.tbg }};transition:background .2s,color .2s">{{ t.label }}</button></sc-for></nav></sc-if>
 <span style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 12px 'Geist Mono';color:#3C4651;white-space:nowrap">0xEEa7…D94F</span>
 </div>
@@ -118,7 +118,8 @@
 </sc-if>
 
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.buildW }};margin:0 auto">
-<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Build</h1><p style="margin:6px 0 0;font:400 15px 'Geist';color:#5E6A76">Your picks. We keep the weights on target.</p></div>
+<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ bTitle }}</h1><p style="margin:6px 0 0;font:400 15px 'Geist';color:#5E6A76">{{ bSub }}</p></div>
+<sc-if value="{{ b0 }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">01 · PICK UP TO 10</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ pickCount }}</span></div>
 <div style="display:flex;gap:8px;align-items:center;padding:0 16px 12px">
 <sc-for list="{{ bcats }}" as="q" hint-placeholder-count="2"><button onClick="{{ q.pick }}" style="flex:none;height:38px;padding:0 16px;border-radius:999px;cursor:pointer;font:500 14px 'Geist';border:1px solid {{ q.bd }};background:{{ q.bg }};color:{{ q.fg }};transition:background .2s,color .2s">{{ q.label }}</button></sc-for>
@@ -134,8 +135,9 @@
 </button>
 </sc-for>
 </div>
-<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;align-items:baseline;justify-content:space-between;padding:30px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">02 · SET WEIGHTS</span><button onClick="{{ splitEven }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Split evenly</button></div>
+</sc-if>
+<sc-if value="{{ b1 }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">02 · SET WEIGHTS</span><button onClick="{{ splitEven }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Split evenly</button></div>
 <div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
 <sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
 <div style="padding:12px 14px 10px;border-bottom:1px solid #E6E9ED">
@@ -145,16 +147,20 @@
 </sc-for>
 <div style="display:flex;justify-content:space-between;padding:12px 14px;font:500 12px 'Geist Mono';letter-spacing:.06em"><span style="color:#6B7785">TOTAL</span><span style="color:{{ totalColor }}">{{ totalText }}</span></div>
 </div>
-<div style="padding:30px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">03 · REBALANCE</div>
+</sc-if>
+<sc-if value="{{ b2 }}" hint-placeholder-val="{{ false }}">
+<div style="padding:26px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">03 · REBALANCE</div>
 <div style="margin:0 16px;padding:3px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:999px;display:flex">
 <sc-for list="{{ freqs }}" as="q" hint-placeholder-count="3"><button onClick="{{ q.pick }}" style="flex:1;height:34px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
 </div>
 <p style="margin:12px 16px 0;font:400 14px/1.5 'Geist';color:#5E6A76">{{ freqNote }}</p>
-<div style="padding:30px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">04 · NAME IT</div>
+</sc-if>
+<sc-if value="{{ b3 }}" hint-placeholder-val="{{ false }}">
+<div style="padding:26px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">04 · NAME IT</div>
 <label style="display:flex;align-items:center;gap:12px;margin:0 16px;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="My basket" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
 </sc-if>
-<sc-if value="{{ hasPicks }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:{{ L.mixB }}px;transform:translateX(-50%);width:min(640px,100%);z-index:44;padding:0 16px">
-<button onClick="{{ buyMix }}" style="width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ mixBtn.bg }};color:{{ mixBtn.fg }};box-shadow:{{ mixBtn.sh }};transition:background .2s">{{ mixBtn.label }}</button>
+<sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:{{ L.mixB }}px;transform:translateX(-50%);width:min(640px,100%);z-index:44;padding:0 16px">
+<button onClick="{{ bNext }}" style="width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ mixBtn.bg }};color:{{ mixBtn.fg }};box-shadow:{{ mixBtn.sh }};transition:background .2s">{{ mixBtn.label }}</button>
 </div></sc-if>
 </div>
 </sc-if>
@@ -331,7 +337,7 @@ class Component extends DCLogic {
   state = {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
-    picks: [], weights: {}, bcat: 0, q: '', freq: 1, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
+    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, freq: 1, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
     holdings: [
       { id: 'pelosi', name: 'Pelosi Portfolio', cover: 'app/p-pelosi.jpg', val: 4236.80, ret: 23.7 },
       { id: 'ai-chips', name: 'AI Chips', cover: 'app/p-ai.jpg', val: 3104.12, ret: 62.3 },
@@ -353,7 +359,7 @@ class Component extends DCLogic {
   }
   componentDidUpdate() { this.syncNav(); }
   componentWillUnmount() { this.timers.forEach(clearTimeout); removeEventListener('resize', this.onRs); removeEventListener('popstate', this.onPop); }
-  navOf(s) { return { page: s.page, fund: s.fund, modal: !!s.modal, acct: !!s.acct }; }
+  navOf(s) { return { page: s.page, fund: s.fund, modal: !!s.modal, acct: !!s.acct, bstep: s.bstep }; }
   syncNav() {
     const n = this.navOf(this.state), k = JSON.stringify(n);
     if (k === this.navKey) return;
@@ -445,6 +451,11 @@ class Component extends DCLogic {
     const mixReady = s.picks.length > 0 && total === 100;
     const mixBtn = s.picks.length === 0 ? { ...off, label: 'Pick at least 1' } : total !== 100 ? { ...off, label: total < 100 ? 'Add ' + (100 - total) + '% to continue' : 'Remove ' + (total - 100) + '% to continue' } : { ...cta, label: 'Buy this portfolio' };
     const FREQ = ['Every week', 'Every month', 'Every quarter'];
+    // Build 分四頁：選標的 → 設比例 → 再平衡頻率 → 取名買入。
+    const inBuild = s.page === 'build' && !s.fund, bs = s.bstep;
+    const B_TITLES = [['Build', 'Your picks. We keep the weights on target.'], ['Set weights', 'How much of each, adding up to 100%.'], ['Rebalance', 'How often we bring it back to your weights.'], ['Name it', 'Give your basket a name, then buy.']];
+    const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: 'Next step' } : { ...off, label: 'Pick at least 1' }) : bs === 1 ? (total === 100 ? { ...cta, label: 'Next step' } : mixBtn) : bs === 2 ? { ...cta, label: 'Next step' } : mixBtn;
+    const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady) this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }); };
     const tgt = s.target || { name: f.name, cover: f.cover };
     const sell = s.side === 'sell', posH = s.holdings.find(h => h.name === tgt.name), posMax = posH ? Math.floor(posH.val * 100) / 100 : 0;
     const amt = parseFloat(s.amount) || 0;
@@ -461,7 +472,8 @@ class Component extends DCLogic {
     const L = W ? { max: 1200, hdrH: 64, pad: 24, mainPad: 8, bottom: 80, tile: 210, gap: 14, buildMax: '560px', colGap: 8, sideMax: '420px', sidePos: 'sticky', sideTop: 20, statsM: '0 16px', mixB: 28, pcH: 260, abH: 92, profW: '760px', buildW: '720px', aGap: 10, bTop: 28, bPad: '26px 28px', bLogo: 40, bT: 24, pGap: 14, pCols: 4, pAR: '4/5', pR: 18, pIn: 14, pName: 16, pRet: 14, pApy: 10 } : { max: 640, hdrH: 54, pad: 16, mainPad: 0, bottom: 150, tile: 150, gap: 10, buildMax: 'none', colGap: 0, sideMax: 'none', sidePos: 'static', sideTop: 0, statsM: '26px 16px 0', mixB: 96, pcH: 210, abH: 72, profW: 'none', buildW: 'none', aGap: 8, bTop: 24, bPad: '18px', bLogo: 32, bT: 18, pGap: 10, pCols: 2, pAR: '4/5', pR: 16, pIn: 12, pName: 15, pRet: 13, pApy: 9 };
     return {
       wide: W, narrow: !W, L,
-      showBack: !!s.fund, showLogo: !s.fund, hdrTitleO: 1,
+      showBack: !!s.fund || (inBuild && bs > 0), showLogo: !s.fund && !(inBuild && bs > 0), hdrTitleO: 1, hdrTitle: s.fund ? f.name : 'Build',
+      b0: bs === 0, b1: bs === 1, b2: bs === 2, b3: bs === 3, bTitle: B_TITLES[bs][0], bSub: B_TITLES[bs][1], bNext, mixBtn: bNextBtn,
       navTabs: navDef.map(([id, label, icon]) => ({ label, icon, go: () => this.go(id), col: curPage === id ? '#0B0F14' : '#6B7785', bg: curPage === id ? 'rgba(11,15,20,.07)' : 'transparent', tcol: curPage === id ? '#fff' : '#3C4651', tbg: curPage === id ? '#0B0F14' : 'transparent' })),
       navY: s.fund || s.modal || s.acct ? 140 : 0,
       pageHome: s.page === 'home' && !s.fund, pageFund: !!s.fund, pageBuild: s.page === 'build' && !s.fund, pageProfile: s.page === 'profile' && !s.fund,
@@ -471,7 +483,7 @@ class Component extends DCLogic {
       showPeople: !fcat || fcat === 'people', showThemes: fcat !== 'people',
       people: people.map(card), themes: themes.map(card),
       themeTitle: fcat ? FIL[s.filter][0] : 'Themes', themeCount: themes.length + ' PORTFOLIOS',
-      closeFund: () => this.back({ fund: null }),
+      closeFund: () => s.fund ? this.back({ fund: null }) : this.back({ bstep: Math.max(0, bs - 1) }),
       cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : 'THEME', count: f.n + ' ASSETS', hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
@@ -489,7 +501,7 @@ class Component extends DCLogic {
       totalText: total + '%', totalColor: total === 100 ? '#16854F' : '#A8791F',
       freqs: pills(['Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
       freqNote: FREQ[s.freq] + ', we trim what grew and add to what fell, so your basket stays at these weights.',
-      mixBtn, buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }),
+      buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
       closeModal: () => this.back({ modal: false }),
       sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount' }) : s.step === 'amount' ? this.back({ modal: false }) : null,
@@ -507,7 +519,7 @@ class Component extends DCLogic {
       amtBtn, toReview: () => amtOk && this.setState({ step: 'review' }),
       reviewRows: (sell ? [['You get', fmt(amt) + ' USDT'], ['Paid to', 'Your wallet'], ['Left in portfolio', '$' + fmt(Math.max(0, posMax - amt))]] : [['You pay', fmt(amt) + ' USDT'], ['Held in', 'Your wallet'], ['Cash left', fmt(s.cash - amt) + ' USDT']]).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
       confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, doneText: tgt.name.toUpperCase() + ' · ' + fmt(amt) + ' USDT',
-      viewPort: () => { this.setState({ modal: false, fund: null, page: 'profile', ptab: 0 }); window.scrollTo(0, 0); },
+      viewPort: () => { this.setState({ modal: false, fund: null, page: 'profile', ptab: 0, bstep: 0 }); window.scrollTo(0, 0); },
       profileName: s.pname, pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
       av: { bg: s.photo ? 'center/cover no-repeat url(' + s.photo + ')' : AVC[s.avc], letter: s.photo ? '' : (s.pname.trim()[0] || '?').toUpperCase() },
       avOpts: AVC.map((bg, i) => ({ bg, pick: () => this.setState({ avc: i, photo: null }), ring: !s.photo && s.avc === i ? '0 0 0 2px #F3F3F3,0 0 0 4px #0B0F14' : '0 0 0 1px rgba(11,15,20,.08)' })),
