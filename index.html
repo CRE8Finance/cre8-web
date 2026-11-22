@@ -11,15 +11,7 @@
 .door-stick{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:#0B0F14}
 .door-hall{position:absolute;inset:0;background:#EDF0F3 url(assets/bank-hall.webp) 50% 50%/cover no-repeat;will-change:transform}
 .door-hall:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(243,245,247,.72) 0%,rgba(243,245,247,.35) 45%,rgba(243,245,247,0) 75%),linear-gradient(0deg,rgba(243,245,247,.6) 0%,rgba(243,245,247,0) 45%)}
-.door-stage{position:absolute;perspective:2400px;perspective-origin:50% 64%;will-change:transform}
-.door-stage>*{position:absolute}
-.door-ext{inset:0;width:100%;height:100%;display:block}
-.door-op{left:42.734%;top:45.093%;width:14.531%;height:38.194%}
-.door-glow{background:radial-gradient(60% 55% at 50% 55%,rgba(255,253,248,.95),rgba(246,236,214,.55) 70%,rgba(227,181,91,.22))}
-.door-leaf{top:45.093%;width:7.266%;height:38.194%;backface-visibility:hidden;will-change:transform}
-.door-leaf img{width:100%;height:100%;display:block}
-#door-l{left:42.734%;transform-origin:0 50%}
-#door-r{left:50%;transform-origin:100% 50%}
+.door-cv{position:absolute;inset:0;width:100%;height:100%;display:block}
 .door-white{position:absolute;inset:0;background:#F3F5F7;opacity:0;pointer-events:none}
 .door-copy{position:absolute;left:0;right:0;bottom:0;padding:0 max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) clamp(28px,4vw,48px);opacity:0;padding-bottom:calc(clamp(28px,4vw,48px) + 100lvh - 100svh);color:#0B0F14;font-family:'Geist',-apple-system,system-ui,sans-serif}
 .door-copy h1{margin:0;font-weight:500;font-size:clamp(42px,8.6vw,136px);line-height:.98;letter-spacing:-.045em}
@@ -27,18 +19,14 @@
 .door-copy a{margin-top:40px;height:52px;padding:0 24px;border-radius:999px;display:inline-flex;align-items:center;gap:10px;background:#E3B55B;color:#0B0F14;text-decoration:none;font:500 16px 'Geist',sans-serif}
 .door-copy a:hover{background:#EEC46E}
 </style>
+<link rel="preload" as="image" href="assets/bank-ext.webp">
 <script src="assets/door.js" defer></script>
 </head>
 <body>
 <section class="door" id="door">
 <div class="door-stick" id="door-stick">
 <div class="door-hall" id="door-hall"></div>
-<div class="door-stage" id="door-stage">
-<div class="door-op door-glow" id="door-glow"></div>
-<img class="door-ext" src="assets/bank-ext.webp" alt="">
-<div class="door-leaf" id="door-l"><img src="assets/door-l.webp" alt=""></div>
-<div class="door-leaf" id="door-r"><img src="assets/door-r.webp" alt=""></div>
-</div>
+<canvas class="door-cv" id="door-cv"></canvas>
 <div class="door-white" id="door-white"></div>
 <div class="door-copy" id="door-copy">
 <h1><span style="white-space:nowrap">Own the idea</span><br><span style="white-space:nowrap">you believe in.</span></h1>
