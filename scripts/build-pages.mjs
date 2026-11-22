@@ -203,9 +203,9 @@ ${schema.map(ld).join('\n')}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,400&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="/assets/pages.css">
-${extraHead}<link rel="stylesheet" href="/assets/press.css">
-<script src="/assets/press.js" defer></script>
+<link rel="stylesheet" href="/assets/pages.css?v=2">
+${extraHead}<link rel="stylesheet" href="/assets/press.css?v=2">
+<script src="/assets/press.js?v=2" defer></script>
 </head>
 <body>
 ${siteHead(lang, path)}`;
@@ -451,7 +451,7 @@ function faqs(lang) {
     ['股票由谁托管？', '你自己。股票以代币形式放在只有你能控制的链上账户里，不和任何人的资产混在一起。'],
     ['怎么提现？', '把组合部分或全部卖回 USDT，再提到任意 BNB Chain 地址就行。股票代币要在美股开盘时才能卖。'],
     ['闲置 USDT 怎么生息？', '点 Earn，把闲置 USDT 存进白名单里的 USDT 金库（Lista、Venus、Aave），按市场利率计息，随存随取。买组合时还可以打开“加息”，用组合里的股票多赚一点；价格急跌时系统会自动卖出一小部分，保证安全。你的现金和组合资金始终分开。'],
-    ['和直接在币安买 bStock 有什么区别？', `在币安只能一只一只买，股票放在交易所账户里。CRE8 一笔钱买齐一整篮，自动调仓回目标比例，资产放在你自己的链上账户。当然，币安的股票更多、深度更好，详见<a href="${cmp}">完整对比</a>。`],
+    ['和在交易所买美股代币有什么区别？', `在交易所只能一只一只买，股票放在交易所账户里。CRE8 一笔钱买齐一整篮，自动调仓回目标比例，资产放在你自己的链上账户，闲置的 USDT 还能生息。详见<a href="${cmp}">对比</a>。`],
     ['美股休市时能买卖吗？', '股票代币只在美股交易时段成交。休市期间下的买单或卖单会在账户里排队，下次开盘时成交。'],
     ['最低投多少？', '每笔 50 USDT 起投。'],
     ['收费吗？', '测试网全免费，gas 也由 CRE8 承担。主网费率会在上线前公布。'],
@@ -463,7 +463,7 @@ function faqs(lang) {
     ['Who holds my shares?', 'You do. They sit as tokens in an on-chain account only you control, never pooled with anyone else’s.'],
     ['How do I cash out?', 'Sell some or all of a portfolio back to USDT, then withdraw the USDT to any BNB Chain address. Stock tokens sell while the US market is open.'],
     ['How does idle USDT earn?', 'Press Earn to put idle USDT in an allowlisted USDT vault (Lista, Venus or Aave) at the market rate, and withdraw it whenever you like. When you buy a portfolio you can also turn on extra yield, which uses its shares to earn a bit more and automatically sells a little if prices fall fast. Your cash and your portfolios are always kept separate.'],
-    ['How is this different from buying bStock on Binance?', `On Binance you buy one stock at a time and it sits in your exchange account. CRE8 buys a whole basket in one payment, rebalances it to its target weights, and keeps it in an account you own on-chain. Binance has more stocks and deeper liquidity. See the <a href="${cmp}">full comparison</a>.`],
+    ['How is this different from buying stock tokens on an exchange?', `On an exchange you buy one stock at a time and it sits in your exchange account. CRE8 buys a whole basket in one payment, rebalances it to its target weights, keeps it in an account you own on-chain, and lets idle USDT earn. See the <a href="${cmp}">comparison</a>.`],
     ['What happens when the US market is closed?', 'Stock tokens only trade during US market hours. A buy or sell placed while the market is closed waits in your account and goes through at the next open.'],
     ['What’s the minimum?', '50 USDT per purchase.'],
     ['What does it cost?', 'Nothing on testnet, and CRE8 pays the gas. Mainnet fees will be announced before launch.'],
@@ -587,58 +587,48 @@ function comparePage(funds, lang) {
   const zh = lang === 'zh';
   const path = '/compare';
   const c = crumbs(lang, [[t.home, '/'], [t.compare, path]]);
-  const title = zh ? 'CRE8 对比币安 bStock、xStocks／Ondo、Venzo 和美股券商 | CRE8' : 'CRE8 vs Binance bStock, xStocks/Ondo, Venzo and a US broker';
+  const title = zh ? '用 USDT 买美股：交易所、链上代币、美股券商和 CRE8 对比 | CRE8' : 'Buying US stocks with USDT: exchanges, stock tokens, brokers and CRE8 compared';
   const description = zh
-    ? '想用 USDT 买美股，有哪几条路？把在币安买 bStock、xStocks 和 Ondo 等美股代币、Venzo、开美股券商账户和 CRE8 放在一起比一比。'
-    : 'Ways to buy US stocks with USDT, compared: buying bStock on Binance, tokenized stocks like xStocks and Ondo, Venzo, a US brokerage account, and CRE8. What each is good at and what it costs you.';
+    ? '想用 USDT 买美股，有哪几种方式？交易所、自己买链上美股代币、开美股券商账户和 CRE8，各适合什么人。'
+    : 'Ways to buy US stocks with USDT, compared: an exchange, buying stock tokens yourself, a US brokerage account, and CRE8. Who each one suits.';
   const page = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: abs(P(lang, path)), inLanguage: t.htmlLang, dateModified: BUILT, isPartOf: { '@type': 'WebSite', name: 'CRE8', url: SITE + '/' } };
-  const cols = zh ? ['CRE8', '币安 bStock', 'xStocks／Ondo', 'Venzo', '美股券商'] : ['CRE8', 'Binance bStock', 'xStocks / Ondo', 'Venzo', 'US broker'];
+  const cols = zh ? ['CRE8', '交易所', '自己买链上代币', '美股券商'] : ['CRE8', 'Exchange', 'Stock tokens, DIY', 'US broker'];
   const rows = zh ? [
-    ['能买到什么', 'bStock 美股代币＋加密资产', 'bStock 美股代币', '其他发行方的美股代币', 'bStock 或 Ondo 美股代币', '你名下的正股'],
-    ['一次买一篮', '可以，21 个组合，也能自己配', '不行，只能一只只买', '要自己一只只买；Ondo 有少量组合产品', '可以，如七巨头、佩洛西', '要自己一只只买'],
-    ['自动调仓', '有，每月一次，偏离 5 个百分点也会触发', '没有', '没有', '在规划中', '一般没有'],
-    ['资产放在哪', '你自己的链上智能账户', '币安账户（可提到链上）', '你自己的钱包', '每人一个链上智能账户', '券商账户'],
-    ['用什么付款', 'USDT', 'USDT 等', '稳定币', 'USDT', '法币，USDT 要先出金'],
-    ['可选标的', '首发组合里的资产', '约 105 只 bStock', '各家自己的清单', '组合里的成分股', '几乎所有美股'],
-    ['闲置资金生息', '有：现金可存 USDT 金库，组合可开加息（测试网为模拟利率）', '另有理财产品', '没有', '账户内没有', '看券商'],
-    ['目前状态', '测试网，不涉及真钱', '已上线', '已上线', '主网已上线', '已上线'],
+    ['一次买一篮', '可以，21 个组合，也能自己配', '一只一只买', '一只一只买', '一只一只买'],
+    ['自动调仓', '有', '没有', '没有', '一般没有'],
+    ['资产放在哪', '你自己的链上账户', '交易所账户', '你自己的钱包', '券商账户'],
+    ['用什么付款', 'USDT', 'USDT 等', '稳定币', '法币'],
+    ['闲置资金生息', '有，随时领出', '另买理财产品', '没有', '看券商'],
+    ['要不要开户', '不用，钱包登录', '要 KYC', '不用', '要开户和 KYC'],
   ] : [
-    ['What you get', 'bStock tokens and crypto', 'bStock tokens', 'Tokens from other issuers', 'bStock or Ondo tokens', 'Real shares in your name'],
-    ['Buy a basket at once', 'Yes, 21 portfolios or your own', 'No, one stock at a time', 'One at a time; Ondo has a few portfolio products', 'Yes, e.g. Mag7, Pelosi', 'One at a time'],
-    ['Automatic rebalancing', 'Yes, monthly plus 5-point drift', 'No', 'No', 'On its roadmap', 'Usually not'],
-    ['Where assets sit', 'Your own on-chain smart account', 'Your Binance account (can withdraw on-chain)', 'Your own wallet', 'A smart account per user', 'Your brokerage account'],
-    ['Pay with', 'USDT', 'USDT and others', 'Stablecoins', 'USDT', 'Fiat; USDT must be cashed out first'],
-    ['Stock choice', 'Assets in the launch portfolios', 'About 105 bStocks', 'Each issuer’s list', 'The portfolios’ holdings', 'Nearly every US stock'],
-    ['Yield on idle cash', 'Yes: Earn on cash in USDT vaults, optional extra yield on portfolios (simulated rates on testnet)', 'Separate Earn products', 'No', 'Not inside the account', 'Depends on the broker'],
-    ['Status today', 'Testnet, no real money', 'Live', 'Live', 'Live on mainnet', 'Live'],
+    ['Buy a basket at once', 'Yes, 21 portfolios or your own', 'One at a time', 'One at a time', 'One at a time'],
+    ['Automatic rebalancing', 'Yes', 'No', 'No', 'Usually not'],
+    ['Where assets sit', 'Your own on-chain account', 'Your exchange account', 'Your own wallet', 'Your brokerage account'],
+    ['Pay with', 'USDT', 'USDT and others', 'Stablecoins', 'Fiat'],
+    ['Yield on idle cash', 'Yes, withdraw any time', 'Separate products', 'No', 'Depends on the broker'],
+    ['Account opening', 'No, sign in with a wallet', 'KYC required', 'No', 'Account and KYC'],
   ];
   const cards = zh ? [
-    ['在币安直接买 bStock', ['币安向美国以外的用户开放美股交易，bStock 是这些股票在 BNB Chain 上的代币版，目前约 105 只。站内股票和 bStock 可以 1:1 免费互转。', '优势：深度最好、选择最多，支持定投，bStock 还能当保证金。', '代价：要有币安账户并完成 KYC，不是所有地区都能用（美国不行）；只能一只只买，没有组合，也不会帮你维持比例；资产默认放在交易所。'], '只想买一两只热门股，或者单笔金额很大，直接在币安买更划算。想一次买下一整个赛道、自动调仓、资产放在自己的链上账户，CRE8 更省心。'],
-    ['xStocks、Ondo 等其他美股代币', ['除了 bStock，市面上还有其他发行方的美股代币，Ondo 和 xStocks 是规模最大的两家。代币直接放在你自己的钱包里。', '优势：自托管，能在不同链和 DeFi 协议里用。Ondo 在 BNB Chain 上也有少量组合产品。', '代价：同一只股票常有好几个版本，要自己挑；在 BNB Chain 上，Ondo 和 xStocks 代币的池子很浅；链上还有冒充正版代号的假币，得自己核对合约地址。'], 'CRE8 目前只用 bStock 和主流加密资产，每个资产都要确认链上买得到才会上架。'],
-    ['Venzo', ['City Protocol 旗下的应用。在 BNB Chain 上有用 bStock 组成的七巨头组合，和用 Ondo 代币组成的佩洛西组合（11 只股票，30 USDT 起投）。每个用户一个链上智能账户，每笔买卖收 0.1% 手续费。', '优势：已经在主网用真钱运行，背后有知名机构投资。', '代价：组合数量少；账户里的闲置资金不生息；自动调仓和主题组合还在规划中。主业是其他链上的收益金库。'], '两家架构接近。CRE8 组合更多（人物、主题、杠杆共 21 个），并且已经支持自动调仓；不过 CRE8 还在测试网，Venzo 已经上线。'],
-    ['开美股券商账户', ['在券商开户、入金，直接持有你名下的股票。', '优势：几乎所有美股都能买，分红发现金，有投票权，持有的是正股本身。', '代价：要开户和 KYC，只有部分国家和地区能开；入金要走银行，USDT 得先出金换成法币；只能在交易时段买卖。'], '如果你的钱本来就在银行、当地开户也方便，券商是最直接的路。如果你的钱都是 USDT、不想出入金，链上美股代币能省掉这一步。'],
+    ['在交易所买美股代币', '适合只买一两只热门股、或单笔金额很大的人。', '想一次买下一整个赛道、自动调仓、资产放在自己链上账户，用 CRE8 更省心。'],
+    ['自己在链上买美股代币', '适合熟悉钱包、会自己核对合约地址的人。', 'CRE8 帮你挑好资产、一笔买齐，闲置的 USDT 还能生息。'],
+    ['开美股券商账户', '适合钱本来就在银行、当地开户方便的人。', '钱都是 USDT、不想出入金的话，CRE8 能省掉换汇和开户这一步。'],
   ] : [
-    ['Buying bStock on Binance', ['Binance offers US stocks to users outside the US, and bStock is the on-chain version of those stocks on BNB Chain, about 105 of them today. Stocks and bStock convert 1:1 on Binance at no fee.', 'Good at: the deepest liquidity and the widest choice, recurring buys, and bStock can be used as margin collateral.', 'Trade-offs: you need a verified Binance account, and it isn’t available everywhere (not in the US). You buy one stock at a time, there are no baskets, nothing keeps your weights on target, and the assets sit in your exchange account by default.'], 'If you want one or two popular stocks, or you’re moving a large amount, buying directly on Binance is cheaper. If you want a whole theme in one payment, kept on target and held in your own on-chain account, CRE8 is less work.'],
-    ['xStocks, Ondo and other tokenized stocks', ['Besides bStock, other issuers tokenize US stocks. Ondo and xStocks are the two biggest. The tokens sit in your own wallet.', 'Good at: self-custody, and the tokens work across chains and DeFi apps. Ondo also has a few portfolio products on BNB Chain.', 'Trade-offs: the same stock often comes in several versions and you pick one yourself. On BNB Chain, on-chain pools for Ondo and xStocks tokens are thin. Fake tokens copying real tickers exist too, so you have to check contracts.'], 'CRE8 uses bStock and major crypto only, and an asset goes into a portfolio only after it’s confirmed buyable.'],
-    ['Venzo', ['An app from City Protocol. On BNB Chain it offers a Mag7 portfolio built from bStock and a Pelosi portfolio built from Ondo tokens (11 stocks, 30 USDT minimum). Each user gets an on-chain smart account, and there’s a 0.1% fee on each buy and sell.', 'Good at: it’s live on mainnet with real money, backed by well-known investors.', 'Trade-offs: a small number of portfolios, no yield on idle cash inside the account, and automatic rebalancing and theme portfolios are still on its roadmap. Its main business is yield vaults on other chains.'], 'The setups are similar. CRE8 has more portfolios (21 across people, themes and leverage) and already rebalances automatically. But CRE8 is still on testnet, and Venzo is live.'],
-    ['Opening a US brokerage account', ['Open an account with a broker, fund it and hold shares in your own name.', 'Good at: almost every US stock, cash dividends, voting rights, and you own the shares themselves.', 'Trade-offs: account opening and verification, and only people in some countries can open one. Funding goes through a bank, so USDT has to be cashed out first, and trading follows market hours.'], 'If your money is already in a bank and opening an account is easy where you live, a broker is the most direct route. If your money is in USDT and you’d rather not cash out, on-chain stock tokens skip that step.'],
+    ['Buying stock tokens on an exchange', 'Suits people who want one or two popular stocks, or who move large amounts.', 'If you want a whole theme in one payment, kept on target and held in your own on-chain account, CRE8 is less work.'],
+    ['Buying stock tokens yourself', 'Suits people who are at home with wallets and check contract addresses themselves.', 'CRE8 picks the assets, buys them in one payment, and lets idle USDT earn.'],
+    ['Opening a US brokerage account', 'Suits people whose money is already in a bank and who can open an account easily where they live.', 'If your money is in USDT and you’d rather not cash out, CRE8 skips the cash-out and account opening.'],
   ];
-  const cre8 = zh
-    ? ['CRE8 的短板', '说实话：CRE8 还在测试网，不涉及真钱；可选资产比币安少；链上池子比交易所浅，大单会有滑点；股票部分只在美股开盘时成交；bStock 是代币，不是你名下的正股。']
-    : ['CRE8’s own trade-offs', 'To be straight about it: CRE8 is still on testnet, with no real money. It offers fewer assets than Binance. On-chain markets are shallower than an exchange, so large orders pay more slippage. Stock legs only trade while the US market is open. And bStock is a token, not a share in your name.'];
   return head({ lang, path, title, description, schema: [page, c.schema] }) + `
 <main class="wrap">
 ${c.html}
-<h1>${zh ? '用 USDT 买美股，有哪几条路' : 'Ways to buy US stocks with USDT'}</h1>
-<p class="lede">${zh ? '每条路都有自己擅长的地方，下面实话实说。资料截至 2026 年 11 月。' : 'Each route is good at something. Here’s an honest look, as of November 2026.'}</p>
+<h1>${zh ? '用 USDT 买美股，有哪几种方式' : 'Ways to buy US stocks with USDT'}</h1>
 <section class="section">
 <div class="table-wrap"><table class="cmp">
 <thead><tr><th scope="col"></th>${cols.map((x, i) => `<th scope="col"${i === 0 ? ' class="us"' : ''}>${esc(x)}</th>`).join('')}</tr></thead>
 <tbody>${rows.map(([h, ...cells]) => `<tr><th scope="row">${esc(h)}</th>${cells.map((x, i) => `<td${i === 0 ? ' class="us"' : ''}>${esc(x)}</td>`).join('')}</tr>`).join('\n')}</tbody>
 </table></div>
 </section>
-${cards.map(([h, ps, take]) => `<section class="section prose"><h2>${esc(h)}</h2>${ps.map((p) => `<p>${esc(p)}</p>`).join('')}<p><strong>${zh ? '跟 CRE8 比：' : 'Compared with CRE8: '}</strong>${esc(take)}</p></section>`).join('\n')}
-<section class="section prose"><h2>${esc(cre8[0])}</h2><p>${esc(cre8[1])}</p><p><a class="link" href="${P(lang, '/how-it-works')}">${t.how}</a> · <a class="link" href="${P(lang, '/portfolios')}">${zh ? '查看全部组合' : 'All portfolios'}</a></p></section>
+${cards.map(([h, who, us]) => `<section class="section prose"><h2>${esc(h)}</h2><p>${esc(who)}</p><p>${esc(us)}</p></section>`).join('\n')}
+<section class="section prose"><p><a class="link" href="${P(lang, '/how-it-works')}">${t.how}</a> · <a class="link" href="${P(lang, '/portfolios')}">${zh ? '查看全部组合' : 'All portfolios'}</a></p></section>
 ${ctaBand(lang)}
 </main>
 ` + siteFoot(lang, funds);
@@ -832,7 +822,7 @@ function llms(funds) {
 
 ## Key pages
 - [How it works](${SITE}/how-it-works): buying, custody, fees, selling and withdrawing, US market hours, idle-cash yield, testnet status.
-- [Compare](${SITE}/compare): CRE8 vs buying bStock on Binance, xStocks/Ondo tokens, Venzo, and a US brokerage account.
+- [Compare](${SITE}/compare): ways to buy US stocks with USDT: an exchange, stock tokens bought yourself, a US broker, and CRE8.
 - [All portfolios](${SITE}/portfolios): ${funds.length} portfolios with holdings, weights and model APY.
 - 中文：[首页](${SITE}/zh)、[怎么运作](${SITE}/zh/how-it-works)、[对比](${SITE}/zh/compare)、[全部组合](${SITE}/zh/portfolios)
 
