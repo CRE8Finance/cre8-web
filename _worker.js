@@ -1,7 +1,8 @@
 /**
  * Cloudflare Worker `cre8-web`：cre8.finance 是首頁（index.html），tst.cre8.finance 是 app（app.html）。
  * waitlist.html 不上線（.assetsignore 排除）。其他檔案照原路徑回靜態資源。
- * SEO：一律 https、首頁只有 / 一個網址（其他頁面路徑 301 回 /）、tst 與 workers.dev 不給收錄。
+ * SEO：一律 https；首頁網域的內容頁（/portfolios/...、/how-it-works、/compare、/zh/...）各回自己的 <路徑>/index.html，
+ * 這些頁面由 scripts/build-pages.mjs 產生；不存在的頁面路徑 301 回 /。tst 與 workers.dev 不給收錄。
  */
 const LANDING_HOSTS = ['cre8.finance', 'www.cre8.finance'];
 const LANDING = 'https://cre8.finance';
@@ -16,11 +17,6 @@ Sitemap: ${LANDING}/sitemap.xml
 `;
 const ROBOTS_NOINDEX = `User-agent: *
 Allow: /
-`;
-const SITEMAP = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${LANDING}/</loc><lastmod>2026-11-23</lastmod></url>
-</urlset>
 `;
 
 const text = (body, type) => new Response(body, { headers: { 'content-type': type, 'cache-control': 'public, max-age=3600' } });
@@ -53,12 +49,20 @@ export default {
 
     const noindex = !landing && !local; // tst 與 workers.dev
     if (path === '/robots.txt') return text(noindex ? ROBOTS_NOINDEX : ROBOTS_LANDING, 'text/plain; charset=utf-8');
-    if (path === '/sitemap.xml' && !noindex) return text(SITEMAP, 'application/xml; charset=utf-8');
+    // sitemap.xml 是產生器寫的靜態檔，只給首頁網域。
+    if (path === '/sitemap.xml' && noindex) return new Response('Not found', { status: 404 });
 
-    // 首頁只有一個網址：/index.html 與其他頁面路徑都 301 回 /（避免同一頁有很多網址）。
-    if (landing && (path === '/index.html' || (isPage(path) && path !== '/'))) return Response.redirect(LANDING + '/', 301);
+    // 每頁只有一個網址：/x/index.html 與結尾斜線 301 到 /x。
+    if (landing && /(^|\/)index\.html$/.test(path)) return Response.redirect(LANDING + (path.slice(0, -'/index.html'.length) || '/'), 301);
+    if (!app && isPage(path) && path !== '/') {
+      if (path.endsWith('/')) return Response.redirect((landing ? LANDING : url.origin) + path.replace(/\/+$/, ''), 301);
+      // 內容頁：回 <路徑>/index.html；首頁網域上不存在的頁面 301 回 /。
+      const page = await env.ASSETS.fetch(new Request(new URL(path + '/index.html', url), request));
+      if (page.ok) return withHeaders(page, path, noindex);
+      if (landing) return Response.redirect(LANDING + '/', 301);
+    }
 
-    // 頁面路徑（沒有副檔名，含舊版 app 的 /funds/... 等）都回這個網域的頁面。
+    // 其餘頁面路徑（tst 上含舊版 app 的 /funds/... 等）都回這個網域的單頁。
     let res;
     if (isPage(path)) {
       const page = app ? '/app.html' : '/index.html';

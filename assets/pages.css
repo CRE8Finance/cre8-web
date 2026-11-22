@@ -1,0 +1,167 @@
+/* 靜態內容頁（/portfolios、/how-it-works、/compare、/zh/...）共用樣式。字體、色板、元件照首頁（index.html）。
+   由 scripts/build-pages.mjs 產生的頁面引用；不靠 support.js。 */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#0B0F14;font-family:'Geist',-apple-system,system-ui,'PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;-webkit-font-smoothing:antialiased;font-size:16px;line-height:1.6;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+a:hover{opacity:.85}
+img{max-width:100%;display:block}
+.wrap{padding-left:max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2));padding-right:max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2))}
+
+/* 頂部浮動列（同首頁） */
+.site-head{position:fixed;top:14px;left:0;right:0;z-index:50;padding:0 16px;pointer-events:none}
+.site-head__bar{pointer-events:auto;max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px;padding:0 8px 0 18px;background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:18px;box-shadow:0 1px 1px rgba(11,15,20,.03),0 8px 28px rgba(11,15,20,.08),0 0 0 1px rgba(11,15,20,.06)}
+.site-head__logo{flex:1;display:flex}
+.site-head__logo img{height:20px;width:auto}
+.site-head nav{display:flex;align-items:center;gap:4px}
+.site-head nav a{padding:10px 14px;border-radius:999px;font:500 14px 'Geist',sans-serif;color:#4A5563;white-space:nowrap}
+.site-head nav a:hover,.site-head nav a[aria-current]{color:#0B0F14;background:#F2F5F7;opacity:1}
+.site-head__right{flex:1;display:flex;justify-content:flex-end;align-items:center;gap:6px}
+.site-head__lang{padding:10px 12px;font:500 14px 'Geist',sans-serif;color:#4A5563;white-space:nowrap}
+.btn{height:48px;padding:0 22px;border-radius:999px;display:inline-flex;align-items:center;gap:10px;font:500 16px 'Geist',sans-serif;white-space:nowrap;border:0;cursor:pointer}
+.btn--gold{background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35)}
+.btn--gold:hover{background:#EEC46E;opacity:1}
+.btn--dark{background:#0B0F14;color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.btn--light{background:#fff;color:#0B0F14}
+.btn--line{background:transparent;color:#0B0F14;box-shadow:inset 0 0 0 1px #D6DCE2}
+.btn--sm{height:40px;padding:0 18px;font-size:14px}
+@media (max-width:720px){.site-head nav{display:none}}
+
+/* 版面 */
+main{padding-top:clamp(112px,12vw,156px)}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 28px;padding:0;list-style:none;font:400 13px 'Geist Mono',monospace;color:#6B7785}
+.crumbs li+li:before{content:"/";margin-right:6px;color:#B4BDC6}
+.crumbs a:hover{color:#0B0F14}
+.eyebrow{font:500 12px 'Geist Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#4A6B85}
+h1,h2,h3{font-family:'Instrument Serif',Georgia,'Songti SC','STSong',serif;font-weight:400;letter-spacing:-.01em;margin:0;text-wrap:balance}
+h1{font-size:clamp(44px,5.6vw,80px);line-height:1.02}
+h2{font-size:clamp(34px,3.6vw,52px);line-height:1.06}
+h3{font-size:clamp(24px,2.2vw,30px);line-height:1.15}
+:lang(zh) h1,:lang(zh) h2,:lang(zh) h3{letter-spacing:0;font-weight:400}
+:lang(zh) h1{font-size:clamp(40px,5vw,72px);line-height:1.12}
+:lang(zh) h2{font-size:clamp(30px,3.2vw,46px);line-height:1.18}
+.lede{font-size:clamp(18px,1.4vw,20px);line-height:1.5;color:#3C4651;margin:24px 0 0;max-width:34em;text-wrap:pretty}
+.section{padding-top:clamp(72px,8vw,120px)}
+.section__head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 24px;flex-wrap:wrap;margin-bottom:28px}
+.prose{max-width:44em;color:#3A4652}
+.prose p{margin:16px 0 0}
+.prose h3{color:#0B0F14;margin-top:40px}
+.prose ul,.prose ol{margin:16px 0 0;padding-left:1.2em}
+.prose li{margin-top:8px}
+.prose a,.link{color:#2F5B7C;text-decoration:underline;text-decoration-color:rgba(47,91,124,.35);text-underline-offset:3px}
+.prose strong{color:#0B0F14;font-weight:500}
+.muted{color:#6B7785}
+.small{font-size:14px}
+.mono{font-family:'Geist Mono',monospace}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.pos{color:#1E8A5C}
+.neg{color:#D23F2E}
+
+/* 基金頁 hero */
+.hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(28px,4vw,64px);align-items:center}
+.hero__art{position:relative;aspect-ratio:4/3;border-radius:24px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)}
+.hero__art img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr)}.hero__art{order:-1;aspect-ratio:16/9}}
+
+/* 數字列（同首頁 How it works 的 stats） */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:0 16px;margin-top:36px;border-top:1px solid rgba(11,15,20,.08)}
+.stats > div{padding:18px 16px 0 0}
+.stats b{display:block;font:400 clamp(26px,2.4vw,34px)/1 'Geist',sans-serif;letter-spacing:-.03em;white-space:nowrap}
+.stats span{display:block;font-size:14px;line-height:1.4;color:#4A5B6A;margin-top:8px}
+
+/* 持股 */
+.hold{border-top:1px solid rgba(11,15,20,.1)}
+.hold__row{display:grid;grid-template-columns:72px minmax(0,1fr) minmax(80px,200px) 64px;align-items:center;gap:16px;padding:16px 0;border-bottom:1px solid rgba(11,15,20,.08)}
+.hold__tk{font:500 14px 'Geist Mono',monospace}
+.hold__nm{min-width:0;overflow-wrap:anywhere}
+.hold__nm small{display:block;color:#6B7785;font-size:13px}
+.hold__bar{height:6px;border-radius:3px;background:#EEF1F4;position:relative;overflow:hidden}
+.hold__bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,#9FC0D8,#2F5B7C)}
+.hold__w{font:400 14px 'Geist Mono',monospace;text-align:right}
+@media (max-width:560px){.hold__row{grid-template-columns:60px minmax(0,1fr) 56px}.hold__bar{display:none}}
+
+/* 報酬表 */
+.rets{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:12px;margin-top:24px}
+.rets div{background:#F6F8FA;border-radius:14px;padding:14px 16px}
+.rets span{display:block;font:500 11px 'Geist Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#6B7785}
+.rets b{display:block;margin-top:6px;font:400 22px 'Geist',sans-serif;letter-spacing:-.02em}
+
+/* 提醒框 */
+.note{margin-top:24px;border-radius:18px;padding:20px 22px;background:#F6F8FA;color:#3A4652}
+.note--risk{background:#FDF1EF;color:#5A2A22}
+.note--risk strong{color:#B3311F}
+.note p{margin:8px 0 0}
+.note p:first-child{margin-top:0}
+
+/* 步驟 */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin:0;padding:0;list-style:none}
+.steps li{border-radius:18px;padding:22px;background:#F6F8FA}
+.steps li > span{font:400 12px 'Geist Mono',monospace;letter-spacing:.08em;color:#4A5B6A}
+.steps li > b{display:block;margin-top:14px;font:500 20px/1.25 'Geist',sans-serif;letter-spacing:-.02em}
+.steps li > p{margin:8px 0 0;color:#4A5563;font-size:15px}
+
+/* 基金列（同首頁 Top portfolios） */
+.fund-row{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:22px 0;border-top:1px solid rgba(11,15,20,.08)}
+.fund-row:hover{opacity:1;background:#F6F8FA}
+.fund-row__l{display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0}
+.fund-row__img{flex:none;width:clamp(52px,6vw,64px);height:clamp(52px,6vw,64px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)}
+.fund-row__img img{width:100%;height:100%;object-fit:cover;object-position:50% 22%}
+.fund-row__nm{min-width:0;overflow-wrap:anywhere;font:500 clamp(20px,2vw,28px)/1.15 'Geist',sans-serif;letter-spacing:-.03em}
+.fund-row__nm small{display:block;margin-top:4px;font:400 14px/1.4 'Geist',sans-serif;letter-spacing:0;color:#6B7785}
+.fund-row__r{flex:none;display:flex;align-items:center;gap:clamp(10px,2vw,24px);font:400 clamp(20px,2vw,28px) 'Geist',sans-serif;letter-spacing:-.03em;white-space:nowrap}
+.fund-row__r i{font-style:normal;font-weight:300;font-size:22px}
+.fund-list{border-bottom:1px solid rgba(11,15,20,.08)}
+.group{margin-top:48px}
+.group:first-child{margin-top:0}
+.group h2{font-size:clamp(28px,2.8vw,40px);margin-bottom:16px}
+
+/* 卡片 */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:12px}
+.card{border-radius:18px;padding:22px;background:#F6F8FA}
+.card h3{font:500 20px/1.25 'Geist',sans-serif;letter-spacing:-.02em}
+.card p{margin:8px 0 0;color:#4A5563;font-size:15px}
+.card ul{margin:10px 0 0;padding-left:1.1em;color:#4A5563;font-size:15px}
+.card li{margin-top:6px}
+.card--dark{background:linear-gradient(180deg,#151C24,#0E1318);color:#EEF3F7}
+.card--dark p,.card--dark li{color:#AFBFCD}
+
+/* 比較表 */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-top:1px solid rgba(11,15,20,.1)}
+table.cmp{border-collapse:collapse;width:100%;min-width:860px;font-size:14px;line-height:1.45}
+table.cmp th,table.cmp td{text-align:left;vertical-align:top;padding:14px 12px;border-bottom:1px solid rgba(11,15,20,.08)}
+table.cmp thead th{font:500 12px 'Geist Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#4A5B6A}
+table.cmp tbody th{font-weight:500;color:#0B0F14;width:150px}
+table.cmp td{color:#3A4652}
+table.cmp .us{background:#FBF6EA}
+
+/* FAQ（同首頁） */
+.faq{display:flex;flex-wrap:wrap;gap:32px 48px}
+.faq h2{flex:1 1 280px}
+.faq__list{flex:2 1 min(100%,480px);min-width:0}
+.faq details{border-top:1px solid rgba(11,15,20,.08)}
+.faq details:last-child{border-bottom:1px solid #D5DBE0}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;padding:24px 0;font:500 clamp(19px,1.6vw,22px)/1.25 'Geist',sans-serif;letter-spacing:-.02em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary span{font:300 28px/1 'Geist',sans-serif;transition:transform .2s}
+.faq details[open] summary span{transform:rotate(45deg)}
+.faq details p{font-size:16px;line-height:1.6;color:#3A4652;margin:0;padding:0 0 24px;max-width:46ch}
+.faq details p a{color:#2F5B7C;text-decoration:underline;text-underline-offset:3px}
+
+/* 底部 CTA（同首頁 Build your own 的深色卡） */
+.cta{margin-top:clamp(72px,8vw,120px);border-radius:24px;overflow:hidden;background:radial-gradient(120% 100% at 0% 0%,#18212B,#0B0F14 70%);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);padding:clamp(28px,4vw,56px);color:#fff}
+.cta h2{max-width:14em}
+.cta p{color:#AFBFCD;margin:16px 0 0;max-width:34em}
+
+/* 首頁簡體版 */
+.home-hero{background:#F3F5F7 url(/assets/bank-hall.webp) 50% 50%/cover no-repeat;position:relative;padding-top:clamp(140px,16vw,220px);padding-bottom:clamp(40px,5vw,64px)}
+.home-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(243,245,247,.85) 0%,rgba(243,245,247,.5) 50%,rgba(243,245,247,.1) 85%),linear-gradient(0deg,rgba(243,245,247,.7) 0%,rgba(243,245,247,0) 45%)}
+.home-hero > *{position:relative;z-index:1}
+.dark-band{background:#0B0F14;color:#fff;padding-top:clamp(72px,8vw,120px);padding-bottom:clamp(40px,4vw,64px)}
+.dark-band .cards{margin-top:clamp(40px,5vw,72px)}
+.tabs-note{font-size:14px;color:#6B7785}
+
+/* 頁尾（同首頁） */
+.site-foot{margin-top:clamp(80px,9vw,128px);background:#000;color:#8A96A2;border-top:1px solid #1A2129;padding-top:48px;padding-bottom:56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px 48px;font-size:14px;line-height:1.7}
+.site-foot__brand{display:flex;flex-direction:column;gap:18px}
+.site-foot__brand img{height:24px;width:auto;align-self:flex-start}
+.site-foot nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px;color:#E3E8EC}
