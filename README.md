@@ -82,7 +82,7 @@ npx wrangler dev --port 5241 --local-upstream localhost:5241
 
 ### Sign-in, holdings, buy and sell (`assets/vendor/cre8-wallet.js`)
 
-`app.html` has no build step, so the wallet code is one prebuilt file, `assets/vendor/cre8-wallet.js` (about 6 MB, loaded only when someone has signed in before or is about to sign in). It exposes `window.CRE8W`: Privy sign-in (X with invite code, Google, email), the CRE8 session, Kernel UserOps, first-time account setup, test USDT, buy, sell and My mix. It is cre8-app's own code (same files that run in production there), wired up by `scripts/vendor/wallet-entry.tsx`. React comes from the page (`window.React` 18.3.1, the one `support.js` loads).
+`app.html` has no build step, so the wallet code is one prebuilt file, `assets/vendor/cre8-wallet.js` (about 6 MB, loaded only when someone has signed in before or is about to sign in). It exposes `window.CRE8W`: Privy sign-in (X with invite code, Google, email), the CRE8 session, Kernel UserOps, first-time account setup, test USDT, buy, sell, My mix and Earn. It is cre8-app's own code (same files that run in production there), wired up by `scripts/vendor/wallet-entry.tsx`. React comes from the page (`window.React` 18.3.1, the one `support.js` loads).
 
 Rebuild it after cre8-app changes (Bun 1.4+):
 
@@ -96,9 +96,17 @@ The script exports cre8-app's `src` at that ref to a temp folder, links an insta
 
 Privy only runs on origins allowed in the Privy dashboard (now `tst.cre8.finance`), so on localhost the sign-in sheet opens but Privy can't finish. Add `http://localhost:5241` there to test sign-in locally.
 
+### Earn (`docs/EARN_UX.zh-TW.md`)
+
+Three kinds of money are always shown apart: wallet cash (Available), Cash Earn (Earning) and each portfolio's Earn extra position. Portfolio values are net of the Earn extra loan.
+
+- Cash Earn: the Cash row's button is "Earn x%" with the best rate from `GET /api/earn/vaults`; it goes straight to amount → review → confirm with that vault ("Change" on the amount page lists the others). `CRE8W.earnDeposit` / `earnWithdraw` ask `/me/earn/deposit|withdraw` for calls, send them from the owner wallet (plain transactions, gas topped up like a buy), then record them with `/me/earn/confirm`. Withdraw takes any amount or Max and spreads across vault positions; if a vault is short on cash it says how much can come out now.
+- Earn extra: `GET /api/strategy-earn/markets` gives `extraApyBps` per asset; a fund's rate is the weighted sum over its eligible holdings. The buy review card shows "~X USDT more a year" for the amount, off by default, hidden under 0.3%, never on leveraged funds or own baskets. If it's on, `CRE8W.strategyOpen` runs right after the buy (one UserOp for all eligible assets the account holds; if stocks haven't filled yet, the user turns it on from the fund page later). The fund page row shows on/rate/earned and turns it on or off. Selling closes Earn extra first (`CRE8W.strategyClose`), then sells — until backend#204 does this automatically.
+- Every Earn screen has a small "Details" link that opens a drawer: where the money is (protocol, BscScan links), where the yield comes from, safety lines (LTV bar) and how to get out. Contract addresses and the liquidation line are copied from the backend profile until the API returns them (backend#209).
+- When the backend can't read rates or balances it returns `status: "unavailable"`; the app shows "Temporarily unavailable" and never an error code.
+
 ### Not wired yet (waiting on the backend)
 
-- Earn (`docs/EARN_UX.zh-TW.md`): cash Earn vault list, Earning row, Withdraw, the "Earn extra" switch on the buy review and fund page. Screens and states are in place and show "Coming soon"; `loadEarn()` and the `earn` branches in `confirm()` are the hook points.
 - Name, avatar and basket cover saved on the server (now kept only in the tab).
 - Portfolio value history chart on Profile (flat line until there is an endpoint).
 - My mix with all 103 assets: the backend and cre8-app's mix catalog still allow 40.
