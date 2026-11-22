@@ -234,6 +234,32 @@ export async function joinWaitlist() {
   return record;
 }
 
+/**
+ * 等候名單加分任務（`GET /waitlist/tasks`、`POST /waitlist/tasks/:id`，用 Privy identity token）。
+ * 後端還沒上這組端點時 GET 回 404 → 傳回 null，頁面就把任務按鈕停用，不假裝完成。
+ */
+export async function waitlistTasks() {
+  const t = identityToken();
+  if (t === null) return null;
+  try {
+    return await apiRequest<unknown>('/waitlist/tasks', { headers: { authorization: `Bearer ${t}` } });
+  } catch (cause) {
+    if (cause instanceof ApiError && cause.status === 404) return null;
+    throw cause;
+  }
+}
+export async function completeWaitlistTask(id: 'post' | 'gmail' | 'quiz' | 'tg', body: Record<string, unknown> = {}) {
+  const t = identityToken();
+  if (t === null) throw new Error('Connect X first.');
+  try {
+    return await apiRequest<unknown>(`/waitlist/tasks/${id}`, { method: 'POST', headers: { authorization: `Bearer ${t}`, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  } catch (cause) {
+    if (!(cause instanceof ApiError)) throw cause;
+    const msg: Record<string, string> = { TASK_INVALID_URL: 'That isn’t a post from your X account.', TASK_NOT_LINKED: 'Connect Google first.', NOT_JOINED: 'Join the waitlist first.' };
+    throw new Error(msg[cause.code] ?? (cause.status === 429 ? 'Too many tries. Wait a minute.' : 'Couldn’t save that. Try again.'));
+  }
+}
+
 // ---- 讀資料 ----------------------------------------------------------------------------------
 const token = () => { const t = get().token; if (t === null) throw new Error('Sign in first.'); return t; };
 export const portfolios = () => getPortfolios(token());
@@ -443,7 +469,7 @@ export { transferCalldata };
 
 // IIFE 沒有匯出：掛到 window，通知 app.html。
 (window as unknown as { CRE8W: unknown }).CRE8W = {
-  mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
+  mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, chain,
 };
 window.dispatchEvent(new Event('cre8w:ready'));

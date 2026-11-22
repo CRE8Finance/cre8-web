@@ -74,7 +74,6 @@
 
 <sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:12px 0 0;font:500 13px/1.4 'Geist';color:#B42318">{{ err }}</p></sc-if>
 <sc-if value="{{ approved }}" hint-placeholder-val="{{ false }}"><a href="https://tst.cre8.finance/" style="margin-top:16px;height:48px;border-radius:999px;background:#E3B55B;color:#0B0F14;display:flex;align-items:center;justify-content:center;gap:10px;font:500 16px 'Geist';box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35)">Open the testnet <span>→</span></a></sc-if>
-<sc-if value="{{ tasksLive }}" hint-placeholder-val="{{ false }}">
 <div style="margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px">
 <div><div style="font:500 12px 'Geist Mono';letter-spacing:.1em;color:#4A5B6A">BONUS POINTS</div><div style="font:400 14px/1.4 'Geist';color:#4A5563;margin-top:6px">{{ bonusHint }}</div></div>
 <div style="text-align:right;white-space:nowrap"><span style="font:300 44px/1 'Geist';letter-spacing:-.05em">{{ pts }}</span><span style="font:400 14px 'Geist Mono';color:#4A5B6A"> / 35</span></div>
@@ -130,14 +129,13 @@
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:16px 0">
 <div style="flex:1 1 120px;min-width:0"><div style="font:500 15px/1.35 'Geist'">Join our Telegram</div></div>
 <div style="margin-left:auto;display:flex;align-items:center;gap:10px"><span style="font:500 12px 'Geist Mono';padding:5px 9px;border-radius:999px;background:{{ t4.pillBg }};color:{{ t4.pillCol }}">+10</span>
-<sc-if value="{{ t4.todo }}" hint-placeholder-val="{{ true }}"><button type="button" disabled="{{ locked }}" onClick="{{ joinTg }}" style="height:38px;padding:0 14px;border:0;border-radius:999px;cursor:pointer;background:{{ actBg }};color:{{ actCol }};font:500 14px 'Geist';white-space:nowrap">Join</button></sc-if>
+<sc-if value="{{ t4.todo }}" hint-placeholder-val="{{ true }}"><button type="button" disabled="{{ tgLocked }}" onClick="{{ joinTg }}" style="height:38px;padding:0 14px;border:0;border-radius:999px;cursor:pointer;background:{{ actBg }};color:{{ actCol }};font:500 14px 'Geist';white-space:nowrap">Join</button></sc-if>
 <sc-if value="{{ t4.done }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist';color:#17714B;white-space:nowrap">✓ Joined</span></sc-if>
 </div>
 </div>
 
 </div>
 
-</sc-if>
 
 </div>
 </div>
@@ -152,8 +150,10 @@
 // 真後端（2026-11-23）：Connect X＝Privy 的 X 登入（assets/vendor/cre8-wallet.js）→ 追蹤 @CRE8Finance → POST /api/waitlist/join。
 // 已加入：GET /api/waitlist/me 的狀態（waiting／approved）。/api 由 _worker.js 轉發（cre8.finance 只開 /api/auth/* 與 /api/waitlist/*）。
 // 加分任務（post、gmail、quiz、tg）後端還沒有對應端點（/points/* 是鏈上活動的點數，而且要放行後才拿得到 session）：
-// 畫面保留、按鈕停用並寫 Coming soon，不假裝完成。接點：TASKS_LIVE 改 true 並把 finish() 換成後端驗證。
-const TASKS_LIVE = false;
+// 加分任務走後端 /waitlist/tasks（完成與分數都以後端為準）；後端還沒上就停用，不假裝完成。
+// 後端 GET /waitlist/tasks 回得來才開放任務；Telegram 連結還沒給就先停用那一項。
+const TG_URL = '';
+const POST_TEXT = 'I joined the @CRE8Finance testnet waitlist: baskets of US stocks and crypto, bought with USDT. https://cre8.finance';
 const QUESTIONS = [
   ['hold', 'Do you hold any bStocks?', ['Yes', 'Not yet']],
   ['where', 'Where do you hold them?', ['On-chain wallet', 'Binance', 'Both']],
@@ -165,7 +165,7 @@ const POINTS = { post: 5, gmail: 5, quiz: 15, tg: 10 };
 const FOLLOW_URL = 'https://x.com/intent/follow?screen_name=CRE8Finance';
 const FOLLOW_KEY = 'cre8.wl.followed';
 class Component extends DCLogic {
-  state = { w: null, entry: undefined, busy: false, err: null, followed: false, done: {}, postStage: 0, postUrl: '', postErr: false, qOpen: false, ans: {} };
+  state = { w: null, entry: undefined, busy: false, err: null, followed: false, done: {}, tasksLive: false, serverPts: null, taskBusy: null, postStage: 0, postUrl: '', postErr: false, qOpen: false, ans: {} };
   componentDidMount() {
     try { this.setState({ followed: localStorage.getItem(FOLLOW_KEY) === '1' }); } catch (_) {}
     const go = () => { window.CRE8W.mount({ waitlist: 'manual' }); this.unsub = window.CRE8W.subscribe(w => this.onWallet(w)); };
@@ -181,7 +181,7 @@ class Component extends DCLogic {
     if (w.hasX && w.identityReady && !(was && was.hasX && was.identityReady)) this.loadMe();
   }
   async loadMe() {
-    try { const entry = await window.CRE8W.waitlistMe(); this.setState({ entry, err: null }); if (entry) this.setState({ followed: true }); }
+    try { const entry = await window.CRE8W.waitlistMe(); this.setState({ entry, err: null }); if (entry) { this.setState({ followed: true }); this.loadTasks(); } }
     catch (e) { this.setState({ entry: null, err: 'Couldn’t check your spot. Refresh to try again.' }); }
   }
   connectX = () => { const W = window.CRE8W; if (!W) return; this.setState({ err: null }); W.signInWith('twitter').catch(e => this.setState({ err: e.message })); };
@@ -193,25 +193,46 @@ class Component extends DCLogic {
     try { const entry = await window.CRE8W.joinWaitlist(); this.setState({ entry, busy: false }); }
     catch (e) { this.setState({ busy: false, err: e.code === 'X_ALREADY_JOINED' ? 'This X account is already on the list with another sign-in.' : e.code === 'X_REQUIRED' ? 'Connect X first.' : 'Couldn’t add you to the list. Try again.' }); }
   };
-  finish = id => this.setState(s => ({ done: { ...s.done, [id]: true } }));
-  startPost = () => this.setState({ postStage: 1 });
+  async loadTasks() {
+    try { const r = window.CRE8W.waitlistTasks && await window.CRE8W.waitlistTasks(); if (r) this.applyTasks(r); }
+    catch (_) { /* 讀不到就維持停用，不假裝完成 */ }
+  }
+  // 後端回 { points, max, tasks: [{ id, points, done }] }
+  applyTasks(r) {
+    const done = {}; (r.tasks || []).forEach(t => { if (t.done) done[t.id] = true; });
+    this.setState({ tasksLive: true, done, serverPts: typeof r.points === 'number' ? r.points : null, taskBusy: null, err: null });
+  }
+  async complete(id, body) {
+    this.setState({ taskBusy: id, err: null });
+    try { this.applyTasks(await window.CRE8W.completeWaitlistTask(id, body)); return true; }
+    catch (e) { this.setState({ taskBusy: null, err: e.message }); return false; }
+  }
+  startPost = () => { window.open('https://x.com/intent/post?text=' + encodeURIComponent(POST_TEXT), '_blank', 'noopener'); this.setState({ postStage: 1 }); };
   setPostUrl = e => this.setState({ postUrl: e.target.value, postErr: false });
-  verifyPost = () => {};
-  postKey = () => {};
-  connectGmail = () => {};
-  joinTg = () => {};
-  openQ = () => {};
+  verifyPost = async () => {
+    const url = this.state.postUrl.trim();
+    if (!/^https?:\/\/(www\.)?(x|twitter)\.com\/[^\/\s]+\/status\/\d+/.test(url)) return this.setState({ postErr: true });
+    if (await this.complete('post', { url })) this.setState({ postStage: 0 });
+  };
+  postKey = e => { if (e.key === 'Enter') this.verifyPost(); };
+  connectGmail = async () => {
+    this.setState({ taskBusy: 'gmail', err: null });
+    try { await window.CRE8W.link('google'); } catch (e) { return this.setState({ taskBusy: null, err: e.message || 'Google didn’t connect.' }); }
+    this.complete('gmail');
+  };
+  joinTg = () => { if (!TG_URL) return; window.open(TG_URL, '_blank', 'noopener'); this.complete('tg'); };
+  openQ = () => this.setState({ qOpen: true });
   needed() {
     const a = this.state.ans;
     const show = { hold: true, where: a.hold === 'Yes', other: a.hold === 'Not yet', otherWhere: a.hold === 'Not yet' && a.other === 'Yes', type: true };
     return QUESTIONS.filter(q => show[q[0]]);
   }
-  submitQ = () => {};
+  submitQ = async () => { if (!this.needed().every(q => this.state.ans[q[0]])) return; if (await this.complete('quiz', { answers: this.state.ans })) this.setState({ qOpen: false }); };
   renderVals() {
     const s = this.state, w = s.w;
     const connected = !!(w && w.hasX), entry = s.entry || null, joined = !!entry, approved = joined && entry.status === 'approved';
-    const locked = !joined || !TASKS_LIVE;
-    const pts = Object.keys(POINTS).reduce((n, k) => n + (s.done[k] ? POINTS[k] : 0), 0);
+    const locked = !joined || !s.tasksLive;
+    const pts = s.serverPts !== null ? s.serverPts : Object.keys(POINTS).reduce((n, k) => n + (s.done[k] ? POINTS[k] : 0), 0);
     const task = id => { const d = !!s.done[id]; return { done: d, todo: !d, pillBg: d ? '#E6F6EE' : '#F2F5F7', pillCol: d ? '#17714B' : '#3A4652' }; };
     const need = this.needed(), qIncomplete = !need.every(q => s.ans[q[0]]);
     const step = ok => ({ bg: ok ? '#17714B' : '#fff', col: ok ? '#fff' : '#3A4652' });
@@ -220,7 +241,7 @@ class Component extends DCLogic {
     const checking = connected && s.entry === undefined;
     const d = entry && entry.joinedAt ? new Date(entry.joinedAt) : null;
     return {
-      tasksLive: TASKS_LIVE, joined, locked, connected, notConnected: !connected, notFollowed: !joined, approved,
+      joined, locked, connected, notConnected: !connected, notFollowed: !joined, approved,
       title: approved ? 'You’re in.' : joined ? "You're on the list." : 'Join the waitlist',
       sub: approved ? 'Your invite is ready. Open the testnet and sign in with X.' : joined ? 'Your place is saved. We’ll let you in soon.' : 'Two steps. No email or wallet needed.',
       handle: w && w.profile && w.profile.handle ? '@' + w.profile.handle : 'Connected',
@@ -231,10 +252,11 @@ class Component extends DCLogic {
       s1Bg: s1.bg, s1Col: s1.col, s1Mark: connected ? '✓' : '1',
       s2Bg: s2.bg, s2Col: s2.col, s2Mark: joined ? '✓' : '2',
       followBg: connected && !checking && !s.busy ? '#0B0F14' : '#E3E8EC', followCol: connected && !checking && !s.busy ? '#fff' : '#5A6673',
-      bonusHint: TASKS_LIVE ? (locked ? 'Unlocks once you join.' : 'More points, earlier access.') : 'Bonus tasks are coming soon.',
+      bonusHint: joined ? '' : 'Unlocks once you join.',
       pts, ptsPct: Math.round(pts / 35 * 100), ptsLabel: pts + ' of 35 points earned',
       tasksOpacity: locked ? .55 : 1,
       actBg: locked ? '#E3E8EC' : '#0B0F14', actCol: locked ? '#5A6673' : '#fff',
+      tgLocked: locked || !TG_URL,
       t1: task('post'), t2: task('gmail'), t3: task('quiz'), t4: task('tg'),
       postLocked: locked, postReady: !locked && !s.done.post, postVerify: !locked && s.postStage === 1 && !s.done.post,
       postUrl: s.postUrl, showPostErr: s.postErr, postBorder: s.postErr ? '#B42318' : '#7E8A96',
