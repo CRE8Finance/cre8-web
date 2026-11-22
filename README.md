@@ -43,6 +43,8 @@ node --test scripts/test-worker.mjs # worker routing
 
 Copy for the pages lives in the script (English fund descriptions follow cre8-app `src/lib/fund-copy.ts`). Edit the script, not the generated files.
 
+The 简体 home page (`zh/index.html`) and waitlist (`zh/waitlist/index.html`) aren't written separately: the script reads `index.html` and `waitlist.html`, applies the translation tables in `scripts/zh-home.json` and `scripts/zh-waitlist.json`, and writes the result, so layout, images, animation and template stay identical. If an English string in a table no longer appears on the English page, or English text is left untranslated, the build stops and names it. After changing copy on `index.html` or `waitlist.html`, update the table and re-run the script.
+
 ## Deploy
 
 Cloudflare Worker `cre8-web` (`wrangler.jsonc`, `_worker.js`). Run `npx wrangler deploy` in this folder.

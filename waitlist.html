@@ -6,11 +6,15 @@
 <title>Join the CRE8 waitlist</title>
 <meta name="description" content="CRE8 testnet is invite-only. Connect X and follow @CRE8Finance to join the waitlist for baskets of US stocks and crypto, bought with USDT on BNB Chain.">
 <link rel="canonical" href="https://cre8.finance/waitlist">
+<link rel="alternate" hreflang="en" href="https://cre8.finance/waitlist">
+<link rel="alternate" hreflang="zh-Hans" href="https://cre8.finance/zh/waitlist">
+<link rel="alternate" hreflang="x-default" href="https://cre8.finance/waitlist">
 <meta name="theme-color" content="#0B0F14">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CRE8">
+<meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://cre8.finance/waitlist">
 <meta property="og:title" content="Join the CRE8 waitlist">
 <meta property="og:description" content="CRE8 testnet is invite-only. Connect X and follow @CRE8Finance to get in line.">
@@ -38,6 +42,7 @@
 <a href="/" style="display:flex"><img src="/assets/cre8-logo-dark.svg" alt="CRE8 home" style="height:20px;display:block"></a>
 <div style="display:flex;align-items:center;gap:4px">
 <a class="wl-home" href="/" style="padding:10px 14px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">Home</a>
+<a href="/zh/waitlist" lang="zh-Hans" hreflang="zh-Hans" aria-label="简体中文" style="padding:10px 12px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">中文</a>
 <a href="https://tst.cre8.finance/" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">Have an invite? <span>→</span></a>
 </div>
 </div>
@@ -161,6 +166,8 @@ const QUESTIONS = [
   ['otherWhere', 'Where do you hold them?', ['On-chain wallet', 'Exchange', 'Both']],
   ['type', 'What kind of investor are you?', ['Passive', 'Active trader', 'Yield-focused', 'Just exploring']],
 ];
+// 選項的顯示文字（值照舊存英文，給後端與 needed() 用）；簡體版由 build-pages.mjs 換成中文。
+const OPT_LABEL = {};
 const POINTS = { post: 5, gmail: 5, quiz: 15, tg: 10 };
 const FOLLOW_URL = 'https://x.com/intent/follow?screen_name=CRE8Finance';
 const FOLLOW_KEY = 'cre8.wl.followed';
@@ -266,7 +273,7 @@ class Component extends DCLogic {
         id: 'wl-q-' + id, text,
         opts: opts.map(label => {
           const on = s.ans[id] === label;
-          return { label, on, bg: on ? '#0B0F14' : '#fff', color: on ? '#fff' : '#0B0F14', border: on ? '#0B0F14' : '#7E8A96', pick: () => this.setState(p => ({ ans: { ...p.ans, [id]: label } })) };
+          return { label: OPT_LABEL[label] || label, on, bg: on ? '#0B0F14' : '#fff', color: on ? '#fff' : '#0B0F14', border: on ? '#0B0F14' : '#7E8A96', pick: () => this.setState(p => ({ ans: { ...p.ans, [id]: label } })) };
         }),
       })),
       connectX: this.connectX, followX: () => (connected && !checking && !s.busy) && this.followX(), startPost: this.startPost, setPostUrl: this.setPostUrl,

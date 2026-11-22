@@ -31,7 +31,7 @@ const get = (url) => worker.fetch(new Request(url, { redirect: 'manual' }), env)
 const loc = (res) => res.headers.get('location');
 
 const FUND_PAGES = ['/portfolios/pelosi', '/portfolios/ai-chips', '/portfolios/tqqq'];
-const PAGES = ['/portfolios', '/how-it-works', '/compare', '/zh', '/zh/portfolios', '/zh/how-it-works', '/zh/compare', ...FUND_PAGES, ...FUND_PAGES.map((p) => '/zh' + p)];
+const PAGES = ['/portfolios', '/how-it-works', '/compare', '/zh', '/zh/portfolios', '/zh/how-it-works', '/zh/compare', '/zh/waitlist', ...FUND_PAGES, ...FUND_PAGES.map((p) => '/zh' + p)];
 
 test('新頁面在 cre8.finance 回 200 和自己的 HTML', async () => {
   for (const p of PAGES) {
