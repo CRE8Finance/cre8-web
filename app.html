@@ -151,7 +151,15 @@
 <sc-if value="{{ b2 }}" hint-placeholder-val="{{ false }}">
 <div style="padding:26px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">03 · REBALANCE</div>
 <div style="margin:0 16px;padding:3px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:999px;display:flex">
-<sc-for list="{{ freqs }}" as="q" hint-placeholder-count="3"><button onClick="{{ q.pick }}" style="flex:1;height:34px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
+<sc-for list="{{ freqs }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.pick }}" style="flex:1;height:34px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
+</div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">START DATE</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ startText }}</span></div>
+<div style="margin:0 16px;padding:14px 12px 10px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:18px">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px"><button onClick="{{ calPrev }}" aria-label="Previous month" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;cursor:pointer;opacity:{{ calPrevO }};display:flex;align-items:center;justify-content:center"><svg width="8" height="13" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><span style="font:500 15px 'Geist'">{{ calTitle }}</span><button onClick="{{ calNext }}" aria-label="Next month" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;cursor:pointer;opacity:{{ calNextO }};display:flex;align-items:center;justify-content:center"><svg width="8" height="13" viewBox="0 0 10 17"><path d="M1.5 1.5L8 8.5l-6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font:500 11px 'Geist Mono';color:#6B7785;padding-bottom:6px"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
+<sc-for list="{{ calCells }}" as="c" hint-placeholder-count="30"><button onClick="{{ c.pick }}" style="width:40px;height:40px;margin:0 auto;display:block;border:1px solid {{ c.bd }};border-radius:50%;background:{{ c.bg }};color:{{ c.fg }};font:400 14px 'Geist';cursor:{{ c.cur }};padding:0;transition:background .15s">{{ c.d }}</button></sc-for>
+</div>
 </div>
 <p style="margin:12px 16px 0;font:400 14px/1.5 'Geist';color:#5E6A76">{{ freqNote }}</p>
 </sc-if>
@@ -337,7 +345,7 @@ class Component extends DCLogic {
   state = {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
-    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, freq: 1, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
+    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, freq: 2, start: null, calOff: 0, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
     holdings: [
       { id: 'pelosi', name: 'Pelosi Portfolio', cover: 'app/p-pelosi.jpg', val: 4236.80, ret: 23.7 },
       { id: 'ai-chips', name: 'AI Chips', cover: 'app/p-ai.jpg', val: 3104.12, ret: 62.3 },
@@ -450,7 +458,17 @@ class Component extends DCLogic {
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
     const mixBtn = s.picks.length === 0 ? { ...off, label: 'Pick at least 1' } : total !== 100 ? { ...off, label: total < 100 ? 'Add ' + (100 - total) + '% to continue' : 'Remove ' + (total - 100) + '% to continue' } : { ...cta, label: 'Buy this portfolio' };
-    const FREQ = ['Every week', 'Every month', 'Every quarter'];
+    const FREQ = ['Every day', 'Every week', 'Every month', 'Every quarter'];
+    // 再平衡起始日（月曆）：預設今天，不能選過去的日子；最多往後看 12 個月。
+    const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const start = s.start ? new Date(s.start) : today;
+    const calM = new Date(today.getFullYear(), today.getMonth() + s.calOff, 1);
+    const lead = calM.getDay(), days = new Date(calM.getFullYear(), calM.getMonth() + 1, 0).getDate();
+    const calCells = Array.from({ length: lead }, () => ({ d: '', bg: 'transparent', fg: 'transparent', bd: 'transparent', cur: 'default', pick: () => {} })).concat(Array.from({ length: days }, (_, i) => {
+      const dt = new Date(calM.getFullYear(), calM.getMonth(), i + 1), past = dt < today, sel = dt.getTime() === start.getTime(), isToday = dt.getTime() === today.getTime();
+      return { d: String(i + 1), bg: sel ? '#0B0F14' : 'transparent', fg: sel ? '#fff' : past ? '#C3CAD1' : '#0B0F14', bd: isToday && !sel ? '#0B0F14' : 'transparent', cur: past ? 'default' : 'pointer', pick: () => { if (!past) this.setState({ start: dt.getTime() }); } };
+    }));
+    const startText = MON[start.getMonth()] + ' ' + start.getDate() + ', ' + start.getFullYear();
     // Build 分四頁：選標的 → 設比例 → 再平衡頻率 → 取名買入。
     const inBuild = s.page === 'build' && !s.fund, bs = s.bstep;
     const B_TITLES = [['Build', 'Your picks. We keep the weights on target.'], ['Set weights', 'How much of each, adding up to 100%.'], ['Rebalance', 'How often we bring it back to your weights.'], ['Name it', 'Give your basket a name, then buy.']];
@@ -499,8 +517,9 @@ class Component extends DCLogic {
       mixName: s.mixName, nameLen: s.mixName.length, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
       splitEven: () => this.setState(st => ({ weights: this.evenWeights(st.picks) })),
       totalText: total + '%', totalColor: total === 100 ? '#16854F' : '#A8791F',
-      freqs: pills(['Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
-      freqNote: FREQ[s.freq] + ', we trim what grew and add to what fell, so your basket stays at these weights.',
+      freqs: pills(['Daily', 'Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
+      calTitle: MON[calM.getMonth()] + ' ' + calM.getFullYear(), calCells, calPrev: () => s.calOff > 0 && this.setState({ calOff: s.calOff - 1 }), calNext: () => s.calOff < 12 && this.setState({ calOff: s.calOff + 1 }), calPrevO: s.calOff > 0 ? 1 : .25, calNextO: s.calOff < 12 ? 1 : .25, startText,
+      freqNote: 'Starting ' + startText + '. ' + FREQ[s.freq] + ' after that, we trim what grew and add to what fell, so your basket stays at these weights.',
       buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
       closeModal: () => this.back({ modal: false }),
