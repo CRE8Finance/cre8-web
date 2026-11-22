@@ -862,7 +862,7 @@ class Component extends DCLogic {
   async confirm() {
     const W = window.CRE8W, s = this.state, t = s.target, amt = s.amount;
     // 處理中第一句：一句人話（之後由錢包程式的步驟接手）。
-    const first = { earn: tr('Putting your USDT to work', '正在帮你存进去'), 'earn-out': tr('Getting your USDT back', '正在帮你领出'), 'se-on': tr('Turning on Earn extra', '正在开启加息'), 'se-off': tr('Settling Earn extra', '正在结清加息') }[s.side] || tr('Preparing', '准备中');
+    const first = { earn: tr('Putting your USDT to work', '正在帮你存进去'), 'earn-out': tr('Getting your USDT back', '正在帮你领出'), 'se-on': tr('Turning on Earn extra', '正在开启加息'), 'se-off': tr('Settling Earn extra', '正在结清加息'), sell: tr('Selling for you', '正在帮你卖出'), buy: tr('Buying for you', '正在帮你买入') }[s.side] || tr('Preparing', '准备中');
     this.setState({ step: 'proc', procOff: 264, procText: first.toUpperCase() }); this.later(() => this.setState({ procOff: 70 }), 60);
     const onStep = x => this.step(x);
     try {
