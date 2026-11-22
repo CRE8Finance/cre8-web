@@ -434,7 +434,7 @@ ${c.html}
 <h1>${zh ? '全部组合' : 'All portfolios'}</h1>
 <p class="lede">${zh ? `${funds.length} 个组合，每个都是一篮美股代币或加密资产，用 USDT 一笔买齐。右侧是模型年化收益（回测，截至 ${date(asOf, 'zh')}）。` : `${funds.length} portfolios, each a basket of US stock tokens or crypto you buy with USDT in one payment. The figure on the right is the model APY (backtest, as of ${date(asOf, 'en')}).`}</p>
 <div class="section">
-${groups.map(([g, l]) => `<div class="group" id="${{ person: 'people', theme: 'themes', leveraged: 'leveraged' }[g]}"><h2>${t.groups[g]}</h2><div class="fund-list">${l.map((f) => fundRow(f, lang, { sub: f.holdings.map((h) => h.ticker).join(' · ') })).join('')}</div></div>`).join('\n')}
+${groups.map(([g, l]) => `<div class="group" id="${{ person: 'people', theme: 'themes', leveraged: 'leveraged' }[g]}"><h2>${t.groups[g]}</h2><div class="fund-list">${l.map((f) => fundRow(f, lang)).join('')}</div></div>`).join('\n')}
 </div>
 <p class="small muted" style="margin-top:24px">${zh ? '模型年化是用当前权重套历史价格回测出来的，不是实盘战绩，也不代表未来表现。' : 'Model APY is a backtest of the current weights on historical prices. It isn’t a track record and doesn’t predict future returns.'} <a class="link" href="${P(lang, '/how-it-works')}">${t.how}</a></p>
 ${ctaBand(lang)}
