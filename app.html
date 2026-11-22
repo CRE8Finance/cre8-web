@@ -118,9 +118,9 @@
 </sc-if>
 
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.buildW }};margin:0 auto">
-<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ bTitle }}</h1><p style="margin:6px 0 0;font:400 15px 'Geist';color:#5E6A76">{{ bSub }}</p></div>
+<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ bTitle }}</h1></div>
 <sc-if value="{{ b0 }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">01 · PICK UP TO 10</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ pickCount }}</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">PICK UP TO 10</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ pickCount }}</span></div>
 <div style="display:flex;gap:8px;align-items:center;padding:0 16px 12px">
 <sc-for list="{{ bcats }}" as="q" hint-placeholder-count="2"><button onClick="{{ q.pick }}" style="flex:none;height:38px;padding:0 16px;border-radius:999px;cursor:pointer;font:500 14px 'Geist';border:1px solid {{ q.bd }};background:{{ q.bg }};color:{{ q.fg }};transition:background .2s,color .2s">{{ q.label }}</button></sc-for>
 <label style="flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:8px;padding:0 14px;border:1px solid #E6E9ED;border-radius:999px;background:#fff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7785" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" value="{{ q }}" onInput="{{ onQ }}" placeholder="Search" aria-label="Search assets" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"></label>
@@ -137,20 +137,26 @@
 </div>
 </sc-if>
 <sc-if value="{{ b1 }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">02 · SET WEIGHTS</span><button onClick="{{ splitEven }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Split evenly</button></div>
-<div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
+<div style="display:flex;justify-content:flex-end;padding:20px 16px 12px"><button onClick="{{ splitEven }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Split evenly</button></div>
+<div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;padding:0 16px">
+<div>
 <sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
-<div style="padding:12px 14px 10px;border-bottom:1px solid #E6E9ED">
-<div style="display:flex;align-items:center;gap:10px"><div role="img" style="width:28px;height:28px;flex:none;border-radius:50%;background:#EDF0F3 url({{ p.logo }}) center/cover no-repeat"></div><span style="flex:1;font:500 14px 'Geist Mono'">{{ p.t }}</span><span style="font:400 20px 'Geist';letter-spacing:-.02em">{{ p.w }}<span style="font-size:14px;color:#6B7785">%</span></span></div>
-<input type="range" min="0" max="100" step="1" value="{{ p.w }}" onInput="{{ p.slide }}" aria-label="{{ p.t }} weight" style="display:block;width:100%;margin:10px 0 0;accent-color:#0B0F14;height:28px;cursor:pointer">
+<div onPointerDown="{{ p.down }}" style="padding:16px 0;border-bottom:1px solid #E6E9ED;touch-action:pan-y;cursor:ew-resize;user-select:none;-webkit-user-select:none">
+<div style="display:flex;align-items:center;gap:12px">
+<div role="img" style="width:36px;height:36px;flex:none;border-radius:50%;background:#EDF0F3 url({{ p.logo }}) center/cover no-repeat"></div>
+<div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ p.t }}</div><div style="font:400 12px 'Geist';color:#6B7785;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</div></div>
+<sc-if value="{{ p.lockable }}" hint-placeholder-val="{{ true }}"><button onClick="{{ p.toggleLock }}" aria-label="{{ p.lockLabel }}" aria-pressed="{{ p.locked }}" style="flex:none;width:32px;height:32px;border:0;border-radius:50%;background:{{ p.lockBg }};cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background .2s"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ p.lockFg }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="{{ p.shackle }}"></path></svg></button></sc-if>
+<label style="flex:none;display:flex;align-items:baseline;gap:2px;height:40px;cursor:text"><input type="text" inputmode="numeric" value="{{ p.val }}" onInput="{{ p.type }}" onFocus="{{ p.focus }}" onBlur="{{ p.blur }}" aria-label="{{ p.t }} percent" style="width:3ch;border:0;outline:0;background:transparent;text-align:right;font:400 22px/40px 'Geist';letter-spacing:-.02em;color:#0B0F14;padding:0"><span style="font:400 14px 'Geist';color:#6B7785">%</span></label>
+</div>
+<div style="position:relative;height:4px;margin:12px 8px 0;border-radius:2px;background:#EDF0F3"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ p.w }}%;border-radius:2px;background:{{ p.fill }}"></div><span style="position:absolute;top:50%;left:{{ p.w }}%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#FFFFFF;box-shadow:0 0 0 1px rgba(11,15,20,.2),0 1px 3px rgba(11,15,20,.18)"></span></div>
 </div>
 </sc-for>
-<div style="display:flex;justify-content:space-between;padding:12px 14px;font:500 12px 'Geist Mono';letter-spacing:.06em"><span style="color:#6B7785">TOTAL</span><span style="color:{{ totalColor }}">{{ totalText }}</span></div>
+</div>
+<button onClick="{{ editPicks }}" style="display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:16px 0;cursor:pointer;font:500 15px 'Geist';color:#2F6690"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F6690" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add or remove stocks</button>
 </div>
 </sc-if>
 <sc-if value="{{ b2 }}" hint-placeholder-val="{{ false }}">
-<div style="padding:26px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">03 · REBALANCE</div>
-<div style="margin:0 16px;padding:3px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:999px;display:flex">
+<div style="margin:24px 16px 0;padding:3px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:999px;display:flex">
 <sc-for list="{{ freqs }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.pick }}" style="flex:1;height:34px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
 </div>
 <div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">START DATE</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ startText }}</span></div>
@@ -161,11 +167,9 @@
 <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="30"><button onClick="{{ c.pick }}" style="width:40px;height:40px;margin:0 auto;display:block;border:1px solid {{ c.bd }};border-radius:50%;background:{{ c.bg }};color:{{ c.fg }};font:400 14px 'Geist';cursor:{{ c.cur }};padding:0;transition:background .15s">{{ c.d }}</button></sc-for>
 </div>
 </div>
-<p style="margin:12px 16px 0;font:400 14px/1.5 'Geist';color:#5E6A76">{{ freqNote }}</p>
 </sc-if>
 <sc-if value="{{ b3 }}" hint-placeholder-val="{{ false }}">
-<div style="padding:26px 16px 12px;font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">04 · NAME IT</div>
-<label style="display:flex;align-items:center;gap:12px;margin:0 16px;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="My basket" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
+<label style="display:flex;align-items:center;gap:12px;margin:24px 16px 0;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="My basket" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
 </sc-if>
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:{{ L.mixB }}px;transform:translateX(-50%);width:min(640px,100%);z-index:44;padding:0 16px">
 <button onClick="{{ bNext }}" style="width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ mixBtn.bg }};color:{{ mixBtn.fg }};box-shadow:{{ mixBtn.sh }};transition:background .2s">{{ mixBtn.label }}</button>
@@ -408,7 +412,48 @@ class Component extends DCLogic {
     others.forEach((x, i) => out[x] = fl[i]);
     return out;
   }
-  toggleAsset(t) { this.setState(s => { const picks = s.picks.includes(t) ? s.picks.filter(x => x !== t) : s.picks.length >= 10 ? s.picks : [...s.picks, t]; return { picks, weights: this.evenWeights(picks) }; }); }
+  toggleAsset(t) { this.setState(s => { const picks = s.picks.includes(t) ? s.picks.filter(x => x !== t) : s.picks.length >= 10 ? s.picks : [...s.picks, t]; return { picks, weights: this.evenWeights(picks), wFixed: [] }; }); }
+  // 改一檔：鎖住的不動，差額由沒鎖的分攤；其他全鎖住就改不了
+  setWeight(t, v) {
+    this.setState(st => {
+      const fixed = st.wFixed || [], others = st.picks.filter(x => x !== t);
+      if (fixed.includes(t)) return null;
+      if (!others.length) return { weights: { [t]: 100 } };
+      const pool = others.filter(x => !fixed.includes(x)), keep = others.filter(x => fixed.includes(x));
+      if (!pool.length) return null;
+      const ks = keep.reduce((a, x) => a + (st.weights[x] || 0), 0);
+      v = Math.min(v, 100 - ks);
+      const out = { ...this.rebalance([t, ...pool], st.weights, t, v + ks), [t]: v };
+      keep.forEach(x => { out[x] = st.weights[x] || 0; });
+      return { weights: out };
+    });
+  }
+  // 整列就是滑桿：左右拖改這一檔，其他沒鎖的分攤
+  dragRow(e, t) {
+    if (e.target.closest('input,button,label') || (e.pointerType === 'mouse' && e.button !== 0) || (this.state.wFixed || []).includes(t)) return;
+    const row = e.currentTarget, wd = row.getBoundingClientRect().width, x0 = e.clientX, w0 = this.state.weights[t] || 0;
+    let on = false;
+    const move = ev => { const dx = ev.clientX - x0;
+      if (!on) { if (Math.abs(dx) < 6) return; on = true; try { row.setPointerCapture(e.pointerId); } catch (_) {} }
+      ev.preventDefault(); this.setWeight(t, Math.max(0, Math.min(100, Math.round(w0 + dx / wd * 100)))); };
+    const up = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); };
+    addEventListener('pointermove', move, { passive: false }); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  }
+  splitView(s) {
+    const PAL = [['#0B0F14', '#fff'], ['#DCE4EA', '#0B0F14'], ['#2F6690', '#fff'], ['#9FC0D8', '#0B0F14'], ['#5E6A76', '#fff'], ['#EDF0F3', '#0B0F14'], ['#16222D', '#fff'], ['#6F93AE', '#fff'], ['#E3B55B', '#0B0F14'], ['#C3CAD1', '#0B0F14']];
+    return {
+      picks: s.picks.map((t, i) => {
+        const w = s.weights[t] || 0, light = PAL[i % 10][1] !== '#fff', lk = (s.wFixed || []).includes(t);
+        return { t, w, name: NAMES[t] || t, logo: LOGO(t), bg: PAL[i % 10][0], edge: light ? 'rgba(11,15,20,.15)' : 'transparent',
+          lockable: s.picks.length > 1, locked: lk, lockLabel: (lk ? 'Unlock ' : 'Lock ') + t, lockBg: lk ? '#0B0F14' : 'transparent', lockFg: lk ? '#FFFFFF' : '#9AA4AE', shackle: lk ? 'M8 11V7a4 4 0 018 0v4' : 'M8 11V7a4 4 0 017.5-2', fill: lk ? '#9AA4AE' : '#0B0F14',
+          toggleLock: () => this.setState(st => { const f = st.wFixed || []; return { wFixed: f.includes(t) ? f.filter(x => x !== t) : [...f, t] }; }), down: e => this.dragRow(e, t),
+          val: s.wDraft && s.wDraft.t === t ? s.wDraft.v : String(w),
+          type: e => { if (lk) return; const raw = e.target.value.replace(/\D/g, '').slice(0, 3); this.setState({ wDraft: { t, v: raw } }); if (raw !== '') this.setWeight(t, Math.min(100, +raw)); },
+          focus: e => e.target.select(), blur: () => this.setState({ wDraft: null }) };
+      }),
+      editPicks: () => this.back({ bstep: 0 }),
+    };
+  }
   bump(t, d) { this.setState(s => ({ weights: { ...s.weights, [t]: Math.max(5, Math.min(100, (s.weights[t] || 0) + d)) } })); }
   press(k) {
     this.setState(s => {
@@ -476,7 +521,7 @@ class Component extends DCLogic {
     const startText = MON[start.getMonth()] + ' ' + start.getDate() + ', ' + start.getFullYear();
     // Build 分四頁：選標的 → 設比例 → 再平衡頻率 → 取名買入。
     const inBuild = s.page === 'build' && !s.fund, bs = s.bstep;
-    const B_TITLES = [[s.editing ? 'Edit basket' : 'Build', 'Your picks. We keep the weights on target.'], ['Set weights', 'How much of each, adding up to 100%.'], ['Rebalance', 'How often we bring it back to your weights.'], ['Name it', s.editing ? 'Rename it if you like, then save.' : 'Give your basket a name, then buy.']];
+    const B_TITLES = [s.editing ? 'Edit basket' : 'Build', 'Set weights', 'Rebalance', 'Name it'];
     const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: 'Next step' } : { ...off, label: 'Pick at least 1' }) : bs === 1 ? (total === 100 ? { ...cta, label: 'Next step' } : mixBtn) : bs === 2 ? { ...cta, label: 'Next step' } : s.editing && mixReady ? { ...cta, label: 'Save changes' } : mixBtn;
     const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady && s.editing) {
       // 改組合：立即生效，存回原本那一筆，回到它的專屬頁。
@@ -501,7 +546,7 @@ class Component extends DCLogic {
     return {
       wide: W, narrow: !W, L,
       showBack: !!s.fund || (inBuild && (bs > 0 || !!s.editing)), showLogo: !s.fund && !(inBuild && (bs > 0 || !!s.editing)), hdrTitleO: 1, hdrTitle: s.fund ? f.name : s.editing ? 'Edit basket' : 'Build',
-      b0: bs === 0, b1: bs === 1, b2: bs === 2, b3: bs === 3, bTitle: B_TITLES[bs][0], bSub: B_TITLES[bs][1], bNext, mixBtn: bNextBtn,
+      b0: bs === 0, b1: bs === 1, b2: bs === 2, b3: bs === 3, bTitle: B_TITLES[bs], bNext, mixBtn: bNextBtn,
       navTabs: navDef.map(([id, label, icon]) => ({ label, icon, go: () => this.go(id), col: curPage === id ? '#0B0F14' : '#6B7785', bg: curPage === id ? 'rgba(11,15,20,.07)' : 'transparent', tcol: curPage === id ? '#fff' : '#3C4651', tbg: curPage === id ? '#0B0F14' : 'transparent' })),
       navY: s.fund || s.modal || s.acct ? 140 : 0,
       pageHome: s.page === 'home' && !s.fund, pageFund: !!s.fund, pageBuild: s.page === 'build' && !s.fund, pageProfile: s.page === 'profile' && !s.fund,
@@ -525,13 +570,11 @@ class Component extends DCLogic {
       q: s.q, onQ: e => this.setState({ q: e.target.value }), noAssets: shownAssets.length === 0,
       assets: shownAssets.map(t => { const on = s.picks.includes(t); return { t, logo: LOGO(t), toggle: () => this.toggleAsset(t), on: on ? 1 : 0, sc: on ? 1 : .4, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       pickCount: s.picks.length + ' / 10', hasPicks: s.picks.length > 0,
-      picks: s.picks.map(t => ({ t, logo: LOGO(t), w: s.weights[t] || 0, bar: s.weights[t] || 0, slide: e => { const v = +e.target.value; this.setState(st => ({ weights: this.rebalance(st.picks, st.weights, t, v) })); } })),
+      ...this.splitView(s),
       mixName: s.mixName, nameLen: s.mixName.length, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
-      splitEven: () => this.setState(st => ({ weights: this.evenWeights(st.picks) })),
-      totalText: total + '%', totalColor: total === 100 ? '#16854F' : '#A8791F',
+      splitEven: () => this.setState(st => ({ weights: this.evenWeights(st.picks), wFixed: [] })),
       freqs: pills(['Daily', 'Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
       calTitle: MON[calM.getMonth()] + ' ' + calM.getFullYear(), calCells, calPrev: () => s.calOff > 0 && this.setState({ calOff: s.calOff - 1 }), calNext: () => s.calOff < 12 && this.setState({ calOff: s.calOff + 1 }), calPrevO: s.calOff > 0 ? 1 : .25, calNextO: s.calOff < 12 ? 1 : .25, startText,
-      freqNote: 'Starting ' + startText + '. ' + FREQ[s.freq] + ' after that, we trim what grew and add to what fell, so your basket stays at these weights.',
       buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
       closeModal: () => s.step === 'done' && s.target && s.target.mix ? this.setState({ modal: false, bstep: 0 }) : this.back({ modal: false }),
