@@ -446,7 +446,7 @@ function faqs(lang) {
     ['跟自己在币安买 bStock 差在哪？', `在币安你一次买一只股票，放在交易所账户里。CRE8 一笔付款买齐一整篮，按目标权重自动再平衡，资产放在你自己的链上账户。币安的股票更多、流动性更深，详细见<a href="${cmp}">完整对比</a>。`],
     ['美股休市时怎么办？', '股票代币只在美股交易时段成交。休市时下的买单或卖单会在账户里等着，下一次开盘时成交。'],
     ['最低要投多少？', '每次 50 USDT。'],
-    ['费用多少？', '测试网上免费，gas 也由 CRE8 支付。主网上每次买入和卖出收 0.1% 手续费，链上 gas 按实际花费扣。'],
+    ['费用多少？', '测试网上免费，gas 也由 CRE8 支付。主网费用会在上线前公布。'],
     ['谁可以用？', '美国以外、当地规定允许的任何人。测试网期间登录需要邀请码。'],
   ];
   return [
@@ -458,7 +458,7 @@ function faqs(lang) {
     ['How is this different from buying bStock on Binance?', `On Binance you buy one stock at a time and it sits in your exchange account. CRE8 buys a whole basket in one payment, rebalances it to its target weights, and keeps it in an account you own on-chain. Binance has more stocks and deeper liquidity. See the <a href="${cmp}">full comparison</a>.`],
     ['What happens when the US market is closed?', 'Stock tokens only trade during US market hours. A buy or sell placed while the market is closed waits in your account and goes through at the next open.'],
     ['What’s the minimum?', '50 USDT per purchase.'],
-    ['What does it cost?', 'Nothing on testnet, and CRE8 pays the gas. On mainnet there’s a 0.1% fee on each buy and sell, plus network gas at cost.'],
+    ['What does it cost?', 'Nothing on testnet, and CRE8 pays the gas. Mainnet fees will be announced before launch.'],
     ['Who can use it?', 'Anyone outside the US, where local rules allow. During testnet you need an invite code to sign in.'],
   ];
 }
@@ -495,7 +495,7 @@ function howPage(funds, lang) {
 <h2 style="margin-top:56px">费用</h2>
 <ul>
 <li><strong>测试网：</strong>不收费，gas 由 CRE8 支付。</li>
-<li><strong>主网：</strong>每次买入和卖出收 0.1% 手续费。链上 gas 按实际花费，从每个组合预留的一小笔 USDT 里扣。交易场所本身的池子手续费和滑点另计。</li>
+<li><strong>主网：</strong>费用会在上线前公布。交易场所本身的池子手续费和滑点另计。</li>
 </ul>
 
 <h2 style="margin-top:56px">卖出与出金</h2>
@@ -539,7 +539,7 @@ function howPage(funds, lang) {
 <h2 style="margin-top:56px">Fees</h2>
 <ul>
 <li><strong>Testnet:</strong> no fees, and CRE8 pays the gas.</li>
-<li><strong>Mainnet:</strong> 0.1% on each buy and sell. Network gas is charged at cost from a small USDT reserve kept in each portfolio. Venue pool fees and slippage apply on top.</li>
+<li><strong>Mainnet:</strong> fees will be announced before launch. Venue pool fees and slippage apply on top.</li>
 </ul>
 
 <h2 style="margin-top:56px">Selling and withdrawing</h2>
@@ -758,7 +758,7 @@ function llms(funds) {
 - Custody: each user has their own smart account on BNB Chain. CRE8's automation can only trade inside it; withdrawals need the owner's signature.
 - Stocks are held as bStock, Binance's tokenized US stocks on BNB Chain. Stock tokens trade only during US market hours; orders placed while the market is closed wait for the next open.
 - Rebalancing: monthly, plus whenever an asset drifts more than 5 points from its target weight.
-- Fees: none on testnet (CRE8 pays gas). Mainnet: 0.1% on each buy and sell, plus network gas at cost.
+- Fees: none on testnet (CRE8 pays gas). Mainnet fees will be announced before launch.
 - Earn: idle USDT can go into allowlisted USDT vaults (Lista, Venus, Aave) at market rates and be withdrawn any time. When buying a portfolio, users can opt in to extra yield that uses the portfolio's shares; if prices fall fast the system sells a little automatically. Cash and each portfolio's money are always kept separate. Testnet rates are simulated.
 - Model APY is a backtest of current weights on historical prices, not a track record.
 - Status: testnet only, no real money. No mainnet date yet.

@@ -13,7 +13,7 @@
 - Custody: each user has their own smart account on BNB Chain. CRE8's automation can only trade inside it; withdrawals need the owner's signature.
 - Stocks are held as bStock, Binance's tokenized US stocks on BNB Chain. Stock tokens trade only during US market hours; orders placed while the market is closed wait for the next open.
 - Rebalancing: monthly, plus whenever an asset drifts more than 5 points from its target weight.
-- Fees: none on testnet (CRE8 pays gas). Mainnet: 0.1% on each buy and sell, plus network gas at cost.
+- Fees: none on testnet (CRE8 pays gas). Mainnet fees will be announced before launch.
 - Earn: idle USDT can go into allowlisted USDT vaults (Lista, Venus, Aave) at market rates and be withdrawn any time. When buying a portfolio, users can opt in to extra yield that uses the portfolio's shares; if prices fall fast the system sells a little automatically. Cash and each portfolio's money are always kept separate. Testnet rates are simulated.
 - Model APY is a backtest of current weights on historical prices, not a track record.
 - Status: testnet only, no real money. No mainnet date yet.
