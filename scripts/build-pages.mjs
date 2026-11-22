@@ -200,7 +200,9 @@ ${schema.map(ld).join('\n')}
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="/assets/pages.css">
-${extraHead}</head>
+${extraHead}<link rel="stylesheet" href="/assets/press.css">
+<script src="/assets/press.js" defer></script>
+</head>
 <body>
 ${siteHead(lang, path)}`;
 }
