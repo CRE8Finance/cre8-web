@@ -329,16 +329,17 @@ function makeField(cv, opts) {
   return () => { cancelAnimationFrame(raf); ro.disconnect(); removeEventListener('pointermove', onMove); };
 }
 
+// Top portfolios：跟 app.html 的 FUNDS 同一組數字，只放正報酬，由高到低。
 const PEOPLE = [
-  ['PEOPLE', 'Pelosi Portfolio', 'Built from the stock trades Nancy Pelosi’s household discloses to Congress.', 23.7, 6],
-  ['PEOPLE', 'Trump Holdings', 'Follows annual financial disclosures filed with the Office of Government Ethics.', 8.5, 8],
-  ['PEOPLE', 'Musk Basket', 'Tesla, SpaceX and bitcoin, with a small position in Dogecoin.', -11.0, 4],
+  ['PEOPLE', 'Pelosi Portfolio', 'Built from the stock trades Nancy Pelosi’s household discloses to Congress.', 23.7, 6, 'pelosi'],
+  ['PEOPLE', 'Trump Holdings', 'Follows annual financial disclosures filed with the Office of Government Ethics.', 8.5, 8, 'trump'],
+  ['PEOPLE', 'Duan Yongping', 'Built from the US stocks Duan Yongping reports in his public filings.', 4.6, 4, 'duan'],
 ];
 const THEMES = [
-  ['THEME', 'AI Chips', 'Designers and manufacturers of the chips behind AI. Rebalanced monthly.', 62.3, 7],
-  ['THEME', 'Mag7', 'The seven largest US tech companies, held in equal weight.', 12.3, 7],
-  ['THEME', 'Bitcoin Plus', 'Bitcoin alongside Strategy and Coinbase, the listed companies most tied to it.', -40.0, 3],
-  ['THEME · HIGH RISK', '3x Nasdaq', 'Leveraged daily exposure to the Nasdaq-100. Can lose most of its value quickly.', 4.2, 1],
+  ['THEME', 'AI Memory', 'The memory and storage makers that AI data centers depend on.', 234.3, 3, 'aimem'],
+  ['THEME', 'Korea Semis', 'SK hynix and a broad South Korea market fund in equal weights.', 113.3, 2, 'korea'],
+  ['THEME', 'AI Chips', 'Designers and manufacturers of the chips behind AI. Rebalanced monthly.', 62.3, 7, 'ai'],
+  ['THEME', 'BNB Ecosystem', 'BNB itself and BNC, a listed company that holds BNB, in equal weights.', 17.7, 2, 'bnb'],
 ];
 
 class Component extends DCLogic {
@@ -393,7 +394,7 @@ class Component extends DCLogic {
       cH: this.state.hov && this.state.hov.o !== 0 && this.state.hov.id === 'H' ? '#0B0F14' : '#4A5563',
       ...(() => { const st = this.state.step, o = {}; [0, 1, 2].forEach(i => { const d = i - st; o['L' + i] = { o: d === 0 ? 1 : 0, y: d * 40, s: d === 0 ? 1 : .96 }; o['T' + i] = d === 0 ? 1 : .3; o['P' + i] = i <= st ? '#EEF3F7' : '#2A333D'; o['stepRef' + i] = this['stepRef' + i]; }); return o; })(),
       tabs: [tab('people', 'People'), tab('themes', 'Themes')],
-      funds: list.map(([kind, name, desc, r, n]) => ({ img: 'app/p-' + ({ 'Pelosi Portfolio': 'pelosi', 'Trump Holdings': 'trump', 'Musk Basket': 'musk', 'AI Chips': 'ai', 'Mag7': 'mag7', 'Bitcoin Plus': 'btcplus', '3x Nasdaq': 'tqqq' }[name] || 'us') + '.jpg', key: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'), kind, name, desc, n, ret: (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(1) + '%', col: r >= 0 ? '#1E8A5C' : '#D23F2E' })),
+      funds: list.map(([kind, name, desc, r, n, img]) => ({ img: 'app/p-' + img + '.jpg', key: name.toLowerCase().replace(/[^a-z0-9]+/g, '-'), kind, name, desc, n, ret: (r >= 0 ? '+' : '−') + Math.abs(r).toFixed(1) + '%', col: r >= 0 ? '#1E8A5C' : '#D23F2E' })),
     };
   }
 }
