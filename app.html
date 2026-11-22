@@ -169,6 +169,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ b3 }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:16px;margin:24px 16px 0"><img src="{{ mixCoverSrc }}" alt="Cover" style="flex:none;width:72px;height:72px;border-radius:16px;object-fit:cover;box-shadow:0 0 0 1px rgba(11,15,20,.06)"><span style="display:flex;flex-direction:column;align-items:flex-start;gap:8px"><label style="position:relative;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 14px 'Geist';color:#0B0F14;cursor:pointer">{{ mixCoverLabel }}<input type="file" accept="image/*" onChange="{{ onMixCover }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><sc-if value="{{ hasMixCover }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removeMixCover }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">Remove photo</button></sc-if></span></div>
 <label style="display:flex;align-items:center;gap:12px;margin:24px 16px 0;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="My basket" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
 </sc-if>
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:{{ L.mixB }}px;transform:translateX(-50%);width:min(640px,100%);z-index:44;padding:0 16px">
@@ -324,7 +325,7 @@ const FUNDS = [
 // 測試網上可以買的標的（cre8-app src/lib/testnet-97.ts，不含穩定幣）。Build 分 Stock（股票、ETF、XAUt）與 Crypto 兩頁，可搜尋代號或名稱（搜尋時兩頁一起找）。
 const FREQ_LABEL = ['Daily', 'Weekly', 'Monthly', 'Quarterly'];
 const MIX_FREQ_TEXT = ['every day', 'every week', 'every month', 'every quarter'];
-const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, 'app/cover-mag7.webp', m.ret, m.picks.length, m.picks, 'Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + '.'), freqLabel: FREQ_LABEL[m.freq] }; };
+const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, m.cover || 'app/cover-cre8.png', m.ret, m.picks.length, m.picks, 'Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + '.'), freqLabel: FREQ_LABEL[m.freq] }; };
 const CRYPTO = new Set(['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC']);
 const ASSETS = ['AAPL', 'ABBV', 'ALAB', 'AMAT', 'AMC', 'AMD', 'AMZN', 'ANT', 'APH', 'APLD', 'AVGO', 'AXP', 'BABA', 'BE', 'BLK', 'BMNR', 'BNC', 'CBRS', 'CEG', 'CIEN', 'COHR', 'COIN', 'CORZ', 'CRCL', 'CRDO', 'CRM', 'CRWV', 'CVX', 'CYPH', 'DJT', 'GEV', 'GME', 'GOOG', 'GOOGL', 'GPRO', 'HOOD', 'INTC', 'IREN', 'KO', 'LLY', 'MA', 'META', 'MRNA', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NEM', 'NFLX', 'NOK', 'NVDA', 'ORCL', 'PANW', 'PDD', 'PENG', 'PYPL', 'RDDT', 'SHAZ', 'SKHY', 'SNDK', 'SPCX', 'STX', 'TSLA', 'TSM', 'UBER', 'V', 'VRT', 'VST', 'EWY', 'GLD', 'IEF', 'IVV', 'QQQ', 'SGOV', 'SPY', 'TLT', 'SOXL', 'TQQQ', 'XAUT', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC'];
 const AVC = ['linear-gradient(135deg,#6F93AE,#16222D)', 'linear-gradient(135deg,#E3B55B,#9A6B1E)', 'linear-gradient(135deg,#7FB59A,#1F5A41)', 'linear-gradient(135deg,#B9A2D6,#4B3A6E)', 'linear-gradient(135deg,#3C4651,#0B0F14)'];
@@ -352,13 +353,13 @@ class Component extends DCLogic {
   state = {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
-    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, editing: null, freq: 2, start: null, calOff: 0, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
+    picks: [], weights: {}, bcat: 0, q: '', bstep: 0, editing: null, freq: 2, start: null, calOff: 0, mixName: '', mixCover: null, cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
     // 用戶自己建的組合：點進去是跟基金一樣的專屬頁。
     mixes: [{ id: 'mix-1', name: 'My mix', picks: [['NVDA', 40], ['AAPL', 30], ['BTC', 30]], freq: 2, start: new Date(2026, 10, 1).getTime(), ret: -2.1 }],
     holdings: [
       { id: 'pelosi', name: 'Pelosi Portfolio', cover: 'app/p-pelosi.jpg', val: 4236.80, ret: 23.7 },
       { id: 'ai-chips', name: 'AI Chips', cover: 'app/p-ai.jpg', val: 3104.12, ret: 62.3 },
-      { id: 'mix-1', name: 'My mix', cover: 'app/cover-mag7.webp', val: 2759.40, ret: -2.1 },
+      { id: 'mix-1', name: 'My mix', cover: 'app/cover-cre8.png', val: 2759.40, ret: -2.1 },
     ],
   };
   timers = [];
@@ -391,7 +392,7 @@ class Component extends DCLogic {
   }
   back(fallback) { if (history.state && history.state.d > 0) history.back(); else this.setState(fallback); }
   later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
-  go(page) { this.leaveY = window.scrollY; this.setState(s => ({ page, fund: null, ...(page === 'build' && s.editing ? { editing: null, bstep: 0, picks: [], weights: {}, mixName: '', start: null } : {}) })); window.scrollTo(0, 0); }
+  go(page) { this.leaveY = window.scrollY; this.setState(s => ({ page, fund: null, ...(page === 'build' && s.editing ? { editing: null, bstep: 0, picks: [], weights: {}, mixName: '', mixCover: null, start: null } : {}) })); window.scrollTo(0, 0); }
   open(id) { this.leaveY = window.scrollY; this.setState({ fund: id, range: 3, fh: null }); window.scrollTo(0, 0); }
   scrub(key, n) { return e => { const r = e.currentTarget.getBoundingClientRect(); const i = Math.max(0, Math.min(n - 1, Math.round((e.clientX - r.left) / r.width * (n - 1)))); if (this.state[key] !== i) this.setState({ [key]: i }); }; }
   evenWeights(picks) {
@@ -470,7 +471,7 @@ class Component extends DCLogic {
     this.later(() => {
       const amt = parseFloat(this.state.amount) || 0, t = this.state.target;
       if (this.state.side === 'sell') { this.setState(s => { const hs = s.holdings.map(h => (t.id ? h.id === t.id : h.name === t.name) ? { ...h, val: h.val - amt } : h).filter(h => h.val > 0.005); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash + amt }; }); this.later(() => this.setState({ doneSc: 1 }), 40); return; }
-      this.setState(s => { const hs = s.holdings.slice(); const i = hs.findIndex(h => t.id ? h.id === t.id : h.name === t.name); if (i >= 0) hs[i] = { ...hs[i], val: hs[i].val + amt }; else hs.unshift({ id: t.id, name: t.name, cover: t.cover, val: amt, ret: 0 }); const built = t.mix && !s.mixes.some(m => m.id === t.mix.id); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash - amt, ...(built ? { mixes: [t.mix, ...s.mixes], picks: [], weights: {}, mixName: '', start: null } : {}) }; });
+      this.setState(s => { const hs = s.holdings.slice(); const i = hs.findIndex(h => t.id ? h.id === t.id : h.name === t.name); if (i >= 0) hs[i] = { ...hs[i], val: hs[i].val + amt }; else hs.unshift({ id: t.id, name: t.name, cover: t.cover, val: amt, ret: 0 }); const built = t.mix && !s.mixes.some(m => m.id === t.mix.id); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash - amt, ...(built ? { mixes: [t.mix, ...s.mixes], picks: [], weights: {}, mixName: '', mixCover: null, start: null } : {}) }; });
       this.later(() => this.setState({ doneSc: 1 }), 40);
     }, 1600);
   }
@@ -526,9 +527,9 @@ class Component extends DCLogic {
     const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady && s.editing) {
       // 改組合：立即生效，存回原本那一筆，回到它的專屬頁。
       const id = s.editing, name = s.mixName.trim() || 'My basket';
-      this.setState(st => ({ mixes: st.mixes.map(m => m.id === id ? { ...m, name, picks: st.picks.map(t => [t, st.weights[t]]), freq: st.freq, start: st.start || m.start } : m), holdings: st.holdings.map(h => h.id === id ? { ...h, name } : h), editing: null, picks: [], weights: {}, mixName: '', start: null }));
+      this.setState(st => ({ mixes: st.mixes.map(m => m.id === id ? { ...m, name, picks: st.picks.map(t => [t, st.weights[t]]), freq: st.freq, start: st.start || m.start, cover: st.mixCover } : m), holdings: st.holdings.map(h => h.id === id ? { ...h, name, cover: st.mixCover || 'app/cover-cre8.png' } : h), editing: null, picks: [], weights: {}, mixName: '', mixCover: null, start: null }));
       history.go(-(bs + 1));
-    } else if (mixReady) { const id = 'mix-' + Date.now(); this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp', mix: { id, name: s.mixName.trim() || 'My basket', picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } } }); } };
+    } else if (mixReady) { const id = 'mix-' + Date.now(); this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id, name: s.mixName.trim() || 'My basket', cover: s.mixCover || 'app/cover-cre8.png', mix: { id, name: s.mixName.trim() || 'My basket', cover: s.mixCover, picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } } }); } };
     const tgt = s.target || { name: f.name, cover: f.cover };
     const sell = s.side === 'sell', posH = s.holdings.find(h => h.name === tgt.name), posMax = posH ? Math.floor(posH.val * 100) / 100 : 0;
     const amt = parseFloat(s.amount) || 0;
@@ -562,7 +563,7 @@ class Component extends DCLogic {
       ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
       posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? '$' + fmt(own.val) : '50 USDT',
       isMix: f.kind === 'MINE', notMix: f.kind !== 'MINE',
-      editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, q: '', calOff: 0 }); window.scrollTo(0, 0); },
+      editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, mixCover: m.cover || null, q: '', calOff: 0 }); window.scrollTo(0, 0); },
       openBuy: () => this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
       openSell: () => this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
       hasPos: !!own, buyPad: own ? 26 : 34, buyFlex: own ? 'none' : '1',
@@ -571,11 +572,11 @@ class Component extends DCLogic {
       assets: shownAssets.map(t => { const on = s.picks.includes(t); return { t, logo: LOGO(t), toggle: () => this.toggleAsset(t), on: on ? 1 : 0, sc: on ? 1 : .4, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       pickCount: s.picks.length + ' / 10', hasPicks: s.picks.length > 0,
       ...this.splitView(s),
-      mixName: s.mixName, nameLen: s.mixName.length, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
+      mixName: s.mixName, nameLen: s.mixName.length, mixCoverSrc: s.mixCover || 'app/cover-cre8.png', hasMixCover: !!s.mixCover, mixCoverLabel: s.mixCover ? 'Change photo' : 'Add cover photo', removeMixCover: () => this.setState({ mixCover: null }), onMixCover: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ mixCover: URL.createObjectURL(f) }); e.target.value = ''; }, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
       splitEven: () => this.setState(st => ({ weights: this.evenWeights(st.picks), wFixed: [] })),
       freqs: pills(['Daily', 'Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
       calTitle: MON[calM.getMonth()] + ' ' + calM.getFullYear(), calCells, calPrev: () => s.calOff > 0 && this.setState({ calOff: s.calOff - 1 }), calNext: () => s.calOff < 12 && this.setState({ calOff: s.calOff + 1 }), calPrevO: s.calOff > 0 ? 1 : .25, calNextO: s.calOff < 12 ? 1 : .25, startText,
-      buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }),
+      buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: s.mixCover || 'app/cover-cre8.png' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
       closeModal: () => s.step === 'done' && s.target && s.target.mix ? this.setState({ modal: false, bstep: 0 }) : this.back({ modal: false }),
       sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount' }) : s.step === 'amount' ? this.back({ modal: false }) : null,
@@ -598,7 +599,7 @@ class Component extends DCLogic {
       av: { bg: s.photo ? 'center/cover no-repeat url(' + s.photo + ')' : AVC[s.avc], letter: s.photo ? '' : (s.pname.trim()[0] || '?').toUpperCase() },
       avOpts: AVC.map((bg, i) => ({ bg, pick: () => this.setState({ avc: i, photo: null }), ring: !s.photo && s.avc === i ? '0 0 0 2px #F3F3F3,0 0 0 4px #0B0F14' : '0 0 0 1px rgba(11,15,20,.08)' })),
       hasPhoto: !!s.photo, removePhoto: () => this.setState({ photo: null }),
-      onPhoto: e => { const f = e.target.files && e.target.files[0]; if (!f) return; const rd = new FileReader(); rd.onload = () => this.setState({ photo: rd.result }); rd.readAsDataURL(f); e.target.value = ''; },
+      onPhoto: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ photo: URL.createObjectURL(f) }); e.target.value = ''; },
       pv: pch.v, pc: pch.c, pScrub: this.scrub('ph', pch.n), pLeave: () => this.setState({ ph: null }),
       pranges: pills(RANGES.map(r => r[0]), s.prange, i => this.setState({ prange: i, ph: null })),
       fundCount: s.holdings.length + ' PORTFOLIOS + CASH',
