@@ -33,27 +33,37 @@
 <x-dc>
 <helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>@media (max-width:560px){.bb-txt{display:none!important}.bb-btn{width:40px!important;padding:0!important;justify-content:center!important}}@media (max-width:400px){.bb-logos{display:none!important}}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{background:#F3F3F3}body{margin:0;background:#F3F3F3;color:#0B0F14;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}a{color:#2F6690;text-decoration:none}a:hover{color:#0B0F14}button{font-family:inherit;color:inherit}::-webkit-scrollbar{display:none}</style></helmet>
 
-<sc-if value="{{ gated }}" hint-placeholder-val="{{ false }}"><div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:max(28px,env(safe-area-inset-top)) 16px max(28px,env(safe-area-inset-bottom));background:#F3F3F3">
-<div style="width:100%;max-width:420px;flex:1;display:flex;flex-direction:column">
+<sc-if value="{{ gated }}" hint-placeholder-val="{{ false }}"><div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:max(28px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));background:#F3F3F3">
+<div style="width:100%;max-width:400px;flex:1;display:flex;flex-direction:column">
 <a href="https://cre8.finance/" aria-label="CRE8 home" style="display:block;align-self:flex-start"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a>
-<div style="margin:clamp(40px,10vh,96px) 0 0"><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">TESTNET · INVITE ONLY</div><h1 style="margin:10px 0 0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ siTitle }}</h1><p style="margin:12px 0 0;font:400 15px/1.55 'Geist';color:#5E6A76">{{ siSub }}</p></div>
-<sc-if value="{{ siBusy }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:48px 0"><svg width="56" height="56" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#E6E9ED" stroke-width="5"></circle><circle cx="48" cy="48" r="42" fill="none" stroke="#2F6690" stroke-width="5" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="190" transform="rotate(-90 48 48)"><animateTransform attributeName="transform" type="rotate" from="-90 48 48" to="270 48 48" dur="1s" repeatCount="indefinite"></animateTransform></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76">{{ siBusyText }}</div></div></sc-if>
-<sc-if value="{{ siForm }}" hint-placeholder-val="{{ true }}">
-<div style="margin-top:28px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">NEW HERE</div>
-<label style="display:flex;align-items:center;gap:12px;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Invite code" aria-label="Invite code" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 17px 'Geist Mono';letter-spacing:.08em;color:#0B0F14;padding:0"></label>
-<button onClick="{{ signInX }}" style="margin-top:12px;width:100%;height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Continue with X</button>
-<div style="margin-top:28px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">ALREADY IN</div>
-<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"><button onClick="{{ signInXBack }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">X</button><button onClick="{{ signInGoogle }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">Google</button><button onClick="{{ showEmail }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">Email</button></div>
-<sc-if value="{{ siEmail }}" hint-placeholder-val="{{ false }}"><label style="margin-top:12px;display:flex;align-items:center;gap:12px;padding:0 6px 0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input type="{{ emailType }}" inputmode="{{ emailMode }}" value="{{ emailVal }}" onInput="{{ onEmail }}" placeholder="{{ emailPh }}" autocomplete="off" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><button onClick="{{ emailGo }}" style="height:42px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ emailBtn }}</button></label></sc-if>
-</sc-if>
-<sc-if value="{{ siErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:16px 4px 0;font:400 14px/1.5 'Geist';color:#D23F2E">{{ siErr }}</p></sc-if>
-<sc-if value="{{ siRetry }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px"><button onClick="{{ signOut }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">Sign out</button><button onClick="{{ siRetryGo }}" style="height:50px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:600 15px 'Geist';cursor:pointer">Try again</button></div></sc-if>
-<div style="flex:1"></div>
-<div style="margin-top:36px;padding:16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;justify-content:space-between;gap:12px"><span style="font:400 14px/1.4 'Geist';color:#5E6A76">No invite yet?</span><a href="https://cre8.finance/waitlist" style="height:40px;padding:0 16px;border-radius:999px;background:#0B0F14;color:#fff;display:inline-flex;align-items:center;gap:8px;font:500 14px 'Geist';white-space:nowrap">Join waitlist <span>→</span></a></div>
-<p style="margin:16px 4px 0;font:400 12px/1.5 'Geist';color:#6B7785;text-align:center">Testnet. Test USDT has no value.</p>
+<div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0">
+<div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">TESTNET · INVITE ONLY</div>
+<h1 style="margin:10px 0 0;font:500 34px/1.1 'Geist';letter-spacing:-.03em;text-wrap:balance">{{ siTitle }}</h1>
+<sc-if value="{{ siSub }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 0 0;font:400 15px/1.5 'Geist';color:#5E6A76">{{ siSub }}</p></sc-if>
+<sc-if value="{{ siBusy }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;gap:14px;padding:32px 0 0"><svg width="28" height="28" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="#E6E9ED" stroke-width="10"></circle><circle cx="48" cy="48" r="40" fill="none" stroke="#2F6690" stroke-width="10" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="180"><animateTransform attributeName="transform" type="rotate" from="0 48 48" to="360 48 48" dur="1s" repeatCount="indefinite"></animateTransform></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76">{{ siBusyText }}</div></div></sc-if>
+<sc-if value="{{ gStart }}" hint-placeholder-val="{{ true }}"><div style="display:flex;flex-direction:column;gap:10px;margin-top:32px">
+<a href="https://cre8.finance/waitlist" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7);display:flex;align-items:center;justify-content:center;gap:8px">Join waitlist <span>→</span></a>
+<button onClick="{{ gToCode }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">I have an invite code</button>
+<p style="margin:10px 0 0;text-align:center;font:400 14px 'Geist';color:#5E6A76">Already in? <button onClick="{{ gToSignIn }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Sign in</button></p>
+</div></sc-if>
+<sc-if value="{{ gCode }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px;margin-top:28px">
+<label style="display:flex;align-items:center;padding:0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" onKeyDown="{{ inviteKey }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Invite code" aria-label="Invite code" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 18px 'Geist Mono';letter-spacing:.1em;color:#0B0F14;padding:0"></label>
+<button onClick="{{ gCodeGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">Continue</button>
+</div></sc-if>
+<sc-if value="{{ gMethods }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:10px;margin-top:28px">
+<button onClick="{{ gX }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with X</button>
+<button onClick="{{ signInGoogle }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with Google</button>
+<button onClick="{{ showEmail }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with Email</button>
+<sc-if value="{{ siEmail }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input type="{{ emailType }}" inputmode="{{ emailMode }}" value="{{ emailVal }}" onInput="{{ onEmail }}" placeholder="{{ emailPh }}" autocomplete="off" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><button onClick="{{ emailGo }}" style="height:44px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ emailBtn }}</button></label></sc-if>
+</div></sc-if>
+<sc-if value="{{ siErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:14px 2px 0;font:400 14px/1.5 'Geist';color:#D23F2E">{{ siErr }}</p></sc-if>
+<sc-if value="{{ siRetry }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:28px"><button onClick="{{ signOut }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer;font-size:15px">Sign out</button><button onClick="{{ siRetryGo }}" style="height:52px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:600 15px 'Geist';cursor:pointer">Try again</button></div></sc-if>
+<sc-if value="{{ gBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gToStart }}" style="align-self:center;margin-top:18px;border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:6px">Back</button></sc-if>
+</div>
+<p style="margin:14px 0 0;font:400 12px 'Geist';color:#6B7785;text-align:center">Test USDT has no value.</p>
 </div>
 </div></sc-if>
-<header style="position:sticky;top:0;z-index:50;background:rgba(243,243,243,.8);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(11,15,20,.06)">
+<sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><header style="position:sticky;top:0;z-index:50;background:rgba(243,243,243,.8);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(11,15,20,.06)">
 <div style="max-width:{{ L.max }}px;margin:0 auto;height:{{ L.hdrH }}px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 {{ L.pad }}px">
 <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ closeFund }}" aria-label="Back" style="width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if>
 <sc-if value="{{ showLogo }}" hint-placeholder-val="{{ true }}"><a href="index.html" aria-label="CRE8 home" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a></sc-if>
@@ -484,7 +494,7 @@ class Component extends DCLogic {
     // 登入後的真資料（window.CRE8W，assets/vendor/cre8-wallet.js）：w＝登入狀態快照，pf＝/portfolios，pst＝各投組 /status 的總值，
     // cashWei＝錢包 USDT（鏈上），smx＝/me/mixes，acts＝合併的活動。null＝還沒載入（畫面顯示載入中，不顯示 0）。
     w: null, pf: null, pst: {}, cashWei: null, smx: null, acts: null, mixCovers: {},
-    si: null, invite: '', siEmail: false, emailVal: '', siErr: null, rc: false, copied: false,
+    si: null, gStep: 'start', invite: '', siEmail: false, emailVal: '', siErr: null, rc: false, copied: false,
     payFaucet: false, procText: '', result: null,
     // Earn（docs/EARN_UX.zh-TW.md）：後端端點還在做。vaults＝白名單 USDT vault 列表 [{ id, name, about, apy }]，earnPos＝現金生息部位
     // { amount, apy, today }，seRates＝每檔策略加息 { [fundId]: apy }。待接：端點出來後在 loadEarn() 填入；現在一律 null，畫面顯示 Coming soon，不放假數字。
@@ -734,12 +744,22 @@ class Component extends DCLogic {
   }
   // 登入頁（要買、賣、建立時才出現）：新用戶輸入邀請碼後用 X 登入（後端要求 X＋放行名單）；已放行的人可以用 Google 或 Email。
   // gate：tst 一進來的入口頁（使用者 2026-11-23：通過前看不到 app 內容）。open：app 內要簽名時 session 過期的備用登入頁。
+  // 邀請碼格式（同 cre8-app normalizeInviteCode）：8–10 個字母數字，不含易混淆字。先記在分頁，登入回來後兌換（/waitlist/redeem）。
+  gCodeGo() {
+    const code = this.state.invite.trim().toUpperCase();
+    if (!/^[A-HJKMNP-Z2-9]{8,10}$/.test(code)) return this.setState({ siErr: 'Check the code: it’s 8 to 10 letters and numbers.' });
+    try { sessionStorage.setItem('cre8.waitlist.invite', code); } catch (_) {}
+    this.setState({ gStep: 'methods', siErr: null });
+  }
   signInView(s) {
-    const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn), open = gate || !!it;
+    const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn), open = gate || !!it, gs = s.gStep || 'start';
     const what = it && it.for === 'buy' ? 'buy ' + (it.target && it.target.name || 'this portfolio') : it && it.for === 'sell' ? 'sell' : it && it.for === 'build' ? 'start your basket' : 'see your portfolio';
     const ph = w ? w.phase : 'loading', wl = w && w.waitlist ? w.waitlist : { state: 'idle' };
     const waiting = wl.state === 'waiting';
-    const busy = open && !waiting && (!w || !W || ph === 'loading' || ph === 'creating-wallet' || ph === 'exchanging' || wl.state === 'checking' || (w.signedIn && this.intentPending()));
+    // 入口頁：錢包程式還在載時照樣顯示按鈕（Join waitlist 不需要它）；只有剛從 X／Google 轉回來時才顯示載入中。
+    const oauthBack = /privy_oauth/.test(location.search);
+    const busy = open && !waiting && ((gate && !oauthBack) ? (w && W && (ph === 'creating-wallet' || ph === 'exchanging' || wl.state === 'checking')) : (!w || !W || ph === 'loading' || ph === 'creating-wallet' || ph === 'exchanging' || wl.state === 'checking' || (w.signedIn && this.intentPending())));
+    const gForm = gate && !busy && !waiting && !(w && ph === 'error');
     const codeStep = w && (w.emailStep === 'awaiting-code-input' || w.emailStep === 'submitting-code');
     const err = s.siErr || (wl.state === 'error' ? wl.message : null) || (waiting ? wl.message : null) || (w && (w.oauthError || w.emailError)) || (w && ph === 'error' && !waiting && wl.state !== 'checking' ? (w.errorText || 'Sign-in didn’t finish.') : null);
     const W2 = fn => () => { if (!W) return this.setState({ siErr: 'Sign-in is still loading. Try again in a moment.' }); try { const r = fn(); if (r && r.catch) r.catch(e => this.setState({ siErr: e.message })); } catch (e) { this.setState({ siErr: e.message }); } };
@@ -749,8 +769,14 @@ class Component extends DCLogic {
       sh_siBusy: !gate && busy, sh_siForm: !gate && open && !busy && !waiting && ph !== 'error', sh_siRetry: !gate && open && !busy && (waiting || ph === 'error'), sh_siEmail: !gate && s.siEmail, sh_siErr: !gate && open ? err : null,
       siO: !gate && it ? 1 : 0, siPE: !gate && it ? 'auto' : 'none', siY: !gate && it ? 0 : 110,
       closeSignIn: () => { try { sessionStorage.removeItem('cre8.intent'); } catch (_) {} this.setState({ si: null, siErr: null }); },
-      siTitle: waiting ? 'You’re on the waitlist' : busy ? (gate ? 'Signing you in' : 'Setting up your account') : gate ? 'Welcome to CRE8' : 'Sign in to ' + what,
-      siSub: waiting ? 'CRE8 testnet is invite-only. We’ll let you in soon. Got an invite code? Sign out, enter it, and continue with X again.' : busy ? 'This takes a few seconds.' : gate ? 'Buy baskets of US stocks and crypto with USDT. New here? Enter your invite code and continue with X. We create a wallet for you; only you hold the key.' : 'You’ll come right back here. We create a wallet for you; only you hold the key.',
+      siTitle: waiting ? 'You’re on the waitlist.' : busy ? (gate ? 'Signing you in…' : 'Setting up your account') : gate ? 'CRE8 testnet is invite-only.' : 'Sign in to ' + what,
+      siSub: waiting ? 'We’ll let you in soon.' : busy ? (gate ? null : 'This takes a few seconds.') : gate ? ({ code: 'Enter your invite code.', methods: 'Sign in to use your code.', signin: 'Welcome back.' })[gs] || null : 'You’ll come right back here. We create a wallet for you; only you hold the key.',
+      // 入口頁的步驟：start（Join waitlist／I have an invite code）→ code（輸入碼）→ methods（X／Google／Email）；signin＝已放行的人直接登入。
+      gStart: gForm && gs === 'start', gCode: gForm && gs === 'code', gMethods: gForm && (gs === 'methods' || gs === 'signin'), gBack: gForm && gs !== 'start',
+      gToCode: () => this.setState({ gStep: 'code', siErr: null, siEmail: false }), gToStart: () => this.setState({ gStep: 'start', siErr: null, siEmail: false }),
+      gToSignIn: () => { try { sessionStorage.removeItem('cre8.waitlist.invite'); } catch (_) {} this.setState({ gStep: 'signin', siErr: null, siEmail: false }); },
+      gCodeGo: () => this.gCodeGo(), inviteKey: e => { if (e.key === 'Enter') this.gCodeGo(); },
+      gX: W2(() => W.signInWith('twitter')),
       siBusy: busy, siBusyText: !w || ph === 'loading' ? 'LOADING' : ph === 'creating-wallet' ? 'CREATING YOUR WALLET' : wl.state === 'checking' ? 'CHECKING YOUR INVITE' : 'SIGNING YOU IN',
       siForm: open && !busy && !waiting && ph !== 'error', siRetry: open && !busy && (waiting || ph === 'error'),
       siRetryGo: W2(() => W.retry()),

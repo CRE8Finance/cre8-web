@@ -114,7 +114,7 @@ async function handleWaitlist(): Promise<void> {
       } catch (cause) {
         try { sessionStorage.removeItem(INVITE_KEY); } catch { /* */ }
         if (!(cause instanceof ApiError)) throw cause;
-        if (cause.code === 'X_REQUIRED') { waitlist = { state: 'error', message: 'Invite codes work with X. Sign in with X to use yours.' }; emit(); return; }
+        if (cause.code === 'X_REQUIRED') { waitlist = { state: 'error', message: 'Right now invite codes only work with X. Sign out and continue with X.' }; emit(); return; }
         // 碼不能用（錯、用過、過期）：照一般排隊，並說明。
         body = await postWaitlistJoin(p.identityToken);
         const r = parseWaitlist(body);
