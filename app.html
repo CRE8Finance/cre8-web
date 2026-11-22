@@ -1266,7 +1266,7 @@ class Component extends DCLogic {
         const show = !!h && !!fSE && (on || fSE.state === 'ok' || !!reopen);
         // 已賺＝vault 裡的 USDT－負債（利差累積）＋待領激勵（USDT）。
         const earned = on ? Math.max(0, h.seOn.reduce((a, x) => a + (Number(x.vaultAssetsRaw || 0) - Number(x.debtRaw || 0) + Number(x.pendingRewardsRaw || 0)) / 1e18, 0)) : 0;
-        const can = on || (fSE && fSE.rate != null && !h.loading);
+        const can = on || !!(h && fSE && fSE.rate != null && !h.loading);
         const run = (side, syms) => this.setState({ modal: true, side, step: 'proc', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (fSE ? fSE.syms : []) } }, () => this.confirm());
         return {
           seRow: show, seReopenBtn: !!reopen, seToggleShow: !reopen, seReopenLabel: tr('Turn back on', '重新开启'),
