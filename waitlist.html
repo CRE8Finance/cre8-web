@@ -29,13 +29,13 @@
 </head>
 <body>
 <x-dc>
-<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#0B0F14;color:#EEF3F7;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{opacity:.85}input::placeholder{color:#6B7785}input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #5F849F;outline-offset:2px}button:disabled{cursor:not-allowed}</style></helmet>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}body{margin:0;background:#0B0F14;color:#EEF3F7;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{opacity:.85}input::placeholder{color:#6B7785}input:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid #5F849F;outline-offset:2px}button:disabled{cursor:not-allowed}@media (max-width:420px){.wl-home{display:none!important}}</style></helmet>
 
 <header style="position:fixed;top:14px;left:0;right:0;z-index:50;padding:0 16px;pointer-events:none">
 <div style="pointer-events:auto;max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px;padding:0 8px 0 18px;background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:18px;box-shadow:0 1px 1px rgba(11,15,20,.03),0 8px 28px rgba(11,15,20,.08),0 0 0 1px rgba(11,15,20,.06)">
 <a href="/" style="display:flex"><img src="/assets/cre8-logo-dark.svg" alt="CRE8 home" style="height:20px;display:block"></a>
 <div style="display:flex;align-items:center;gap:4px">
-<a href="/" style="padding:10px 14px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">Home</a>
+<a class="wl-home" href="/" style="padding:10px 14px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">Home</a>
 <a href="https://tst.cre8.finance/" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">Have an invite? <span>→</span></a>
 </div>
 </div>
@@ -56,7 +56,6 @@
 
 <sc-if value="{{ joined }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;margin-bottom:16px;border-radius:999px;background:#E6F6EE;font:500 12px 'Geist Mono';letter-spacing:.06em;color:#17714B"><span aria-hidden="true">✓</span>ON THE LIST</div></sc-if>
 <h2 style="margin:0;font-weight:400;font-size:clamp(26px,2.2vw,32px);line-height:1.1;letter-spacing:-.03em">{{ title }}</h2>
-<p style="margin:10px 0 0;font:400 15px/1.5 'Geist';color:#4A5563">{{ sub }}</p>
 
 <div style="margin-top:22px;border-radius:16px;background:#F2F5F7;padding:4px 16px">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 0">
@@ -73,7 +72,7 @@
 
 <sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:12px 0 0;font:500 13px/1.4 'Geist';color:#B42318">{{ err }}</p></sc-if>
 <sc-if value="{{ approved }}" hint-placeholder-val="{{ false }}"><a href="https://tst.cre8.finance/" style="margin-top:16px;height:48px;border-radius:999px;background:#E3B55B;color:#0B0F14;display:flex;align-items:center;justify-content:center;gap:10px;font:500 16px 'Geist';box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35)">Open the testnet <span>→</span></a></sc-if>
-<sc-if value="{{ joinedAt }}" hint-placeholder-val="{{ false }}"><p style="margin:12px 0 0;font:400 13px/1.5 'Geist';color:#5A6673">{{ joinedAt }}</p></sc-if>
+<sc-if value="{{ tasksLive }}" hint-placeholder-val="{{ false }}">
 <div style="margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px">
 <div><div style="font:500 12px 'Geist Mono';letter-spacing:.1em;color:#4A5B6A">BONUS POINTS</div><div style="font:400 14px/1.4 'Geist';color:#4A5563;margin-top:6px">{{ bonusHint }}</div></div>
 <div style="text-align:right;white-space:nowrap"><span style="font:300 44px/1 'Geist';letter-spacing:-.05em">{{ pts }}</span><span style="font:400 14px 'Geist Mono';color:#4A5B6A"> / 35</span></div>
@@ -136,7 +135,7 @@
 
 </div>
 
-<p style="margin:14px 0 0;text-align:center;font:400 13px/1.5 'Geist';color:#5A6673">Open to non-US persons where local rules allow. <a href="#" style="text-decoration:underline;color:#3A4652">Privacy</a></p>
+</sc-if>
 
 </div>
 </div>
@@ -219,7 +218,7 @@ class Component extends DCLogic {
     const checking = connected && s.entry === undefined;
     const d = entry && entry.joinedAt ? new Date(entry.joinedAt) : null;
     return {
-      joined, locked, connected, notConnected: !connected, notFollowed: !joined, approved,
+      tasksLive: TASKS_LIVE, joined, locked, connected, notConnected: !connected, notFollowed: !joined, approved,
       title: approved ? 'You’re in.' : joined ? "You're on the list." : 'Join the waitlist',
       sub: approved ? 'Your invite is ready. Open the testnet and sign in with X.' : joined ? 'Your place is saved. We’ll let you in soon.' : 'Two steps. No email or wallet needed.',
       handle: w && w.profile && w.profile.handle ? '@' + w.profile.handle : 'Connected',
