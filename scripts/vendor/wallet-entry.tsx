@@ -82,6 +82,8 @@ function snapshot() {
     oauthError: p.oauthError ? String((p.oauthError as Error).message ?? p.oauthError) : null,
     linkError: p.linkError,
     hasX: p.methods.some((m) => m.kind === 'x'),
+    /** 登入了 Privy，但還沒放行（後端 403 WAITLIST_PENDING）：入口頁顯示邀請碼輸入框。 */
+    pending: p.phase === 'error' && isWaitlistPending(p.error),
     identityReady: p.identityToken !== null,
     waitlist,
   };
@@ -201,6 +203,26 @@ export async function waitlistMe() {
   } catch (cause) {
     if (cause instanceof ApiError && cause.status === 404) return null;
     throw cause;
+  }
+}
+/**
+ * 登入後用邀請碼放行（`POST /waitlist/redeem`）。成功（或本來就放行）就讓 PrivyRoot 重換 session，入口頁自己會進 app。
+ * 失敗丟一句白話（碼錯、用過、過期、要 X）。
+ */
+export async function redeemInvite(text: string) {
+  const code = normalizeInviteCode(text);
+  if (code === null) throw new Error('That code isn’t valid.');
+  const t = identityToken();
+  if (t === null) throw new Error('Sign in first.');
+  try {
+    const record = parseWaitlist(await postWaitlistRedeem(t, code));
+    if (record?.status === 'approved') signalWaitlistApproved();
+    return record;
+  } catch (cause) {
+    if (!(cause instanceof ApiError)) throw cause;
+    if (cause.code === 'ALREADY_APPROVED') { signalWaitlistApproved(); return { status: 'approved' as const, xHandle: null, joinedAt: null }; }
+    const msg: Record<string, string> = { INVITE_INVALID: 'That code isn’t valid.', INVITE_USED: 'That code was already used.', INVITE_EXPIRED: 'That code has expired.', X_REQUIRED: 'Invite codes only work with X for now.' };
+    throw new Error(msg[cause.code] ?? (cause.status === 429 ? 'Too many tries. Wait a minute.' : 'Couldn’t check the code. Try again.'));
   }
 }
 /** 加入（`POST /waitlist/join`，冪等）。已放行就讓 PrivyRoot 重換 session。 */
@@ -421,7 +443,7 @@ export { transferCalldata };
 
 // IIFE 沒有匯出：掛到 window，通知 app.html。
 (window as unknown as { CRE8W: unknown }).CRE8W = {
-  mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
+  mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, chain,
 };
 window.dispatchEvent(new Event('cre8w:ready'));
