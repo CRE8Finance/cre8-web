@@ -1,0 +1,20 @@
+# CRE8
+
+> CRE8 is the home of productive portfolios: baskets of tokenized US stocks (bStock) and crypto that you buy with USDT, with yield on idle capital. Portfolios are held in an on-chain account only you control. CRE8 is currently on testnet; test USDT is free.
+
+## What you can do
+- Buy a ready-made portfolio with one payment, starting from 50 USDT.
+- People portfolios follow public disclosures: Pelosi Portfolio (stock trades Nancy Pelosi's household discloses to Congress), Trump Holdings (Office of Government Ethics disclosures), Musk Basket, Duan Yongping (US stocks in his public filings).
+- Theme portfolios include AI Chips, AI Memory, Korea Semis, Mag7, Bitcoin Plus, BNB Ecosystem, US Market and 3x leveraged baskets.
+- Build your own basket: pick up to 10 stocks or crypto assets, set weights, choose a rebalancing schedule (daily, weekly, monthly or quarterly), and CRE8 keeps it on target.
+
+## Key facts
+- Payment: USDT.
+- Custody: self-custody; shares sit in an on-chain account only the user controls.
+- Status: testnet (not real money yet).
+- Availability: anyone outside the US, where local rules allow.
+
+## Links
+- Website: https://cre8.finance/
+- App (testnet): https://tst.cre8.finance/
+- X: https://x.com/CRE8Finance

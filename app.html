@@ -1,10 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRE8 App (Testnet)</title>
+<meta name="description" content="Buy baskets of US stocks and crypto with USDT on CRE8 testnet. Follow Pelosi, Trump and Musk, or build your own basket. Test USDT is free.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F3F5F7">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-<title>CRE8</title>
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CRE8">
+<meta property="og:url" content="https://tst.cre8.finance/">
+<meta property="og:title" content="CRE8 App (Testnet)">
+<meta property="og:description" content="Buy baskets of US stocks and crypto with USDT on CRE8 testnet. Follow Pelosi, Trump and Musk, or build your own basket. Test USDT is free.">
+<meta property="og:image" content="https://cre8.finance/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@CRE8Finance">
+<meta name="twitter:title" content="CRE8 App (Testnet)">
+<meta name="twitter:description" content="Buy baskets of US stocks and crypto with USDT on CRE8 testnet. Follow Pelosi, Trump and Musk, or build your own basket. Test USDT is free.">
+<meta name="twitter:image" content="https://cre8.finance/assets/og.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="script" href="assets/vendor/react.production.min.js">
+<link rel="preload" as="script" href="assets/vendor/react-dom.production.min.js">
+<script>window.__resources={"https://unpkg.com/react@18.3.1/umd/react.production.min.js":"assets/vendor/react.production.min.js","https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js":"assets/vendor/react-dom.production.min.js"};</script>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -169,7 +191,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ b3 }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;align-items:center;gap:16px;margin:24px 16px 0"><img src="{{ mixCoverSrc }}" alt="Cover" style="flex:none;width:72px;height:72px;border-radius:16px;object-fit:cover;box-shadow:0 0 0 1px rgba(11,15,20,.06)"><span style="display:flex;flex-direction:column;align-items:flex-start;gap:8px"><label style="position:relative;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 14px 'Geist';color:#0B0F14;cursor:pointer">{{ mixCoverLabel }}<input type="file" accept="image/*" onChange="{{ onMixCover }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><sc-if value="{{ hasMixCover }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removeMixCover }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">Remove photo</button></sc-if></span></div>
+<div style="display:flex;align-items:center;gap:16px;margin:24px 16px 0"><span role="img" aria-label="Basket cover" style="flex:none;width:72px;height:72px;border-radius:16px;background:{{ mixCoverBg }};box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"></span><span style="display:flex;flex-direction:column;align-items:flex-start;gap:8px"><label style="position:relative;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 14px 'Geist';color:#0B0F14;cursor:pointer">{{ mixCoverLabel }}<input type="file" accept="image/*" onChange="{{ onMixCover }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><sc-if value="{{ hasMixCover }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removeMixCover }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">Remove photo</button></sc-if></span></div>
 <label style="display:flex;align-items:center;gap:12px;margin:24px 16px 0;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="My basket" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
 </sc-if>
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:{{ L.mixB }}px;transform:translateX(-50%);width:min(640px,100%);z-index:44;padding:0 16px">
@@ -572,7 +594,7 @@ class Component extends DCLogic {
       assets: shownAssets.map(t => { const on = s.picks.includes(t); return { t, logo: LOGO(t), toggle: () => this.toggleAsset(t), on: on ? 1 : 0, sc: on ? 1 : .4, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       pickCount: s.picks.length + ' / 10', hasPicks: s.picks.length > 0,
       ...this.splitView(s),
-      mixName: s.mixName, nameLen: s.mixName.length, mixCoverSrc: s.mixCover || 'app/cover-cre8.png', hasMixCover: !!s.mixCover, mixCoverLabel: s.mixCover ? 'Change photo' : 'Add cover photo', removeMixCover: () => this.setState({ mixCover: null }), onMixCover: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ mixCover: URL.createObjectURL(f) }); e.target.value = ''; }, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
+      mixName: s.mixName, nameLen: s.mixName.length, mixCoverBg: 'url(' + (s.mixCover || 'app/cover-cre8.png') + ') center/cover no-repeat', hasMixCover: !!s.mixCover, mixCoverLabel: s.mixCover ? 'Change photo' : 'Add cover photo', removeMixCover: () => this.setState({ mixCover: null }), onMixCover: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ mixCover: URL.createObjectURL(f) }); e.target.value = ''; }, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
       splitEven: () => this.setState(st => ({ weights: this.evenWeights(st.picks), wFixed: [] })),
       freqs: pills(['Daily', 'Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
       calTitle: MON[calM.getMonth()] + ' ' + calM.getFullYear(), calCells, calPrev: () => s.calOff > 0 && this.setState({ calOff: s.calOff - 1 }), calNext: () => s.calOff < 12 && this.setState({ calOff: s.calOff + 1 }), calPrevO: s.calOff > 0 ? 1 : .25, calNextO: s.calOff < 12 ? 1 : .25, startText,
