@@ -201,7 +201,8 @@ function head({ lang, path, title, description, schema, extraHead = '' }) {
 ${schema.map(ld).join('\n')}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,400&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="/assets/pages.css">
 ${extraHead}<link rel="stylesheet" href="/assets/press.css">
 <script src="/assets/press.js" defer></script>
@@ -681,7 +682,7 @@ const mustReplace = (html, from, to, name) => {
   if (!html.includes(from)) throw new Error(`${name}：找不到「${from}」`);
   return html.split(from).join(to);
 };
-// 中文頁共用：lang、canonical、og:url、og:locale；中文字型（內文用系統黑體，標題配 Noto Serif SC，只載標題用到的字）。
+// 中文頁共用：lang、canonical、og:url、og:locale；中文字型（內文用系統黑體，標題配思源黑體 Light，只載標題用到的字）。
 function zhHead(html, enPathname, name) {
   const zhUrl = abs(zhPath(enPathname));
   html = mustReplace(html, '<html lang="en">', '<html lang="zh-Hans">', name);
@@ -690,14 +691,14 @@ function zhHead(html, enPathname, name) {
   html = html.replace(/<meta property="og:locale" content="[^"]*">\n?/, '');
   html = mustReplace(html, '<meta property="og:site_name" content="CRE8">', '<meta property="og:site_name" content="CRE8">\n<meta property="og:locale" content="zh_CN">', name);
   html = html.replace(/'Geist Mono'/g, `'Geist Mono',${CJK_SANS}`).replace(/'Geist'/g, `'Geist',${CJK_SANS}`);
-  html = html.replace(/'Instrument Serif',Georgia,serif/g, "'Instrument Serif','Noto Serif SC',Georgia,'Songti SC',serif");
+  html = html.replace(/'Switzer','Geist'/g, "'Switzer','Noto Sans SC','Geist'");
   return html;
 }
-// 標題用的 Noto Serif SC：只要 h1–h3 與用 Instrument Serif 的段落裡的字（Google Fonts text= 子集，一個小檔）。
+// 標題用的 Noto Sans SC（Light）：只要 h1–h3 與用 Switzer 的段落裡的字（Google Fonts text= 子集，一個小檔）。
 function serifSubset(html) {
   const chars = new Set();
   for (const m of html.matchAll(/<(h1|h2|h3|p)\b([^>]*)>([\s\S]*?)<\/\1>/g)) {
-    if (m[1] === 'p' && !m[2].includes('Instrument Serif')) continue;
+    if (m[1] === 'p' && !m[2].includes('Switzer')) continue;
     for (const ch of m[3].replace(/<[^>]+>/g, '')) if (/[^\x00-\x7F]/.test(ch)) chars.add(ch);
   }
   return [...chars].sort().join('');
@@ -705,7 +706,7 @@ function serifSubset(html) {
 function withZhSerif(html) {
   const text = serifSubset(html);
   if (!text) return html;
-  const link = `<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&display=swap&text=${encodeURIComponent(text)}" rel="stylesheet">\n`;
+  const link = `<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300&display=swap&text=${encodeURIComponent(text)}" rel="stylesheet">\n`;
   return html.replace('</head>', link + '</head>');
 }
 const loadTable = async (file) => JSON.parse(await readFile(join(ROOT, 'scripts', file), 'utf8'));
@@ -747,12 +748,12 @@ async function zhHome(enHtml, funds) {
 }
 // 中文標題：字面比英文大，字級略小、行高略大、不要負字距。英文頁的樣式寫在 style 屬性裡，這裡用屬性選擇器蓋過去。
 const ZH_HOME_CSS = [
-  '.door-copy h1{font-size:clamp(44px,5.6vw,84px);line-height:1.15;letter-spacing:0}',
-  '[style*="Instrument Serif"]{letter-spacing:0!important}',
-  'h2[style*="clamp(40px,4.2vw,60px)"],p[style*="clamp(40px,4.2vw,60px)"]{font-size:clamp(32px,3.6vw,52px)!important;line-height:1.25!important}',
-  'h3[style*="clamp(32px,3vw,44px)"]{font-size:clamp(28px,2.6vw,38px)!important;line-height:1.25!important}',
-  'h2[style*="clamp(52px,6.7vw,96px)"]{font-size:clamp(40px,5.6vw,80px)!important;line-height:1.15!important}',
-  '[style*="Instrument Serif"]{text-wrap:balance}p{text-wrap:pretty}',
+  '.door-copy h1{font-size:clamp(42px,5.2vw,76px);line-height:1.18;letter-spacing:0}',
+  '[style*="Switzer"]{letter-spacing:0!important}',
+  'h2[style*="clamp(34px,3.6vw,52px)"],p[style*="clamp(34px,3.6vw,52px)"]{font-size:clamp(30px,3.2vw,46px)!important;line-height:1.28!important}',
+  'h3[style*="clamp(28px,2.6vw,38px)"]{font-size:clamp(26px,2.4vw,34px)!important;line-height:1.28!important}',
+  'h2[style*="clamp(46px,5.8vw,84px)"]{font-size:clamp(38px,5vw,72px)!important;line-height:1.18!important}',
+  '[style*="Switzer"]{text-wrap:balance}p{text-wrap:pretty}',
   // 深色帶那句：中文比英文長，放寬一點寬度，桌面才排得成一行。
   'p[style*="max-width:15em"]{max-width:19em!important}',
 ].join('');
