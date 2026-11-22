@@ -830,7 +830,7 @@ class Component extends DCLogic {
       const cur = p && p.ltvBps != null ? p.ltvBps : m.target, del = p && p.deleverageLtvBps ? p.deleverageLtvBps : m.del, liq = p && p.liquidationLtvBps ? p.liquidationLtvBps : m.del ? Math.round(m.del * 1.5) : null;
       if (!cur || !del || !liq) return;
       const dropDel = Math.max(0, 1 - cur / del) * 100, dropLiq = Math.max(0, 1 - cur / liq) * 100;
-      secs.push(sec(tr(t + ' SAFETY', t + ' 安全'), [row(p ? tr('Borrowed now', '当前借款比例') : tr('We borrow', '我们借到'), bp(cur), tr('Loan ÷ value of the shares (LTV).', '借款 ÷ 股票价值（LTV）。')), row(tr('Auto-reduce at', '自动减仓线（Deleverage）'), bp(del), tr('We sell a little and repay here.', '到这里会卖一点还款。')), row(tr('Liquidation at', '协议清算线（Liquidation）'), (p && p.liquidationLtvBps ? '' : '~') + bp(liq), tr('Where the protocol would sell — we act well before.', '协议会强制卖出的位置，我们会提前处理。'))],
+      secs.push(sec(tr(t + ' SAFETY', t + ' 安全'), [row(p ? tr('Borrowed now', '当前借款比例') : tr('We borrow', '我们借到'), bp(cur), tr('Loan ÷ value of the shares (LTV).', '借款 ÷ 股票价值（LTV）。')), row(tr('Auto-reduce at', '自动减仓线（Deleverage）'), bp(del), tr('We repay automatically here.', '到这里会自动还款。')), row(tr('Liquidation at', '协议清算线（Liquidation）'), (p && p.liquidationLtvBps ? '' : '~') + bp(liq), tr('Where the protocol would sell — we act well before.', '协议会强制卖出的位置，我们会提前处理。'))],
         tr(t + ' would have to fall about ' + dropDel.toFixed(0) + '% before we reduce, and about ' + dropLiq.toFixed(0) + '% to reach liquidation. A low ratio and early reducing make liquidation very unlikely, but price-feed failures, protocol bugs or sudden gaps can’t be ruled out 100%.', t + ' 要跌约 ' + dropDel.toFixed(0) + '% 才会触发减仓，跌约 ' + dropLiq.toFixed(0) + '% 才碰到清算线。低借款比例＋提前减仓让被清算的机会很低，但喂价故障、协议漏洞或极端跳空无法 100% 排除。'),
         { bCur: Math.min(100, cur / liq * 100).toFixed(1), bDel: (del / liq * 100).toFixed(1), l0: tr('Now ', '当前 ') + bp(cur), l1: tr('Reduce ', '减仓 ') + bp(del), l2: tr('Liq. ', '清算 ') + bp(liq) }));
     });
@@ -1238,7 +1238,7 @@ class Component extends DCLogic {
       // 買入確認卡：一句話＋開關＋「每年多賺約 X USDT」，預設關。% 只在點文字後才出現。槓桿與自建組合沒有；低於 0.3% 不顯示。
       showSE: s.side === 'buy' && !!tSE && tSE.state === 'ok', seOn: !!(s.se && seRate != null), seCur: seRate != null ? 'pointer' : 'default',
       seTitle: seRate != null ? tr('Earn +' + seRate.toFixed(1) + '%', '加息 +' + seRate.toFixed(1) + '%') : tr('Earn extra', '加息'),
-      seSub: seRate != null ? tr('Your shares earn more. If prices drop fast, we sell a little to stay safe.', '让持仓多赚一点，急跌时自动卖一点保安全。') : tr('Temporarily unavailable', '暂时无法使用'),
+      seSub: seRate != null ? tr('Your shares earn more. If prices drop to the safety line, we repay automatically.', '让持仓多赚一点，跌到安全线会自动还款。') : tr('Temporarily unavailable', '暂时无法使用'),
       // 詳情入口（小字，不是必經）：現金生息的金額／確認頁、vault 列表、買入加息卡、基金頁加息列。
       ...(() => { const DT = this.details(s0, s0.dt); return { dtTitle: DT.title, dtSecs: DT.secs, dtO: s0.dtOpen ? 1 : 0, dtPE: s0.dtOpen ? 'auto' : 'none', dtY: s0.dtOpen ? 0 : 110, closeDt: () => this.setState({ dtOpen: false }) }; })(),
       dtLabel: tr('Details', '详情'),
