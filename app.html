@@ -318,6 +318,9 @@ const FUNDS = [
   F('tqqq', 'THEME', 'leveraged', '3x Nasdaq', 'app/p-tqqq.jpg', 4.2, 1, [['TQQQ', 100]], 'Three times the daily move of the Nasdaq-100, through a single 3x leveraged token (TQQQ).'),
 ];
 // 測試網上可以買的標的（cre8-app src/lib/testnet-97.ts，不含穩定幣）。Build 分 Stock（股票、ETF、XAUt）與 Crypto 兩頁，可搜尋代號或名稱（搜尋時兩頁一起找）。
+const FREQ_LABEL = ['Daily', 'Weekly', 'Monthly', 'Quarterly'];
+const MIX_FREQ_TEXT = ['every day', 'every week', 'every month', 'every quarter'];
+const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, 'app/cover-mag7.webp', m.ret, m.picks.length, m.picks, 'Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + '.'), freqLabel: FREQ_LABEL[m.freq] }; };
 const CRYPTO = new Set(['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC']);
 const ASSETS = ['AAPL', 'ABBV', 'ALAB', 'AMAT', 'AMC', 'AMD', 'AMZN', 'ANT', 'APH', 'APLD', 'AVGO', 'AXP', 'BABA', 'BE', 'BLK', 'BMNR', 'BNC', 'CBRS', 'CEG', 'CIEN', 'COHR', 'COIN', 'CORZ', 'CRCL', 'CRDO', 'CRM', 'CRWV', 'CVX', 'CYPH', 'DJT', 'GEV', 'GME', 'GOOG', 'GOOGL', 'GPRO', 'HOOD', 'INTC', 'IREN', 'KO', 'LLY', 'MA', 'META', 'MRNA', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NEM', 'NFLX', 'NOK', 'NVDA', 'ORCL', 'PANW', 'PDD', 'PENG', 'PYPL', 'RDDT', 'SHAZ', 'SKHY', 'SNDK', 'SPCX', 'STX', 'TSLA', 'TSM', 'UBER', 'V', 'VRT', 'VST', 'EWY', 'GLD', 'IEF', 'IVV', 'QQQ', 'SGOV', 'SPY', 'TLT', 'SOXL', 'TQQQ', 'XAUT', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC'];
 const AVC = ['linear-gradient(135deg,#6F93AE,#16222D)', 'linear-gradient(135deg,#E3B55B,#9A6B1E)', 'linear-gradient(135deg,#7FB59A,#1F5A41)', 'linear-gradient(135deg,#B9A2D6,#4B3A6E)', 'linear-gradient(135deg,#3C4651,#0B0F14)'];
@@ -346,10 +349,12 @@ class Component extends DCLogic {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
     picks: [], weights: {}, bcat: 0, q: '', bstep: 0, freq: 2, start: null, calOff: 0, mixName: '', cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
+    // 用戶自己建的組合：點進去是跟基金一樣的專屬頁。
+    mixes: [{ id: 'mix-1', name: 'My mix', picks: [['NVDA', 40], ['AAPL', 30], ['BTC', 30]], freq: 2, start: new Date(2026, 10, 1).getTime(), ret: -2.1 }],
     holdings: [
       { id: 'pelosi', name: 'Pelosi Portfolio', cover: 'app/p-pelosi.jpg', val: 4236.80, ret: 23.7 },
       { id: 'ai-chips', name: 'AI Chips', cover: 'app/p-ai.jpg', val: 3104.12, ret: 62.3 },
-      { id: null, name: 'My mix', cover: 'app/cover-mag7.webp', val: 2759.40, ret: -2.1 },
+      { id: 'mix-1', name: 'My mix', cover: 'app/cover-mag7.webp', val: 2759.40, ret: -2.1 },
     ],
   };
   timers = [];
@@ -419,8 +424,8 @@ class Component extends DCLogic {
     this.later(() => this.setState({ procOff: 0 }), 60);
     this.later(() => {
       const amt = parseFloat(this.state.amount) || 0, t = this.state.target;
-      if (this.state.side === 'sell') { this.setState(s => { const hs = s.holdings.map(h => h.name === t.name ? { ...h, val: h.val - amt } : h).filter(h => h.val > 0.005); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash + amt }; }); this.later(() => this.setState({ doneSc: 1 }), 40); return; }
-      this.setState(s => { const hs = s.holdings.slice(); const i = hs.findIndex(h => h.name === t.name); if (i >= 0) hs[i] = { ...hs[i], val: hs[i].val + amt }; else hs.unshift({ id: t.id, name: t.name, cover: t.cover, val: amt, ret: 0 }); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash - amt }; });
+      if (this.state.side === 'sell') { this.setState(s => { const hs = s.holdings.map(h => (t.id ? h.id === t.id : h.name === t.name) ? { ...h, val: h.val - amt } : h).filter(h => h.val > 0.005); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash + amt }; }); this.later(() => this.setState({ doneSc: 1 }), 40); return; }
+      this.setState(s => { const hs = s.holdings.slice(); const i = hs.findIndex(h => t.id ? h.id === t.id : h.name === t.name); if (i >= 0) hs[i] = { ...hs[i], val: hs[i].val + amt }; else hs.unshift({ id: t.id, name: t.name, cover: t.cover, val: amt, ret: 0 }); const built = t.mix && !s.mixes.some(m => m.id === t.mix.id); return { step: 'done', doneSc: .4, holdings: hs, cash: s.cash - amt, ...(built ? { mixes: [t.mix, ...s.mixes], picks: [], weights: {}, mixName: '', start: null } : {}) }; });
       this.later(() => this.setState({ doneSc: 1 }), 40);
     }, 1600);
   }
@@ -446,14 +451,14 @@ class Component extends DCLogic {
     const fcat = FIL[s.filter][1];
     const people = FUNDS.filter(f => f.kind === 'PEOPLE');
     const themes = FUNDS.filter(f => f.kind === 'THEME' && (!fcat || f.cat === fcat));
-    const f = FUNDS.find(x => x.id === s.fund) || FUNDS[0];
+    const f = FUNDS.find(x => x.id === s.fund) || s.mixes.map(mixFund).find(x => x.id === s.fund) || FUNDS[0];
     const R = RANGES[s.range], nav = 10 * (1 + f.ret * 1.7 / 100);
     const fch = this.chart(FUNDS.indexOf(f) * 3 + s.range + 5, f.ret * R[1], R, s.fh, nav, 600, 190);
     const shown = f.hold.reduce((a, h) => a + h[1], 0);
     const hold = f.hold.map(([t, w]) => ({ t, w, bar: w, name: NAMES[t], logo: LOGO(t) }));
     if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: 'Rest of the basket', logo: 'app/l-usdt.png' });
     hold.forEach((h, i, a) => h.sep = sepL(i, a));
-    const stats = [['APY', pct(f.ret), '#16854F'], ['EXTRA YIELD', '+~2%', '#A8791F'], ['VOLATILITY', (11 + Math.abs(f.ret) * .28).toFixed(1) + '%', '#0B0F14'], ['MAX DRAWDOWN', '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
+    const stats = [['APY', pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], ['EXTRA YIELD', '+~2%', '#A8791F'], ['VOLATILITY', (11 + Math.abs(f.ret) * .28).toFixed(1) + '%', '#0B0F14'], ['MAX DRAWDOWN', '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', f.freqLabel || 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
@@ -473,7 +478,7 @@ class Component extends DCLogic {
     const inBuild = s.page === 'build' && !s.fund, bs = s.bstep;
     const B_TITLES = [['Build', 'Your picks. We keep the weights on target.'], ['Set weights', 'How much of each, adding up to 100%.'], ['Rebalance', 'How often we bring it back to your weights.'], ['Name it', 'Give your basket a name, then buy.']];
     const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: 'Next step' } : { ...off, label: 'Pick at least 1' }) : bs === 1 ? (total === 100 ? { ...cta, label: 'Next step' } : mixBtn) : bs === 2 ? { ...cta, label: 'Next step' } : mixBtn;
-    const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady) this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }); };
+    const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady) { const id = 'mix-' + Date.now(); this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp', mix: { id, name: s.mixName.trim() || 'My basket', picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } } }); } };
     const tgt = s.target || { name: f.name, cover: f.cover };
     const sell = s.side === 'sell', posH = s.holdings.find(h => h.name === tgt.name), posMax = posH ? Math.floor(posH.val * 100) / 100 : 0;
     const amt = parseFloat(s.amount) || 0;
@@ -502,7 +507,7 @@ class Component extends DCLogic {
       people: people.map(card), themes: themes.map(card),
       themeTitle: fcat ? FIL[s.filter][0] : 'Themes', themeCount: themes.length + ' PORTFOLIOS',
       closeFund: () => s.fund ? this.back({ fund: null }) : this.back({ bstep: Math.max(0, bs - 1) }),
-      cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : 'THEME', count: f.n + ' ASSETS', hold, stats },
+      cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : f.kind === 'MINE' ? 'YOUR BASKET' : 'THEME', count: f.n + ' ASSETS', hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
       posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? '$' + fmt(own.val) : '50 USDT',
@@ -522,7 +527,7 @@ class Component extends DCLogic {
       freqNote: 'Starting ' + startText + '. ' + FREQ[s.freq] + ' after that, we trim what grew and add to what fell, so your basket stays at these weights.',
       buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: 'app/cover-mag7.webp' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
-      closeModal: () => this.back({ modal: false }),
+      closeModal: () => s.step === 'done' && s.target && s.target.mix ? this.setState({ modal: false, bstep: 0 }) : this.back({ modal: false }),
       sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount' }) : s.step === 'amount' ? this.back({ modal: false }) : null,
       sheetLeftLabel: s.step === 'review' ? 'Back' : s.step === 'amount' ? 'Cancel' : '',
       modalTitle: s.step === 'amount' ? (sell ? 'Sell ' : '') + tgt.name : s.step === 'review' ? (sell ? 'Review sale' : 'Review') : '',
@@ -550,7 +555,7 @@ class Component extends DCLogic {
       alloc: allocSrc.map(([n, v, cv], i, a) => { const p = Math.max(1, Math.round(v / totalVal * 100)); return { n, pct: p, lo: p >= 9 ? 1 : 0, vt: '$' + fmt(v), bg: SH[Math.min(i, SH.length - 1)], fg: i < 3 ? '#fff' : '#0B0F14', ring: i >= 3 ? 'inset 0 0 0 1px #D6DCE2' : 'none', sep: i < a.length - 1 ? '1px solid #EEF0F2' : '0' }; }),
       ptabs: pills(['Holdings', 'Activity'], s.ptab, i => this.setState({ ptab: i })),
       showHold: s.ptab === 0, showAct: s.ptab === 1,
-      holdings: s.holdings.map((h, i) => ({ ...h, val: '$' + fmt(h.val), sub: Math.max(1, Math.round(h.val / totalVal * 100)) + '% of portfolio' + (h.ret === 0 ? ' · just bought' : h.id ? '' : ' · your basket'), ret: h.ret === 0 ? 'NEW' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', spark: spark(i + 9, h.ret || 1), open: () => h.id ? this.open(h.id) : this.go('build') })),
+      holdings: s.holdings.map((h, i) => ({ ...h, val: '$' + fmt(h.val), sub: Math.max(1, Math.round(h.val / totalVal * 100)) + '% of portfolio' + (h.ret === 0 ? ' · just bought' : h.id ? '' : ' · your basket'), ret: h.ret === 0 ? 'NEW' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', spark: spark(i + 9, h.ret || 1), open: () => this.open(h.id) })),
       cashText: '$' + fmt(s.cash),
       activity: [['+', 'Bought AI Chips', 'Today · 10:42', '−500.00', '#16854F', '#0B0F14'], ['↻', 'My mix rebalanced', 'Yesterday · back to your weights', '', '#2F6690', '#0B0F14'], ['%', 'Interest on cash', 'Nov 19', '+1.86', '#16854F', '#16854F'], ['↓', 'Added USDT', 'Nov 18', '+3,000.00', '#3C4651', '#16854F'], ['+', 'Bought Pelosi Portfolio', 'Nov 18', '−1,000.00', '#16854F', '#0B0F14']].map(([g, t, d, v, fg, vc], i, a) => ({ g, t, d, v, fg, vc, sep: sepL(i, a) })),
       openAcct: () => this.setState({ acct: true }), closeAcct: () => this.back({ acct: false }),
