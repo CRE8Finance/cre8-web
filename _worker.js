@@ -59,7 +59,9 @@ function withHeaders(res, path, noindex) {
   const h = new Headers(res.headers);
   h.set('strict-transport-security', 'max-age=31536000; includeSubDomains');
   if (noindex) h.set('x-robots-tag', 'noindex, nofollow');
-  if (/\.(webp|jpe?g|png|svg|ico|js|css|woff2?)$/i.test(path) && res.ok) h.set('cache-control', 'public, max-age=86400, stale-while-revalidate=604800');
+  // 圖片與字型快取一天；CSS／JS 改版較常，只快取 5 分鐘（背景再驗證一天），改版很快就生效。
+  if (/\.(webp|jpe?g|png|svg|ico|woff2?)$/i.test(path) && res.ok) h.set('cache-control', 'public, max-age=86400, stale-while-revalidate=604800');
+  else if (/\.(js|css)$/i.test(path) && res.ok) h.set('cache-control', 'public, max-age=300, stale-while-revalidate=86400');
   return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
 }
 
