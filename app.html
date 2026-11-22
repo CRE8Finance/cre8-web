@@ -144,7 +144,7 @@
 <sc-for list="{{ cur.stats }}" as="st" hint-placeholder-count="6"><div style="background:#FFFFFF;padding:14px 14px 13px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ st.k }}</div><div style="font:400 19px 'Geist';letter-spacing:-.02em;margin-top:6px;color:{{ st.c }}">{{ st.v }}</div></div></sc-for>
 </div>
 
-<sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ t.earnExtra }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div><button onClick="{{ fundSeDt }}" style="margin-top:6px;border:0;background:transparent;font:500 13px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ dtLabel }}</button></div><sc-if value="{{ seReopenBtn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ seReopenGo }}" style="flex:none;height:32px;padding:0 14px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 13px 'Geist';cursor:pointer;white-space:nowrap">{{ seReopenLabel }}</button></sc-if><sc-if value="{{ seToggleShow }}" hint-placeholder-val="{{ true }}"><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="{{ t.earnExtra }}" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seFundCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></sc-if></div></sc-if>
+<sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ t.earnExtra }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div><button onClick="{{ fundSeDt }}" style="margin-top:6px;border:0;background:transparent;font:500 13px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ dtLabel }}</button></div><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="{{ t.earnExtra }}" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seFundCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;flex-direction:column;gap:10px">
 <sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 4px"><span style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ posLabel }}</span><span style="font:400 18px 'Geist';letter-spacing:-.02em">{{ posVal }}</span></div></sc-if>
 <button onClick="{{ openBuy }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">{{ t.buy }}</button>
@@ -555,8 +555,7 @@ class Component extends DCLogic {
     // Earn（docs/EARN_UX.zh-TW.md）。vaults＝GET /earn/vaults 的列表（null＝載入中，'unavailable'＝讀不到）；
     // earnAcct＝GET /me/earn（錢包可用與現金生息部位，跟投組分開）；seMk＝GET /strategy-earn/markets 依代號 { NVDA: { open, bps } }；
     // seP＝每個投組 GET /portfolios/:id/strategy-earn（淨值＝抵押＋vault－負債）。se＝買入確認卡的開關（預設關）。
-    seReopen: (() => { try { return JSON.parse(localStorage.getItem('cre8.seReopen') || '{}') || {}; } catch (_) { return {}; } })(),
-    ern: false, vaults: null, earnAcct: null, earnHad: (() => { try { return localStorage.getItem('cre8.earnHad') === '1'; } catch (_) { return false; } })(), seMk: null, seP: {}, se: false,
+        ern: false, vaults: null, earnAcct: null, earnHad: (() => { try { return localStorage.getItem('cre8.earnHad') === '1'; } catch (_) { return false; } })(), seMk: null, seP: {}, se: false,
     lang: LANG,
   };
   timers = [];
@@ -739,6 +738,8 @@ class Component extends DCLogic {
     const names = this.holdingNames();
     const rows = [];
     await Promise.all(this.state.pf.map(p => W.activity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), state: a.state, usd: a.usdAfterE8 != null ? Number(a.usdAfterE8) / 1e8 : null }))).catch(() => {})));
+    // 加息的事件（backend#204 帳本）：減倉、收掉、領獎、開啟、賣出前還款。自建組合沒有（回錯誤就略過）。
+    if (W.strategyActivity) await Promise.all(this.state.pf.map(p => W.strategyActivity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), se: a.kind, asset: a.asset ? String(a.asset).replace(/B$/, '') : null, amount: a.amountRaw != null ? Number(a.amountRaw) / 1e18 : null }))).catch(() => {})));
     (this.state.smx || []).forEach(m => (m.events || []).forEach(e => rows.push({ at: e.at, name: m.name, kind: e.kind })));
     rows.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
     this.setState({ acts: rows.slice(0, 50) });
@@ -757,7 +758,6 @@ class Component extends DCLogic {
     const v = list[i]; if (this.state.target && this.state.target.vaultId === v.id) return;
     this.setState({ wheelLive: i, target: { id: 'earn:' + v.id, vaultId: v.id, name: v.name, apy: v.apyBps / 100, cover: 'app/l-usdt.png' } });
   }
-  setReopen(pid, syms) { this.setState(x => { const m = { ...(x.seReopen || {}) }; if (syms) m[pid] = syms; else delete m[pid]; try { localStorage.setItem('cre8.seReopen', JSON.stringify(m)); } catch (_) {} return { seReopen: m }; }); }
   // 現金生息中的總額（USDT）；讀不到算 0（畫面另外顯示「暫時無法使用」）。
   earnTotal(s) { const a = s.earnAcct; return a && a.status === 'ok' && a.cashEarn && a.cashEarn.earningRaw != null ? Number(a.cashEarn.earningRaw) / 1e18 : 0; }
   // 一檔基金的策略加息（%/年）＝Σ 權重 × 該資產的 extraApyBps（只算有開放市場的資產）。槓桿與自建組合沒有（回 null）。
@@ -844,9 +844,9 @@ class Component extends DCLogic {
     const mixes = this.mixesOf(s);
     return (s.pf || []).map(p => {
       const fund = FUNDS.find(x => x.id === bySid[p.strategyId]), m = mixes.find(x => x.portfolioId === p.id || x.strategyId === p.strategyId);
-      // 價值＝帳戶裡的持倉（/status）＋策略加息部位的淨值（抵押＋vault－負債，netValueUsd 1e18）。借出的 USDT 不算現金。
+      // 淨值＝投組總值（/status，已含抵押中的股票）＋earnNetUsd（vault－負債，1e18，可為負）。不加 netValueUsd（含抵押品，會重複算）。
       const st = s.pst[p.id], se = s.seP[p.id], seOn = se && se.positions ? se.positions.filter(x => x.status === 'on') : [];
-      const seNet = seOn.reduce((a, x) => a + (x.netValueUsd != null ? Number(x.netValueUsd) / 1e18 : 0), 0);
+      const seNet = se && se.earnNetUsd != null ? Number(se.earnNetUsd) / 1e18 : 0;
       return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || tr('Portfolio', '组合')), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd + seNet : null, loading: !st || !se, ret: m && m.ret != null ? m.ret : null, seOn, seUnknown: !!(se && se.status === 'unavailable') };
     }).filter(h => h.loading || h.val >= 0.01 || h.val == null);
   }
@@ -895,7 +895,6 @@ class Component extends DCLogic {
       if (s.side === 'se-on') {
         const r = await W.strategyOpen({ portfolioId: t.pid, assets: t.syms, onStep });
         if (!r.opened.length) throw new Error(tr('Your order hasn’t filled yet. Try again after it fills.', '还没成交，成交后再开启。'));
-        this.setReopen(t.pid, null);
         return this.finish({ seOn: true });
       }
       if (s.side === 'se-off') { await W.strategyClose({ portfolioId: t.pid, onStep }); return this.finish({ seOff: true }); }
@@ -903,14 +902,8 @@ class Component extends DCLogic {
         const h = this.holdingsOf(s).find(x => x.id === t.id);
         if (!h) throw new Error(tr('You don’t hold this portfolio.', '你没有持有这个组合。'));
         const all = (parseFloat(amt) || 0) >= Math.floor((h.val || 0) * 100) / 100;
-        // 開著加息：先還款、取回抵押，再走原本的賣出（backend#204 做完後改由系統自動處理）。
-        if (h.seOn.length) await W.strategyClose({ portfolioId: h.pid, onStep });
+        // 開著加息也直接賣：後端會先還款、取回股票再賣（backend#204），剩下的部位維持加息。
         const r = await W.sell({ portfolioId: h.pid, usd: parseFloat(amt) || 0, all, onStep });
-        // 賣掉一部分：剩下的部位自動重開加息（backend#204 做完後由系統處理）。失敗只記下來，基金頁顯示「重新開啟」。
-        if (h.seOn.length && !all) {
-          const syms = h.seOn.map(x => x.asset);
-          try { await W.strategyOpen({ portfolioId: h.pid, assets: syms, onStep }); this.setReopen(h.pid, null); } catch (_) { this.setReopen(h.pid, syms); }
-        }
         return this.finish({ sold: true, sent: Number(r.sentUsdt), note: r.note });
       }
       if (t.mix) {
@@ -931,14 +924,10 @@ class Component extends DCLogic {
       }
       const LV = s.live && s.live[t.id], D = s.det[t.id];
       if (!LV) throw new Error(tr('This portfolio isn’t available right now.', '这个组合暂时买不了。'));
+      // 確認卡開了加息（backend#204）：同意的 calls 跟買入同一次簽名；美股還沒成交也一樣，成交後由系統自動開。
       const se = s.se ? this.seInfo(s, t.id) : null;
-      const r = await W.buy({ strategyId: LV.sid, onchainId: LV.onchainId, shown: D && D.version ? { version: D.version, configHash: D.configHash } : null, amount: amt, pay: s.payFaucet ? 'faucet' : 'wallet', onStep });
-      // 確認卡開了加息：買完接著開（帳戶裡已有那些資產才開得了）。美股還沒成交就先不開，請用戶成交後在基金頁打開。
-      let seNote = null;
-      if (se && se.rate != null && r.portfolioId != null && !r.pending) {
-        try { const o = await W.strategyOpen({ portfolioId: r.portfolioId, assets: se.syms, onStep }); if (!o.opened.length) seNote = tr('Turn on Earn extra from the portfolio page once your order fills.', '成交后到组合页打开加息。'); }
-        catch (e) { seNote = tr('Earn extra didn’t turn on: ', '加息没开启：') + (e && e.message ? e.message : e) + tr(' You can turn it on from the portfolio page.', '可以到组合页再打开。'); }
-      }
+      const r = await W.buy({ strategyId: LV.sid, onchainId: LV.onchainId, shown: D && D.version ? { version: D.version, configHash: D.configHash } : null, amount: amt, pay: s.payFaucet ? 'faucet' : 'wallet', earnExtra: !!(se && se.rate != null), onStep });
+      const seNote = r.earnExtra === 'unavailable' ? tr('Earn extra didn’t turn on this time. You can turn it on from the portfolio page.', '这次加息没开启，可以到组合页再开。') : null;
       this.finish({ filled: r.filled, pending: r.pending, amount: Number(r.amountUsdt), note: [r.note, seNote].filter(Boolean).join(' ') || null });
     } catch (e) { this.fail(e); }
   }
@@ -1261,17 +1250,14 @@ class Component extends DCLogic {
       // 基金頁一行：開著＝「開啟中 · ~x% · 已賺 y USDT」，可以關；關著＝每年多賺約多少，可以開。
       ...(() => {
         const h = own, on = !!(h && h.seOn && h.seOn.length);
-        // 賣掉一部分後自動重開失敗（seReopen）：顯示「重新開啟」一顆按鈕，不用開關。
-        const reopen = !on && h ? (s0.seReopen || {})[h.pid] : null;
-        const show = !!h && !!fSE && (on || fSE.state === 'ok' || !!reopen);
-        // 已賺＝vault 裡的 USDT－負債（利差累積）＋待領激勵（USDT）。
-        const earned = on ? Math.max(0, h.seOn.reduce((a, x) => a + (Number(x.vaultAssetsRaw || 0) - Number(x.debtRaw || 0) + Number(x.pendingRewardsRaw || 0)) / 1e18, 0)) : 0;
+        const show = !!h && !!fSE && (on || fSE.state === 'ok');
+        // 已賺（估）＝earnNetUsd（vault－負債，利差累積）＋待領激勵（USDT）；backend#209 給正式欄位後改讀。
+        const earned = on ? Math.max(0, h.seOn.reduce((a, x) => a + (Number(x.earnNetUsd != null ? x.earnNetUsd : Number(x.vaultAssetsRaw || 0) - Number(x.debtRaw || 0)) + Number(x.pendingRewardsRaw || 0)) / 1e18, 0)) : 0;
         const can = on || !!(h && fSE && fSE.rate != null && !h.loading);
         const run = (side, syms) => this.setState({ modal: true, side, step: 'proc', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (fSE ? fSE.syms : []) } }, () => this.confirm());
         return {
-          seRow: show, seReopenBtn: !!reopen, seToggleShow: !reopen, seReopenLabel: tr('Turn back on', '重新开启'),
-          seReopenGo: () => run('se-on', reopen),
-          seLine: reopen ? tr('Paused after your sale', '卖出后加息已暂停') : on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : fSE && fSE.rate != null ? tr('+' + fSE.rate.toFixed(1) + '% a year', '年化 +' + fSE.rate.toFixed(1) + '%') : tr('Temporarily unavailable', '暂时无法使用'),
+          seRow: show,
+          seLine: on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : fSE && fSE.rate != null ? tr('+' + fSE.rate.toFixed(1) + '% a year', '年化 +' + fSE.rate.toFixed(1) + '%') : tr('Temporarily unavailable', '暂时无法使用'),
           seFundOn: on, seFundBg: on ? '#16854F' : can ? '#C3CAD1' : '#EDF0F3', seFundJust: on ? 'flex-end' : 'flex-start', seFundCur: can ? 'pointer' : 'default',
           seFundToggle: () => can && run(on ? 'se-off' : 'se-on'),
         };
@@ -1281,6 +1267,10 @@ class Component extends DCLogic {
         // 中文：交易回合的狀態與 My mix 事件（後端 mix_*）換成中文；認不出來的寫「组合有更新」。
         const zhState = { executed: '已成交', confirmed: '已成交', succeeded: '已成交', pending: '处理中', submitted: '已提交', failed: '失败', reverted: '链上回滚', noop: '无需交易', unknown: '结果待确认', cancelled: '已取消' }[a.state] || '状态更新';
         const zhKind = { mix_enrolled: '组合已启动', mix_allocation_changed: '比例已修改', mix_rebalanced: '已调仓', mix_exit_triggered: '开始卖出', mix_exit_stuck: '卖出卡住了', mix_cover: '封面已更新' }[a.kind] || '组合有更新';
+        // 加息事件：一句人話（不出現抵押、借款比例等術語）。
+        if (a.se) { const T = a.asset || tr('your shares', '持仓'), n = a.amount != null ? fmt(a.amount) : '';
+          const SE = { open: [tr('Earn extra turned on', '加息已开启'), ''], deleverage: [tr(T + ' fell, so we repaid ' + n + ' USDT to stay safe', T + ' 下跌，已自动还款 ' + n + ' USDT 保安全'), ''], unwind: [tr('Earn extra wasn’t worth it, so we settled it', '加息暂时不划算，已自动结清'), ''], repay: [tr('Settled Earn extra before selling', '卖出前已先结清加息'), ''], close: [tr('Earn extra turned off · shares back', '加息已关闭，股票已回到组合'), ''], claim: [tr('Earn rewards received', '收到加息奖励'), '+' + n + ' USDT'] }[a.se] || [tr('Earn extra updated', '加息有更新'), ''];
+          return ['%', a.name, when + ' · ' + SE[0], SE[1], a.se === 'deleverage' ? '#A8791F' : '#16854F', a.se === 'claim' ? '#16854F' : '#0B0F14']; }
         if (LANG === 'zh') return a.kind ? ['↻', a.name, when + ' · ' + zhKind, '', '#2F6690', '#0B0F14'] : [ok ? '↻' : '·', a.name, when + ' · ' + zhState, a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14'];
         return a.kind ? ['↻', a.name, when + ' · ' + String(a.kind).replace(/_/g, ' '), '', '#2F6690', '#0B0F14'] : [ok ? '↻' : '·', a.name + (ok ? ' traded' : ''), when + ' · ' + String(a.state).replace(/_/g, ' '), a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14']; }).map(([g, t, d, v, fg, vc], i, a) => ({ g, t, d, v, fg, vc, sep: sepL(i, a) })),
       actNote: s0.acts === null ? tr('Loading…', '加载中…') : s0.acts.length === 0 ? tr('No activity yet.', '还没有记录。') : null,

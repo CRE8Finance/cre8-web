@@ -21,11 +21,13 @@ import {
   getPortfolioActivity,
   getPortfolioStatus,
   getPortfolios,
+  getRenewalParams,
   postBuyFunding,
   postFaucetUsdt,
   postFundingLot,
   postGasFaucet,
   postRebalance,
+  postRenewalResult,
   postWaitlistJoin,
   postWaitlistRedeem,
   prepareEnrollment,
@@ -38,7 +40,7 @@ import { assertShownVersion, waitForAccountCode, waitForPreparation } from './li
 import { firstEnrollCalls } from './lib/atp-contracts';
 import { ensureOwnerGas } from './lib/testnet-wallet-buy';
 import { retryWhileBusy } from './lib/portfolio-busy';
-import { sendInBatches } from './lib/approval-batches';
+import { APPROVALS_PER_USEROP, sendInBatches } from './lib/approval-batches';
 import { faucetFailure, faucetSuccess, needsDailyFaucet } from './lib/faucet';
 import { MAX_SELL_BATCHES, afterSellRun, runSellBatches, SellBatchError } from './lib/sell-batches';
 import { cashUsdOf, sellTargetUsd, totalUsdOf } from './lib/withdraw-plan';
@@ -381,10 +383,14 @@ async function ensurePortfolio(args: { token: string; wallet: RenewalWallet; str
 const apiPrepare = (t: string, strategyId: number) => prepareEnrollment(t, strategyId);
 
 /** 投入後：沒授權過的資產一次 approve 給 executor（owner 簽），然後請後端跑一輪配置。美股收盤時不會成交，排程會在開盤後買。 */
-async function allocate(args: { token: string; wallet: RenewalWallet; account: Address; strategyId: number; portfolioId: number; step: Step }) {
+type SudoCall = { to: Address; data: Hex; value: bigint };
+async function allocate(args: { token: string; wallet: RenewalWallet; account: Address; strategyId: number; portfolioId: number; step: Step; extra?: SudoCall[] }) {
   const fresh = await getPortfolioStatus(args.token, args.portfolioId).catch(() => null);
   const executor = fresh?.executorAddress as Address | null | undefined;
   const universe = fresh?.drift?.assets ?? [];
+  // 策略加息的同意 calls（`extra`）接在授權後面，同一個 UserOp 一起簽；超過代付上限（32 個 call）才分開送。
+  let extra = args.extra ?? [], earnSent = false;
+  const send = (calls: SudoCall[]) => sendSudoCalls({ wallet: args.wallet, token: args.token, accountAddress: args.account, strategyId: args.strategyId, calls });
   if (executor && universe.length > 0) {
     const missing = (await Promise.all(universe.map(async (row) => {
       const allowance = await readOnlyClient().readContract({ address: row.asset as Address, abi: erc20Abi, functionName: 'allowance', args: [args.account, executor] }).catch(() => 0n);
@@ -392,20 +398,30 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
     }))).filter((row) => row !== null);
     if (missing.length > 0) {
       args.step(L('Approve in your wallet so we can buy the assets', '在钱包里授权，才能买入资产'));
-      await sendInBatches(missing, (batch) => sendSudoCalls({
-        wallet: args.wallet, token: args.token, accountAddress: args.account, strategyId: args.strategyId,
-        calls: batch.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n })),
-      }));
+      const approvals = missing.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n }));
+      let together = false;
+      if (extra.length > 0 && approvals.length + extra.length <= APPROVALS_PER_USEROP) {
+        // 合在一起失敗（例如加息那段被拒）時，不讓買入卡住：退回只送授權，加息這次不開。
+        try { together = (await send([...approvals, ...extra])).success; } catch { together = false; }
+        if (together) { earnSent = true; extra = []; } else extra = [];
+      }
+      if (!together) {
+        await sendInBatches(missing, (batch) => send(batch.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n }))));
+      }
     }
+  }
+  if (extra.length > 0) {
+    args.step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
+    try { earnSent = (await send(extra)).success; } catch { earnSent = false; }
   }
   args.step(L('Placing your order', '正在下单'));
   try {
     const round = await postRebalance(args.token, args.portfolioId);
-    if (round.outcome === 'executed') return { filled: true, note: null, txHash: round.txHash };
+    if (round.outcome === 'executed') return { filled: true, note: null, txHash: round.txHash, earnSent };
     const f = explainTradeFailure(round);
-    return { filled: false, note: f.kind === 'nothing-to-do' ? null : tradeNote(f), txHash: null };
+    return { filled: false, note: f.kind === 'nothing-to-do' ? null : tradeNote(f), txHash: null, earnSent };
   } catch (cause) {
-    return { filled: false, note: isZh() ? zhMessage((cause as Error).message, '下单没成功，资金已在你的组合账户里，稍后会自动买入。') : (cause as Error).message, txHash: null };
+    return { filled: false, note: isZh() ? zhMessage((cause as Error).message, '下单没成功，资金已在你的组合账户里，稍后会自动买入。') : (cause as Error).message, txHash: null, earnSent };
   }
 }
 
@@ -414,7 +430,7 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
  * 回 `{ filled }`：true＝這一輪就成交；false＝錢已進帳戶、等排程成交（美股開盤時段）。`pending`＝測試 USDT 還在路上。
  */
 export const buy = localized(buyRaw, '买入没完成，再试一次。');
-async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { version: number; configHash: string } | null; amount?: string; pay: 'wallet' | 'faucet'; onStep?: Step }) {
+async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { version: number; configHash: string } | null; amount?: string; pay: 'wallet' | 'faucet'; earnExtra?: boolean; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet, owner } = need();
   const busy = { onBusy: () => step(L('Setting up your account', '正在开通账户')) };
@@ -460,8 +476,25 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
       amountWei = BigInt(body.amountWei ?? parseUnits('1000', 18));
     }
   }
-  const result = await allocate({ token: t, wallet, account, strategyId: portfolio.strategyId, portfolioId: portfolio.id, step });
-  return { ...result, pending: false, portfolioId: portfolio.id, amountUsdt: formatUnits(amountWei, 18) };
+  // 確認卡打開了加息（backend#204）：拿這次投入的同意 calls，接在買入的 UserOp 後一起簽；session key 還沒有加息權限就連 renewal 一起裝。
+  // 美股還沒成交也沒關係：同意之後由排程在成交後自動抵押、借款。拿不到 calls 不擋買入，只回 earnExtra: 'unavailable'。
+  let extra: SudoCall[] = [], renewal: Awaited<ReturnType<typeof getRenewalParams>> | null = null, earnExtra: 'on' | 'unavailable' | null = null;
+  if (args.earnExtra) {
+    try {
+      const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${portfolio.id}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: amountWei.toString() } });
+      if (a.status === 'ready' && a.calls?.length) {
+        if (a.authorization === 'renewal_required') renewal = await getRenewalParams(t, portfolio.id);
+        extra = [...(renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []), ...a.calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
+      } else earnExtra = 'unavailable';
+    } catch { earnExtra = 'unavailable'; }
+  }
+  const result = await allocate({ token: t, wallet, account, strategyId: portfolio.strategyId, portfolioId: portfolio.id, step, extra });
+  if (extra.length > 0 && !result.earnSent) earnExtra = 'unavailable';
+  if (result.earnSent) {
+    earnExtra = 'on';
+    if (renewal) await postRenewalResult(t, portfolio.id, { keyRef: renewal.keyRef, permissionId: renewal.permissionId, validUntil: renewal.validUntil, policySnapshot: renewal.policySnapshot }).catch(() => undefined);
+  }
+  return { ...result, pending: false, portfolioId: portfolio.id, amountUsdt: formatUnits(amountWei, 18), earnExtra };
 }
 
 // ---- 賣 --------------------------------------------------------------------------------------
@@ -673,6 +706,9 @@ type StrategyPosition = { asset: string; status: 'on' | 'off' | 'unavailable' };
 /** 策略加息：這一檔的部位（`GET /portfolios/:id/strategy-earn`）；淨值＝抵押＋vault－負債，跟現金分開。 */
 export const strategyEarn = (portfolioId: number) => earnApi<unknown>(`/portfolios/${portfolioId}/strategy-earn`);
 
+/** 加息的活動紀錄（`GET /portfolios/:id/strategy-earn/activity`，新到舊）：減倉、收掉、領獎、開啟、還款。 */
+export const strategyActivity = (portfolioId: number) => earnApi<unknown>(`/portfolios/${portfolioId}/strategy-earn/activity`);
+
 /** 一檔投組的帳戶：`GET /portfolios` 找出 Kernel 帳戶與策略 id（簽 UserOp 用）。 */
 async function portfolioAccount(t: string, portfolioId: number) {
   const holding = (await getPortfolios(t)).find((p) => p.id === portfolioId);
@@ -737,7 +773,7 @@ export { transferCalldata };
 (window as unknown as { CRE8W: unknown }).CRE8W = {
   mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, chain,
-  earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose,
+  earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
   /** 頁面換語言後呼叫：重推一次快照，讓錯誤訊息換成新語言。 */
   relang: () => { if (mounted) emit(); },
 };
