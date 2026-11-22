@@ -49,5 +49,22 @@ Cloudflare Worker `cre8-web` (`wrangler.jsonc`, `_worker.js`). Run `npx wrangler
 - `cre8.finance`, `www.cre8.finance` → `index.html`; content pages serve `<path>/index.html`, unknown paths 301 to `/`
 - `tst.cre8.finance` → `app.html`
 - `waitlist.html` is left out (`.assetsignore`).
+- `/api/*` on `tst.cre8.finance` and `localhost` is forwarded to the testnet backend (Railway `website` service, see `API_ORIGIN` in `_worker.js`). The landing domain doesn't forward it.
+
+## Testnet data in `app.html`
+
+The app reads live data from the backend through `/api` (same origin, so no CORS):
+
+- Discover cards: APY is `modelReturns.annualized` from `GET /api/strategies`.
+- Portfolio page: the chart is the model NAV (`modelNav`) from `GET /api/strategies/:id`; holdings and weights come from the active version; volatility and max drawdown are computed from the NAV.
+
+`python3 -m http.server` doesn't run the worker, so `/api` won't work there. To try it locally run the worker:
+
+```sh
+npx wrangler dev --port 5241 --local-upstream localhost:5241
+# open http://localhost:5241/app.html
+```
+
+(`--local-upstream localhost` makes the worker see a local host; without it wrangler uses the first route, `cre8.finance`, and you get the landing page.)
 
 The 21 portfolios in `app.html` follow the launch lineup on tst (catalog keys, holdings and weights from `/api/strategies`, English copy from cre8-app `src/lib/fund-copy.ts`). The APY shown is the backend's `modelReturns.annualized` as of 2026-11-20.

@@ -350,6 +350,34 @@ const MIX_FREQ_TEXT = ['every day', 'every week', 'every month', 'every quarter'
 const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, m.cover || 'app/cover-cre8.png', m.ret, m.picks.length, m.picks, 'Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + '.'), freqLabel: FREQ_LABEL[m.freq] }; };
 const CRYPTO = new Set(['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC']);
 const ASSETS = ['AAPL', 'ABBV', 'ALAB', 'AMAT', 'AMC', 'AMD', 'AMZN', 'ANT', 'APH', 'APLD', 'AVGO', 'AXP', 'BABA', 'BE', 'BLK', 'BMNR', 'BNC', 'CBRS', 'CEG', 'CIEN', 'COHR', 'COIN', 'CORZ', 'CRCL', 'CRDO', 'CRM', 'CRWV', 'CVX', 'CYPH', 'DJT', 'GEV', 'GME', 'GOOG', 'GOOGL', 'GPRO', 'HOOD', 'INTC', 'IREN', 'KO', 'LLY', 'MA', 'META', 'MRNA', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NEM', 'NFLX', 'NOK', 'NVDA', 'ORCL', 'PANW', 'PDD', 'PENG', 'PYPL', 'RDDT', 'SHAZ', 'SKHY', 'SNDK', 'SPCX', 'STX', 'TSLA', 'TSM', 'UBER', 'V', 'VRT', 'VST', 'EWY', 'GLD', 'IEF', 'IVV', 'QQQ', 'SGOV', 'SPY', 'TLT', 'SOXL', 'TQQQ', 'XAUT', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC'];
+// ---- 測試網真資料（BSC testnet 97，經 /api 轉到後端） ---------------------------------------------
+// 代號 → 代幣地址（cre8-app `src/lib/testnet-97.ts`，來源 cre8-contracts deployments/testnet-97.json @cbc671d）。
+// 後端的持股、My mix 都用地址；畫面用代號。
+const ADDR = { AAPL:'0xe74be2091540ebae4a045d8313952b5da0a4f076', AAVE:'0xe1058ec3999a770e3ffae507e154761753e63dbe', ABBV:'0x5a5c59f17574157958badb349bf5d28c379ddbe1', ADA:'0x867cd6bb9e2627a03814e202b11759fdf955d172', ALAB:'0x961d5542671d2e8d3bec7af13f19c385aaa486df', AMAT:'0xc510de52596ca9854e476306def86a8c53545183', AMC:'0x4aaf0123b58892d1fb6b5fec38a9bf778049b94a', AMD:'0x8a50b09be476697e11e826bdc22d31ce9d7f2d5b', AMZN:'0x0c0013994c9927656238cbfcf0c5d15c30222df9', ANT:'0x4d6c73bc22f83074aba8601d919cfea744899798', APH:'0xc8193cdfa83acdedef06fc5d402651ce03e063d7', APLD:'0xee8de9fa8da8c5d72ee5405ade1db95312440721', ATOM:'0x5db3b368e2fb73f87a889d1faefb9ee1ae363eeb', AVAX:'0x5117576756fcbab8f96d8a4ec8968dadeb3a9092', AVGO:'0xe6f77231bba44aa3bb86cfb8a1cb5f0d2a14d68b', AXP:'0xe438f13e4b63356259559af5852c2aa2185130ec', BABA:'0x169cc77a8cea0f375ff20f324dcf4c5cd64dad1e', BCH:'0x3f2905ce60d4f01e62d7feefa4aff977bc377c90', BE:'0xe5dac8758c0207481ca306e86692f57d5e13f8ab', BLK:'0xccbb02fd8f8f588adfb26cf7f95b82e70a57a934', BMNR:'0xd416e9e9699a0150d2a5b3aa8dbd416058bdbc7e', BNC:'0x4b761cafbdaba93d23e1e7fe07b2fad5a6106713', BTC:'0x2bacaad9ebc8a2827689f7abbffcbfcbe63c70c1', CAKE:'0x8e074498dff76847f0cb6790d0aec1295e2d80de', CBRS:'0xd55babce7b68ed90e9ca61abbea1bc6553cc7c70', CEG:'0xb7969da31c0a6241d3004c3f734fefb897fcb924', CIEN:'0x9184d33424e330f95bca1e40109797aa08417438', COHR:'0xb2eb9b1b88ba8264b131c3529f559b26af272b7d', COIN:'0x585173422c84d80481fd260cdc20e68dfd7099d7', CORZ:'0x76bd5c8d5bbbb4067298253c8cc3f2db21d58854', CRCL:'0x5eb65e289a8a49d37aba782a380aa33f886787d2', CRDO:'0xe7f69457b587183b8ddc06c5b42a2d20b46e1987', CRM:'0x1f32b7d0c62e09ad55b97ca6aa62383c8c968cf5', CRWV:'0x89d58dd2468711c82310047d86f39d4ea58951ed', CVX:'0xcc6414c038011a60f4537e948d5ec201a81e2280', CYPH:'0x7584deddeabd63ebe33a641b4dbb81ca41e8a603', DJT:'0xbf69ed967c8f9b3fb7e2bb81ffe38a16c12620d9', DOGE:'0xccf96d9561e93af8a1c24d9b23c4091f2299dfa5', DOT:'0xb68d847d182e4568ff4620ff3023ecd8c9b99506', ETH:'0x6a42bf6ad662aa00de6d00a3da448f4b20b95f3b', EWY:'0x4b56eeb8188de1a1694b9079b22f18dd95e3872d', FIL:'0xcba5d83434b978b860dd7e0f1e16eefd16840c2e', GEV:'0x4ff5ab0cb11f34993638515a3b9a028df51f42dd', GLD:'0x7db43d35c2189dd02eb8c7447d870b4fe9b5abfb', GME:'0x7036c9bcb891291d5ba68c70536b99dcb6d529de', GOOGL:'0x779b65299f72836bb2b6704fc4dd440bb8a44bc6', GOOG:'0x08f7a7cb550775b82b481d8587477273e867ed9c', GPRO:'0x8bb9b683bba797c4393c2d4ac6408dff7369bc3d', HOOD:'0x47bb06f7cbf4916c2e5e7de7ea7c679d54a3e469', IEF:'0x17d654ff3a60dc796a98a35a0c2eacc572c30dc3', INTC:'0x10245cc0e9d01055943efef39020cf8567171f03', IREN:'0x8024d2cb004914c391a9dc2bb6da230ca4179d52', IVV:'0x7eb69c0d3326adc83b8e8068ae05700c2d030b01', KO:'0xf329154ab96244f117248a7c3cf82a7a5effb3b6', LINK:'0x723e405f4e2437e250355541fefc24bf4ce44740', LLY:'0x703f2f23959d1b79f4a858bc84c7845dcbc17eaf', LTC:'0xe2bd04b678f547ff82cf630ad502ab46720a6e6d', MA:'0x49dd99a62646140ce0b68732b6a2953b95e296ef', META:'0xd19fd9f3702c25bd8c71f638d90b93986af011c2', MRNA:'0x58aa989f7deceb57a9f36bb5245d070bd3f0e357', MRVL:'0x53fab7d8a7c53403c2cc315499d19320911c4da7', MSFT:'0x728537c8b32bddfc41fb8c82049c0157778aa584', MSTR:'0x4a77cda9a91376a6d6e0f69f807335e0dab8fc5f', MU:'0x1b3b4d9d5008b048632ff4a5b7ec995e605d8a92', NBIS:'0x2c4158fde426b3d3c7381b4272727cb6504aa184', NEAR:'0x230400b7fa9ae881d40b79476cc956cc4e979993', NEM:'0xadbaa06290cdd1661b1acf0f573ac7bae1477923', NFLX:'0x11980583d92fd8d1e1c97f29a2677bce1fd47d64', NOK:'0x9635b105852d3e38050a9a32dbf5545719c85343', NVDA:'0x5d63b93e50ef9f8851e1de71d8255c2f0beab397', ORCL:'0x290ed74a4b81507341100db493d323972aa32596', PANW:'0xbb5d4c0f2315a2fed7533f5a671c793ec83de837', PDD:'0x73d9908eded64f0b6674164269bf61fe7f2279e8', PENG:'0x854798edf972e627908e8c98e5ff69588fe8e644', PEPE:'0x935f9257683d15f694a47b9036bff7faaec85a99', PYPL:'0x11a9001eb0a46da74b1ffd99d0e7bf3a34d7447b', QQQ:'0x6a8be9e4f52925a6dba021bcb8728891a3777d3e', RDDT:'0xbd7d0075c8a4a1f2335461bb5b04f983a8b56932', SGOV:'0xdd4b48b8d50a93daabc78e923e3364d4305d9714', SHAZ:'0x83156ead0cc7043f30a52518c78a2a1c2c31f8b5', SHIB:'0x127c1a2532fcf935058eac9d04fcf6f7825e139a', SKHY:'0x2ca74a25cc86ef38b0d34e8e479c799695d323c5', SNDK:'0xe0135453761a1ee81cac538581674fab3232afcc', SOL:'0x16d201d507dfd0f459662bb2c3d061784c2264ed', SOXL:'0xd54d97fc8861a8dbb0f59ff1b79492c270159595', SPCX:'0xe7020b7e3adadd3e701a704817b52917c0cc6ce2', SPY:'0xee59f124652b4d9beaf15d58f84e638be541592e', STX:'0x0b26efddf3b0c7b4cd7bd0739c73dd05ce3613da', TLT:'0x4082047eaccd3c993c078f2586ae5c6b92d16012', TON:'0x74e4a11a24cd0fe978c984a59d2a7079f8c2e3ef', TQQQ:'0xb82d787d3cebaa1d8410c262fb062c31076816f8', TRX:'0xe3148b7ab627c5ea9e1d3e3808d888ac44b643d4', TSLA:'0x587cb8fe057344490a28390c7986e1beff5ad36e', TSM:'0x5790eb27bece957f098fa8191b3cc6bc4850157f', UBER:'0xd135e14ca3d2784f6145f16b0909541ec9582931', UNI:'0x38d82ca0b87815a1740b200771df30ed3b10d9b8', V:'0x5d9b5eece54660ee028ce2fccc9e7ee4986d1b58', VRT:'0x981977a27e3193f1699f9882ca02a8f50c00684c', VST:'0xc480848007322be7ae4bb0f1b1073e49218029c8', BNB:'0xbe3f4c2e58e74fbce8e1c5e9360d7abe85aec0f7', XAUT:'0x75d1d411afe409f8cd56446b2e9f4a0b8e8a4d4c', XRP:'0x37aca01e7cae39a0acaf2d240d5466eaed1d7901', ZEC:'0x93afb889a7a8fec56a160d3605892f0e0751bb73' };
+const USDT_ADDR = '0x7ad6e310b0f6744b66d97cb7cb525bd974501cb5';
+const TICKER = Object.fromEntries(Object.entries(ADDR).map(([t, a]) => [a, t]));
+// 後端 API（同源 /api，由 _worker.js 轉發）。錯誤丟 { status, code, message }。登入後的 token 由 wallet bundle 提供。
+async function api(path, { method = 'GET', body, token, headers = {} } = {}) {
+  const h = { accept: 'application/json', ...headers };
+  if (body !== undefined) h['content-type'] = 'application/json';
+  if (token) h.authorization = 'Bearer ' + token;
+  const res = await fetch('/api' + path, { method, headers: h, body: body === undefined ? undefined : JSON.stringify(body) });
+  const text = await res.text(); let data = null; try { data = text ? JSON.parse(text) : null; } catch (_) {}
+  if (!res.ok) { const e = new Error((data && data.error && data.error.message) || ('HTTP ' + res.status)); e.status = res.status; e.code = data && data.error && data.error.code; throw e; }
+  return data;
+}
+// 模型淨值（日線）→ 指定天數的區間；ALL 是全部。
+const navRange = (nav, days) => { if (!nav || nav.length < 2) return null; if (days >= 730) return nav; const end = Date.parse(nav[nav.length - 1].date), from = end - days * 864e5; const r = nav.filter(p => Date.parse(p.date) >= from); return r.length >= 2 ? r : nav.slice(-2); };
+// 年化波動（日報酬標準差 × √365，資料是日曆日）與最大回撤（全期）。
+function navStats(nav) {
+  if (!nav || nav.length < 3) return null;
+  const v = navRange(nav, 365).map(p => p.value), r = v.slice(1).map((x, i) => x / v[i] - 1), m = r.reduce((a, b) => a + b, 0) / r.length;
+  const vol = Math.sqrt(r.reduce((a, b) => a + (b - m) ** 2, 0) / (r.length - 1) * 365) * 100;
+  let peak = -Infinity, mdd = 0; nav.forEach(p => { peak = Math.max(peak, p.value); mdd = Math.min(mdd, p.value / peak - 1); });
+  return { vol, mdd: mdd * 100 };
+}
+const fmtDate = (iso, withYear) => { const d = new Date(iso + 'T00:00:00'); return MON[d.getMonth()] + ' ' + d.getDate() + (withYear ? ', ' + d.getFullYear() : ''); };
+const REBAL_LABEL = { monthly_drift: 'Monthly', weekly_drift: 'Weekly', daily_drift: 'Daily', quarterly_drift: 'Quarterly' };
 const AVC = ['linear-gradient(135deg,#6F93AE,#16222D)', 'linear-gradient(135deg,#E3B55B,#9A6B1E)', 'linear-gradient(135deg,#7FB59A,#1F5A41)', 'linear-gradient(135deg,#B9A2D6,#4B3A6E)', 'linear-gradient(135deg,#3C4651,#0B0F14)'];
 const RANGES = [['1W', .03, 7, 36, 'past week'], ['1M', .1, 30, 60, 'past month'], ['3M', .28, 90, 90, 'past 3 months'], ['1Y', 1, 365, 120, 'past year'], ['ALL', 1.7, 730, 140, 'since launch']];
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -375,6 +403,7 @@ class Component extends DCLogic {
   state = {
     page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
+    live: null, det: {}, // 測試網真資料：live＝/strategies 列表（依 catalogKey），det＝/strategies/:id（淨值、持股）
     picks: [], weights: {}, bcat: 0, q: '', bstep: 0, editing: null, freq: 2, start: null, calOff: 0, mixName: '', mixCover: null, cash: 2380, acct: false, ptab: 0, emailLinked: false, pname: 'Jooe', photo: null, avc: 0,
     // 用戶自己建的組合：點進去是跟基金一樣的專屬頁。
     mixes: [{ id: 'mix-1', name: 'My mix', picks: [['NVDA', 40], ['AAPL', 30], ['BTC', 30]], freq: 2, start: new Date(2026, 10, 1).getTime(), ret: -2.1 }],
@@ -396,8 +425,30 @@ class Component extends DCLogic {
       const y = e.state.y || 0; requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, y)));
     };
     addEventListener('popstate', this.onPop);
+    this.loadFunds();
   }
-  componentDidUpdate() { this.syncNav(); }
+  componentDidUpdate() { this.syncNav(); if (this.state.fund) this.loadDetail(this.state.fund); }
+  // 基金列表：APY＝後端 modelReturns.annualized（模型淨值頭尾年化），最低金額＝minDepositUsdtWei。
+  async loadFunds() {
+    try {
+      const d = await api('/strategies?limit=100'), live = {};
+      (d.items || []).forEach(x => { if (x.catalogKey) live[x.catalogKey] = { sid: x.id, onchainId: x.onchainId, apy: x.modelReturns && x.modelReturns.annualized != null ? Number(x.modelReturns.annualized) : null, min: x.minDepositUsdtWei ? Number(x.minDepositUsdtWei) / 1e18 : 50 }; });
+      this.setState({ live, liveErr: null });
+    } catch (e) { this.setState({ liveErr: e.message }); }
+  }
+  // 基金頁：模型淨值日線（畫走勢）、目前生效版本的持股與權重。
+  async loadDetail(key) {
+    const L = this.state.live && this.state.live[key];
+    if (!L || this.state.det[key] || (this.detLoading || {})[key]) return;
+    this.detLoading = { ...(this.detLoading || {}), [key]: true };
+    try {
+      const d = await api('/strategies/' + L.sid);
+      const vs = d.versions || [], ver = vs.find(v => v.status === 'active') || vs[vs.length - 1];
+      const hold = ver ? ver.allocation.assets.filter(a => a.weightBps > 0 && a.address.toLowerCase() !== USDT_ADDR).sort((a, b) => b.weightBps - a.weightBps).map(a => [TICKER[a.address.toLowerCase()] || a.address.slice(0, 6), Math.round(a.weightBps) / 100]) : null;
+      const nav = (d.modelNav || []).map(p => ({ date: p.date, value: Number(p.value) })).filter(p => p.value > 0);
+      this.setState(st => ({ det: { ...st.det, [key]: { nav, hold, stats: navStats(nav), rebal: ver && ver.execution && REBAL_LABEL[ver.execution.rebalance], version: ver && ver.version, configHash: ver && ver.configHash } } }));
+    } catch (e) { this.detLoading[key] = false; }
+  }
   componentWillUnmount() { this.timers.forEach(clearTimeout); removeEventListener('resize', this.onRs); removeEventListener('popstate', this.onPop); }
   navOf(s) { return { page: s.page, fund: s.fund, modal: !!s.modal, acct: !!s.acct, bstep: s.bstep }; }
   syncNav() {
@@ -497,6 +548,14 @@ class Component extends DCLogic {
       this.later(() => this.setState({ doneSc: 1 }), 40);
     }, 1600);
   }
+  // 真的淨值走勢：R[2] 是天數。沒有資料（載入中）畫一條平線、數字顯示 —。
+  navChart(nav, R, hover, W, H) {
+    const pts = navRange(nav, R[2]);
+    if (!pts) return { c: { p: 'M0,' + (H / 2) + ' L' + W + ',' + (H / 2), area: '', baseY: H / 2, hx: 0, hy: 50, ho: 0 }, v: { pctBig: '—', col: '#6B7785', when: R[4] }, n: 2 };
+    const vals = pts.map(p => p.value), sh = shape(vals, W, H), n = vals.length, i = hover == null ? n - 1 : Math.min(hover, n - 1);
+    const chg = vals[i] / vals[0] - 1;
+    return { c: { p: sh.p, area: sh.area, baseY: sh.ys[0].toFixed(1), hx: (i / (n - 1) * 100).toFixed(2), hy: (sh.ys[i] / H * 100).toFixed(2), ho: hover == null ? 0 : 1 }, v: { pctBig: pct(chg * 100), col: chg >= 0 ? '#16854F' : '#D23F2E', when: hover == null ? R[4] : fmtDate(pts[i].date, R[2] > 90) }, n };
+  }
   chart(seed, ret, R, hover, endVal, W, H) {
     const vals = series(seed, ret, R[3], 1.4), sh = shape(vals, W, H), n = vals.length;
     const scale = endVal / vals[n - 1], i = hover == null ? n - 1 : hover;
@@ -512,21 +571,28 @@ class Component extends DCLogic {
     const cta = { bg: '#E3B55B', fg: '#0B0F14', sh: 'inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)' };
     const off = { bg: '#EDF0F3', fg: '#9AA4AE', sh: 'none' };
     const sepL = (i, a) => i < a.length - 1 ? '1px solid #E6E9ED' : '0';
-    const card = f => ({ ...f, retText: pct(f.ret), col: f.ret >= 0 ? '#16854F' : '#D23F2E', pcol: f.ret >= 0 ? '#8BE3B5' : '#FF9B8F', spark: spark(FUNDS.indexOf(f) + 2, f.ret), open: () => this.open(f.id) });
+    // APY：有後端的數字就用（modelReturns.annualized）；列表還沒回來時先用 FUNDS 裡 2026-11-20 從同一個 API 抄的值。
+    const apyOf = f => s.live && s.live[f.id] && s.live[f.id].apy != null ? s.live[f.id].apy : f.ret;
+    const card = f => { const r = apyOf(f); return { ...f, retText: pct(r), col: r >= 0 ? '#16854F' : '#D23F2E', pcol: r >= 0 ? '#8BE3B5' : '#FF9B8F', spark: spark(FUNDS.indexOf(f) + 2, r), open: () => this.open(f.id) }; };
     const qq = s.q.trim().toLowerCase();
     const shownAssets = qq ? ASSETS.filter(t => t.toLowerCase().includes(qq) || (NAMES[t] || '').toLowerCase().includes(qq)) : ASSETS.filter(t => CRYPTO.has(t) === (s.bcat === 1));
     const FIL = [['All', null], ['People', 'people'], ['AI', 'ai'], ['Crypto', 'crypto'], ['Markets', 'markets'], ['Leveraged', 'leveraged']];
     const fcat = FIL[s.filter][1];
     const people = FUNDS.filter(f => f.kind === 'PEOPLE');
     const themes = FUNDS.filter(f => f.kind === 'THEME' && (!fcat || f.cat === fcat));
-    const f = FUNDS.find(x => x.id === s.fund) || s.mixes.map(mixFund).find(x => x.id === s.fund) || FUNDS[0];
+    const f0 = FUNDS.find(x => x.id === s.fund) || s.mixes.map(mixFund).find(x => x.id === s.fund) || FUNDS[0];
+    const D = s.det[f0.id], LV = s.live && s.live[f0.id];
+    // 基金：持股與權重用後端目前生效的版本、APY 用後端的；My mix 還是原型資料（待接 /me/mixes）。
+    const f = f0.kind === 'MINE' ? f0 : { ...f0, ret: apyOf(f0), ...(D && D.hold && D.hold.length ? { hold: D.hold, n: D.hold.length } : {}) };
     const R = RANGES[s.range], nav = 10 * (1 + f.ret * 1.7 / 100);
-    const fch = this.chart(FUNDS.indexOf(f) * 3 + s.range + 5, f.ret * R[1], R, s.fh, nav, 600, 190);
+    const fch = f.kind === 'MINE' ? this.chart(FUNDS.indexOf(f) * 3 + s.range + 5, f.ret * R[1], R, s.fh, nav, 600, 190) : this.navChart(D && D.nav, R, s.fh, 600, 190);
     const shown = f.hold.reduce((a, h) => a + h[1], 0);
     const hold = f.hold.map(([t, w]) => ({ t, w, bar: w, name: NAMES[t], logo: LOGO(t) }));
     if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: 'Rest of the basket', logo: 'app/l-usdt.png' });
     hold.forEach((h, i, a) => h.sep = sepL(i, a));
-    const stats = [['APY', pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], ['EXTRA YIELD', '+~2%', '#A8791F'], ['VOLATILITY', (11 + Math.abs(f.ret) * .28).toFixed(1) + '%', '#0B0F14'], ['MAX DRAWDOWN', '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', f.freqLabel || 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
+    // 波動與最大回撤由模型淨值算（navStats）；載入中顯示 —。EXTRA YIELD 待接後端的現金生息 APY（還沒有端點，先保留原本的字）。
+    const NS = D && D.stats, mineStat = f.kind === 'MINE';
+    const stats = [['APY', pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], ['EXTRA YIELD', '+~2%', '#A8791F'], ['VOLATILITY', mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], ['MAX DRAWDOWN', mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', f.freqLabel || (D && D.rebal) || 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
@@ -583,7 +649,7 @@ class Component extends DCLogic {
       cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : f.kind === 'MINE' ? 'YOUR BASKET' : 'THEME', count: f.n + ' ASSETS', hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
-      posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? '$' + fmt(own.val) : '50 USDT',
+      posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? '$' + fmt(own.val) : (LV ? LV.min : 50) + ' USDT',
       isMix: f.kind === 'MINE', notMix: f.kind !== 'MINE',
       editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, mixCover: m.cover || null, q: '', calOff: 0 }); window.scrollTo(0, 0); },
       openBuy: () => this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', target: { id: f.id, name: f.name, cover: f.cover } }),
