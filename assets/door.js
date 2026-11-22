@@ -21,19 +21,19 @@
   function draw() {
     ticking = false;
     const r = el.sec.getBoundingClientRect();
-    const p = clamp(-r.top / (r.height - vh));
+    const p = clamp(-r.top / span());
     const s1 = (vh * .78) / (DOOR.h * H);           // 大門約佔畫面八成高
     const a = ease(seg(p, 0, .32));                   // 走到門前
     const o = ease(seg(p, .26, .56));                 // 開門
     const t = easeIn(seg(p, .5, .76));                // 穿過門
-    const scale = (1 + (s1 - 1) * a) * (1 + 11 * t);
+    const scale = (1 + (s1 - 1) * a) * (1 + 6 * t);
     const dy = (vh / 2 - ((vh - H) / 2 + DOOR.cy * H)) * Math.max(a, t ? 1 : 0);
     el.stage.style.transform = `translate3d(0,${dy}px,0) scale(${scale})`;
-    el.stage.style.opacity = p > .8 ? 0 : 1;
+    el.stage.style.opacity = p > .78 ? 0 : 1;        // 在全白時才換場，不會閃
     el.l.style.transform = `rotateY(${-82 * o}deg)`;  // 往內推開
     el.r.style.transform = `rotateY(${82 * o}deg)`;
     el.glow.style.opacity = clamp(.35 + o * .65);
-    const w1 = seg(p, .6, .76), w2 = seg(p, .78, .9);
+    const w1 = seg(p, .6, .76), w2 = seg(p, .8, .92);
     el.white.style.opacity = w1 * (1 - w2);
     el.hall.style.transform = `scale(${1.18 - .18 * ease(seg(p, .6, 1))})`;
     const c = ease(seg(p, .86, .98));
@@ -57,7 +57,9 @@
     fromAbove = scrollY < end() - 2;
   }
   let fromAbove = true, lastWheel = 0, freezing = false;
-  const end = () => el.sec.offsetTop + el.sec.offsetHeight - vh;
+  // 區塊 460vh：前 300vh 是動畫，後 60vh 畫面不動，卡住時多滑出去的那一點看不出來。
+  const span = () => (el.sec.offsetHeight - vh) * 300 / 360;
+  const end = () => el.sec.offsetTop + span();
   function gate() {
     const e = end();
     if (!fromAbove || scrollY <= e) return;
