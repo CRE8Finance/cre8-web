@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CRE8 | 用 USDT 买美股与加密投资组合</title>
-<meta name="description" content="用 USDT 一次买齐一篮子美股代币（bStock）和加密资产。跟踪佩洛西、特朗普、马斯克，或自建组合，资产放在你自己的链上账户。现在是测试网。">
+<title>CRE8 | 让你的组合，不再闲着</title>
+<meta name="description" content="用 USDT 一键买入美股代币和加密资产组合：跟投佩洛西、特朗普、马斯克，也能自己配。闲置 USDT 可以生息，资产放在你自己的链上钱包。现已上线测试网。">
 <link rel="canonical" href="https://cre8.finance/zh">
 <link rel="alternate" hreflang="en" href="https://cre8.finance/">
 <link rel="alternate" hreflang="zh-Hans" href="https://cre8.finance/zh">
@@ -16,86 +16,428 @@
 <meta property="og:site_name" content="CRE8">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:url" content="https://cre8.finance/zh">
-<meta property="og:title" content="CRE8 | 用 USDT 买美股与加密投资组合">
-<meta property="og:description" content="用 USDT 一次买齐一篮子美股代币（bStock）和加密资产。跟踪佩洛西、特朗普、马斯克，或自建组合，资产放在你自己的链上账户。现在是测试网。">
+<meta property="og:title" content="CRE8 | 让你的组合，不再闲着">
+<meta property="og:description" content="用 USDT 一键买入美股代币和加密资产组合：跟投佩洛西、特朗普、马斯克，也能自己配。闲置 USDT 可以生息，资产放在你自己的链上钱包。现已上线测试网。">
 <meta property="og:image" content="https://cre8.finance/assets/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="CRE8：让你的组合，不再闲着">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@CRE8Finance">
-<meta name="twitter:title" content="CRE8 | 用 USDT 买美股与加密投资组合">
-<meta name="twitter:description" content="用 USDT 一次买齐一篮子美股代币（bStock）和加密资产。跟踪佩洛西、特朗普、马斯克，或自建组合，资产放在你自己的链上账户。现在是测试网。">
+<meta name="twitter:title" content="CRE8 | 让你的组合，不再闲着">
+<meta name="twitter:description" content="用 USDT 一键买入美股代币和加密资产组合：跟投佩洛西、特朗普、马斯克，也能自己配。闲置 USDT 可以生息，资产放在你自己的链上钱包。现已上线测试网。">
 <meta name="twitter:image" content="https://cre8.finance/assets/og.jpg">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"CRE8","url":"https://cre8.finance/","logo":"https://cre8.finance/assets/cre8-mark-512.png","sameAs":["https://x.com/CRE8Finance"]}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"CRE8","url":"https://cre8.finance/zh","inLanguage":"zh-Hans","description":"用 USDT 一次买齐一篮子美股代币（bStock）和加密资产。跟踪佩洛西、特朗普、马斯克，或自建组合，资产放在你自己的链上账户。现在是测试网。"}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"zh-Hans","mainEntity":[{"@type":"Question","name":"这是真钱吗？","acceptedAnswer":{"@type":"Answer","text":"还不是。CRE8 现在在 BNB Chain 测试网上，测试 USDT 免费。主网还没有定日期。"}},{"@type":"Question","name":"安全吗？","acceptedAnswer":{"@type":"Answer","text":"目前 CRE8 上的一切都不涉及真钱。你的组合放在你自己在 BNB Chain 上的智能账户里；CRE8 的自动化只能在账户内交易，把钱转出账户需要你本人签名。合约会在上主网前做外部审计。"}},{"@type":"Question","name":"谁保管我的股票？","acceptedAnswer":{"@type":"Answer","text":"你自己。它们以代币形式放在只有你能控制的链上账户里，不跟别人的钱混在一起。"}},{"@type":"Question","name":"怎么出金？","acceptedAnswer":{"@type":"Answer","text":"把组合的一部分或全部卖回 USDT，再把 USDT 提到任何 BNB Chain 地址。股票代币在美股开盘时才能卖出。"}},{"@type":"Question","name":"闲置的 USDT 怎么生息？","acceptedAnswer":{"@type":"Answer","text":"按 Earn，把闲置 USDT 存进白名单 USDT 金库（Lista、Venus、Aave），收益按市场利率，随时可以领出。买组合时也可以打开“加息”，用组合里的股票多赚一点；价格急跌时系统会自动卖掉一点来保持安全。你的现金和组合的钱永远分开。"}},{"@type":"Question","name":"跟自己在币安买 bStock 差在哪？","acceptedAnswer":{"@type":"Answer","text":"在币安你一次买一只股票，放在交易所账户里。CRE8 一笔付款买齐一整篮，按目标权重自动再平衡，资产放在你自己的链上账户。币安的股票更多、流动性更深，详细见完整对比。"}},{"@type":"Question","name":"美股休市时怎么办？","acceptedAnswer":{"@type":"Answer","text":"股票代币只在美股交易时段成交。休市时下的买单或卖单会在账户里等着，下一次开盘时成交。"}},{"@type":"Question","name":"最低要投多少？","acceptedAnswer":{"@type":"Answer","text":"每次 50 USDT。"}},{"@type":"Question","name":"费用多少？","acceptedAnswer":{"@type":"Answer","text":"测试网上免费，gas 也由 CRE8 支付。主网费用会在上线前公布。"}},{"@type":"Question","name":"谁可以用？","acceptedAnswer":{"@type":"Answer","text":"美国以外、当地规定允许的任何人。测试网期间登录需要邀请码。"}}]}</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"CRE8","url":"https://cre8.finance/","logo":"https://cre8.finance/assets/cre8-mark-512.png","sameAs":["https://x.com/CRE8Finance"]},{"@context":"https://schema.org","@type":"WebSite","name":"CRE8","url":"https://cre8.finance/zh","inLanguage":"zh-Hans","description":"用 USDT 一键买入美股代币和加密资产组合：跟投佩洛西、特朗普、马斯克，也能自己配。闲置 USDT 可以生息，资产放在你自己的链上钱包。现已上线测试网。"},{"@context":"https://schema.org","@type":"FAQPage","inLanguage":"zh-Hans","mainEntity":[{"@type":"Question","name":"现在用的是真钱吗？","acceptedAnswer":{"@type":"Answer","text":"还不是。CRE8 目前在 BNB Chain 测试网，测试 USDT 免费领，主网上线时间还没定。"}},{"@type":"Question","name":"安全吗？","acceptedAnswer":{"@type":"Answer","text":"目前 CRE8 上的一切都不涉及真钱。你的组合放在你自己的 BNB Chain 智能账户里，CRE8 的自动化只能在账户内交易，资产要转出必须你本人签名。上主网前，合约会经过第三方审计。"}},{"@type":"Question","name":"股票由谁托管？","acceptedAnswer":{"@type":"Answer","text":"你自己。股票以代币形式放在只有你能控制的链上账户里，不和任何人的资产混在一起。"}},{"@type":"Question","name":"怎么提现？","acceptedAnswer":{"@type":"Answer","text":"把组合部分或全部卖回 USDT，再提到任意 BNB Chain 地址就行。股票代币要在美股开盘时才能卖。"}},{"@type":"Question","name":"闲置 USDT 怎么生息？","acceptedAnswer":{"@type":"Answer","text":"点 Earn，把闲置 USDT 存进白名单里的 USDT 金库（Lista、Venus、Aave），按市场利率计息，随存随取。买组合时还可以打开“加息”，用组合里的股票多赚一点；价格急跌时系统会自动卖出一小部分，保证安全。你的现金和组合资金始终分开。"}},{"@type":"Question","name":"和直接在币安买 bStock 有什么区别？","acceptedAnswer":{"@type":"Answer","text":"在币安只能一只一只买，股票放在交易所账户里。CRE8 一笔钱买齐一整篮，自动调仓回目标比例，资产放在你自己的链上账户。当然，币安的股票更多、深度更好，详见完整对比。"}},{"@type":"Question","name":"美股休市时能买卖吗？","acceptedAnswer":{"@type":"Answer","text":"股票代币只在美股交易时段成交。休市期间下的买单或卖单会在账户里排队，下次开盘时成交。"}},{"@type":"Question","name":"最低投多少？","acceptedAnswer":{"@type":"Answer","text":"每笔 50 USDT 起投。"}},{"@type":"Question","name":"收费吗？","acceptedAnswer":{"@type":"Answer","text":"测试网全免费，gas 也由 CRE8 承担。主网费率会在上线前公布。"}},{"@type":"Question","name":"谁可以用？","acceptedAnswer":{"@type":"Answer","text":"美国以外、当地法规允许的用户都可以。测试网期间需要邀请码才能登录。"}}]}]</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="/assets/pages.css">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,400&display=swap">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="preload" as="script" href="/assets/vendor/react.production.min.js">
+<link rel="preload" as="script" href="/assets/vendor/react-dom.production.min.js">
+<script>window.__resources={"https://unpkg.com/react@18.3.1/umd/react.production.min.js":"/assets/vendor/react.production.min.js","https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js":"/assets/vendor/react-dom.production.min.js"};</script>
+<script src="/support.js" defer></script>
+<style>
+.door{position:relative;height:460vh;background:#0B0F14}
+.door-stick{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;background:#0B0F14}
+.door-hall{position:absolute;inset:0;background:#EDF0F3 url(/assets/bank-hall.webp) 50% 50%/cover no-repeat;will-change:transform}
+.door-hall:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(243,245,247,.72) 0%,rgba(243,245,247,.35) 45%,rgba(243,245,247,0) 75%),linear-gradient(0deg,rgba(243,245,247,.6) 0%,rgba(243,245,247,0) 45%)}
+.door-cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+.door-white{position:absolute;inset:0;background:#F3F5F7;opacity:0;pointer-events:none}
+.door-copy{position:absolute;left:0;right:0;bottom:0;padding:0 max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) clamp(28px,4vw,48px);opacity:0;padding-bottom:calc(clamp(28px,4vw,48px) + 100lvh - 100svh);color:#0B0F14;font-family:'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',-apple-system,system-ui,sans-serif}
+.door-copy h1{margin:0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(46px,5.8vw,84px);line-height:1;letter-spacing:-.045em;text-wrap:balance}
+.door-copy p{font:400 clamp(18px,1.4vw,20px)/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;margin:24px 0 0;color:#3C4651;text-wrap:pretty}
+.door-copy a{margin-top:40px;height:56px;padding:0 28px;border-radius:999px;display:inline-flex;align-items:center;gap:10px;background:#E3B55B;color:#0B0F14;text-decoration:none;font:500 17px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif}
+.door-copy a:hover{background:#EEC46E}
+.door-copy h1{font-size:clamp(42px,5.2vw,76px);line-height:1.18;letter-spacing:0}[style*="Switzer"]{letter-spacing:0!important}h2[style*="clamp(34px,3.6vw,52px)"],p[style*="clamp(34px,3.6vw,52px)"]{font-size:clamp(30px,3.2vw,46px)!important;line-height:1.28!important}h3[style*="clamp(28px,2.6vw,38px)"]{font-size:clamp(26px,2.4vw,34px)!important;line-height:1.28!important}h2[style*="clamp(46px,5.8vw,84px)"]{font-size:clamp(38px,5vw,72px)!important;line-height:1.18!important}[style*="Switzer"]{text-wrap:balance}p{text-wrap:pretty}p[style*="max-width:15em"]{max-width:19em!important}</style>
+<link rel="preload" as="image" href="/assets/bank-ext.webp">
+<script src="/assets/door.js" defer></script>
 <link rel="stylesheet" href="/assets/press.css">
 <script src="/assets/press.js" defer></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300&display=swap&text=%E3%80%82%E4%B8%80%E4%B8%89%E4%B8%8A%E4%B8%8D%E4%B8%AA%E4%B9%B0%E4%BA%A7%E4%BB%8E%E4%BB%93%E4%BB%AC%E4%BD%A0%E5%86%8D%E5%8C%85%E5%90%88%E5%90%91%E5%93%AA%E5%9C%A8%E5%A4%96%E5%B0%B1%E5%B7%B1%E5%B8%B8%E6%88%91%E6%89%8B%E6%8A%95%E6%8B%BF%E6%8C%91%E6%94%B6%E6%96%B9%E6%9D%A5%E6%AD%A5%E7%83%AD%E7%9A%84%E7%9B%8A%E7%9D%80%E7%AC%94%E7%AF%AE%E7%BB%84%E7%BE%8E%E8%82%A1%E8%83%BD%E8%87%AA%E8%A7%81%E8%AE%A9%E8%B0%83%E8%B5%84%E8%B5%B7%E8%BD%A6%E9%80%89%E9%87%8C%E9%92%B1%E9%97%A8%E9%97%AE%E9%97%B2%E9%A2%98%E9%A2%9D%E9%BD%90%EF%BC%8C" rel="stylesheet">
 </head>
 <body>
-<header class="site-head"><div class="site-head__bar">
-<a class="site-head__logo" href="/zh"><img src="/assets/cre8-logo-dark.svg" alt="CRE8" width="107" height="20"></a>
-<nav aria-label="主导航"><a href="/zh/portfolios">组合</a><a href="/zh/how-it-works">怎么运作</a><a href="/zh/compare">对比</a></nav>
-<div class="site-head__right"><a class="site-head__lang" href="/" hreflang="en" lang="en">EN</a><a class="btn btn--gold btn--sm" href="https://cre8.finance/waitlist">加入等候名单 <span aria-hidden="true">→</span></a></div>
-</div></header>
-<section class="home-hero wrap">
-<h1>美股与加密，<br>一篮子买齐</h1>
-<p class="lede">bStock 与加密资产组合，闲置资金也能生息。</p>
-<div class="actions"><a class="btn btn--gold" href="https://cre8.finance/waitlist">加入等候名单 <span aria-hidden="true">→</span></a><a class="btn btn--line" href="/zh/portfolios">全部组合</a></div>
-</section>
-<section class="dark-band wrap">
-<h2 style="text-align:center;max-width:22em;margin:0 auto">美股代币。你自己的账户。一次买齐。</h2>
-<div class="cards">
-<a class="card card--dark" href="/zh/portfolios#people"><h3>人物组合</h3><p>佩洛西、特朗普、马斯克、段永平</p></a>
-<a class="card card--dark" href="/zh/portfolios#themes"><h3>主题组合</h3><p>AI 芯片、Mag7、比特币</p></a>
-<a class="card card--dark" href="/zh/how-it-works"><h3>收益</h3><p>闲置 USDT 一键生息，随时领出</p></a>
-<a class="card card--dark" href="/zh/how-it-works"><h3>自托管</h3><p>资产在你自己的链上账户</p></a>
+<section class="door" id="door">
+<div class="door-stick" id="door-stick">
+<div class="door-hall" id="door-hall"></div>
+<canvas class="door-cv" id="door-cv"></canvas>
+<div class="door-white" id="door-white"></div>
+<div class="door-copy" id="door-copy">
+<h1>让你的组合，<br>不再闲着</h1>
+<p>bStock 美股代币和加密资产组合，闲置 USDT 也能生息。</p>
+<a href="/zh/waitlist"><span>加入等候名单</span><span>→</span></a>
+</div>
 </div>
 </section>
-<main class="wrap" style="padding-top:0">
-<section class="section" id="how">
-<h2>怎么运作</h2>
-<ol class="steps" style="margin-top:32px">
-<li><span>01 / 03</span><b>选一个想法</b><p>跟着佩洛西、特朗普或马斯克公开的东西走，押一个主题，或者自己建一篮。</p></li>
-<li><span>02 / 03</span><b>50 USDT 起</b><p>一笔付款帮你买齐篮子里的每个资产。</p></li>
-<li><span>03 / 03</span><b>持有</b><p>股票以 bStock 代币放在你自己的账户里，随时可以卖回 USDT。</p></li>
-</ol>
-<div class="stats"><div><b>4</b><span>个人物组合</span></div><div><b>17</b><span>个主题与杠杆组合</span></div><div><b>50</b><span>USDT 起投</span></div><div><b>100%</b><span>属于你，不混在一起</span></div></div>
-<p style="margin-top:28px"><a class="link" href="/zh/how-it-works">费用、出金、休市怎么办 →</a></p>
-</section>
-<section class="section" id="funds">
-<div class="section__head"><h2>热门组合</h2><a class="link" href="/zh/portfolios">全部 21 个组合 →</a></div>
-<div class="group"><h3 style="margin-bottom:12px">人物</h3><div class="fund-list"><a class="fund-row" href="/zh/portfolios/pelosi"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-pelosi.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">佩洛西持仓</span></span><span class="fund-row__r"><span class="pos">+24.3%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/zh/portfolios/trump"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-trump.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">特朗普持仓</span></span><span class="fund-row__r"><span class="pos">+8.9%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/zh/portfolios/duan"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-duan.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">段永平</span></span><span class="fund-row__r"><span class="pos">+6.1%</span><i aria-hidden="true">↗︎</i></span></a></div></div>
-<div class="group"><h3 style="margin-bottom:12px">主题</h3><div class="fund-list"><a class="fund-row" href="/zh/portfolios/ai-memory"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-aimem.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">AI 存储</span></span><span class="fund-row__r"><span class="pos">+231.8%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/zh/portfolios/korea-semiconductors"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-korea.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">韩国半导体</span></span><span class="fund-row__r"><span class="pos">+113.5%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/zh/portfolios/ai-chips"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-ai.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">AI 芯片</span></span><span class="fund-row__r"><span class="pos">+61.6%</span><i aria-hidden="true">↗︎</i></span></a><a class="fund-row" href="/zh/portfolios/bnb"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/p-bnb.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">BNB 生态</span></span><span class="fund-row__r"><span class="pos">+17.4%</span><i aria-hidden="true">↗︎</i></span></a></div></div>
-<p class="small muted" style="margin-top:16px">模型年化收益：用当前权重和历史价格回测，截至 2026年11月21日，不是实际战绩。</p>
-</section>
-<section class="section" id="build">
-<div class="cta" style="margin-top:0"><div class="eyebrow" style="color:#9AA7B4">自建组合</div><h2 style="margin-top:16px">你来选，我们来再平衡。</h2><p>挑股票和比例，CRE8 帮你维持在目标上。</p><div class="actions"><a class="btn btn--light" href="https://cre8.finance/waitlist">加入等候名单 <span aria-hidden="true">→</span></a></div></div>
-</section>
-<section class="section faq" id="faq">
-<h2>常见问题</h2>
-<div class="faq__list">
-<details><summary>这是真钱吗？<span aria-hidden="true">+</span></summary><p>还不是。CRE8 现在在 BNB Chain 测试网上，测试 USDT 免费。主网还没有定日期。</p></details>
-<details><summary>安全吗？<span aria-hidden="true">+</span></summary><p>目前 CRE8 上的一切都不涉及真钱。你的组合放在你自己在 BNB Chain 上的智能账户里；CRE8 的自动化只能在账户内交易，把钱转出账户需要你本人签名。合约会在上主网前做外部审计。</p></details>
-<details><summary>谁保管我的股票？<span aria-hidden="true">+</span></summary><p>你自己。它们以代币形式放在只有你能控制的链上账户里，不跟别人的钱混在一起。</p></details>
-<details><summary>怎么出金？<span aria-hidden="true">+</span></summary><p>把组合的一部分或全部卖回 USDT，再把 USDT 提到任何 BNB Chain 地址。股票代币在美股开盘时才能卖出。</p></details>
-<details><summary>闲置的 USDT 怎么生息？<span aria-hidden="true">+</span></summary><p>按 Earn，把闲置 USDT 存进白名单 USDT 金库（Lista、Venus、Aave），收益按市场利率，随时可以领出。买组合时也可以打开“加息”，用组合里的股票多赚一点；价格急跌时系统会自动卖掉一点来保持安全。你的现金和组合的钱永远分开。</p></details>
-<details><summary>跟自己在币安买 bStock 差在哪？<span aria-hidden="true">+</span></summary><p>在币安你一次买一只股票，放在交易所账户里。CRE8 一笔付款买齐一整篮，按目标权重自动再平衡，资产放在你自己的链上账户。币安的股票更多、流动性更深，详细见<a href="/zh/compare">完整对比</a>。</p></details>
-<details><summary>美股休市时怎么办？<span aria-hidden="true">+</span></summary><p>股票代币只在美股交易时段成交。休市时下的买单或卖单会在账户里等着，下一次开盘时成交。</p></details>
-<details><summary>最低要投多少？<span aria-hidden="true">+</span></summary><p>每次 50 USDT。</p></details>
-<details><summary>费用多少？<span aria-hidden="true">+</span></summary><p>测试网上免费，gas 也由 CRE8 支付。主网费用会在上线前公布。</p></details>
-<details><summary>谁可以用？<span aria-hidden="true">+</span></summary><p>美国以外、当地规定允许的任何人。测试网期间登录需要邀请码。</p></details>
+<x-dc>
+<helmet><script src="/image-slot.js"></script><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:#0B0F14;font-family:'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}a:hover{opacity:.85}summary{list-style:none;cursor:pointer}summary::-webkit-details-marker{display:none}details[open] .pm{transform:rotate(45deg)}@media (max-width:720px){.cre8-nav{display:none!important}.hero{min-height:100vh!important;min-height:100svh!important}}@media (max-width:960px){.hiw-grid{grid-template-columns:minmax(0,1fr)!important}.hiw-panel{display:none!important}.hiw-step{min-height:0!important;opacity:1!important;padding:48px 0 0!important}.hiw-art{display:block!important}}</style></helmet>
+
+<header style="position:fixed;top:14px;left:0;right:0;z-index:50;padding:0 16px;pointer-events:none">
+<div style="pointer-events:auto;position:relative;max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;height:56px;padding:0 8px 0 18px;background:rgba(255,255,255,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-radius:18px;box-shadow:0 1px 1px rgba(11,15,20,.03),0 8px 28px rgba(11,15,20,.08),0 0 0 1px rgba(11,15,20,.06)">
+
+<a href="#top" style="position:relative;flex:1;display:flex"><img src="/assets/cre8-logo-dark.svg" alt="CRE8" width="107" height="20" style="height:20px;display:block"></a>
+<nav class="cre8-nav" onMouseLeave="{{ hovOut }}" style="position:relative;display:flex;align-items:center;gap:4px">
+<span style="position:absolute;top:50%;left:0;height:38px;width:{{ hp.w }}px;transform:translate({{ hp.x }}px,-50%);opacity:{{ hp.o }};border-radius:999px;pointer-events:none;background:linear-gradient(160deg,rgba(255,255,255,.95) 0%,rgba(226,234,241,.55) 55%,rgba(255,255,255,.75) 100%);backdrop-filter:blur(10px) saturate(200%);-webkit-backdrop-filter:blur(10px) saturate(200%);box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(255,255,255,.6),inset 0 0 0 1px rgba(11,15,20,.07),inset 0 -6px 12px rgba(95,132,159,.10),0 2px 6px rgba(11,15,20,.08),0 8px 18px -6px rgba(11,15,20,.14);transition:transform .45s cubic-bezier(.34,1.4,.5,1),width .45s cubic-bezier(.34,1.4,.5,1),opacity .25s ease"></span>
+<a href="#top" onMouseEnter="{{ hovIn }}" style="position:relative;padding:10px 14px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:{{ cH }};transition:color .25s" style-hover="opacity:1">首页</a>
+<div onMouseEnter="{{ openP }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+<button onClick="{{ toggleP }}" style="position:relative;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;padding:10px 14px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:{{ cP }}">组合<span style="display:inline-block;font-size:10px;transform:rotate({{ rP }}deg);transition:transform .2s">▾</span></button>
+<sc-if value="{{ showP }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px"><div style="min-width:228px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 1px 2px rgba(11,15,20,.04),0 16px 40px rgba(11,15,20,.10),0 0 0 1px rgba(11,15,20,.06)"><a href="#funds" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">人物组合</a><a href="#funds" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">主题组合</a><a href="#build" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">自己配组合</a><a href="/zh/portfolios" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">全部组合</a><a href="#how" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">生息金库</a></div></div></sc-if>
+</div>
+<div onMouseEnter="{{ openR }}" onMouseLeave="{{ closeMenu }}" style="position:relative">
+<button onClick="{{ toggleR }}" style="position:relative;border:0;background:transparent;cursor:pointer;display:flex;align-items:center;gap:6px;padding:10px 14px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:{{ cR }}">了解更多<span style="display:inline-block;font-size:10px;transform:rotate({{ rR }}deg);transition:transform .2s">▾</span></button>
+<sc-if value="{{ showR }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;top:100%;left:50%;transform:translateX(-50%);padding-top:14px"><div style="min-width:228px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 1px 2px rgba(11,15,20,.04),0 16px 40px rgba(11,15,20,.10),0 0 0 1px rgba(11,15,20,.06)"><a href="/zh/how-it-works" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">使用指南</a><a href="/zh/compare" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">横向对比</a><a href="#faq" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">常见问题</a><a href="/" lang="en" style="display:block;padding:12px 16px;border-radius:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">English</a></div></div></sc-if>
+</div>
+</nav>
+<div style="position:relative;flex:1;display:flex;justify-content:flex-end;align-items:center;gap:4px"><a href="/" lang="en" hreflang="en" aria-label="English" style="padding:10px 12px;border-radius:999px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;color:#0B0F14;white-space:nowrap" style-hover="background:#F2F5F7;opacity:1">EN</a><a href="/zh/waitlist" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">加入等候名单 <span>→</span></a></div>
+</div>
+</header>
+
+
+
+<section style="background:#0B0F14;color:#fff;padding:clamp(88px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2))">
+<p style="margin:0 auto;max-width:15em;text-align:center;font:300 clamp(34px,3.6vw,52px)/1.1 'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;letter-spacing:-.045em;text-wrap:balance"><span style="white-space:nowrap">一笔买齐一篮美股，</span><span style="white-space:nowrap">资产在你自己钱包。</span></p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:12px;margin-top:clamp(64px,8vw,112px)">
+<a href="#funds" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden"><img src="/assets/people-funds.webp" alt="佩洛西、特朗普和马斯克" width="1200" height="900" loading="lazy" decoding="async" style="width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block"><div style="position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(0deg,#0E1318,rgba(14,19,24,0));pointer-events:none"></div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">人物组合</div><div style="font:400 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:4px">佩洛西、特朗普、马斯克</div></div><span style="font:300 22px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4">↗︎</span></div></a>
+<a href="#funds" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden;background:radial-gradient(80% 90% at 50% 100%,rgba(95,132,159,.28),transparent 70%);display:flex;align-items:center;justify-content:center;padding:16px"><div style="width:100%;max-width:260px;height:150px;display:flex;gap:3px;border-radius:6px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.5)">
+<div style="flex:24;background:#EEF3F7;color:#0B0F14;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:12px;font-weight:500"><span>NVDA</span><span style="opacity:.7">24%</span></div>
+<div style="flex:36;display:flex;flex-direction:column;gap:3px"><div style="flex:18;background:#9FC0D8;color:#0B0F14;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:12px;font-weight:500"><span>AVGO</span><span style="opacity:.7">18%</span></div><div style="flex:16;background:#6F93AE;color:#fff;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:12px;font-weight:500"><span>TSM</span><span style="opacity:.7">16%</span></div></div>
+<div style="flex:40;display:flex;flex-direction:column;gap:3px"><div style="flex:12;background:#4A6B85;color:#fff;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:12px;font-weight:500"><span>AMD</span><span style="opacity:.7">12%</span></div><div style="flex:10;background:#34506A;color:#fff;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:12px;font-weight:500"><span>ASML</span><span style="opacity:.7">10%</span></div><div style="flex:18;background:#22384C;color:#C7D2DC;padding:8px;min-width:0;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:12px;font-weight:500"><span>+7</span><span style="opacity:.7">18%</span></div></div>
+</div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">主题组合</div><div style="font:400 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:4px">AI 芯片、七巨头、比特币</div></div><span style="font:300 22px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4">↗︎</span></div></a>
+<a href="#how" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden;background:radial-gradient(80% 90% at 50% 100%,rgba(95,132,159,.28),transparent 70%);display:flex;align-items:center;justify-content:center;padding:16px"><div style="width:100%;max-width:260px;display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px"><span style="font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:11px;letter-spacing:.08em;color:#9AA7B4">闲置 USDT</span><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.04em;color:#D8F5E6;white-space:nowrap"><span style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#9AA7B4;margin-right:6px">最高</span>6%</span></div>
+<div style="height:70px;display:flex;align-items:flex-end;gap:4px;border-bottom:1px solid #2A333D"><div style="flex:1;height:22%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:28%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:34%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:38%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:46%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:52%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:58%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:66%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:74%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:82%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:90%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div><div style="flex:1;height:100%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.25));border-radius:2px 2px 0 0"></div></div>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:4px 12px"><span style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#9AA7B4">bStock 策略</span><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.04em;color:#D8F5E6;white-space:nowrap">+~2%</span></div>
+</div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">生息</div><div style="font:400 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:4px">闲置 USDT 按市场利率生息</div></div><span style="font:300 22px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4">↗︎</span></div></a>
+<a href="#custody" style="display:flex;flex-direction:column;border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#151C24,#0E1318);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 20px 40px -24px rgba(0,0,0,.6)" style-hover="border-color:#6F93AE;opacity:1"><div style="position:relative;aspect-ratio:4/3;min-height:200px;overflow:hidden;background:radial-gradient(80% 90% at 50% 100%,rgba(95,132,159,.28),transparent 70%);display:flex;align-items:center;justify-content:center;padding:16px"><div style="width:100%;max-width:250px;background:#fff;color:#0B0F14;border-radius:10px;padding:14px 16px;font:400 13px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';box-shadow:0 18px 40px rgba(0,0,0,.5)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:11px;color:#6B7785">0x7a3…e91c</span><span style="font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace;font-size:10px;padding:3px 7px;border-radius:10px;background:#E6F6EE;color:#1E8A5C">所有人：你</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #EEF0F3"><span style="font-weight:500">NVDA</span><span style="font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace">0.3214</span></div><div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #EEF0F3"><span style="font-weight:500">AVGO</span><span style="font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace">0.1902</span></div><div style="display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #EEF0F3"><span style="font-weight:500">TSM</span><span style="font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace">0.1871</span></div>
+</div></div><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:4px 20px 22px"><div style="min-width:0"><div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">自托管</div><div style="font:400 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:4px">资产只有你能转走</div></div><span style="font:300 22px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4">↗︎</span></div></a>
 </div>
 </section>
-<section class="cta"><h2>从 50 USDT 开始。</h2><p>现在是测试网，测试 USDT 免费，登录需要邀请码。</p><div class="actions"><a class="btn btn--light" href="https://cre8.finance/waitlist">加入等候名单 <span aria-hidden="true">→</span></a></div></section>
-</main>
-<footer class="site-foot wrap">
-<div class="site-foot__brand"><img src="/assets/cre8-logo-light.svg" alt="CRE8" width="129" height="24"><span>© 2026 CRE8</span></div>
-<nav aria-label="页脚"><a href="/zh/portfolios">全部组合</a><a href="/zh/portfolios/pelosi">佩洛西持仓</a><a href="/zh/portfolios/trump">特朗普持仓</a><a href="/zh/portfolios/ai-chips">AI 芯片</a><a href="/zh/portfolios/mag7">美股七巨头 Mag7</a><a href="/zh/how-it-works">怎么运作</a><a href="/zh/compare">对比</a><a href="/" lang="en">English</a><a href="https://tst.cre8.finance/">测试网应用</a><a href="https://x.com/CRE8Finance" rel="noopener">X</a></nav>
+
+<section id="how" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;scroll-margin-top:84px">
+<h2 style="margin:0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(34px,3.6vw,52px);letter-spacing:-.045em;line-height:1.05;margin-bottom:40px">三步上手</h2>
+<div class="hiw-grid" style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 24px;border-top:1px solid rgba(11,15,20,.1);align-items:start">
+<div class="hiw-panel" style="position:sticky;top:84px;height:calc(100vh - 100px);min-height:480px;background:radial-gradient(120% 100% at 50% 0%,#18212B,#0B0F14 70%);overflow:hidden;border-radius:24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)"><div style="position:absolute;inset:0;opacity:{{ L0.o }};transform:translateY({{ L0.y }}px) scale({{ L0.s }});transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);pointer-events:none"><div style="position:absolute;inset:0;display:flex;gap:2px"><div style="position:relative;flex:1 1 0;min-width:0;overflow:hidden"><div role="img" aria-label="佩洛西持仓封面" style="position:absolute;inset:0;background:#16222D url(/app/p-pelosi.jpg) 50% 22%/cover no-repeat"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.96) 0%,rgba(11,15,20,.35) 38%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:clamp(14px,1.6vw,22px);right:12px;bottom:64px;min-width:0"><div style="font:500 10px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.12em;color:#9FC0D8">人物</div><div style="font:400 clamp(17px,1.5vw,22px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em;color:#fff;margin-top:8px">佩洛西持仓</div><div data-apy="pelosi" style="font:400 13px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#C9D6E0;margin-top:10px">年化 +24.3%</div></div></div><div style="position:relative;flex:1 1 0;min-width:0;overflow:hidden"><div role="img" aria-label="AI 芯片封面" style="position:absolute;inset:0;background:#16222D url(/app/p-ai.jpg) 50% 22%/cover no-repeat"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.96) 0%,rgba(11,15,20,.35) 38%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:clamp(14px,1.6vw,22px);right:12px;bottom:64px;min-width:0"><div style="font:500 10px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.12em;color:#9FC0D8">主题</div><div style="font:400 clamp(17px,1.5vw,22px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em;color:#fff;margin-top:8px">AI 芯片</div><div data-apy="ai-chips" style="font:400 13px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#C9D6E0;margin-top:10px">年化 +61.6%</div></div></div><div style="position:relative;flex:1 1 0;min-width:0;overflow:hidden"><div role="img" aria-label="BNB 生态封面" style="position:absolute;inset:0;background:#16222D url(/app/p-bnb.jpg) 50% 22%/cover no-repeat"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.96) 0%,rgba(11,15,20,.35) 38%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:clamp(14px,1.6vw,22px);right:12px;bottom:64px;min-width:0"><div style="font:500 10px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.12em;color:#9FC0D8">主题</div><div style="font:400 clamp(17px,1.5vw,22px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em;color:#fff;margin-top:8px">BNB 生态</div><div data-apy="bnb" style="font:400 13px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#C9D6E0;margin-top:10px">年化 +17.4%</div></div></div></div></div><div style="position:absolute;inset:0;opacity:{{ L1.o }};transform:translateY({{ L1.y }}px) scale({{ L1.s }});transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);pointer-events:none"><div role="img" aria-label="用手机付 50 USDT" style="position:absolute;inset:0;background:#0B0F14 url(/assets/ws-b.webp) 50% 40%/cover no-repeat;filter:grayscale(.35) contrast(1.05)"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.97) 0%,rgba(11,15,20,.6) 45%,rgba(11,15,20,.25) 100%)"></div><div style="position:absolute;left:clamp(22px,3vw,40px);right:clamp(22px,3vw,40px);bottom:72px"><div style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.14em;color:#9FC0D8">一笔买齐</div><div style="font:300 clamp(56px,6.4vw,104px)/.95 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.05em;color:#F2F4F6;margin-top:16px">50 USDT</div></div></div><div style="position:absolute;inset:0;opacity:{{ L2.o }};transform:translateY({{ L2.y }}px) scale({{ L2.s }});transition:opacity .6s ease,transform .8s cubic-bezier(.16,1,.3,1);pointer-events:none"><div role="img" aria-label="组合放在你自己的钱包里" style="position:absolute;inset:0;background:#0B0F14 url(/assets/ws-d.webp) 50% 40%/cover no-repeat;filter:grayscale(.35) contrast(1.05)"></div><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.97) 0%,rgba(11,15,20,.6) 45%,rgba(11,15,20,.25) 100%)"></div><div style="position:absolute;left:clamp(22px,3vw,40px);right:clamp(22px,3vw,40px);bottom:72px"><div style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.14em;color:#9FC0D8">在你钱包里</div><div style="font:300 clamp(56px,6.4vw,104px)/.95 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.05em;color:#F2F4F6;margin-top:16px">100% 归你</div></div></div>
+<div style="position:absolute;left:24px;right:24px;bottom:24px;display:flex;gap:6px;z-index:3">
+<div style="flex:1;height:2px;background:{{ P0 }};transition:background .4s"></div><div style="flex:1;height:2px;background:{{ P1 }};transition:background .4s"></div><div style="flex:1;height:2px;background:{{ P2 }};transition:background .4s"></div>
+</div>
+</div>
+<div>
+<div class="hiw-step" ref="{{ stepRef0 }}" data-step="0" style="min-height:max(92vh,560px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,64px);opacity:{{ T0 }};transition:opacity .5s ease;scroll-margin-top:84px">
+<div class="hiw-art" aria-hidden="true" style="display:none;height:220px;margin-bottom:28px;border-radius:20px;overflow:hidden;background:#0B0F14"><div style="display:flex;gap:2px;height:100%"><div style="position:relative;flex:1 1 0;min-width:0;background:#16222D url(/app/p-pelosi.jpg) 50% 22%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.92) 0%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:10px;right:8px;bottom:12px;font:400 14px/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#fff">佩洛西持仓</div></div><div style="position:relative;flex:1 1 0;min-width:0;background:#16222D url(/app/p-ai.jpg) 50% 22%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.92) 0%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:10px;right:8px;bottom:12px;font:400 14px/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#fff">AI 芯片</div></div><div style="position:relative;flex:1 1 0;min-width:0;background:#16222D url(/app/p-btcplus.jpg) 50% 22%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.92) 0%,rgba(11,15,20,0) 60%)"></div><div style="position:absolute;left:10px;right:8px;bottom:12px;font:400 14px/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#fff">比特币加强版</div></div></div></div>
+<div style="font:400 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#4A5B6A">01 / 03</div>
+<h3 style="margin:20px 0 0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(28px,2.6vw,38px);line-height:1.08;letter-spacing:-.045em;max-width:10em">挑个方向</h3>
+<p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5563;margin:20px 0 0;max-width:26em">跟投佩洛西、特朗普、马斯克公开的持仓，押注 AI 芯片这类赛道，或者自己配一篮。</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));margin-top:36px;border-top:1px solid rgba(11,15,20,.08)"><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">4</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">个人物组合</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">17</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">个主题组合</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">自选</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">自己配，我们调仓</div></div></div>
+<div style="margin-top:40px"><a href="#funds" style="height:48px;padding:0 22px;background:#0B0F14;color:#fff;display:inline-flex;align-items:center;gap:10px;font:500 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)">看看有哪些组合 <span>↗︎</span></a></div>
+</div>
+<div class="hiw-step" ref="{{ stepRef1 }}" data-step="1" style="min-height:max(92vh,560px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,64px);opacity:{{ T1 }};transition:opacity .5s ease;scroll-margin-top:84px">
+<div class="hiw-art" aria-hidden="true" style="display:none;position:relative;height:220px;margin-bottom:28px;border-radius:20px;overflow:hidden;background:#0B0F14 url(/assets/ws-b.webp) 50% 40%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.95) 0%,rgba(11,15,20,.3) 100%)"></div><div style="position:absolute;left:20px;bottom:20px"><div style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.14em;color:#9FC0D8">一笔买齐</div><div style="font:300 56px/.95 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.05em;color:#F2F4F6;margin-top:10px;white-space:nowrap">50 USDT</div></div></div>
+<div style="font:400 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#4A5B6A">02 / 03</div>
+<h3 style="margin:20px 0 0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(28px,2.6vw,38px);line-height:1.08;letter-spacing:-.045em;max-width:10em">50 USDT 起投</h3>
+<p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5563;margin:20px 0 0;max-width:26em">付一笔钱，篮子里每只股票都帮你买好。</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));margin-top:36px;border-top:1px solid rgba(11,15,20,.08)"><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">50</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">USDT 起投</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">一键</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">买入整篮</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">市场利率</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">还没投出去的钱也在生息</div></div></div>
+<div style="margin-top:40px"><a href="/zh/waitlist" style="height:48px;padding:0 22px;background:#0B0F14;color:#fff;display:inline-flex;align-items:center;gap:10px;font:500 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)">加入等候名单 <span>→</span></a></div>
+</div>
+<div class="hiw-step" ref="{{ stepRef2 }}" data-step="2" id="custody" style="min-height:max(92vh,560px);display:flex;flex-direction:column;justify-content:center;padding:clamp(20px,4vw,64px);opacity:{{ T2 }};transition:opacity .5s ease;scroll-margin-top:84px">
+<div class="hiw-art" aria-hidden="true" style="display:none;position:relative;height:220px;margin-bottom:28px;border-radius:20px;overflow:hidden;background:#0B0F14 url(/assets/ws-d.webp) 50% 40%/cover no-repeat"><div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.95) 0%,rgba(11,15,20,.3) 100%)"></div><div style="position:absolute;left:20px;bottom:20px"><div style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.14em;color:#9FC0D8">在你钱包里</div><div style="font:300 56px/.95 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.05em;color:#F2F4F6;margin-top:10px;white-space:nowrap">100% 归你</div></div></div>
+<div style="font:400 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#4A5B6A">03 / 03</div>
+<h3 style="margin:20px 0 0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(28px,2.6vw,38px);line-height:1.08;letter-spacing:-.045em;max-width:10em">拿在自己手里</h3>
+<p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5563;margin:20px 0 0;max-width:26em">股票以 bStock 代币存在你自己的账户里，还能拿去生息：抵押借出 USDT，再存进 USDT 金库。</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,110px),1fr));margin-top:36px;border-top:1px solid rgba(11,15,20,.08)"><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">100%</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">归你，不和别人的混在一起</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">+~2%</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">bStock 策略额外年化</div></div><div style="padding:18px 16px 0 0"><div style="font:400 clamp(24px,2.2vw,32px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">随时</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#4A5B6A;margin-top:8px">卖回 USDT</div></div></div>
+<div style="margin-top:40px"><a href="/zh/waitlist" style="height:48px;padding:0 22px;background:#0B0F14;color:#fff;display:inline-flex;align-items:center;gap:10px;font:500 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)">加入等候名单 <span>→</span></a></div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="yield" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;scroll-margin-top:84px">
+<div style="border-radius:28px;overflow:hidden;background:#0E1318;padding:clamp(28px,4.5vw,64px);color:#EEF3F7">
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:32px 48px;align-items:end">
+<div>
+<div style="font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.14em;color:#9FC0D8">bStock 策略</div>
+<h2 style="margin:16px 0 0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(34px,3.6vw,52px);letter-spacing:-.045em;line-height:1.05;max-width:11em">额外收益从哪来</h2>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr));gap:24px 32px">
+<div style="padding-top:18px;border-top:1px solid rgba(255,255,255,.16)"><div style="font:300 clamp(40px,3.9vw,56px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.04em;color:#EEF3F7;white-space:nowrap">+~2%</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:12px">bStock 策略额外年化</div></div>
+<div style="padding-top:18px;border-top:1px solid rgba(255,255,255,.16)"><div style="font:300 clamp(40px,3.9vw,56px)/1 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.04em;color:#EEF3F7;white-space:nowrap">6%</div><div style="font:400 14px/1.4 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:12px">闲置 USDT 最高年化</div></div>
+</div>
+</div>
+
+<div style="margin-top:clamp(40px,5vw,64px);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:12px">
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4"><span>01</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">→</span></div>
+<div style="height:132px;margin-top:16px;display:flex;flex-direction:column;justify-content:center;gap:6px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4">0x7a3…e91c</span><span style="font:500 10px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';padding:3px 7px;border-radius:10px;background:rgba(122,214,168,.14);color:#7AD6A8">所有人：你</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei'"><span>bNVDA</span><span style="color:#9AA7B4">0.3214</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei'"><span>bTSLA</span><span style="color:#9AA7B4">0.1902</span></div>
+<div style="display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei'"><span>bAAPL</span><span style="color:#9AA7B4">0.1871</span></div>
+</div>
+<div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em;margin-top:20px">你的 bStock</div>
+<div style="font:400 16px/1.5 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:6px">一直在你钱包里。</div>
+</div>
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4"><span>02</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">→</span></div>
+<div style="height:132px;margin-top:16px;display:flex;align-items:center;justify-content:center">
+<div style="position:relative;width:100%;border:1px dashed rgba(159,192,216,.45);border-radius:14px;padding:22px 14px 14px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center">
+<span style="position:absolute;top:-10px;left:12px;display:inline-flex;align-items:center;gap:6px;padding:2px 8px;border-radius:999px;background:#121920;font:500 10px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#9FC0D8"><svg aria-hidden="true" width="10" height="11" viewBox="0 0 10 11" fill="none"><rect x="1" y="4.5" width="8" height="6" rx="1.5" fill="#9FC0D8"/><path d="M3 4.5V3a2 2 0 0 1 4 0v1.5" stroke="#9FC0D8" stroke-width="1.3"/></svg>抵押中</span>
+<span style="padding:8px 12px;border-radius:999px;background:#EEF3F7;color:#0B0F14;font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">bNVDA</span><span style="padding:8px 12px;border-radius:999px;background:#9FC0D8;color:#0B0F14;font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">bTSLA</span><span style="padding:8px 12px;border-radius:999px;background:#6F93AE;color:#0B0F14;font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">bAAPL</span>
+</div>
+</div>
+<div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em;margin-top:20px">拿去做抵押</div>
+<div style="font:400 16px/1.5 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:6px">不让它闲着。</div>
+</div>
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4"><span>03</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">→</span></div>
+<div style="height:132px;margin-top:16px;display:flex;flex-direction:column;justify-content:center">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#9AA7B4">抵押率</span><span style="display:inline-flex;align-items:center;gap:6px;font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#7AD6A8"><span style="width:6px;height:6px;border-radius:50%;background:#7AD6A8"></span>低 · 实时监控</span></div>
+<div style="position:relative;margin-top:16px;height:8px;border-radius:4px;background:linear-gradient(90deg,#7AD6A8 0%,#7AD6A8 38%,#E3B55B 62%,#C2553F 100%);opacity:.9">
+<div style="position:absolute;top:50%;left:22%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(122,214,168,.25),0 2px 6px rgba(0,0,0,.5)"></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:10px;font:400 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4"><span>安全</span><span>清算</span></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.04);font:500 13px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei'"><span style="color:#9AA7B4">已借出</span><span>USDT</span></div>
+</div>
+<div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em;margin-top:20px">借出 USDT</div>
+<div style="font:400 16px/1.5 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:6px">抵押率压得很低，全程盯着。</div>
+</div>
+
+<div style="display:flex;flex-direction:column;border-radius:18px;padding:20px;background:rgba(255,255,255,.035)">
+<div style="display:flex;align-items:center;gap:10px;font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4"><span>04</span><span style="flex:1;height:1px;background:linear-gradient(90deg,rgba(159,192,216,.5),rgba(159,192,216,0))"></span><span aria-hidden="true">✓</span></div>
+<div style="height:132px;margin-top:16px;display:flex;flex-direction:column;justify-content:flex-end;gap:12px">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.08em;color:#9AA7B4">USDT 金库</span><span style="font:500 10px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';padding:3px 7px;border-radius:10px;background:rgba(122,214,168,.14);color:#7AD6A8">随时赎回</span></div>
+<div aria-hidden="true" style="height:76px;display:flex;align-items:flex-end;gap:4px;border-bottom:1px solid #2A333D"><div style="flex:1;height:24%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:32%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:38%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:47%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:55%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:64%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:74%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:86%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div><div style="flex:1;height:100%;background:linear-gradient(180deg,#7AD6A8,rgba(122,214,168,.2));border-radius:2px 2px 0 0"></div></div>
+</div>
+<div style="font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em;margin-top:20px">存进 USDT 金库生息</div>
+<div style="font:400 16px/1.5 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;margin-top:6px">只用能随时赎回的金库。</div>
+</div>
+
+</div>
+</div>
+</section>
+
+<section id="funds" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;scroll-margin-top:84px">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:32px"><h2 style="margin:0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(34px,3.6vw,52px);letter-spacing:-.045em;line-height:1.05">热门组合</h2>
+<div style="display:inline-flex;padding:3px;background:#F1F3F5;border-radius:999px;overflow:hidden;font:500 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'"><sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" style="border:0;cursor:pointer;padding:9px 18px;border-radius:999px;font:inherit;color:{{ t.color }};background:{{ t.bg }}">{{ t.label }}</button></sc-for></div></div>
+<div style="display:{{ dP }}">
+<!-- gen:top-people -->
+<a href="/zh/portfolios/pelosi" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="佩洛西持仓" style="display:block;width:100%;height:100%;background:#F1F3F5 url(/app/p-pelosi.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">佩洛西持仓</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em;white-space:nowrap;color:#1E8A5C">+24.3%</span><span style="font:300 24px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">↗︎</span></span></a>
+<a href="/zh/portfolios/trump" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="特朗普持仓" style="display:block;width:100%;height:100%;background:#F1F3F5 url(/app/p-trump.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">特朗普持仓</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em;white-space:nowrap;color:#1E8A5C">+8.9%</span><span style="font:300 24px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">↗︎</span></span></a>
+<a href="/zh/portfolios/duan" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="段永平持仓" style="display:block;width:100%;height:100%;background:#F1F3F5 url(/app/p-duan.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">段永平持仓</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em;white-space:nowrap;color:#1E8A5C">+6.1%</span><span style="font:300 24px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">↗︎</span></span></a>
+<!-- /gen:top-people -->
+</div>
+<div style="display:{{ dT }}">
+<!-- gen:top-themes -->
+<a href="/zh/portfolios/ai-memory" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="AI 存储" style="display:block;width:100%;height:100%;background:#F1F3F5 url(/app/p-aimem.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">AI 存储</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em;white-space:nowrap;color:#1E8A5C">+231.8%</span><span style="font:300 24px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">↗︎</span></span></a>
+<a href="/zh/portfolios/korea-semiconductors" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="韩国半导体" style="display:block;width:100%;height:100%;background:#F1F3F5 url(/app/p-korea.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">韩国半导体</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em;white-space:nowrap;color:#1E8A5C">+113.5%</span><span style="font:300 24px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">↗︎</span></span></a>
+<a href="/zh/portfolios/ai-chips" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="AI 芯片" style="display:block;width:100%;height:100%;background:#F1F3F5 url(/app/p-ai.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">AI 芯片</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em;white-space:nowrap;color:#1E8A5C">+61.6%</span><span style="font:300 24px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">↗︎</span></span></a>
+<a href="/zh/portfolios/bnb" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="BNB 生态" style="display:block;width:100%;height:100%;background:#F1F3F5 url(/app/p-bnb.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em">BNB 生态</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.03em;white-space:nowrap;color:#1E8A5C">+17.4%</span><span style="font:300 24px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">↗︎</span></span></a>
+<!-- /gen:top-themes -->
+</div>
+<div style="padding:24px 0 0;border-top:1px solid rgba(11,15,20,.08)"><a href="/zh/portfolios" style="font:500 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#2F5B7C">查看全部组合 →</a></div>
+<div id="build" style="margin-top:48px;scroll-margin-top:84px;border-radius:24px;overflow:hidden;background:radial-gradient(120% 100% at 0% 0%,#18212B,#0B0F14 70%);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:40px;padding:clamp(28px,4vw,56px);color:#fff">
+<div style="display:flex;flex-direction:column;justify-content:center">
+<div style="font:500 12px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:.1em;color:#9AA7B4">自己配</div>
+<h3 style="margin:16px 0 0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(28px,2.6vw,38px);line-height:1.08;letter-spacing:-.045em;max-width:11em"><span style="white-space:nowrap">你来选股，</span><span style="white-space:nowrap">我们来调仓。</span></h3>
+<p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#AFBFCD;margin:18px 0 0;max-width:26em">选好股票和比例，跑偏了自动帮你调回来。</p>
+<div style="margin-top:32px"><a href="/zh/waitlist" style="height:48px;padding:0 22px;background:#fff;color:#0B0F14;display:inline-flex;align-items:center;gap:10px;font:500 16px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';border-radius:999px">加入等候名单 <span>→</span></a></div>
+</div>
+<div style="background:linear-gradient(180deg,#151C24,#0E1318);border-radius:18px;padding:22px 24px;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 0 1px rgba(255,255,255,.06)">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 12px;margin-bottom:6px"><span style="font:500 18px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';white-space:nowrap">我的组合</span><span style="white-space:nowrap;display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:999px;background:rgba(122,214,168,.12);font:500 12px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#7AD6A8"><span style="width:6px;height:6px;border-radius:50%;background:#7AD6A8"></span>自动调仓已开启</span></div>
+<div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#EEF3F7">NVDA</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:75%;border-radius:3px;background:linear-gradient(90deg,#9FC0D8,#EEF3F7)"></div><div style="position:absolute;top:50%;left:75%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;text-align:right">30%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#EEF3F7">TSLA</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:62.5%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:62.5%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;text-align:right">25%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#EEF3F7">AAPL</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:50%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;text-align:right">20%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#EEF3F7">MSFT</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:37.5%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:37.5%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;text-align:right">15%</span></div><div style="display:grid;grid-template-columns:64px 1fr 48px;align-items:center;gap:12px;padding:12px 0;border-top:1px solid rgba(255,255,255,.07)"><span style="font:500 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#EEF3F7">BTC</span><div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:25%;border-radius:3px;background:#5F849F"></div><div style="position:absolute;top:50%;left:25%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4)"></div></div><span style="font:400 14px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4;text-align:right">10%</span></div>
+<div style="display:flex;justify-content:space-between;padding-top:14px;border-top:1px solid rgba(255,255,255,.07);font:400 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#9AA7B4"><span>合计</span><span style="font-family:'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#EEF3F7">100%</span></div>
+</div>
+</div>
+</section>
+
+<section id="faq" style="padding:clamp(96px,10vw,148px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 0;display:flex;flex-wrap:wrap;gap:32px 48px;scroll-margin-top:84px">
+<h2 style="flex:1 1 280px;margin:0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(34px,3.6vw,52px);letter-spacing:-.045em;line-height:1.05">常见问题</h2>
+<div style="flex:2 1 min(100%,480px);min-width:0">
+<!-- gen:faq -->
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">现在用的是真钱吗？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">还不是。CRE8 目前在 BNB Chain 测试网，测试 USDT 免费领，主网上线时间还没定。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">安全吗？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">目前 CRE8 上的一切都不涉及真钱。你的组合放在你自己的 BNB Chain 智能账户里，CRE8 的自动化只能在账户内交易，资产要转出必须你本人签名。上主网前，合约会经过第三方审计。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">股票由谁托管？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">你自己。股票以代币形式放在只有你能控制的链上账户里，不和任何人的资产混在一起。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">怎么提现？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">把组合部分或全部卖回 USDT，再提到任意 BNB Chain 地址就行。股票代币要在美股开盘时才能卖。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">闲置 USDT 怎么生息？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">点 Earn，把闲置 USDT 存进白名单里的 USDT 金库（Lista、Venus、Aave），按市场利率计息，随存随取。买组合时还可以打开“加息”，用组合里的股票多赚一点；价格急跌时系统会自动卖出一小部分，保证安全。你的现金和组合资金始终分开。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">和直接在币安买 bStock 有什么区别？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">在币安只能一只一只买，股票放在交易所账户里。CRE8 一笔钱买齐一整篮，自动调仓回目标比例，资产放在你自己的链上账户。当然，币安的股票更多、深度更好，详见<a style="color:#2F5B7C;text-decoration:underline" href="/zh/compare">完整对比</a>。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">美股休市时能买卖吗？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">股票代币只在美股交易时段成交。休市期间下的买单或卖单会在账户里排队，下次开盘时成交。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">最低投多少？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">每笔 50 USDT 起投。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08)"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">收费吗？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">测试网全免费，gas 也由 CRE8 承担。主网费率会在上线前公布。</p></details>
+<details style="border-top:1px solid rgba(11,15,20,.08);border-bottom:1px solid #D5DBE0"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';letter-spacing:-.02em">谁可以用？<span class="pm" style="font:300 28px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">美国以外、当地法规允许的用户都可以。测试网期间需要邀请码才能登录。</p></details>
+<!-- /gen:faq -->
+</div>
+</section>
+
+<section style="margin-top:clamp(80px,9vw,128px);background:#000;color:#fff;position:relative;overflow:hidden;min-height:620px;display:flex;align-items:center;justify-content:center;text-align:center">
+<img src="/assets/ws-f.webp" alt="" width="1600" height="1067" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 78%;filter:grayscale(.35) contrast(1.08) brightness(.7)"><div style="position:absolute;inset:0;background:radial-gradient(70% 80% at 50% 50%,rgba(11,15,20,.55),rgba(11,15,20,.88))"></div>
+<div style="position:relative;z-index:1;padding:80px 20px">
+<h2 style="margin:0;font-family:'Switzer','Noto Sans SC','Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;font-weight:300;font-size:clamp(46px,5.8vw,84px);letter-spacing:-.045em;line-height:1;text-shadow:0 0 40px rgba(0,0,0,.8);text-wrap:balance"><span style="white-space:nowrap">50 USDT</span> <span style="white-space:nowrap">就能上车</span></h2>
+
+<div style="display:flex;gap:10px;justify-content:center;margin-top:32px;flex-wrap:wrap"><a href="/zh/waitlist" style="height:56px;padding:0 28px;background:#C9A15A;color:#0B0F14;display:inline-flex;align-items:center;gap:10px;font:500 17px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';border-radius:999px" style-hover="background:#D4AE68;opacity:1">加入等候名单 <span>→</span></a></div>
+</div>
+</section>
+
+<div style="position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.05;mix-blend-mode:multiply;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E&quot;)"></div>
+<footer style="background:#000;color:#8A96A2;border-top:1px solid #1A2129;padding:48px max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) 56px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:28px 48px;font:400 14px/1.7 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei'">
+<div style="display:flex;flex-direction:column;gap:18px"><img src="/assets/cre8-logo-light.svg" alt="CRE8" width="129" height="24" style="height:24px;align-self:flex-start"><span>© 2026 CRE8</span></div>
+<nav style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font:400 14px 'Geist','PingFang SC','Hiragino Sans GB','Microsoft YaHei';color:#E3E8EC"><a href="/zh/portfolios">全部组合</a><a href="/zh/how-it-works">使用指南</a><a href="/zh/compare">横向对比</a><a href="/" lang="en">English</a><a href="https://tst.cre8.finance/">测试网应用</a><a href="https://x.com/CRE8Finance" target="_blank" rel="noopener">X</a></nav>
+
 </footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const RETS = [23.7, 46.2, 29.8, 12.1, 61.0, 54.3, 21.7, 72.5, 33.5, 41.9, 27.4, 18.6, 14.2, -2.1, 8.4, 24.9, 5.6, 36.1, 16.3, 49.0, 10.2];
+function makeLines(cv, o) {
+  const ctx = cv.getContext('2d');
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const seeds = RETS.map((r, i) => ({ r, a: 1 + (i * 7.3) % 3, b: (i * 2.17) % 6.28, c: 2 + (i * 3.1) % 4, d: (i * 1.3) % 6.28 }));
+  let w = 0, h = 0, dpr = 1, raf, t0 = performance.now();
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr; };
+  const ro = new ResizeObserver(size); ro.observe(cv); size();
+  const ease = x => 1 - Math.pow(1 - x, 3);
+  const N = 240;
+  let seed = 7;
+  const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647 - .5;
+  seeds.forEach(s => {
+    const a = [0]; for (let j = 1; j <= N; j++) a.push(a[j - 1] + rnd() + (rnd() * rnd()) * 1.4);
+    const end = a[N]; s.walk = a.map((v, j) => v - end * j / N);
+    const m = Math.max(...s.walk.map(Math.abs)) || 1; s.walk = s.walk.map(v => v / m);
+  });
+  const yAt = (s, u, time, x0, y0, span) => {
+    const f = Math.min(N, u * N), j = Math.floor(f), t = f - j;
+    const n = s.walk[j] * (1 - t) + s.walk[Math.min(N, j + 1)] * t;
+    const live = u > .96 ? Math.sin(time * 2.1 + s.b) * (u - .96) * 1.2 : 0;
+    return y0 - (s.r / 75) * span * u - (n * .16 + live) * Math.pow(u, .6) * span;
+  };
+  const frame = now => {
+    if (cv.width !== Math.round(cv.clientWidth * dpr) || !cv.width) size();
+    const time = (now - t0) / 1000, p = still ? 1 : ease(Math.min(1, time / 2.2));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    const x0 = w * o.x0, y0 = h * o.y0, x1 = w - o.pad, span = h * o.span;
+    ctx.strokeStyle = o.grid; ctx.lineWidth = 1; ctx.fillStyle = o.label; ctx.font = "500 10px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace"; ctx.textAlign = 'right';
+    for (let g = 0; g <= 4; g++) { const gy = y0 - span * 1.05 * g / 4; ctx.beginPath(); ctx.moveTo(x0, gy + .5); ctx.lineTo(w, gy + .5); ctx.stroke(); if (o.axis) ctx.fillText('+' + Math.round(80 * g / 4) + '%', w - 8, gy - 6); }
+    const xe = x0 + (x1 - x0) * p, steps = 160;
+    seeds.forEach((s, i) => {
+      const hi = i === o.hi;
+      ctx.beginPath();
+      for (let j = 0; j <= steps; j++) { const x = x0 + (xe - x0) * j / steps, u = (x - x0) / (x1 - x0); const y = yAt(s, u, time, x0, y0, span); j ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.strokeStyle = hi ? o.hiCol : o.line; ctx.globalAlpha = hi ? 1 : o.alpha; ctx.lineWidth = hi ? 2 : 1; ctx.stroke(); ctx.globalAlpha = 1;
+      if (hi) {
+        const ye = yAt(s, (xe - x0) / (x1 - x0), time, x0, y0, span);
+        ctx.fillStyle = o.hiCol; ctx.beginPath(); ctx.arc(xe, ye, 4, 0, 7); ctx.fill();
+        ctx.globalAlpha = .18; ctx.beginPath(); ctx.arc(xe, ye, 4 + 6 * (1 + Math.sin(time * 3)) / 2 + 3, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+        if (p > .98 && o.tag) { ctx.font = "500 11px 'Geist Mono','PingFang SC','Hiragino Sans GB','Microsoft YaHei',monospace"; ctx.fillStyle = o.label; ctx.fillText(o.tag, xe - 12, ye - 14); }
+      }
+    });
+    ctx.fillStyle = o.hiCol; ctx.beginPath(); ctx.arc(x0, y0, 3, 0, 7); ctx.fill();
+    cancelAnimationFrame(raf);
+    if (!still) raf = requestAnimationFrame(frame);
+  };
+  frame(performance.now());
+  const kick = setTimeout(() => frame(performance.now() + 2500), 2600);
+  return () => { cancelAnimationFrame(raf); clearTimeout(kick); ro.disconnect(); };
+}
+function makeField(cv, opts) {
+  const ctx = cv.getContext('2d');
+  const pts = [];
+  const R = 1, r = 0.26;
+  for (const cy of [R, -R]) for (let i = 0; i < 2600; i++) {
+    const u = Math.random() * Math.PI * 2, v = Math.random() * Math.PI * 2;
+    pts.push([(R + r * Math.cos(v)) * Math.cos(u), (R + r * Math.cos(v)) * Math.sin(u) + cy, r * Math.sin(v), 1]);
+  }
+  for (let i = 0; i < opts.dust; i++) {
+    const a = Math.random() * Math.PI * 2, b = Math.acos(2 * Math.random() - 1), d = 2.4 + Math.random() * 1.8;
+    pts.push([d * Math.sin(b) * Math.cos(a), d * Math.cos(b), d * Math.sin(b) * Math.sin(a), 0.5]);
+  }
+  let w = 0, h = 0, dpr = 1, ang = 0.6, mx = 0, my = 0, raf;
+  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const size = () => { dpr = Math.min(2, devicePixelRatio || 1); w = cv.clientWidth; h = cv.clientHeight; cv.width = w * dpr; cv.height = h * dpr; };
+  const ro = new ResizeObserver(size); ro.observe(cv); size();
+  const onMove = e => { const b = cv.getBoundingClientRect(); mx = ((e.clientX - b.left) / b.width - .5); my = ((e.clientY - b.top) / b.height - .5); };
+  addEventListener('pointermove', onMove);
+  const [cr, cg, cb] = opts.rgb;
+  const frame = () => {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    const s = Math.min(w * opts.sw, h) / 6.6, cx = w * opts.cx, cy = h * opts.cy;
+    const ca = Math.cos(ang + mx * .6), sa = Math.sin(ang + mx * .6), t = 0.22 + my * .3, ct = Math.cos(t), st = Math.sin(t);
+    ctx.fillStyle = `rgb(${cr},${cg},${cb})`;
+    for (const p of pts) {
+      const x = p[0] * ca + p[2] * sa, z0 = -p[0] * sa + p[2] * ca;
+      const y = p[1] * ct - z0 * st, z = p[1] * st + z0 * ct;
+      const f = 5 / (5 + z);
+      const depth = Math.max(0, Math.min(1, 1 - (z + 1.4) / 2.8));
+      ctx.globalAlpha = (0.12 + 0.88 * depth) * p[3] * opts.alpha;
+      const sz = (0.6 + depth * 1.1) * f * (p[3] < 1 ? .7 : 1);
+      ctx.fillRect(cx + x * s * f, cy - y * s * f, sz, sz);
+    }
+    ctx.globalAlpha = 1;
+    ang += 0.0035;
+    if (!still) raf = requestAnimationFrame(frame);
+  };
+  frame();
+  return () => { cancelAnimationFrame(raf); ro.disconnect(); removeEventListener('pointermove', onMove); };
+}
+
+// Top portfolios 的列是 scripts/build-pages.mjs 產生的靜態 HTML（API 的 modelReturns.annualized，只放正報酬、由高到低）；這裡只切分頁。
+
+class Component extends DCLogic {
+  state = { tab: 'people', step: 0, menu: null, hov: null };
+  hovIn = e => { const el = e.currentTarget; this.setState({ hov: { x: el.offsetLeft, w: el.offsetWidth, id: 'H' } }); };
+  hovOut = () => this.setState(s => ({ hov: s.hov ? { ...s.hov, o: 0 } : null }));
+  componentDidMount() {
+    
+  }
+  menuVals() {
+    const m = this.state.menu, o = { closeMenu: () => this.setState({ menu: null }) };
+    ['P', 'R'].forEach(k => {
+      o['open' + k] = e => { const el = e.currentTarget; this.setState({ menu: k, hov: { x: el.offsetLeft, w: el.offsetWidth, id: k } }); };
+      o['toggle' + k] = () => this.setState(s => ({ menu: s.menu === k ? null : k }));
+      o['show' + k] = m === k; o['r' + k] = m === k ? 180 : 0; o['c' + k] = (m === k || (this.state.hov && this.state.hov.o !== 0 && this.state.hov.id === k)) ? '#0B0F14' : '#4A5563';
+    });
+    return o;
+  }
+  stepEls = [];
+  mkStepRef = i => el => {
+    if (!el || this.stepEls[i] === el) return;
+    this.stepEls[i] = el;
+    if (!this.onScroll) {
+      this.onScroll = () => {
+        const mid = innerHeight / 2; let best = 0, bd = Infinity;
+        this.stepEls.forEach((e, k) => { if (!e) return; const b = e.getBoundingClientRect(); const d = Math.abs(b.top + b.height / 2 - mid); if (d < bd) { bd = d; best = k; } });
+        if (best !== this.state.step) this.setState({ step: best });
+      };
+      addEventListener('scroll', this.onScroll, { passive: true });
+      addEventListener('resize', this.onScroll);
+    }
+    requestAnimationFrame(() => this.onScroll && this.onScroll());
+  };
+  stepRef0 = this.mkStepRef(0); stepRef1 = this.mkStepRef(1); stepRef2 = this.mkStepRef(2);
+  live = new Map();
+  attach(key, el, opts) {
+    const cur = this.live.get(key);
+    if (cur && cur.el === el) return;
+    if (cur) cur.stop();
+    if (el) this.live.set(key, { el, stop: makeLines(el, opts) }); else this.live.delete(key);
+  }
+  heroCv = el => this.attach('hero', el, { x0: .34, y0: .86, span: .62, pad: 64, line: '#0B0F14', alpha: .42, grid: 'rgba(11,15,20,.07)', label: '#3A4652', hiCol: '#2F5B7C', hi: 0, axis: true, tag: '佩洛西持仓  +23.7%' });
+  endCv = el => this.attach('end', el, { x0: 0, y0: .92, span: .7, pad: 0, line: '#9FB6C8', alpha: .22, grid: 'rgba(255,255,255,.05)', label: '#AEB9C3', hiCol: '#CFE0EC', hi: 1, axis: false, tag: '' });
+  componentWillUnmount() { this.onNav && removeEventListener('scroll', this.onNav); this.live.forEach(v => v.stop()); this.live.clear(); if (this.onScroll) { removeEventListener('scroll', this.onScroll); removeEventListener('resize', this.onScroll); } }
+  renderVals() {
+    const tab = (id, label) => { const on = this.state.tab === id; return { label, onClick: () => this.setState({ tab: id }), color: on ? '#fff' : '#0B0F14', bg: on ? '#0B0F14' : 'transparent' }; };
+    return {
+      ...this.menuVals(),
+      hovIn: this.hovIn, hovOut: this.hovOut,
+      hp: this.state.hov ? { x: this.state.hov.x, w: this.state.hov.w, o: this.state.hov.o === 0 ? 0 : 1 } : { x: 0, w: 60, o: 0 },
+      cH: this.state.hov && this.state.hov.o !== 0 && this.state.hov.id === 'H' ? '#0B0F14' : '#4A5563',
+      ...(() => { const st = this.state.step, o = {}; [0, 1, 2].forEach(i => { const d = i - st; o['L' + i] = { o: d === 0 ? 1 : 0, y: d * 40, s: d === 0 ? 1 : .96 }; o['T' + i] = d === 0 ? 1 : .3; o['P' + i] = i <= st ? '#EEF3F7' : '#2A333D'; o['stepRef' + i] = this['stepRef' + i]; }); return o; })(),
+      tabs: [tab('people', '人物'), tab('themes', '主题')],
+      dP: this.state.tab === 'people' ? 'block' : 'none', dT: this.state.tab === 'people' ? 'none' : 'block',
+    };
+  }
+}
+</script>
 </body>
 </html>

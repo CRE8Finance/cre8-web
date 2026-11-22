@@ -6,11 +6,15 @@
 <title>Join the CRE8 waitlist</title>
 <meta name="description" content="CRE8 testnet is invite-only. Connect X and follow @CRE8Finance to join the waitlist for baskets of US stocks and crypto, bought with USDT on BNB Chain.">
 <link rel="canonical" href="https://cre8.finance/waitlist">
+<link rel="alternate" hreflang="en" href="https://cre8.finance/waitlist">
+<link rel="alternate" hreflang="zh-Hans" href="https://cre8.finance/zh/waitlist">
+<link rel="alternate" hreflang="x-default" href="https://cre8.finance/waitlist">
 <meta name="theme-color" content="#0B0F14">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="CRE8">
+<meta property="og:locale" content="en_US">
 <meta property="og:url" content="https://cre8.finance/waitlist">
 <meta property="og:title" content="Join the CRE8 waitlist">
 <meta property="og:description" content="CRE8 testnet is invite-only. Connect X and follow @CRE8Finance to get in line.">
@@ -28,6 +32,7 @@
 <script src="/support.js"></script>
 <link rel="stylesheet" href="/assets/press.css">
 <script src="/assets/press.js" defer></script>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,400&display=swap">
 </head>
 <body>
 <x-dc>
@@ -38,6 +43,7 @@
 <a href="/" style="display:flex"><img src="/assets/cre8-logo-dark.svg" alt="CRE8 home" style="height:20px;display:block"></a>
 <div style="display:flex;align-items:center;gap:4px">
 <a class="wl-home" href="/" style="padding:10px 14px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">Home</a>
+<a href="/zh/waitlist" lang="zh-Hans" hreflang="zh-Hans" aria-label="简体中文" style="padding:10px 12px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">中文</a>
 <a href="https://tst.cre8.finance/" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">Have an invite? <span>→</span></a>
 </div>
 </div>
@@ -51,13 +57,13 @@
 <div style="position:relative;z-index:1;flex:1;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(40px,5vw,88px);align-items:start;padding:clamp(112px,12vw,152px) max(clamp(20px,4vw,64px),calc((100% - 1240px) / 2)) clamp(48px,6vw,88px)">
 
 <div style="min-width:0;padding-top:clamp(0px,3vw,48px)">
-<h1 style="margin:0;font-weight:500;font-size:clamp(44px,5.6vw,84px);line-height:1;letter-spacing:-.045em;color:#EEF3F7;text-wrap:balance">Be first in line for testnet.</h1>
+<h1 style="margin:0;font-family:'Switzer','Geist',sans-serif;font-weight:300;font-size:clamp(44px,5.6vw,84px);line-height:1.02;letter-spacing:-.045em;color:#EEF3F7;text-wrap:balance">Be first in line for testnet.</h1>
 </div>
 
 <div style="min-width:0;width:100%;max-width:540px;justify-self:end;background:#fff;color:#0B0F14;border-radius:24px;padding:clamp(18px,3vw,36px);box-shadow:0 1px 0 rgba(255,255,255,.4) inset,0 40px 80px -24px rgba(0,0,0,.7),0 0 0 1px rgba(11,15,20,.06)">
 
 <sc-if value="{{ joined }}" hint-placeholder-val="{{ false }}"><div style="display:inline-flex;align-items:center;gap:8px;height:30px;padding:0 12px;margin-bottom:16px;border-radius:999px;background:#E6F6EE;font:500 12px 'Geist Mono';letter-spacing:.06em;color:#17714B"><span aria-hidden="true">✓</span>ON THE LIST</div></sc-if>
-<h2 style="margin:0;font-weight:400;font-size:clamp(26px,2.2vw,32px);line-height:1.1;letter-spacing:-.03em">{{ title }}</h2>
+<h2 style="margin:0;font-family:'Switzer','Geist',sans-serif;font-weight:400;font-size:clamp(26px,2.2vw,32px);line-height:1.1;letter-spacing:-.035em">{{ title }}</h2>
 
 <div style="margin-top:22px;border-radius:16px;background:#F2F5F7;padding:4px 16px">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 0">
@@ -161,6 +167,8 @@ const QUESTIONS = [
   ['otherWhere', 'Where do you hold them?', ['On-chain wallet', 'Exchange', 'Both']],
   ['type', 'What kind of investor are you?', ['Passive', 'Active trader', 'Yield-focused', 'Just exploring']],
 ];
+// 選項的顯示文字（值照舊存英文，給後端與 needed() 用）；簡體版由 build-pages.mjs 換成中文。
+const OPT_LABEL = {};
 const POINTS = { post: 5, gmail: 5, quiz: 15, tg: 10 };
 const FOLLOW_URL = 'https://x.com/intent/follow?screen_name=CRE8Finance';
 const FOLLOW_KEY = 'cre8.wl.followed';
@@ -266,7 +274,7 @@ class Component extends DCLogic {
         id: 'wl-q-' + id, text,
         opts: opts.map(label => {
           const on = s.ans[id] === label;
-          return { label, on, bg: on ? '#0B0F14' : '#fff', color: on ? '#fff' : '#0B0F14', border: on ? '#0B0F14' : '#7E8A96', pick: () => this.setState(p => ({ ans: { ...p.ans, [id]: label } })) };
+          return { label: OPT_LABEL[label] || label, on, bg: on ? '#0B0F14' : '#fff', color: on ? '#fff' : '#0B0F14', border: on ? '#0B0F14' : '#7E8A96', pick: () => this.setState(p => ({ ans: { ...p.ans, [id]: label } })) };
         }),
       })),
       connectX: this.connectX, followX: () => (connected && !checking && !s.busy) && this.followX(), startPost: this.startPost, setPostUrl: this.setPostUrl,
