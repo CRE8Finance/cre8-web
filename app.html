@@ -33,51 +33,51 @@
 </head>
 <body>
 <x-dc>
-<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>@media (max-width:560px){.bb-txt{display:none!important}.bb-btn{width:40px!important;padding:0!important;justify-content:center!important}}@media (max-width:400px){.bb-logos{display:none!important}}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{background:#F3F3F3}body{margin:0;background:#F3F3F3;color:#0B0F14;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}a{color:#2F6690;text-decoration:none}a:hover{color:#0B0F14}button{font-family:inherit;color:inherit}::-webkit-scrollbar{display:none}</style></helmet>
+<helmet><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet"><style>@font-face{font-family:'Geist';font-weight:300;src:local('PingFang SC Light'),local('PingFangSC-Light'),local('Noto Sans SC Light'),local('NotoSansSC-Light'),local('Noto Sans CJK SC Light'),local('NotoSansCJKsc-Light'),local('Microsoft YaHei');unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@font-face{font-family:'Geist';font-weight:400;src:local('PingFang SC Regular'),local('PingFangSC-Regular'),local('Noto Sans SC Regular'),local('NotoSansSC-Regular'),local('Noto Sans CJK SC Regular'),local('NotoSansCJKsc-Regular'),local('Microsoft YaHei');unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@font-face{font-family:'Geist';font-weight:500;src:local('PingFang SC Medium'),local('PingFangSC-Medium'),local('Noto Sans SC Medium'),local('NotoSansSC-Medium'),local('Noto Sans CJK SC Medium'),local('NotoSansCJKsc-Medium'),local('Microsoft YaHei');unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@font-face{font-family:'Geist';font-weight:600;src:local('PingFang SC Semibold'),local('PingFangSC-Semibold'),local('Noto Sans SC SemiBold'),local('NotoSansSC-SemiBold'),local('Noto Sans CJK SC SemiBold'),local('NotoSansCJKsc-SemiBold'),local('Microsoft YaHei');unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@font-face{font-family:'Geist Mono';font-weight:300;src:local('PingFang SC Light'),local('PingFangSC-Light'),local('Noto Sans SC Light'),local('NotoSansSC-Light'),local('Noto Sans CJK SC Light'),local('NotoSansCJKsc-Light'),local('Microsoft YaHei');size-adjust:112%;unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@font-face{font-family:'Geist Mono';font-weight:400;src:local('PingFang SC Regular'),local('PingFangSC-Regular'),local('Noto Sans SC Regular'),local('NotoSansSC-Regular'),local('Noto Sans CJK SC Regular'),local('NotoSansCJKsc-Regular'),local('Microsoft YaHei');size-adjust:112%;unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@font-face{font-family:'Geist Mono';font-weight:500;src:local('PingFang SC Medium'),local('PingFangSC-Medium'),local('Noto Sans SC Medium'),local('NotoSansSC-Medium'),local('Noto Sans CJK SC Medium'),local('NotoSansCJKsc-Medium'),local('Microsoft YaHei');size-adjust:112%;unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@font-face{font-family:'Geist Mono';font-weight:600;src:local('PingFang SC Semibold'),local('PingFangSC-Semibold'),local('Noto Sans SC SemiBold'),local('NotoSansSC-SemiBold'),local('Noto Sans CJK SC SemiBold'),local('NotoSansCJKsc-SemiBold'),local('Microsoft YaHei');size-adjust:112%;unicode-range:U+2E80-2FFF,U+3000-303F,U+3400-9FFF,U+F900-FAFF,U+FE30-FE4F,U+FF00-FFEF}@media (max-width:560px){.bb-txt{display:none!important}.bb-btn{width:40px!important;padding:0!important;justify-content:center!important}}@media (max-width:400px){.bb-logos{display:none!important}}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{background:#F3F3F3}body{margin:0;background:#F3F3F3;color:#0B0F14;font-family:'Geist',-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased;font-feature-settings:"tnum"}a{color:#2F6690;text-decoration:none}a:hover{color:#0B0F14}button{font-family:inherit;color:inherit}::-webkit-scrollbar{display:none}</style></helmet>
 
 <sc-if value="{{ gated }}" hint-placeholder-val="{{ false }}"><div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:max(24px,env(safe-area-inset-top)) 16px max(24px,env(safe-area-inset-bottom));background:#F3F3F3">
 <div style="width:100%;max-width:460px;flex:1;display:flex;flex-direction:column">
-<div style="height:40px;display:flex;align-items:center;justify-content:space-between"><a href="https://cre8.finance/" aria-label="CRE8 home" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a><sc-if value="{{ gBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gBackGo }}" aria-label="Back" style="width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#6B7785" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if></div>
+<div style="height:40px;display:flex;align-items:center;justify-content:space-between"><a href="https://cre8.finance/" aria-label="{{ t.home }}" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a><div style="display:flex;align-items:center;gap:8px"><button onClick="{{ toggleLang }}" lang="{{ langBtnLang }}" aria-label="{{ langAria }}" style="height:36px;min-width:52px;padding:0 14px;border:0;cursor:pointer;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 14px 'Geist';color:#3C4651;white-space:nowrap">{{ langBtn }}</button><sc-if value="{{ gBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gBackGo }}" aria-label="{{ t.back }}" style="width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#6B7785" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if></div></div>
 <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 0 64px">
-<h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ gTitle }}</h1>
+<h1 style="margin:0;font:500 34px/1.2 'Geist';letter-spacing:-.03em;white-space:pre-line">{{ gTitle }}</h1>
 <div style="display:flex;flex-direction:column;gap:10px;margin-top:32px">
-<sc-if value="{{ siBusy }}" hint-placeholder-val="{{ false }}"><div style="height:52px;display:flex;align-items:center;justify-content:center" aria-label="Loading"><svg width="28" height="28" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="#E6E9ED" stroke-width="10"></circle><circle cx="48" cy="48" r="40" fill="none" stroke="#2F6690" stroke-width="10" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="180"><animateTransform attributeName="transform" type="rotate" from="0 48 48" to="360 48 48" dur="1s" repeatCount="indefinite"></animateTransform></circle></svg></div></sc-if>
-<sc-if value="{{ gStart }}" hint-placeholder-val="{{ true }}"><a href="https://cre8.finance/waitlist" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7);display:flex;align-items:center;justify-content:center">Join waitlist</a><button onClick="{{ gToSignIn }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Sign in</button></sc-if>
-<sc-if value="{{ gMethods }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gX }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with X</button><button onClick="{{ signInGoogle }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with Google</button><button onClick="{{ showEmail }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">Continue with Email</button>
+<sc-if value="{{ siBusy }}" hint-placeholder-val="{{ false }}"><div style="height:52px;display:flex;align-items:center;justify-content:center" aria-label="{{ t.loading }}"><svg width="28" height="28" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="#E6E9ED" stroke-width="10"></circle><circle cx="48" cy="48" r="40" fill="none" stroke="#2F6690" stroke-width="10" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="180"><animateTransform attributeName="transform" type="rotate" from="0 48 48" to="360 48 48" dur="1s" repeatCount="indefinite"></animateTransform></circle></svg></div></sc-if>
+<sc-if value="{{ gStart }}" hint-placeholder-val="{{ true }}"><a href="https://cre8.finance/waitlist" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7);display:flex;align-items:center;justify-content:center">{{ t.joinWaitlist }}</a><button onClick="{{ gToSignIn }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.signIn }}</button></sc-if>
+<sc-if value="{{ gMethods }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gX }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.contX }}</button><button onClick="{{ signInGoogle }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.contGoogle }}</button><button onClick="{{ showEmail }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.contEmail }}</button>
 <sc-if value="{{ siEmail }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input type="{{ emailType }}" inputmode="{{ emailMode }}" value="{{ emailVal }}" onInput="{{ onEmail }}" placeholder="{{ emailPh }}" autocomplete="off" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><button onClick="{{ emailGo }}" style="height:44px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ emailBtn }}</button></label></sc-if></sc-if>
-<sc-if value="{{ gCode }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;padding:0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" onKeyDown="{{ inviteKey }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="Invite code" aria-label="Invite code" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 18px 'Geist Mono';letter-spacing:.1em;color:#0B0F14;padding:0"></label><sc-if value="{{ codeErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ codeErr }}</p></sc-if><button onClick="{{ gCodeGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ codeBtn }}</button><a href="https://cre8.finance/waitlist" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center">Join waitlist</a></sc-if>
+<sc-if value="{{ gCode }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;padding:0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" onKeyDown="{{ inviteKey }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="{{ t.inviteCode }}" aria-label="{{ t.inviteCode }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 18px 'Geist Mono';letter-spacing:.1em;color:#0B0F14;padding:0"></label><sc-if value="{{ codeErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ codeErr }}</p></sc-if><button onClick="{{ gCodeGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ codeBtn }}</button><a href="https://cre8.finance/waitlist" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center">{{ t.joinWaitlist }}</a></sc-if>
 <sc-if value="{{ siErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:4px 2px 0;font:400 14px/1.5 'Geist';color:#D23F2E">{{ siErr }}</p></sc-if>
-<sc-if value="{{ siRetry }}" hint-placeholder-val="{{ false }}"><button onClick="{{ siRetryGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">Try again</button></sc-if>
+<sc-if value="{{ siRetry }}" hint-placeholder-val="{{ false }}"><button onClick="{{ siRetryGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ t.tryAgain }}</button></sc-if>
 </div>
 </div>
 </div>
 </div></sc-if>
 <sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><header style="position:sticky;top:0;z-index:50;background:rgba(243,243,243,.8);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-bottom:1px solid rgba(11,15,20,.06)">
 <div style="max-width:{{ L.max }}px;margin:0 auto;height:{{ L.hdrH }}px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 {{ L.pad }}px">
-<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ closeFund }}" aria-label="Back" style="width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if>
-<sc-if value="{{ showLogo }}" hint-placeholder-val="{{ true }}"><a href="index.html" aria-label="CRE8 home" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a></sc-if>
+<sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ closeFund }}" aria-label="{{ t.back }}" style="width:36px;height:36px;border-radius:50%;border:0;cursor:pointer;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;display:flex;align-items:center;justify-content:center"><svg width="9" height="15" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></sc-if>
+<sc-if value="{{ showLogo }}" hint-placeholder-val="{{ true }}"><a href="index.html" aria-label="{{ t.home }}" style="display:block"><img src="assets/cre8-logo-dark.svg" alt="CRE8" style="height:24px;display:block"></a></sc-if>
 <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><span style="flex:1;text-align:center;font:500 15px 'Geist';opacity:{{ hdrTitleO }};transition:opacity .2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ hdrTitle }}</span></sc-if>
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><nav style="display:flex;gap:2px;padding:3px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><sc-for list="{{ navTabs }}" as="t" hint-placeholder-count="3"><button onClick="{{ t.go }}" style="height:34px;padding:0 18px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';color:{{ t.tcol }};background:{{ t.tbg }};transition:background .2s,color .2s">{{ t.label }}</button></sc-for></nav></sc-if>
-<button onClick="{{ pillClick }}" style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:0;cursor:pointer;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 12px 'Geist Mono';color:#3C4651;white-space:nowrap">{{ pillText }}</button>
+<div style="display:flex;align-items:center;gap:8px;flex:none"><button onClick="{{ toggleLang }}" lang="{{ langBtnLang }}" aria-label="{{ langAria }}" style="height:32px;min-width:44px;padding:0 11px;border:0;cursor:pointer;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 13px 'Geist';color:#3C4651;white-space:nowrap">{{ langBtn }}</button><button onClick="{{ pillClick }}" style="display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:0;cursor:pointer;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 12px 'Geist Mono';color:#3C4651;white-space:nowrap">{{ pillText }}</button></div>
 </div>
 </header></sc-if>
 
 <sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><main style="max-width:{{ L.max }}px;margin:0 auto;padding:0 {{ L.mainPad }}px {{ L.bottom }}px">
 
 <sc-if value="{{ pageHome }}" hint-placeholder-val="{{ true }}">
-<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Discover</h1></div>
+<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ t.discover }}</h1></div>
 <div style="display:flex;gap:8px;overflow-x:auto;padding:18px 16px 0">
 <sc-for list="{{ filters }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="flex:none;height:34px;padding:0 15px;border-radius:999px;cursor:pointer;font:500 14px 'Geist';border:1px solid {{ q.bd }};background:{{ q.bg }};color:{{ q.fg }};transition:background .2s,color .2s">{{ q.label }}</button></sc-for>
 </div>
 
 <sc-if value="{{ showPeople }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;justify-content:space-between;align-items:baseline;padding:26px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">Follow the famous</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:26px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">{{ t.famous }}</span></div>
 <div style="display:grid;grid-template-columns:repeat({{ L.pCols }},minmax(0,1fr));gap:{{ L.pGap }}px;padding:0 16px">
 <sc-for list="{{ people }}" as="f" hint-placeholder-count="4">
 <button onClick="{{ f.open }}" style="position:relative;aspect-ratio:{{ L.pAR }};border:0;padding:0;border-radius:{{ L.pR }}px;overflow:hidden;cursor:pointer;text-align:left;background:#EDF0F3;transition:transform .25s cubic-bezier(.2,.8,.2,1)" style-active="transform:scale(.97)">
 <div role="img" style="position:absolute;inset:0;background:#EDF0F3 url({{ f.cover }}) 50% 22%/cover no-repeat"></div>
 <div style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(11,15,20,.95) 0%,rgba(11,15,20,.3) 45%,rgba(11,15,20,0) 65%)"></div>
-<div style="position:absolute;left:{{ L.pIn }}px;right:{{ L.pIn }}px;bottom:{{ L.pIn }}px;min-width:0"><div style="font:500 {{ L.pName }}px/1.2 'Geist';color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px"><span style="font:500 {{ L.pRet }}px 'Geist Mono';color:{{ f.pcol }};white-space:nowrap">{{ f.retText }} <span style="font-size:{{ L.pApy }}px;letter-spacing:.06em;opacity:.75">APY</span></span></div></div>
+<div style="position:absolute;left:{{ L.pIn }}px;right:{{ L.pIn }}px;bottom:{{ L.pIn }}px;min-width:0"><div style="font:500 {{ L.pName }}px/1.2 'Geist';color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px"><span style="font:500 {{ L.pRet }}px 'Geist Mono';color:{{ f.pcol }};white-space:nowrap">{{ f.retText }} <span style="font-size:{{ L.pApy }}px;letter-spacing:.06em;opacity:.75">{{ t.apy }}</span></span></div></div>
 </button>
 </sc-for>
 </div>
@@ -86,9 +86,9 @@
 <div style="padding:{{ L.bTop }}px 16px 0"><button onClick="{{ goBuild }}" style="position:relative;width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:{{ L.bPad }};border:0;border-radius:22px;cursor:pointer;text-align:left;overflow:hidden;background:radial-gradient(120% 140% at 100% 0%,#2F4A60 0%,#16222D 45%,#0B0F14 100%);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)" style-active="transform:scale(.99)">
 <div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1 1 auto">
 <div class="bb-logos" style="display:flex;flex:none"><img src="app/l-nvda.png" alt="" style="width:{{ L.bLogo }}px;height:{{ L.bLogo }}px;border-radius:50%;box-shadow:0 0 0 3px #16222D"><img src="app/l-tsla.png" alt="" style="width:{{ L.bLogo }}px;height:{{ L.bLogo }}px;border-radius:50%;margin-left:-10px;box-shadow:0 0 0 3px #16222D"><img src="app/l-btc.png" alt="" style="width:{{ L.bLogo }}px;height:{{ L.bLogo }}px;border-radius:50%;margin-left:-10px;box-shadow:0 0 0 3px #16222D"></div>
-<div style="min-width:0;white-space:nowrap;font:500 {{ L.bT }}px/1.15 'Geist';letter-spacing:-.025em">Build your own basket</div>
+<div style="min-width:0;white-space:nowrap;font:500 {{ L.bT }}px/1.15 'Geist';letter-spacing:-.025em">{{ t.buildOwn }}</div>
 </div>
-<span class="bb-btn" aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;white-space:nowrap;border-radius:999px;background:#fff;color:#0B0F14;font:600 15px 'Geist'"><span class="bb-txt">Start building</span><svg width="7" height="12" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+<span class="bb-btn" aria-hidden="true" style="flex:none;display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 15px;white-space:nowrap;border-radius:999px;background:#fff;color:#0B0F14;font:600 15px 'Geist'"><span class="bb-txt">{{ t.startBuilding }}</span><svg width="7" height="12" viewBox="0 0 8 14"><path d="M1 1l6 6-6 6" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
 </button></div>
 <sc-if value="{{ showThemes }}" hint-placeholder-val="{{ true }}">
 <div style="display:flex;justify-content:space-between;align-items:baseline;padding:30px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">{{ themeTitle }}</span><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ themeCount }}</span></div>
@@ -96,7 +96,7 @@
 <sc-for list="{{ themes }}" as="f" hint-placeholder-count="6">
 <button onClick="{{ f.open }}" style="border:1px solid #E6E9ED;padding:0;border-radius:18px;overflow:hidden;cursor:pointer;text-align:left;background:#FFFFFF;min-width:0;transition:transform .25s cubic-bezier(.2,.8,.2,1)" style-active="transform:scale(.97)">
 <div role="img" style="aspect-ratio:16/10;background:#EDF0F3 url({{ f.cover }}) 50% 18%/cover no-repeat"></div>
-<div style="padding:10px 12px 12px;min-width:0"><div style="font:500 14px/1.25 'Geist';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px"><span style="font:500 13px 'Geist Mono';color:{{ f.col }}">{{ f.retText }} <span style="font-size:10px;letter-spacing:.06em;color:#6B7785">APY</span></span></div></div>
+<div style="padding:10px 12px 12px;min-width:0"><div style="font:500 14px/1.25 'Geist';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ f.name }}</div><div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:8px"><span style="font:500 13px 'Geist Mono';color:{{ f.col }}">{{ f.retText }} <span style="font-size:10px;letter-spacing:.06em;color:#6B7785">{{ t.apy }}</span></span></div></div>
 </button>
 </sc-for>
 </div>
@@ -125,7 +125,7 @@
 <sc-for list="{{ ranges }}" as="q" hint-placeholder-count="5"><button onClick="{{ q.pick }}" style="flex:1;height:32px;border:0;border-radius:999px;cursor:pointer;font:500 12px 'Geist Mono';letter-spacing:.04em;background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
 </div>
 
-<div style="display:flex;justify-content:space-between;align-items:baseline;padding:30px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">Holdings</span><sc-if value="{{ isMix }}" hint-placeholder-val="{{ false }}"><button onClick="{{ editMix }}" style="height:32px;padding:0 16px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 14px 'Geist';cursor:pointer" style-active="transform:scale(.97)">Edit</button></sc-if><sc-if value="{{ notMix }}" hint-placeholder-val="{{ true }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ cur.count }}</span></sc-if></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding:30px 16px 12px"><span style="font:500 20px 'Geist';letter-spacing:-.02em">{{ t.holdings }}</span><sc-if value="{{ isMix }}" hint-placeholder-val="{{ false }}"><button onClick="{{ editMix }}" style="height:32px;padding:0 16px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 14px 'Geist';cursor:pointer" style-active="transform:scale(.97)">{{ t.edit }}</button></sc-if><sc-if value="{{ notMix }}" hint-placeholder-val="{{ true }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ cur.count }}</span></sc-if></div>
 <div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
 <sc-for list="{{ cur.hold }}" as="h" hint-placeholder-count="4">
 <div style="display:grid;grid-template-columns:32px minmax(0,1fr) minmax(40px,110px) 44px;align-items:center;gap:12px;padding:0 14px;height:58px;border-bottom:{{ h.sep }}">
@@ -144,30 +144,30 @@
 <sc-for list="{{ cur.stats }}" as="st" hint-placeholder-count="6"><div style="background:#FFFFFF;padding:14px 14px 13px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ st.k }}</div><div style="font:400 19px 'Geist';letter-spacing:-.02em;margin-top:6px;color:{{ st.c }}">{{ st.v }}</div></div></sc-for>
 </div>
 
-<sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">Earn extra</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div></div><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="Earn extra" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
+<sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ t.earnExtra }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div></div><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="{{ t.earnExtra }}" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;flex-direction:column;gap:10px">
 <sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 4px"><span style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ posLabel }}</span><span style="font:400 18px 'Geist';letter-spacing:-.02em">{{ posVal }}</span></div></sc-if>
-<button onClick="{{ openBuy }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Buy</button>
-<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSell }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer" style-active="transform:scale(.97)">Sell</button></sc-if>
+<button onClick="{{ openBuy }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">{{ t.buy }}</button>
+<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSell }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer" style-active="transform:scale(.97)">{{ t.sell }}</button></sc-if>
 </div></sc-if>
 </div>
 </div>
 <sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}"><div style="position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(640px,100%);z-index:45;padding:12px 16px max(18px,env(safe-area-inset-bottom));background:rgba(243,243,243,.86);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);border-top:1px solid rgba(11,15,20,.06);display:flex;align-items:center;gap:14px">
 <sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><div style="flex:1;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ posLabel }}</div><div style="font:400 17px 'Geist';letter-spacing:-.02em;margin-top:3px">{{ posVal }}</div></div></sc-if>
-<button onClick="{{ openBuy }}" style="flex:{{ buyFlex }};height:50px;padding:0 {{ buyPad }}px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Buy</button>
-<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSell }}" style="height:50px;padding:0 26px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer" style-active="transform:scale(.97)">Sell</button></sc-if>
+<button onClick="{{ openBuy }}" style="flex:{{ buyFlex }};height:50px;padding:0 {{ buyPad }}px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">{{ t.buy }}</button>
+<sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openSell }}" style="height:50px;padding:0 26px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer" style-active="transform:scale(.97)">{{ t.sell }}</button></sc-if>
 </div></sc-if>
 </sc-if>
 
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.buildW }};margin:0 auto">
 <div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ bTitle }}</h1></div>
 <sc-if value="{{ b0 }}" hint-placeholder-val="{{ true }}">
-<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">PICK UP TO 10</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ pickCount }}</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">{{ t.pickUpTo }}</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ pickCount }}</span></div>
 <div style="display:flex;gap:8px;align-items:center;padding:0 16px 12px">
 <sc-for list="{{ bcats }}" as="q" hint-placeholder-count="2"><button onClick="{{ q.pick }}" style="flex:none;height:38px;padding:0 16px;border-radius:999px;cursor:pointer;font:500 14px 'Geist';border:1px solid {{ q.bd }};background:{{ q.bg }};color:{{ q.fg }};transition:background .2s,color .2s">{{ q.label }}</button></sc-for>
-<label style="flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:8px;padding:0 14px;border:1px solid #E6E9ED;border-radius:999px;background:#fff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7785" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" value="{{ q }}" onInput="{{ onQ }}" placeholder="Search" aria-label="Search assets" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"></label>
+<label style="flex:1;min-width:0;height:38px;display:flex;align-items:center;gap:8px;padding:0 14px;border:1px solid #E6E9ED;border-radius:999px;background:#fff"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B7785" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input type="search" value="{{ q }}" onInput="{{ onQ }}" placeholder="{{ t.search }}" aria-label="{{ t.searchAssets }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"></label>
 </div>
-<sc-if value="{{ noAssets }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 16px;font:400 15px 'Geist';color:#6B7785;text-align:center">No match</div></sc-if>
+<sc-if value="{{ noAssets }}" hint-placeholder-val="{{ false }}"><div style="padding:24px 16px;font:400 15px 'Geist';color:#6B7785;text-align:center">{{ t.noMatch }}</div></sc-if>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:{{ L.aGap }}px;padding:0 16px">
 <sc-for list="{{ assets }}" as="a" hint-placeholder-count="15">
 <button onClick="{{ a.toggle }}" style="position:relative;cursor:pointer;background:{{ a.bg }};border:1px solid {{ a.bd }};border-radius:16px;padding:12px 4px 10px;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;transition:background .2s,border-color .2s" style-active="transform:scale(.95)">
@@ -179,7 +179,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ b1 }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;justify-content:flex-end;padding:20px 16px 12px"><button onClick="{{ splitEven }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Split evenly</button></div>
+<div style="display:flex;justify-content:flex-end;padding:20px 16px 12px"><button onClick="{{ splitEven }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ t.splitEven }}</button></div>
 <div style="margin:0 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;padding:0 16px">
 <div>
 <sc-for list="{{ picks }}" as="p" hint-placeholder-count="2">
@@ -188,31 +188,31 @@
 <div role="img" style="width:36px;height:36px;flex:none;border-radius:50%;background:#EDF0F3 url({{ p.logo }}) center/cover no-repeat"></div>
 <div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ p.t }}</div><div style="font:400 12px 'Geist';color:#6B7785;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</div></div>
 <sc-if value="{{ p.lockable }}" hint-placeholder-val="{{ true }}"><button onClick="{{ p.toggleLock }}" aria-label="{{ p.lockLabel }}" aria-pressed="{{ p.locked }}" style="flex:none;width:32px;height:32px;border:0;border-radius:50%;background:{{ p.lockBg }};cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;transition:background .2s"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ p.lockFg }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="{{ p.shackle }}"></path></svg></button></sc-if>
-<label style="flex:none;display:flex;align-items:baseline;gap:2px;height:40px;cursor:text"><input type="text" inputmode="numeric" value="{{ p.val }}" onInput="{{ p.type }}" onFocus="{{ p.focus }}" onBlur="{{ p.blur }}" aria-label="{{ p.t }} percent" style="width:3ch;border:0;outline:0;background:transparent;text-align:right;font:400 22px/40px 'Geist';letter-spacing:-.02em;color:#0B0F14;padding:0"><span style="font:400 14px 'Geist';color:#6B7785">%</span></label>
+<label style="flex:none;display:flex;align-items:baseline;gap:2px;height:40px;cursor:text"><input type="text" inputmode="numeric" value="{{ p.val }}" onInput="{{ p.type }}" onFocus="{{ p.focus }}" onBlur="{{ p.blur }}" aria-label="{{ p.pctLabel }}" style="width:3ch;border:0;outline:0;background:transparent;text-align:right;font:400 22px/40px 'Geist';letter-spacing:-.02em;color:#0B0F14;padding:0"><span style="font:400 14px 'Geist';color:#6B7785">%</span></label>
 </div>
 <div style="position:relative;height:4px;margin:12px 8px 0;border-radius:2px;background:#EDF0F3"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ p.w }}%;border-radius:2px;background:{{ p.fill }}"></div><span style="position:absolute;top:50%;left:{{ p.w }}%;width:16px;height:16px;margin:-8px 0 0 -8px;border-radius:50%;background:#FFFFFF;box-shadow:0 0 0 1px rgba(11,15,20,.2),0 1px 3px rgba(11,15,20,.18)"></span></div>
 </div>
 </sc-for>
 </div>
-<button onClick="{{ editPicks }}" style="display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:16px 0;cursor:pointer;font:500 15px 'Geist';color:#2F6690"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F6690" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Add or remove stocks</button>
+<button onClick="{{ editPicks }}" style="display:flex;align-items:center;gap:10px;width:100%;border:0;background:transparent;padding:16px 0;cursor:pointer;font:500 15px 'Geist';color:#2F6690"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2F6690" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>{{ t.addRemove }}</button>
 </div>
 </sc-if>
 <sc-if value="{{ b2 }}" hint-placeholder-val="{{ false }}">
 <div style="margin:24px 16px 0;padding:3px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:999px;display:flex">
 <sc-for list="{{ freqs }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.pick }}" style="flex:1;height:34px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }};transition:background .2s">{{ q.label }}</button></sc-for>
 </div>
-<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">START DATE</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ startText }}</span></div>
+<div style="display:flex;align-items:baseline;justify-content:space-between;padding:26px 16px 12px"><span style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">{{ t.startDate }}</span><span style="font:500 12px 'Geist Mono';color:#6B7785">{{ startText }}</span></div>
 <div style="margin:0 16px;padding:14px 12px 10px;background:#FFFFFF;border:1px solid #E6E9ED;border-radius:18px">
-<div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px"><button onClick="{{ calPrev }}" aria-label="Previous month" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;cursor:pointer;opacity:{{ calPrevO }};display:flex;align-items:center;justify-content:center"><svg width="8" height="13" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><span style="font:500 15px 'Geist'">{{ calTitle }}</span><button onClick="{{ calNext }}" aria-label="Next month" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;cursor:pointer;opacity:{{ calNextO }};display:flex;align-items:center;justify-content:center"><svg width="8" height="13" viewBox="0 0 10 17"><path d="M1.5 1.5L8 8.5l-6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
-<div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font:500 11px 'Geist Mono';color:#6B7785;padding-bottom:6px"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:0 4px 10px"><button onClick="{{ calPrev }}" aria-label="{{ t.prevMonth }}" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;cursor:pointer;opacity:{{ calPrevO }};display:flex;align-items:center;justify-content:center"><svg width="8" height="13" viewBox="0 0 10 17"><path d="M8.5 1.5L2 8.5l6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button><span style="font:500 15px 'Geist'">{{ calTitle }}</span><button onClick="{{ calNext }}" aria-label="{{ t.nextMonth }}" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;cursor:pointer;opacity:{{ calNextO }};display:flex;align-items:center;justify-content:center"><svg width="8" height="13" viewBox="0 0 10 17"><path d="M1.5 1.5L8 8.5l-6.5 7" fill="none" stroke="#0B0F14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></button></div>
+<div style="display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font:500 11px 'Geist Mono';color:#6B7785;padding-bottom:6px"><sc-for list="{{ t.week }}" as="wd" hint-placeholder-count="7"><span>{{ wd }}</span></sc-for></div>
 <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px">
 <sc-for list="{{ calCells }}" as="c" hint-placeholder-count="30"><button onClick="{{ c.pick }}" style="width:40px;height:40px;margin:0 auto;display:block;border:1px solid {{ c.bd }};border-radius:50%;background:{{ c.bg }};color:{{ c.fg }};font:400 14px 'Geist';cursor:{{ c.cur }};padding:0;transition:background .15s">{{ c.d }}</button></sc-for>
 </div>
 </div>
 </sc-if>
 <sc-if value="{{ b3 }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;align-items:center;gap:16px;margin:24px 16px 0"><span role="img" aria-label="Basket cover" style="flex:none;width:72px;height:72px;border-radius:16px;background:{{ mixCoverBg }};box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"></span><span style="display:flex;flex-direction:column;align-items:flex-start;gap:8px"><label style="position:relative;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 14px 'Geist';color:#0B0F14;cursor:pointer">{{ mixCoverLabel }}<input type="file" accept="image/*" onChange="{{ onMixCover }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><sc-if value="{{ hasMixCover }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removeMixCover }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">Remove photo</button></sc-if></span></div>
-<label style="display:flex;align-items:center;gap:12px;margin:24px 16px 0;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="My basket" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
+<div style="display:flex;align-items:center;gap:16px;margin:24px 16px 0"><span role="img" aria-label="{{ t.basketCover }}" style="flex:none;width:72px;height:72px;border-radius:16px;background:{{ mixCoverBg }};box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"></span><span style="display:flex;flex-direction:column;align-items:flex-start;gap:8px"><label style="position:relative;display:inline-flex;align-items:center;height:36px;padding:0 16px;border-radius:999px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;font:500 14px 'Geist';color:#0B0F14;cursor:pointer">{{ mixCoverLabel }}<input type="file" accept="image/*" onChange="{{ onMixCover }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label><sc-if value="{{ hasMixCover }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removeMixCover }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">{{ t.removeCover }}</button></sc-if></span></div>
+<label style="display:flex;align-items:center;gap:12px;margin:24px 16px 0;padding:0 14px;height:54px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ mixName }}" onInput="{{ onName }}" maxlength="28" placeholder="{{ t.myBasket }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 17px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ nameLen }}/28</span></label>
 </sc-if>
 <sc-if value="{{ pageBuild }}" hint-placeholder-val="{{ false }}"><div style="position:fixed;left:50%;bottom:{{ L.mixB }}px;transform:translateX(-50%);width:min(640px,100%);z-index:44;padding:0 16px">
 <button onClick="{{ bNext }}" style="width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ mixBtn.bg }};color:{{ mixBtn.fg }};box-shadow:{{ mixBtn.sh }};transition:background .2s">{{ mixBtn.label }}</button>
@@ -221,16 +221,16 @@
 </sc-if>
 
 <sc-if value="{{ pageProfileOut }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.profW }};margin:0 auto">
-<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">Profile</h1></div>
+<div style="padding:22px 16px 0"><h1 style="margin:0;font:500 34px/1.1 'Geist';letter-spacing:-.03em">{{ t.profile }}</h1></div>
 <div style="margin:24px 16px 0;padding:20px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;flex-direction:column;gap:14px"><div style="font:400 15px/1.5 'Geist';color:#5E6A76">{{ outText }}</div><button onClick="{{ signInProfile }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">{{ outBtn }}</button></div>
 </div></sc-if>
 <sc-if value="{{ pageProfile }}" hint-placeholder-val="{{ false }}"><div style="max-width:{{ L.profW }};margin:0 auto">
 <div style="display:flex;align-items:center;gap:12px;padding:20px 16px 0">
-<button onClick="{{ openAcct }}" aria-label="Edit profile" style="width:44px;height:44px;flex:none;padding:0;border:0;cursor:pointer;border-radius:50%;background:{{ av.bg }};display:flex;align-items:center;justify-content:center;font:500 18px 'Geist';color:#fff">{{ av.letter }}</button>
+<button onClick="{{ openAcct }}" aria-label="{{ t.editProfile }}" style="width:44px;height:44px;flex:none;padding:0;border:0;cursor:pointer;border-radius:50%;background:{{ av.bg }};display:flex;align-items:center;justify-content:center;font:500 18px 'Geist';color:#fff">{{ av.letter }}</button>
 <div style="flex:1;min-width:0"><div style="font:500 17px 'Geist'">{{ profileName }}</div><div style="font:400 13px 'Geist';color:#6B7785">{{ handleText }}</div></div>
-<button onClick="{{ openAcct }}" aria-label="Account" style="width:38px;height:38px;border-radius:50%;border:0;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0F14" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg></button>
+<button onClick="{{ openAcct }}" aria-label="{{ t.account }}" style="width:38px;height:38px;border-radius:50%;border:0;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0F14" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg></button>
 </div>
-<div style="padding:26px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px"><div style="min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785">PORTFOLIO VALUE</div><div style="font:300 46px/1 'Geist';letter-spacing:-.045em;margin-top:10px">{{ pv.big }}</div><div style="display:flex;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ pv.col }}"><span>{{ pv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ pv.when }}</span></div></div><div style="display:flex;gap:8px;flex:none"><button onClick="{{ addMoney }}" style="height:42px;padding:0 20px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)">Add money</button><button style="height:42px;padding:0 20px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">Withdraw</button></div></div>
+<div style="padding:26px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px"><div style="min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785">{{ t.pv }}</div><div style="font:300 46px/1 'Geist';letter-spacing:-.045em;margin-top:10px">{{ pv.big }}</div><div style="display:flex;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ pv.col }}"><span>{{ pv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ pv.when }}</span></div></div><div style="display:flex;gap:8px;flex:none"><button onClick="{{ addMoney }}" style="height:42px;padding:0 20px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)">{{ t.addMoney }}</button><button style="height:42px;padding:0 20px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">{{ t.withdraw }}</button></div></div>
 <div onPointerMove="{{ pScrub }}" onPointerLeave="{{ pLeave }}" style="position:relative;height:{{ L.pcH }}px;margin:20px 16px 0;touch-action:pan-y;cursor:crosshair">
 <svg viewBox="0 0 600 160" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><defs><linearGradient id="pga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F6690" stop-opacity=".18"></stop><stop offset="1" stop-color="#2F6690" stop-opacity="0"></stop></linearGradient></defs><path d="{{ pc.area }}" fill="url(#pga)"></path><path d="{{ pc.p }}" fill="none" stroke="#2F6690" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
 <div style="position:absolute;top:0;bottom:0;left:{{ pc.hx }}%;width:1px;background:rgba(11,15,20,.25);opacity:{{ pc.ho }};pointer-events:none"></div>
@@ -259,15 +259,15 @@
 </sc-for>
 <div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:12px 14px">
 <img src="app/l-usdt.png" alt="" style="width:40px;height:40px;border-radius:50%">
-<div style="min-width:0"><div style="font:500 15px 'Geist'">Cash</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ cashSub }}</div></div>
+<div style="min-width:0"><div style="font:500 15px 'Geist'">{{ t.cash }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ cashSub }}</div></div>
 <div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap">{{ cashText }}</div>
-<button onClick="{{ openEarn }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Earn</button>
+<button onClick="{{ openEarn }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">{{ t.earn }}</button>
 </div>
 <sc-if value="{{ earning }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid #E6E9ED">
 <span style="width:40px;height:40px;border-radius:50%;background:#EDF0F3;color:#16854F;display:flex;align-items:center;justify-content:center;font:500 15px 'Geist Mono'">%</span>
-<div style="min-width:0"><div style="font:500 15px 'Geist'">Earning</div><div style="font:400 12px 'Geist';color:#16854F;margin-top:2px">{{ earnSub }}</div></div>
+<div style="min-width:0"><div style="font:500 15px 'Geist'">{{ t.earning }}</div><div style="font:400 12px 'Geist';color:#16854F;margin-top:2px">{{ earnSub }}</div></div>
 <div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap">{{ earnText }}</div>
-<button onClick="{{ openEarnOut }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Withdraw</button>
+<button onClick="{{ openEarnOut }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">{{ t.earnOut }}</button>
 </div></sc-if>
 </div>
 </sc-if>
@@ -300,7 +300,7 @@
 </div>
 
 <sc-if value="{{ mAmount }}" hint-placeholder-val="{{ false }}">
-<div style="text-align:center;margin-top:clamp(6px,2vh,20px)"><div style="font:300 clamp(44px,8vh,60px)/1 'Geist';letter-spacing:-.05em;color:{{ amtColor }}">{{ amtText }}</div><div style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785;margin-top:12px">{{ availText }}</div><sc-if value="{{ showFaucet }}" hint-placeholder-val="{{ false }}"><button onClick="{{ useFaucet }}" style="margin-top:10px;border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">Use free test USDT instead</button></sc-if></div>
+<div style="text-align:center;margin-top:clamp(6px,2vh,20px)"><div style="font:300 clamp(44px,8vh,60px)/1 'Geist';letter-spacing:-.05em;color:{{ amtColor }}">{{ amtText }}</div><div style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785;margin-top:12px">{{ availText }}</div><sc-if value="{{ showFaucet }}" hint-placeholder-val="{{ false }}"><button onClick="{{ useFaucet }}" style="margin-top:10px;border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ t.useFaucet }}</button></sc-if></div>
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:clamp(12px,2.5vh,22px)"><sc-for list="{{ quick }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.pick }}" style="height:36px;border:1px solid {{ q.bd }};border-radius:999px;cursor:pointer;font:500 13px 'Geist Mono';background:{{ q.bg }};color:{{ q.fg }}">{{ q.label }}</button></sc-for></div>
 <div style="display:grid;grid-template-columns:repeat(3,1fr);margin-top:6px"><sc-for list="{{ keys }}" as="k" hint-placeholder-count="12"><button onClick="{{ k.press }}" style="height:clamp(38px,7.2vh,54px);border:0;background:transparent;border-radius:14px;font:300 26px 'Geist';cursor:pointer" style-active="background:#EDF0F3">{{ k.k }}</button></sc-for></div>
 <button onClick="{{ toReview }}" style="position:sticky;bottom:0;margin-top:6px;width:100%;height:52px;border:0;border-radius:999px;font:600 16px 'Geist';cursor:pointer;background:{{ amtBtn.bg }};color:{{ amtBtn.fg }};box-shadow:{{ amtBtn.sh }}">{{ amtBtn.label }}</button>
@@ -309,7 +309,7 @@
 <sc-if value="{{ mReview }}" hint-placeholder-val="{{ false }}">
 <div style="text-align:center;margin-top:18px"><div role="img" style="width:64px;height:64px;margin:0 auto;border-radius:16px;background:#EDF0F3 url({{ sheetCover }}) center/cover no-repeat"></div><div style="font:500 15px 'Geist';margin-top:12px;color:#3C4651">{{ sheetName }}</div><div style="font:300 44px 'Geist';letter-spacing:-.045em;margin-top:6px">{{ amtText }} <span style="font:500 14px 'Geist Mono';letter-spacing:.06em;color:#6B7785">USDT</span></div></div>
 <div style="margin-top:22px;border-radius:16px;background:#F3F5F7;overflow:hidden"><sc-for list="{{ reviewRows }}" as="r" hint-placeholder-count="3"><div style="display:flex;justify-content:space-between;align-items:center;padding:0 14px;height:48px;border-bottom:{{ r.sep }};font:400 14px 'Geist'"><span style="color:#5E6A76">{{ r.k }}</span><span style="font-family:'Geist Mono';font-size:13px">{{ r.v }}</span></div></sc-for></div>
-<sc-if value="{{ showSE }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;padding:14px;border-radius:16px;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ seTitle }}</div><div style="font:400 12px/1.45 'Geist';color:#6B7785;margin-top:3px">{{ seSub }}</div></div><button onClick="{{ seToggle }}" role="switch" aria-checked="{{ seOn }}" aria-label="Earn extra" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seCur }};background:{{ seBg }};display:flex;justify-content:{{ seJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
+<sc-if value="{{ showSE }}" hint-placeholder-val="{{ false }}"><div style="margin-top:12px;padding:14px;border-radius:16px;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ seTitle }}</div><div style="font:400 12px/1.45 'Geist';color:#6B7785;margin-top:3px">{{ seSub }}</div></div><button onClick="{{ seToggle }}" role="switch" aria-checked="{{ seOn }}" aria-label="{{ t.earnExtra }}" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seCur }};background:{{ seBg }};display:flex;justify-content:{{ seJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
 <p style="margin:12px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785">{{ reviewNote }}</p>
 <button onClick="{{ confirm }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:{{ confBg }};color:{{ confFg }};font:600 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 8V5a2 2 0 012-2h3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3M9 9v1.5M15 9v1.5M12 9v4.5h-1M9 16.5c1.6 1.2 4.4 1.2 6 0"></path></svg>{{ confirmLabel }}</button>
 </sc-if>
@@ -323,8 +323,8 @@
 <div style="width:80px;height:80px;border-radius:50%;background:{{ doneBg }};display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px {{ doneSh }}"><svg width="36" height="28" viewBox="0 0 46 36"><path d="{{ doneIcon }}" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
 <div style="font:500 26px 'Geist';letter-spacing:-.03em;margin-top:22px">{{ doneTitle }}</div>
 <div style="font:500 12px 'Geist Mono';letter-spacing:.04em;color:#5E6A76;margin-top:8px;text-align:center">{{ doneText }}</div>
-<sc-if value="{{ doneNote }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785;text-align:center">{{ doneNote }}</p></sc-if>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;width:100%"><button onClick="{{ closeModal }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 15px 'Geist';cursor:pointer">Done</button><button onClick="{{ doneRight }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer">{{ doneRightLabel }}</button></div>
+<sc-if value="{{ doneNote }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785;text-align:center;text-wrap:balance">{{ doneNote }}</p></sc-if>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;width:100%"><button onClick="{{ closeModal }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 15px 'Geist';cursor:pointer">{{ t.done }}</button><button onClick="{{ doneRight }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer">{{ doneRightLabel }}</button></div>
 </div>
 </sc-if>
 </div>
@@ -332,72 +332,95 @@
 <div onClick="{{ closeAcct }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ acctO }};pointer-events:{{ acctPE }};transition:opacity .35s"></div>
 <div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ acctY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#F3F3F3;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
 <div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
-<div style="position:sticky;top:-8px;z-index:2;background:#F3F3F3;display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">Edit profile</span><button onClick="{{ closeAcct }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">Done</button></div>
+<div style="position:sticky;top:-8px;z-index:2;background:#F3F3F3;display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">{{ t.editProfile }}</span><button onClick="{{ closeAcct }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">{{ t.done }}</button></div>
 <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:8px 0 4px">
 <label style="position:relative;width:88px;height:88px;border-radius:50%;cursor:pointer;background:{{ av.bg }};display:flex;align-items:center;justify-content:center;font:500 34px 'Geist';color:#fff">{{ av.letter }}<input type="file" accept="image/*" onChange="{{ onPhoto }}" style="position:absolute;inset:0;opacity:0;cursor:pointer"><span style="position:absolute;right:-2px;bottom:-2px;width:30px;height:30px;border-radius:50%;background:#0B0F14;box-shadow:0 0 0 3px #F3F3F3;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"></path><circle cx="12" cy="13" r="4"></circle></svg></span></label>
 <div style="display:flex;gap:10px">
-<sc-for list="{{ avOpts }}" as="o" hint-placeholder-count="5"><button onClick="{{ o.pick }}" aria-label="Avatar colour" style="width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;background:{{ o.bg }};box-shadow:{{ o.ring }}"></button></sc-for>
+<sc-for list="{{ avOpts }}" as="o" hint-placeholder-count="5"><button onClick="{{ o.pick }}" aria-label="{{ t.avatarColor }}" style="width:30px;height:30px;border-radius:50%;border:0;cursor:pointer;background:{{ o.bg }};box-shadow:{{ o.ring }}"></button></sc-for>
 </div>
-<sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removePhoto }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">Remove photo</button></sc-if>
+<sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><button onClick="{{ removePhoto }}" style="border:0;background:transparent;font:400 14px 'Geist';color:#D23F2E;cursor:pointer;padding:0">{{ t.removePhoto }}</button></sc-if>
 </div>
-<div style="margin-top:16px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">DISPLAY NAME</div>
-<label style="display:flex;align-items:center;gap:12px;padding:0 14px;height:52px;border-radius:16px;background:#F3F5F7"><input value="{{ profileName }}" onInput="{{ onPname }}" maxlength="24" placeholder="Your name" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ pnameLen }}/24</span></label>
-<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">SIGN-IN</div>
+<div style="margin-top:16px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">{{ t.displayName }}</div>
+<label style="display:flex;align-items:center;gap:12px;padding:0 14px;height:52px;border-radius:16px;background:#F3F5F7"><input value="{{ profileName }}" onInput="{{ onPname }}" maxlength="24" placeholder="{{ t.yourName }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><span style="font:500 11px 'Geist Mono';color:#6B7785">{{ pnameLen }}/24</span></label>
+<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">{{ t.signInMethods }}</div>
 <div style="border-radius:16px;background:#F3F5F7;overflow:hidden">
-<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px;border-bottom:1px solid #EDF0F3"><div style="flex:1"><div style="font:400 15px 'Geist'">Email</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ emailSub }}</div></div><sc-if value="{{ emailLinked }}" hint-placeholder-val="{{ false }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">LINKED</span></sc-if><sc-if value="{{ emailOpen }}" hint-placeholder-val="{{ true }}"><button onClick="{{ linkGoogle }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Link Google</button></sc-if></div>
-<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:400 15px 'Geist'">X</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ xSub }}</div></div><sc-if value="{{ xLinked }}" hint-placeholder-val="{{ true }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">LINKED</span></sc-if><sc-if value="{{ xOpen }}" hint-placeholder-val="{{ false }}"><button onClick="{{ linkX }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Link X</button></sc-if></div>
+<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px;border-bottom:1px solid #EDF0F3"><div style="flex:1"><div style="font:400 15px 'Geist'">{{ t.email }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ emailSub }}</div></div><sc-if value="{{ emailLinked }}" hint-placeholder-val="{{ false }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">{{ t.linked }}</span></sc-if><sc-if value="{{ emailOpen }}" hint-placeholder-val="{{ true }}"><button onClick="{{ linkGoogle }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">{{ t.linkGoogle }}</button></sc-if></div>
+<div style="display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:400 15px 'Geist'">X</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ xSub }}</div></div><sc-if value="{{ xLinked }}" hint-placeholder-val="{{ true }}"><span style="font:500 11px 'Geist Mono';letter-spacing:.06em;color:#16854F">{{ t.linked }}</span></sc-if><sc-if value="{{ xOpen }}" hint-placeholder-val="{{ false }}"><button onClick="{{ linkX }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">{{ t.linkX }}</button></sc-if></div>
 </div>
-<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">WALLET</div>
-<div style="border-radius:16px;background:#F3F5F7;display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:500 14px 'Geist Mono'">{{ addrShort }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">Only you hold the key</div></div><button onClick="{{ exportKey }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">Export key</button></div>
+<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">{{ t.wallet }}</div>
+<div style="border-radius:16px;background:#F3F5F7;display:flex;align-items:center;gap:12px;padding:0 14px;height:58px"><div style="flex:1"><div style="font:500 14px 'Geist Mono'">{{ addrShort }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ t.onlyYou }}</div></div><button onClick="{{ exportKey }}" style="height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 13px 'Geist';cursor:pointer">{{ t.exportKey }}</button></div>
 <sc-if value="{{ linkErr }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 4px 0;font:400 13px/1.5 'Geist';color:#D23F2E">{{ linkErr }}</p></sc-if>
-<button onClick="{{ signOut }}" style="margin-top:22px;width:100%;height:52px;border:0;border-radius:16px;background:#F3F5F7;font:500 16px 'Geist';color:#D23F2E;cursor:pointer">Sign out</button>
+<button onClick="{{ signOut }}" style="margin-top:22px;width:100%;height:52px;border:0;border-radius:16px;background:#F3F5F7;font:500 16px 'Geist';color:#D23F2E;cursor:pointer">{{ t.signOut }}</button>
 </div>
 
 <div onClick="{{ closeSignIn }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ siO }};pointer-events:{{ siPE }};transition:opacity .35s"></div>
 <div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);min-height:min(640px,calc(100dvh - 8px));max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ siY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#F3F3F3;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
 <div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><button onClick="{{ closeSignIn }}" style="border:0;background:transparent;font:400 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:left;padding:0">Cancel</button><span style="font:500 16px 'Geist'">Sign in</span><span style="min-width:60px"></span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><button onClick="{{ closeSignIn }}" style="border:0;background:transparent;font:400 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:left;padding:0">{{ t.cancel }}</button><span style="font:500 16px 'Geist'">{{ t.signIn }}</span><span style="min-width:60px"></span></div>
 <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 0 6px;text-align:center"><img src="assets/cre8-mark-512.png" alt="" style="width:56px;height:56px;border-radius:14px"><div style="font:500 22px/1.2 'Geist';letter-spacing:-.02em">{{ siTitle }}</div><div style="font:400 14px/1.5 'Geist';color:#5E6A76;max-width:340px">{{ siSub }}</div></div>
 <sc-if value="{{ sh_siBusy }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;align-items:center;gap:14px;padding:30px 0"><svg width="56" height="56" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#EDF0F3" stroke-width="5"></circle><circle cx="48" cy="48" r="42" fill="none" stroke="#2F6690" stroke-width="5" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="190" transform="rotate(-90 48 48)"></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76">{{ siBusyText }}</div></div></sc-if>
 <sc-if value="{{ sh_siForm }}" hint-placeholder-val="{{ true }}">
-<div style="margin-top:16px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">INVITE CODE</div>
-<label style="display:flex;align-items:center;gap:12px;padding:0 14px;height:52px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="New here? Enter your code" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 16px 'Geist Mono';letter-spacing:.06em;color:#0B0F14;padding:0"></label>
-<button onClick="{{ signInX }}" style="margin-top:14px;width:100%;height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">Continue with X</button>
-<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">ALREADY HAVE ACCESS</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button onClick="{{ signInGoogle }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">Google</button><button onClick="{{ showEmail }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">Email</button></div>
+<div style="margin-top:16px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">{{ t.inviteCodeCap }}</div>
+<label style="display:flex;align-items:center;gap:12px;padding:0 14px;height:52px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="{{ t.newHere }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 16px 'Geist Mono';letter-spacing:.06em;color:#0B0F14;padding:0"></label>
+<button onClick="{{ signInX }}" style="margin-top:14px;width:100%;height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)" style-active="transform:scale(.97)">{{ t.contX }}</button>
+<div style="margin-top:22px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">{{ t.haveAccess }}</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button onClick="{{ signInGoogle }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">Google</button><button onClick="{{ showEmail }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 15px 'Geist';cursor:pointer">{{ t.email }}</button></div>
 <sc-if value="{{ sh_siEmail }}" hint-placeholder-val="{{ false }}"><label style="margin-top:12px;display:flex;align-items:center;gap:12px;padding:0 6px 0 14px;height:52px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input type="{{ emailType }}" inputmode="{{ emailMode }}" value="{{ emailVal }}" onInput="{{ onEmail }}" placeholder="{{ emailPh }}" autocomplete="off" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><button onClick="{{ emailGo }}" style="height:40px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ emailBtn }}</button></label></sc-if>
 </sc-if>
 <sc-if value="{{ sh_siErr }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 4px 0;font:400 13px/1.5 'Geist';color:#D23F2E;text-align:center">{{ siErr }}</p></sc-if>
-<sc-if value="{{ sh_siRetry }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button onClick="{{ signOut }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">Sign out</button><button onClick="{{ siRetryGo }}" style="height:50px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:600 15px 'Geist';cursor:pointer">Try again</button></div></sc-if>
-<p style="margin:22px 4px 0;font:400 12px/1.5 'Geist';color:#6B7785;text-align:center">Testnet. Test USDT has no value.</p>
+<sc-if value="{{ sh_siRetry }}" hint-placeholder-val="{{ false }}"><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button onClick="{{ signOut }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">{{ t.signOut }}</button><button onClick="{{ siRetryGo }}" style="height:50px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:600 15px 'Geist';cursor:pointer">{{ t.tryAgain }}</button></div></sc-if>
+<p style="margin:22px 4px 0;font:400 12px/1.5 'Geist';color:#6B7785;text-align:center">{{ t.testnetNote }}</p>
 </div>
 
  <div onClick="{{ closeEarn }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ ernO }};pointer-events:{{ ernPE }};transition:opacity .35s"></div>
 <div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ ernY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
 <div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">{{ ernTitle }}</span><button onClick="{{ closeEarn }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">Done</button></div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">{{ ernTitle }}</span><button onClick="{{ closeEarn }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">{{ t.done }}</button></div>
 <p style="margin:6px 2px 14px;font:400 14px/1.5 'Geist';color:#5E6A76">{{ ernSub }}</p>
-<sc-if value="{{ ernSoon }}" hint-placeholder-val="{{ true }}"><div style="padding:22px 16px;border-radius:16px;background:#F3F5F7;text-align:center"><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">COMING SOON</div><div style="font:400 14px/1.5 'Geist';color:#5E6A76;margin-top:8px">Live rates from our partner vaults will show here. Your cash stays put until you choose to earn.</div></div></sc-if>
+<sc-if value="{{ ernSoon }}" hint-placeholder-val="{{ true }}"><div style="padding:22px 16px;border-radius:16px;background:#F3F5F7;text-align:center"><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#2F6690">{{ t.comingSoon }}</div><div style="font:400 14px/1.5 'Geist';color:#5E6A76;margin-top:8px;text-wrap:balance">{{ t.earnSoon }}</div></div></sc-if>
 <sc-if value="{{ hasVaults }}" hint-placeholder-val="{{ false }}"><div style="border-radius:16px;border:1px solid #E6E9ED;overflow:hidden">
-<sc-for list="{{ vaults }}" as="v" hint-placeholder-count="0"><button onClick="{{ v.pick }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;border:0;border-bottom:{{ v.sep }};background:{{ v.bg }};cursor:pointer;text-align:left"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><span style="font:500 15px 'Geist'">{{ v.name }}</span><sc-if value="{{ v.best }}" hint-placeholder-val="{{ false }}"><span style="font:500 10px 'Geist Mono';letter-spacing:.06em;color:#16854F">BEST RATE</span></sc-if></div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ v.about }}</div></div><span style="font:400 22px 'Geist';letter-spacing:-.02em;color:#16854F">{{ v.apy }}</span></button></sc-for>
+<sc-for list="{{ vaults }}" as="v" hint-placeholder-count="0"><button onClick="{{ v.pick }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:14px;border:0;border-bottom:{{ v.sep }};background:{{ v.bg }};cursor:pointer;text-align:left"><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:8px"><span style="font:500 15px 'Geist'">{{ v.name }}</span><sc-if value="{{ v.best }}" hint-placeholder-val="{{ false }}"><span style="font:500 10px 'Geist Mono';letter-spacing:.06em;color:#16854F">{{ t.bestRate }}</span></sc-if></div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ v.about }}</div></div><span style="font:400 22px 'Geist';letter-spacing:-.02em;color:#16854F">{{ v.apy }}</span></button></sc-for>
 </div></sc-if>
 </div>
 <div onClick="{{ closeRecv }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ rcO }};pointer-events:{{ rcPE }};transition:opacity .35s"></div>
 <div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);transform:translate(-50%,{{ rcY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(24px,env(safe-area-inset-bottom))">
 <div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
-<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">Add money</span><button onClick="{{ closeRecv }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">Done</button></div>
-<div style="margin-top:10px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">SEND USDT ON BNB CHAIN TESTNET TO</div>
+<div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px"><span style="min-width:60px"></span><span style="font:500 16px 'Geist'">{{ t.addMoney }}</span><button onClick="{{ closeRecv }}" style="border:0;background:transparent;font:500 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:right;padding:0">{{ t.done }}</button></div>
+<div style="margin-top:10px;font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785;padding:0 4px 8px">{{ t.sendTo }}</div>
 <div style="border-radius:16px;background:#F3F5F7;padding:14px;font:500 14px/1.5 'Geist Mono';word-break:break-all">{{ addrFull }}</div>
 <button onClick="{{ copyAddr }}" style="margin-top:12px;width:100%;height:50px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">{{ copyLabel }}</button>
-<p style="margin:14px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785">No test USDT yet? When you buy, choose “Use free test USDT”: 10,000 on your first buy, then 1,000 a day.</p>
+<p style="margin:14px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785">{{ t.noTestUsdt }}</p>
 </div>
 </sc-if>
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const LOGO = t => 'app/l-' + t.toLowerCase() + '.png';
-const NAMES = { USDT: 'US Treasuries', NVDA: 'NVIDIA', AVGO: 'Broadcom', TSM: 'TSMC', AMD: 'AMD', AAPL: 'Apple', MSFT: 'Microsoft', TSLA: 'Tesla', GOOGL: 'Alphabet', META: 'Meta', AMZN: 'Amazon', PLTR: 'Palantir', COIN: 'Coinbase', BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB', INTC: 'Intel', NFLX: 'Netflix', PDD: 'PDD Holdings', SPCX: 'SpaceX', DOGE: 'Dogecoin', SKHY: 'SK hynix', MRVL: 'Marvell', PENG: 'Penguin Solutions', MU: 'Micron', SNDK: 'SanDisk', ANT: 'Anthropic', EWY: 'South Korea ETF', MSTR: 'Strategy', BNC: 'BNC', CRCL: 'Circle', HOOD: 'Robinhood', BMNR: 'BitMine', CYPH: 'CYPH', XAUT: 'Tether Gold', GME: 'GameStop', AMC: 'AMC', DJT: 'Trump Media', BABA: 'Alibaba', RDDT: 'Reddit', QQQ: 'Nasdaq-100 ETF', SPY: 'S&P 500 ETF', SOXL: '3x Semiconductors', TQQQ: '3x Nasdaq-100', ABBV: 'AbbVie', ALAB: 'Astera Labs', AMAT: 'Applied Materials', APH: 'Amphenol', APLD: 'Applied Digital', AXP: 'American Express Company', BE: 'Bloom Energy', BLK: 'BlackRock', CBRS: 'Cerebras Systems', CEG: 'Constellation Energy', CIEN: 'Ciena', COHR: 'Coherent', CORZ: 'Core Scientific', CRDO: 'Credo Technology Group Holding Ltd', CRM: 'Salesforce', CRWV: 'CoreWeave', CVX: 'Chevron', GEV: 'GE Vernova', GOOG: 'Alphabet', GPRO: 'GoPro', IREN: 'IREN Limited', KO: 'Coca-Cola Company (The)', LLY: 'Eli Lilly and Company', MA: 'Mastercard Incorporated', MRNA: 'Moderna', NBIS: 'Nebius Group', NEM: 'Newmont', NOK: 'Nokia', ORCL: 'Oracle', PANW: 'Palo Alto Networks', PYPL: 'PayPal', SHAZ: 'SharonAI', STX: 'Seagate Technology Holdings PLC', UBER: 'Uber Technologies', V: 'Visa', VRT: 'Vertiv Holdings, LLC', VST: 'Vistra', GLD: 'SPDR Gold Shares', IEF: 'iShares 7-10 Year Treasury Bond ETF', IVV: 'iShares Core S&P 500 ETF', SGOV: 'iShares 0-3 Month Treasury Bond ETF', TLT: 'iShares 20+ Year Treasury Bond ETF', SOL: 'Solana', XRP: 'XRP', ADA: 'Cardano', TRX: 'TRON', TON: 'Toncoin', LINK: 'Chainlink', AVAX: 'Avalanche', DOT: 'Polkadot', LTC: 'Litecoin', BCH: 'Bitcoin Cash', NEAR: 'NEAR', UNI: 'Uniswap', AAVE: 'Aave', ATOM: 'Cosmos', FIL: 'Filecoin', CAKE: 'PancakeSwap', SHIB: 'Shiba Inu', PEPE: 'Pepe', ZEC: 'Zcash' };
+// ---- 語言（英文／簡體中文）---------------------------------------------------------------------------------
+// ?lang=zh|en 優先（記到 localStorage cre8.lang，並從網址拿掉，之後切換才不會被網址蓋回去）→ localStorage → 瀏覽器語言 zh 開頭 → 英文。
+// 右上「中文／EN」即時切換，不重新整理。tr(英, 中) 取目前語言的字；模板的固定字在 STR，renderVals 以 t 傳出。
+let LANG = (() => {
+  let q = null; try { const u = new URL(location.href); q = u.searchParams.get('lang'); if (q !== null) { u.searchParams.delete('lang'); history.replaceState(history.state, '', u.pathname + u.search + u.hash); } } catch (_) {}
+  if (q === 'zh' || q === 'en') { try { localStorage.setItem('cre8.lang', q); } catch (_) {} return q; }
+  let v = null; try { v = localStorage.getItem('cre8.lang'); } catch (_) {}
+  if (v === 'zh' || v === 'en') return v;
+  return /^zh/i.test(navigator.language || '') ? 'zh' : 'en';
+})();
+const tr = (en, zh) => LANG === 'zh' ? zh : en;
+// 模板裡的固定字（{{ t.xxx }}）。
+const STR = {
+  en: { home: "CRE8 home", back: "Back", loading: "Loading", joinWaitlist: "Join waitlist", signIn: "Sign in", contX: "Continue with X", contGoogle: "Continue with Google", contEmail: "Continue with Email", inviteCode: "Invite code", tryAgain: "Try again", discover: "Discover", famous: "Follow the famous", apy: "APY", buildOwn: "Build your own basket", startBuilding: "Start building", holdings: "Holdings", edit: "Edit", earnExtra: "Earn extra", buy: "Buy", sell: "Sell", pickUpTo: "PICK UP TO 10", search: "Search", searchAssets: "Search assets", noMatch: "No match", splitEven: "Split evenly", addRemove: "Add or remove stocks", startDate: "START DATE", prevMonth: "Previous month", nextMonth: "Next month", week: ["S", "M", "T", "W", "T", "F", "S"], basketCover: "Basket cover", removeCover: "Remove photo", myBasket: "My basket", profile: "Profile", editProfile: "Edit profile", account: "Account", pv: "PORTFOLIO VALUE", addMoney: "Add money", withdraw: "Withdraw", cash: "Cash", earn: "Earn", earning: "Earning", earnOut: "Withdraw", done: "Done", useFaucet: "Use free test USDT instead", avatarColor: "Avatar colour", removePhoto: "Remove photo", displayName: "DISPLAY NAME", yourName: "Your name", signInMethods: "SIGN-IN", email: "Email", linked: "LINKED", linkGoogle: "Link Google", linkX: "Link X", wallet: "WALLET", onlyYou: "Only you hold the key", exportKey: "Export key", signOut: "Sign out", cancel: "Cancel", inviteCodeCap: "INVITE CODE", newHere: "New here? Enter your code", haveAccess: "ALREADY HAVE ACCESS", testnetNote: "Testnet. Test USDT has no value.", comingSoon: "COMING SOON", earnSoon: "Live rates from our partner vaults will show here. Your cash stays put until you choose to earn.", bestRate: "BEST RATE", sendTo: "SEND USDT ON BNB CHAIN TESTNET TO", noTestUsdt: "No test USDT yet? When you buy, choose “Use free test USDT”: 10,000 on your first buy, then 1,000 a day." },
+  zh: { home: "CRE8 首页", back: "返回", loading: "加载中", joinWaitlist: "加入等候名单", signIn: "登录", contX: "用 X 登录", contGoogle: "用 Google 登录", contEmail: "用邮箱登录", inviteCode: "邀请码", tryAgain: "重试", discover: "发现", famous: "跟着名人买", apy: "年化", buildOwn: "自建你的组合", startBuilding: "开始自建", holdings: "持仓", edit: "编辑", earnExtra: "加息", buy: "买入", sell: "卖出", pickUpTo: "最多选 10 个", search: "搜索", searchAssets: "搜索资产", noMatch: "没有找到", splitEven: "平均分配", addRemove: "增减资产", startDate: "开始日期", prevMonth: "上个月", nextMonth: "下个月", week: ["日", "一", "二", "三", "四", "五", "六"], basketCover: "组合封面", removeCover: "移除封面", myBasket: "我的组合", profile: "我的", editProfile: "编辑资料", account: "账户", pv: "总资产", addMoney: "充值", withdraw: "提现", cash: "现金", earn: "生息", earning: "生息中", earnOut: "领出", done: "完成", useFaucet: "改用免费测试 USDT", avatarColor: "头像颜色", removePhoto: "移除头像", displayName: "昵称", yourName: "你的昵称", signInMethods: "登录方式", email: "邮箱", linked: "已绑定", linkGoogle: "绑定 Google", linkX: "绑定 X", wallet: "钱包", onlyYou: "私钥只在你手上", exportKey: "导出私钥", signOut: "退出登录", cancel: "取消", inviteCodeCap: "邀请码", newHere: "新用户输入邀请码", haveAccess: "已开通", testnetNote: "测试网，测试 USDT 没有价值。", comingSoon: "即将上线", earnSoon: "合作金库的实时利率会显示在这里。你不点，现金就不会动。", bestRate: "利率最高", sendTo: "在 BNB Chain 测试网把 USDT 转到", noTestUsdt: "还没有测试 USDT？买入时选“改用免费测试 USDT”：首次 10,000，之后每天 1,000。" },
+};
+const applyLang = () => { document.documentElement.lang = tr('en', 'zh-CN'); document.title = tr('CRE8 App (Testnet)', 'CRE8 应用（测试网）'); };
+applyLang();
+// 中文日期：11月22日、2026年11月22日；英文：Nov 22、Nov 22, 2026。
+const fmtDay = (d, withYear) => LANG === 'zh' ? (withYear ? d.getFullYear() + '年' : '') + (d.getMonth() + 1) + '月' + d.getDate() + '日' : MON[d.getMonth()] + ' ' + d.getDate() + (withYear ? ', ' + d.getFullYear() : '');
+let NAMES = { USDT: 'US Treasuries', NVDA: 'NVIDIA', AVGO: 'Broadcom', TSM: 'TSMC', AMD: 'AMD', AAPL: 'Apple', MSFT: 'Microsoft', TSLA: 'Tesla', GOOGL: 'Alphabet', META: 'Meta', AMZN: 'Amazon', PLTR: 'Palantir', COIN: 'Coinbase', BTC: 'Bitcoin', ETH: 'Ethereum', BNB: 'BNB', INTC: 'Intel', NFLX: 'Netflix', PDD: 'PDD Holdings', SPCX: 'SpaceX', DOGE: 'Dogecoin', SKHY: 'SK hynix', MRVL: 'Marvell', PENG: 'Penguin Solutions', MU: 'Micron', SNDK: 'SanDisk', ANT: 'Anthropic', EWY: 'South Korea ETF', MSTR: 'Strategy', BNC: 'BNC', CRCL: 'Circle', HOOD: 'Robinhood', BMNR: 'BitMine', CYPH: 'CYPH', XAUT: 'Tether Gold', GME: 'GameStop', AMC: 'AMC', DJT: 'Trump Media', BABA: 'Alibaba', RDDT: 'Reddit', QQQ: 'Nasdaq-100 ETF', SPY: 'S&P 500 ETF', SOXL: '3x Semiconductors', TQQQ: '3x Nasdaq-100', ABBV: 'AbbVie', ALAB: 'Astera Labs', AMAT: 'Applied Materials', APH: 'Amphenol', APLD: 'Applied Digital', AXP: 'American Express Company', BE: 'Bloom Energy', BLK: 'BlackRock', CBRS: 'Cerebras Systems', CEG: 'Constellation Energy', CIEN: 'Ciena', COHR: 'Coherent', CORZ: 'Core Scientific', CRDO: 'Credo Technology Group Holding Ltd', CRM: 'Salesforce', CRWV: 'CoreWeave', CVX: 'Chevron', GEV: 'GE Vernova', GOOG: 'Alphabet', GPRO: 'GoPro', IREN: 'IREN Limited', KO: 'Coca-Cola Company (The)', LLY: 'Eli Lilly and Company', MA: 'Mastercard Incorporated', MRNA: 'Moderna', NBIS: 'Nebius Group', NEM: 'Newmont', NOK: 'Nokia', ORCL: 'Oracle', PANW: 'Palo Alto Networks', PYPL: 'PayPal', SHAZ: 'SharonAI', STX: 'Seagate Technology Holdings PLC', UBER: 'Uber Technologies', V: 'Visa', VRT: 'Vertiv Holdings, LLC', VST: 'Vistra', GLD: 'SPDR Gold Shares', IEF: 'iShares 7-10 Year Treasury Bond ETF', IVV: 'iShares Core S&P 500 ETF', SGOV: 'iShares 0-3 Month Treasury Bond ETF', TLT: 'iShares 20+ Year Treasury Bond ETF', SOL: 'Solana', XRP: 'XRP', ADA: 'Cardano', TRX: 'TRON', TON: 'Toncoin', LINK: 'Chainlink', AVAX: 'Avalanche', DOT: 'Polkadot', LTC: 'Litecoin', BCH: 'Bitcoin Cash', NEAR: 'NEAR', UNI: 'Uniswap', AAVE: 'Aave', ATOM: 'Cosmos', FIL: 'Filecoin', CAKE: 'PancakeSwap', SHIB: 'Shiba Inu', PEPE: 'Pepe', ZEC: 'Zcash' };
+const NAMES_EN = NAMES;
+// 中文資產名：官網 scripts/build-pages.mjs 有的照抄；其餘用大陸常見譯名，沒有通行譯名的留原文。
+const NAMES_ZH = { ...NAMES_EN, USDT: '美国国债', NVDA: '英伟达', AVGO: '博通', TSM: '台积电', AAPL: '苹果', MSFT: '微软', TSLA: '特斯拉', GOOGL: 'Alphabet（谷歌）', AMZN: '亚马逊', BTC: '比特币', ETH: '以太坊', INTC: '英特尔', NFLX: '奈飞', PDD: '拼多多', DOGE: '狗狗币', SKHY: 'SK 海力士', MU: '美光', SNDK: '闪迪', EWY: '韩国大盘 ETF', MSTR: 'Strategy（原 MicroStrategy）', BNC: 'BNC（持有 BNB 的上市公司）', XAUT: '黄金代币', GME: 'GameStop（游戏驿站）', AMC: 'AMC 院线', DJT: '特朗普媒体', BABA: '阿里巴巴', QQQ: '纳指 100 ETF', SPY: '标普 500 ETF', SOXL: '三倍做多半导体 ETF', TQQQ: '三倍做多纳指 ETF', ABBV: '艾伯维', AMAT: '应用材料', APH: '安费诺', AXP: '美国运通', BLK: '贝莱德', CEG: '星座能源', COHR: '高意', CVX: '雪佛龙', GOOG: 'Alphabet（谷歌）', KO: '可口可乐', LLY: '礼来', MA: '万事达', MRNA: '莫德纳', NEM: '纽蒙特', NOK: '诺基亚', ORCL: '甲骨文', PANW: '派拓网络', STX: '希捷', UBER: '优步', VRT: '维谛技术', GLD: '黄金 ETF', IEF: '7–10 年期美债 ETF', IVV: '标普 500 ETF（iShares）', SGOV: '0–3 个月美债 ETF', TLT: '20 年以上美债 ETF', TRX: '波场', DOT: '波卡', LTC: '莱特币', BCH: '比特币现金', SHIB: '柴犬币', CRDO: 'Credo', IREN: 'IREN', CBRS: 'Cerebras', VST: 'Vistra', AVAX: 'Avalanche' };
 const F = (id, kind, cat, name, cover, ret, n, hold, about) => ({ id, kind, cat, name, cover, ret, n, hold, about });
-const FUNDS = [
+let FUNDS = [
   F('pelosi', 'PEOPLE', 'people', 'Pelosi Portfolio', 'app/p-pelosi.jpg', 23.7, 6, [['NVDA', 19], ['GOOGL', 19], ['MSFT', 19], ['AMZN', 19], ['INTC', 19], ['AVGO', 5]], 'Built from the stock trades Nancy Pelosi’s household discloses to Congress. NVIDIA, Alphabet, Microsoft, Amazon and Intel make up the core, with a small position in Broadcom.'),
   F('trump', 'PEOPLE', 'people', 'Trump Holdings', 'app/p-trump.jpg', 8.5, 8, [['NVDA', 12.5], ['AAPL', 12.5], ['MSFT', 12.5], ['AMZN', 12.5], ['META', 12.5], ['TSLA', 12.5], ['GOOGL', 12.5], ['NFLX', 12.5]], 'Built from Donald Trump’s financial disclosures: NVIDIA, Apple, Microsoft, Amazon, Meta, Tesla, Alphabet and Netflix in equal weights.'),
   F('musk', 'PEOPLE', 'people', 'Musk Basket', 'app/p-musk.jpg', -11.0, 4, [['TSLA', 31.7], ['SPCX', 31.7], ['BTC', 31.7], ['DOGE', 5]], 'Elon Musk’s world. Tesla, SpaceX and bitcoin make up the core, with a small position in Dogecoin.'),
@@ -420,10 +443,38 @@ const FUNDS = [
   F('soxl', 'THEME', 'leveraged', '3x Semiconductors', 'app/p-soxl.jpg', 7.2, 1, [['SOXL', 100]], 'Three times the daily move of US semiconductor stocks, through a single 3x leveraged token (SOXL).'),
   F('tqqq', 'THEME', 'leveraged', '3x Nasdaq', 'app/p-tqqq.jpg', 4.2, 1, [['TQQQ', 100]], 'Three times the daily move of the Nasdaq-100, through a single 3x leveraged token (TQQQ).'),
 ];
+// 中文基金名與介紹：跟官網 scripts/build-pages.mjs 的 zh 一致。
+const ZH_FUND = {
+  pelosi: ['佩洛西持仓', '根据南希·佩洛西家庭向美国国会申报的股票交易整理。核心是英伟达、Alphabet、微软、亚马逊和英特尔，另有一小部分博通。'],
+  trump: ['特朗普持仓', '根据特朗普的财务申报整理：英伟达、苹果、微软、亚马逊、Meta、特斯拉、Alphabet 和奈飞，等权重。'],
+  duan: ['段永平', '根据段永平公开申报的美股持仓整理：苹果、拼多多、英伟达和特斯拉，等权重。'],
+  musk: ['马斯克宇宙', '马斯克的世界：核心是特斯拉、SpaceX 和比特币，另有一小部分狗狗币。'],
+  mag7: ['美股七巨头 Mag7', '美国七家最大的科技公司，等权重：苹果、微软、Alphabet、亚马逊、英伟达、Meta 和特斯拉。'],
+  everyday: ['每天在用的公司', '大家每天都在用的公司。苹果、亚马逊、奈飞、Alphabet、Meta 和微软等权重做核心，另有一小部分 Reddit。'],
+  'ai-chips': ['AI 芯片', 'AI 算力背后的芯片公司。核心是英伟达、台积电、英特尔和 SK 海力士，另有少量博通、Marvell 和 Penguin Solutions。'],
+  'ai-memory': ['AI 存储', 'AI 数据中心离不开的存储芯片厂商：SK 海力士、美光和闪迪，等权重。'],
+  'ai-models': ['AI 模型公司', '做出主流 AI 模型的公司：Anthropic、亚马逊、Alphabet、微软、SpaceX 和 Meta，等权重。'],
+  'new-giants': ['新上市巨头', '刚上市的两家大公司，SpaceX 和 Anthropic，等权重。'],
+  'korea-semiconductors': ['韩国半导体', '韩国芯片产业：SK 海力士加上一只覆盖韩国大盘的 ETF（EWY），等权重。'],
+  china: ['中概股', '中国电商龙头阿里巴巴和拼多多，等权重。'],
+  'crypto-treasuries': ['币股财库', '把加密资产放在资产负债表上的上市公司。核心是 Strategy（MSTR）、BitMine（BMNR）和 BNC，另有一小部分 CYPH。'],
+  'bitcoin-plus': ['比特币加强版', '比特币，加上两家跟比特币绑在一起的上市公司 Strategy（MSTR）和 Coinbase，等权重。'],
+  bnb: ['BNB 生态', 'BNB Chain 生态：BNB 本身，加上持有 BNB 的上市公司 BNC，等权重。'],
+  'crypto-infrastructure': ['币圈基础设施', '在加密世界里搬钱的公司：Circle、Coinbase 和 Robinhood，等权重。'],
+  meme: ['迷因股', '散户的心头好。核心是 GameStop 和狗狗币，另有少量 AMC 和特朗普媒体（DJT）。'],
+  'gold-bitcoin': ['黄金加比特币', '两种价值储存放在一起：黄金代币 XAUt 和比特币，等权重。'],
+  'us-market': ['美股大盘', '用两只指数 ETF 买整个美股大盘：纳斯达克 100（QQQ）和标普 500（SPY），等权重。'],
+  soxl: ['三倍半导体', '通过一只三倍杠杆代币（SOXL），追踪美国半导体股每日涨跌的三倍。'],
+  tqqq: ['三倍纳指', '通过一只三倍杠杆代币（TQQQ），追踪纳斯达克 100 每日涨跌的三倍。'],
+};
+const FUNDS_EN = FUNDS, FUNDS_ZH = FUNDS_EN.map(f => ZH_FUND[f.id] ? { ...f, name: ZH_FUND[f.id][0], about: ZH_FUND[f.id][1] } : f);
+// 換語言：基金與資產名換成那個語言的版本（renderVals 讀 FUNDS／NAMES）。
+const useLang = () => { FUNDS = LANG === 'zh' ? FUNDS_ZH : FUNDS_EN; NAMES = LANG === 'zh' ? NAMES_ZH : NAMES_EN; applyLang(); };
+useLang();
 // 測試網上可以買的標的（cre8-app src/lib/testnet-97.ts，不含穩定幣）。Build 分 Stock（股票、ETF、XAUt）與 Crypto 兩頁，可搜尋代號或名稱（搜尋時兩頁一起找）。
-const FREQ_LABEL = ['Daily', 'Weekly', 'Monthly', 'Quarterly'];
+const FREQ_LABEL = () => tr(['Daily', 'Weekly', 'Monthly', 'Quarterly'], ['每天', '每周', '每月', '每季度']);
 const MIX_FREQ_TEXT = ['every day', 'every week', 'every month', 'every quarter'];
-const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, m.cover || 'app/cover-cre8.png', m.ret, m.picks.length, m.picks, 'Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear() + '.'), freqLabel: FREQ_LABEL[m.freq] }; };
+const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, m.cover || 'app/cover-cre8.png', m.ret, m.picks.length, m.picks, tr('Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + fmtDay(d, true) + '.', '你的自建组合。从' + fmtDay(d, true) + '起，' + FREQ_LABEL()[m.freq] + '调回这个比例。')), freqLabel: FREQ_LABEL()[m.freq] }; };
 const CRYPTO = new Set(['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC']);
 const ASSETS = ['AAPL', 'ABBV', 'ALAB', 'AMAT', 'AMC', 'AMD', 'AMZN', 'ANT', 'APH', 'APLD', 'AVGO', 'AXP', 'BABA', 'BE', 'BLK', 'BMNR', 'BNC', 'CBRS', 'CEG', 'CIEN', 'COHR', 'COIN', 'CORZ', 'CRCL', 'CRDO', 'CRM', 'CRWV', 'CVX', 'CYPH', 'DJT', 'GEV', 'GME', 'GOOG', 'GOOGL', 'GPRO', 'HOOD', 'INTC', 'IREN', 'KO', 'LLY', 'MA', 'META', 'MRNA', 'MRVL', 'MSFT', 'MSTR', 'MU', 'NBIS', 'NEM', 'NFLX', 'NOK', 'NVDA', 'ORCL', 'PANW', 'PDD', 'PENG', 'PYPL', 'RDDT', 'SHAZ', 'SKHY', 'SNDK', 'SPCX', 'STX', 'TSLA', 'TSM', 'UBER', 'V', 'VRT', 'VST', 'EWY', 'GLD', 'IEF', 'IVV', 'QQQ', 'SGOV', 'SPY', 'TLT', 'SOXL', 'TQQQ', 'XAUT', 'BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC'];
 // ---- 測試網真資料（BSC testnet 97，經 /api 轉到後端） ---------------------------------------------
@@ -452,10 +503,13 @@ function navStats(nav) {
   let peak = -Infinity, mdd = 0; nav.forEach(p => { peak = Math.max(peak, p.value); mdd = Math.min(mdd, p.value / peak - 1); });
   return { vol, mdd: mdd * 100 };
 }
-const fmtDate = (iso, withYear) => { const d = new Date(iso + 'T00:00:00'); return MON[d.getMonth()] + ' ' + d.getDate() + (withYear ? ', ' + d.getFullYear() : ''); };
-const REBAL_LABEL = { monthly_drift: 'Monthly', weekly_drift: 'Weekly', daily_drift: 'Daily', quarterly_drift: 'Quarterly' };
+const fmtDate = (iso, withYear) => fmtDay(new Date(iso + 'T00:00:00'), withYear);
+// 後端的再平衡設定 → FREQ_LABEL 的索引（顯示時才取字，換語言跟著換）。
+const REBAL_LABEL = { daily_drift: 0, weekly_drift: 1, monthly_drift: 2, quarterly_drift: 3 };
 const AVC = ['linear-gradient(135deg,#6F93AE,#16222D)', 'linear-gradient(135deg,#E3B55B,#9A6B1E)', 'linear-gradient(135deg,#7FB59A,#1F5A41)', 'linear-gradient(135deg,#B9A2D6,#4B3A6E)', 'linear-gradient(135deg,#3C4651,#0B0F14)'];
-const RANGES = [['1W', .03, 7, 36, 'past week'], ['1M', .1, 30, 60, 'past month'], ['3M', .28, 90, 90, 'past 3 months'], ['1Y', 1, 365, 120, 'past year'], ['ALL', 1.7, 730, 140, 'since launch']];
+// [英文標籤, …, 天數, 點數, 英文區間, 中文標籤, 中文區間]
+const RANGES = [['1W', .03, 7, 36, 'past week', '1周', '近一周'], ['1M', .1, 30, 60, 'past month', '1月', '近一个月'], ['3M', .28, 90, 90, 'past 3 months', '3月', '近三个月'], ['1Y', 1, 365, 120, 'past year', '1年', '近一年'], ['ALL', 1.7, 730, 140, 'since launch', '全部', '成立以来']];
+const rangeWhen = R => tr(R[4], R[6]);
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const TODAY = new Date(2026, 10, 22);
 const fmt = n => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -473,7 +527,7 @@ function shape(v, W, H) {
   return { p, area: p + ' L' + W + ',' + H + ' L0,' + H + ' Z', ys };
 }
 const spark = (seed, ret) => shape(series(seed, ret, 30, 1.6), 100, 30).p;
-const dateAt = (days, frac, withYear) => { const d = new Date(TODAY.getTime() - days * (1 - frac) * 864e5); return MON[d.getMonth()] + ' ' + d.getDate() + (withYear ? ', ' + d.getFullYear() : ''); };
+const dateAt = (days, frac, withYear) => fmtDay(new Date(TODAY.getTime() - days * (1 - frac) * 864e5), withYear);
 
 class Component extends DCLogic {
   state = {
@@ -489,6 +543,7 @@ class Component extends DCLogic {
     // Earn（docs/EARN_UX.zh-TW.md）：後端端點還在做。vaults＝白名單 USDT vault 列表 [{ id, name, about, apy }]，earnPos＝現金生息部位
     // { amount, apy, today }，seRates＝每檔策略加息 { [fundId]: apy }。待接：端點出來後在 loadEarn() 填入；現在一律 null，畫面顯示 Coming soon，不放假數字。
     ern: false, vaults: null, earnPos: null, seRates: {}, se: false,
+    lang: LANG,
   };
   timers = [];
   componentDidMount() {
@@ -548,6 +603,8 @@ class Component extends DCLogic {
   }
   back(fallback) { if (history.state && history.state.d > 0) history.back(); else this.setState(fallback); }
   later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
+  // 右上語言鈕：即時換、記到 localStorage；錢包程式的訊息也跟著換（relang 重推一次快照）。
+  setLang(l) { LANG = l; try { localStorage.setItem('cre8.lang', l); } catch (_) {} useLang(); this.setState({ lang: l }); if (window.CRE8W && window.CRE8W.relang) window.CRE8W.relang(); }
   go(page) { this.leaveY = window.scrollY; this.setState(s => ({ page, fund: null, ...(page === 'build' && s.editing ? { editing: null, bstep: 0, picks: [], weights: {}, mixName: '', mixCover: null, start: null } : {}) })); window.scrollTo(0, 0); }
   open(id) { this.leaveY = window.scrollY; this.setState({ fund: id, range: 3, fh: null }); window.scrollTo(0, 0); }
   scrub(key, n) { return e => { const r = e.currentTarget.getBoundingClientRect(); const i = Math.max(0, Math.min(n - 1, Math.round((e.clientX - r.left) / r.width * (n - 1)))); if (this.state[key] !== i) this.setState({ [key]: i }); }; }
@@ -602,7 +659,7 @@ class Component extends DCLogic {
       picks: s.picks.map((t, i) => {
         const w = s.weights[t] || 0, light = PAL[i % 10][1] !== '#fff', lk = (s.wFixed || []).includes(t);
         return { t, w, name: NAMES[t] || t, logo: LOGO(t), bg: PAL[i % 10][0], edge: light ? 'rgba(11,15,20,.15)' : 'transparent',
-          lockable: s.picks.length > 1, locked: lk, lockLabel: (lk ? 'Unlock ' : 'Lock ') + t, lockBg: lk ? '#0B0F14' : 'transparent', lockFg: lk ? '#FFFFFF' : '#9AA4AE', shackle: lk ? 'M8 11V7a4 4 0 018 0v4' : 'M8 11V7a4 4 0 017.5-2', fill: lk ? '#9AA4AE' : '#0B0F14',
+          lockable: s.picks.length > 1, locked: lk, lockLabel: (lk ? tr('Unlock ', '解锁 ') : tr('Lock ', '锁定 ')) + t, pctLabel: tr(t + ' percent', t + ' 比例'), lockBg: lk ? '#0B0F14' : 'transparent', lockFg: lk ? '#FFFFFF' : '#9AA4AE', shackle: lk ? 'M8 11V7a4 4 0 018 0v4' : 'M8 11V7a4 4 0 017.5-2', fill: lk ? '#9AA4AE' : '#0B0F14',
           toggleLock: () => this.setState(st => { const f = st.wFixed || []; return { wFixed: f.includes(t) ? f.filter(x => x !== t) : [...f, t] }; }), down: e => this.dragRow(e, t),
           val: s.wDraft && s.wDraft.t === t ? s.wDraft.v : String(w),
           type: e => { if (lk) return; const raw = e.target.value.replace(/\D/g, '').slice(0, 3); this.setState({ wDraft: { t, v: raw } }); if (raw !== '') this.setWeight(t, Math.min(100, +raw)); },
@@ -653,7 +710,7 @@ class Component extends DCLogic {
     const W = window.CRE8W; if (!W || !this.state.pf) return;
     const names = this.holdingNames();
     const rows = [];
-    await Promise.all(this.state.pf.map(p => W.activity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || 'Portfolio', state: a.state, usd: a.usdAfterE8 != null ? Number(a.usdAfterE8) / 1e8 : null }))).catch(() => {})));
+    await Promise.all(this.state.pf.map(p => W.activity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), state: a.state, usd: a.usdAfterE8 != null ? Number(a.usdAfterE8) / 1e8 : null }))).catch(() => {})));
     (this.state.smx || []).forEach(m => (m.events || []).forEach(e => rows.push({ at: e.at, name: m.name, kind: e.kind })));
     rows.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
     this.setState({ acts: rows.slice(0, 50) });
@@ -666,7 +723,7 @@ class Component extends DCLogic {
     return (s.pf || []).map(p => {
       const fund = FUNDS.find(x => x.id === bySid[p.strategyId]), m = mixes.find(x => x.portfolioId === p.id || x.strategyId === p.strategyId);
       const st = s.pst[p.id];
-      return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || 'Portfolio'), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd : null, loading: !st, ret: m && m.ret != null ? m.ret : null };
+      return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || tr('Portfolio', '组合')), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd : null, loading: !st, ret: m && m.ret != null ? m.ret : null };
     }).filter(h => h.loading || h.val >= 0.01 || h.val == null);
   }
   // /me/mixes → 畫面用的組合（代號、百分比、頻率索引）。封面、頭像存伺服器的端點還沒有：封面先只留在這個分頁。
@@ -697,15 +754,15 @@ class Component extends DCLogic {
   // 確認：真的送出。買＝第一次開帳戶（簽一次）→ 錢包轉 USDT 或領測試 USDT → 記成投入 → 下單；美股收盤時等開盤成交。
   async confirm() {
     const W = window.CRE8W, s = this.state, t = s.target, amt = s.amount;
-    this.setState({ step: 'proc', procOff: 264, procText: 'PREPARING' }); this.later(() => this.setState({ procOff: 70 }), 60);
+    this.setState({ step: 'proc', procOff: 264, procText: tr('PREPARING', '准备中') }); this.later(() => this.setState({ procOff: 70 }), 60);
     const onStep = x => this.step(x);
     try {
-      if (!W) throw new Error('Sign-in is still loading.');
+      if (!W) throw new Error(tr('Sign-in is still loading.', '登录组件还在加载。'));
       // 待接：現金生息存入／領回（一次確認）。後端與合約還沒好，不送任何交易。
-      if (s.side === 'earn' || s.side === 'earn-out') throw new Error('Earn isn’t open on testnet yet. Nothing was moved.');
+      if (s.side === 'earn' || s.side === 'earn-out') throw new Error(tr('Earn isn’t open on testnet yet. Nothing was moved.', '测试网还没开放生息，资金没动。'));
       if (s.side === 'sell') {
         const h = this.holdingsOf(s).find(x => x.id === t.id);
-        if (!h) throw new Error('You don’t hold this portfolio.');
+        if (!h) throw new Error(tr('You don’t hold this portfolio.', '你没有持有这个组合。'));
         const all = (parseFloat(amt) || 0) >= Math.floor((h.val || 0) * 100) / 100;
         const r = await W.sell({ portfolioId: h.pid, usd: parseFloat(amt) || 0, all, onStep });
         return this.finish({ sold: true, sent: Number(r.sentUsdt), note: r.note });
@@ -721,13 +778,13 @@ class Component extends DCLogic {
           this.mixKey = null; mixId = made.mixId; portfolioId = made.portfolioId; account = made.account;
           if (s.mixCover) this.setState(x => ({ mixCovers: { ...x.mixCovers, [mixId]: s.mixCover } }));
           this.setState(x => ({ target: { ...x.target, id: 'mix-' + mixId, mixId, portfolioId, account }, picks: [], weights: {}, mixName: '', mixCover: null, start: null }));
-          if (portfolioId == null) return this.finish({ filled: false, note: 'Your basket is set up. It takes a minute to get ready — then open it and press Buy to add money.' });
+          if (portfolioId == null) return this.finish({ filled: false, note: tr('Your basket is set up. It takes a minute to get ready — then open it and press Buy to add money.', '组合建好了，大约一分钟后就绪。到时打开它，点“买入”投钱进去。') });
         }
         const r = await W.fundMixBasket({ mixId, portfolioId, account, pay: s.payFaucet ? 'faucet' : 'wallet', amount: amt, onStep });
-        return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: r.recorded ? null : 'Your USDT arrived. We’ll schedule it to buy shortly.' });
+        return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: r.recorded ? null : tr('Your USDT arrived. We’ll schedule it to buy shortly.', 'USDT 已到账，稍后自动买入。') });
       }
       const LV = s.live && s.live[t.id], D = s.det[t.id];
-      if (!LV) throw new Error('This portfolio isn’t available right now.');
+      if (!LV) throw new Error(tr('This portfolio isn’t available right now.', '这个组合暂时买不了。'));
       const r = await W.buy({ strategyId: LV.sid, onchainId: LV.onchainId, shown: D && D.version ? { version: D.version, configHash: D.configHash } : null, amount: amt, pay: s.payFaucet ? 'faucet' : 'wallet', onStep });
       this.finish({ filled: r.filled, pending: r.pending, amount: Number(r.amountUsdt), note: r.note });
     } catch (e) { this.fail(e); }
@@ -744,7 +801,7 @@ class Component extends DCLogic {
   }
   signInView(s) {
     const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn), open = gate || !!it, gs = s.gStep || 'start';
-    const what = it && it.for === 'buy' ? 'buy ' + (it.target && it.target.name || 'this portfolio') : it && it.for === 'sell' ? 'sell' : it && it.for === 'build' ? 'start your basket' : 'see your portfolio';
+    const what = it && it.for === 'buy' ? tr('buy ', '买入') + (it.target && it.target.name || tr('this portfolio', '这个组合')) : it && it.for === 'sell' ? tr('sell', '卖出') : it && it.for === 'build' ? tr('start your basket', '创建组合') : tr('see your portfolio', '查看持仓');
     const ph = w ? w.phase : 'loading', wl = w && w.waitlist ? w.waitlist : { state: 'idle' };
     const waiting = wl.state === 'waiting';
     // 入口頁：錢包程式還在載時照樣顯示按鈕（Join waitlist 不需要它）；只有剛從 X／Google 轉回來時才顯示載入中。
@@ -755,42 +812,42 @@ class Component extends DCLogic {
     const gPending = !gBusy && !!(w && w.pending), gErr = !gBusy && !gPending && ph === 'error';
     const gForm = gate && !gBusy && !gPending && !gErr;
     const codeStep = w && (w.emailStep === 'awaiting-code-input' || w.emailStep === 'submitting-code');
-    const err = s.siErr || (wl.state === 'error' ? wl.message : null) || (waiting ? wl.message : null) || (w && (w.oauthError || w.emailError)) || (w && ph === 'error' && !waiting && wl.state !== 'checking' ? (w.errorText || 'Sign-in didn’t finish.') : null);
-    const W2 = fn => () => { if (!W) return this.setState({ siErr: 'Sign-in is still loading. Try again in a moment.' }); try { const r = fn(); if (r && r.catch) r.catch(e => this.setState({ siErr: e.message })); } catch (e) { this.setState({ siErr: e.message }); } };
+    const err = s.siErr || (wl.state === 'error' ? wl.message : null) || (waiting ? wl.message : null) || (w && (w.oauthError || w.emailError)) || (w && ph === 'error' && !waiting && wl.state !== 'checking' ? (w.errorText || tr('Sign-in didn’t finish.', '登录没完成。')) : null);
+    const W2 = fn => () => { if (!W) return this.setState({ siErr: tr('Sign-in is still loading. Try again in a moment.', '登录组件还在加载，稍后再试。') }); try { const r = fn(); if (r && r.catch) r.catch(e => this.setState({ siErr: e.message })); } catch (e) { this.setState({ siErr: e.message }); } };
     return {
       gated: gate, inApp: !gate,
       // 入口頁每一步自己的標題（invite‑only 用不斷行連字號）。
-      gTitle: gBusy ? (s.redeeming ? 'Checking your code…' : 'Signing you in…') : gPending ? 'Enter your invite code' : gErr ? 'Sign-in didn’t finish' : gs === 'signin' ? (s.siEmail ? (codeStep ? 'Check your email' : 'Sign in with email') : 'Sign in') : 'CRE8 testnet is invite\u2011only.',
+      gTitle: gBusy ? (s.redeeming ? tr('Checking your code…', '正在验证邀请码…') : tr('Signing you in…', '正在登录…')) : gPending ? tr('Enter your invite code', '输入邀请码') : gErr ? tr('Sign-in didn’t finish', '登录没完成') : gs === 'signin' ? (s.siEmail ? (codeStep ? tr('Check your email', '查收验证码') : tr('Sign in with email', '邮箱登录')) : tr('Sign in', '登录')) : tr('CRE8 testnet is invite\u2011only.', 'CRE8 测试网\n凭邀请码进入'),
       // 同一組欄位給入口頁與 app 內的登入頁；入口頁顯示時，登入頁的內容不畫（免得同一個按鈕出現兩次）。
       sh_siBusy: !gate && busy, sh_siForm: !gate && open && !busy && !waiting && ph !== 'error', sh_siRetry: !gate && open && !busy && (waiting || ph === 'error'), sh_siEmail: !gate && s.siEmail, sh_siErr: !gate && open ? err : null,
       siO: !gate && it ? 1 : 0, siPE: !gate && it ? 'auto' : 'none', siY: !gate && it ? 0 : 110,
       closeSignIn: () => { try { sessionStorage.removeItem('cre8.intent'); } catch (_) {} this.setState({ si: null, siErr: null }); },
-      siTitle: waiting ? 'You’re on the waitlist.' : busy ? (gate ? 'Signing you in…' : 'Setting up your account') : gate ? 'CRE8 testnet is invite-only.' : 'Sign in to ' + what,
-      siSub: waiting ? 'We’ll let you in soon.' : busy ? (gate ? null : 'This takes a few seconds.') : gate ? ({ code: 'Enter your invite code.', methods: 'Sign in to use your code.', signin: 'Welcome back.' })[gs] || null : 'You’ll come right back here. We create a wallet for you; only you hold the key.',
+      siTitle: waiting ? tr('You’re on the waitlist.', '你已在等候名单上') : busy ? (gate ? tr('Signing you in…', '正在登录…') : tr('Setting up your account', '正在开通账户')) : gate ? tr('CRE8 testnet is invite-only.', 'CRE8 测试网凭邀请码进入') : tr('Sign in to ' + what, '登录后' + what),
+      siSub: waiting ? tr('We’ll let you in soon.', '很快就轮到你。') : busy ? (gate ? null : tr('This takes a few seconds.', '几秒就好。')) : gate ? (LANG === 'zh' ? { code: '输入邀请码。', methods: '登录后使用邀请码。', signin: '欢迎回来。' } : { code: 'Enter your invite code.', methods: 'Sign in to use your code.', signin: 'Welcome back.' })[gs] || null : tr('You’ll come right back here. We create a wallet for you; only you hold the key.', '登录完回到这里。我们会帮你创建钱包，私钥只在你手上。'),
       // 入口頁的步驟：start（Join waitlist／I have an invite code）→ code（輸入碼）→ methods（X／Google／Email）；signin＝已放行的人直接登入。
       gStart: gForm && gs !== 'signin', gMethods: gForm && gs === 'signin', gCode: gate && gPending, gBack: gate && !gBusy && (gs === 'signin' || gPending || gErr),
       // 返回：還沒登入就回第一頁；已登入（等邀請碼或出錯）就登出再回第一頁。
       gBackGo: () => { this.setState({ gStep: 'start', siErr: null, siEmail: false, invite: '' }); if ((gPending || gErr) && W) W.logout(); },
       gToSignIn: () => this.setState({ gStep: 'signin', siErr: null, siEmail: false }),
-      gCodeGo: () => this.gCodeGo(), inviteKey: e => { if (e.key === 'Enter') this.gCodeGo(); }, codeBtn: 'Continue',
+      gCodeGo: () => this.gCodeGo(), inviteKey: e => { if (e.key === 'Enter') this.gCodeGo(); }, codeBtn: tr('Continue', '继续'),
       gX: W2(() => W.signInWith('twitter')),
-      siBusy: gate ? gBusy : busy, siBusyText: !w || ph === 'loading' ? 'LOADING' : ph === 'creating-wallet' ? 'CREATING YOUR WALLET' : wl.state === 'checking' ? 'CHECKING YOUR INVITE' : 'SIGNING YOU IN',
+      siBusy: gate ? gBusy : busy, siBusyText: !w || ph === 'loading' ? tr('LOADING', '加载中') : ph === 'creating-wallet' ? tr('CREATING YOUR WALLET', '正在创建钱包') : wl.state === 'checking' ? tr('CHECKING YOUR INVITE', '正在验证邀请码') : tr('SIGNING YOU IN', '正在登录'),
       siForm: open && !busy && !waiting && ph !== 'error', siRetry: gate ? gErr : open && !busy && (waiting || ph === 'error'),
       siRetryGo: W2(() => W.retry()),
       invite: s.invite, onInvite: e => this.setState({ invite: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10), siErr: null }),
-      signInX: W2(() => { if (!W.setInvite(s.invite)) return this.setState({ siErr: 'Check the code: it’s 8 to 10 letters and numbers.' }); return W.signInWith('twitter'); }),
+      signInX: W2(() => { if (!W.setInvite(s.invite)) return this.setState({ siErr: tr('Check the code: it’s 8 to 10 letters and numbers.', '邀请码是 8–10 位字母和数字，检查一下。') }); return W.signInWith('twitter'); }),
       signInGoogle: W2(() => W.signInWith('google')), signInXBack: W2(() => { W.setInvite(''); return W.signInWith('twitter'); }), showEmail: () => this.setState({ siEmail: true, emailVal: '' }),
-      siEmail: s.siEmail, emailType: codeStep ? 'text' : 'email', emailMode: codeStep ? 'numeric' : 'email', emailVal: s.emailVal, emailPh: codeStep ? 'Code from your email' : 'you@email.com', emailBtn: codeStep ? 'Sign in' : 'Send code',
+      siEmail: s.siEmail, emailType: codeStep ? 'text' : 'email', emailMode: codeStep ? 'numeric' : 'email', emailVal: s.emailVal, emailPh: codeStep ? tr('Code from your email', '邮件里的验证码') : tr('you@email.com', '你的邮箱'), emailBtn: codeStep ? tr('Sign in', '登录') : tr('Send code', '发验证码'),
       onEmail: e => this.setState({ emailVal: e.target.value, siErr: null }),
       emailGo: W2(() => { const v = s.emailVal.trim(); if (!v) return; if (codeStep) return W.submitEmailCode(v); this.setState({ emailVal: '' }); return W.sendEmailCode(v); }),
       codeErr: gate && gPending ? s.siErr : null,
-      siErr: gate ? (gPending ? null : s.siErr || (gForm && w && (w.oauthError || w.emailError)) || (gErr ? 'Couldn’t sign you in.' : null)) : open ? err : null,
+      siErr: gate ? (gPending ? null : s.siErr || (gForm && w && (w.oauthError || w.emailError)) || (gErr ? tr('Couldn’t sign you in.', '登录失败。') : null)) : open ? err : null,
     };
   }
   async saveMix(id, patch, back) {
     const W = window.CRE8W, m = this.mixesOf(this.state).find(x => x.id === id);
     if (!W || !m) return;
-    this.setState({ modal: true, side: 'edit', step: 'proc', procOff: 264, procText: 'SAVING', target: { id, name: patch.name || m.name, cover: m.cover || 'app/cover-cre8.png' } });
+    this.setState({ modal: true, side: 'edit', step: 'proc', procOff: 264, procText: tr('SAVING', '保存中'), target: { id, name: patch.name || m.name, cover: m.cover || 'app/cover-cre8.png' } });
     this.later(() => this.setState({ procOff: 70 }), 60);
     try { await W.patchMix({ id: m.mixId, patch, onStep: x => this.step(x) }); this.finish({ saved: true }); } catch (e) { this.fail(e); }
   }
@@ -809,10 +866,10 @@ class Component extends DCLogic {
   // 真的淨值走勢：R[2] 是天數。沒有資料（載入中）畫一條平線、數字顯示 —。
   navChart(nav, R, hover, W, H) {
     const pts = navRange(nav, R[2]);
-    if (!pts) return { c: { p: 'M0,' + (H / 2) + ' L' + W + ',' + (H / 2), area: '', baseY: H / 2, hx: 0, hy: 50, ho: 0 }, v: { pctBig: '—', col: '#6B7785', when: R[4] }, n: 2 };
+    if (!pts) return { c: { p: 'M0,' + (H / 2) + ' L' + W + ',' + (H / 2), area: '', baseY: H / 2, hx: 0, hy: 50, ho: 0 }, v: { pctBig: '—', col: '#6B7785', when: rangeWhen(R) }, n: 2 };
     const vals = pts.map(p => p.value), sh = shape(vals, W, H), n = vals.length, i = hover == null ? n - 1 : Math.min(hover, n - 1);
     const chg = vals[i] / vals[0] - 1;
-    return { c: { p: sh.p, area: sh.area, baseY: sh.ys[0].toFixed(1), hx: (i / (n - 1) * 100).toFixed(2), hy: (sh.ys[i] / H * 100).toFixed(2), ho: hover == null ? 0 : 1 }, v: { pctBig: pct(chg * 100), col: chg >= 0 ? '#16854F' : '#D23F2E', when: hover == null ? R[4] : fmtDate(pts[i].date, R[2] > 90) }, n };
+    return { c: { p: sh.p, area: sh.area, baseY: sh.ys[0].toFixed(1), hx: (i / (n - 1) * 100).toFixed(2), hy: (sh.ys[i] / H * 100).toFixed(2), ho: hover == null ? 0 : 1 }, v: { pctBig: pct(chg * 100), col: chg >= 0 ? '#16854F' : '#D23F2E', when: hover == null ? rangeWhen(R) : fmtDate(pts[i].date, R[2] > 90) }, n };
   }
   chart(seed, ret, R, hover, endVal, W, H) {
     const vals = series(seed, ret, R[3], 1.4), sh = shape(vals, W, H), n = vals.length;
@@ -820,7 +877,7 @@ class Component extends DCLogic {
     const v = vals[i] * scale, base = vals[0] * scale, chg = v - base, up = chg >= 0;
     return {
       c: { p: sh.p, area: sh.area, baseY: sh.ys[0].toFixed(1), hx: (i / (n - 1) * 100).toFixed(2), hy: (sh.ys[i] / H * 100).toFixed(2), ho: hover == null ? 0 : 1 },
-      v: { pctBig: pct(chg / base * 100), big: '$' + fmt(v), chg: (up ? '+' : '−') + '$' + fmt(Math.abs(chg)) + ' (' + pct(chg / base * 100) + ')', col: up ? '#16854F' : '#D23F2E', when: hover == null ? R[4] : dateAt(R[2], i / (n - 1), R[2] > 90) },
+      v: { pctBig: pct(chg / base * 100), big: '$' + fmt(v), chg: (up ? '+' : '−') + '$' + fmt(Math.abs(chg)) + ' (' + pct(chg / base * 100) + ')', col: up ? '#16854F' : '#D23F2E', when: hover == null ? rangeWhen(R) : dateAt(R[2], i / (n - 1), R[2] > 90) },
       n,
     };
   }
@@ -838,8 +895,8 @@ class Component extends DCLogic {
     const apyOf = f => s.live && s.live[f.id] && s.live[f.id].apy != null ? s.live[f.id].apy : f.ret;
     const card = f => { const r = apyOf(f); return { ...f, retText: pct(r), col: r >= 0 ? '#16854F' : '#D23F2E', pcol: r >= 0 ? '#8BE3B5' : '#FF9B8F', spark: spark(FUNDS.indexOf(f) + 2, r), open: () => this.open(f.id) }; };
     const qq = s.q.trim().toLowerCase();
-    const shownAssets = qq ? ASSETS.filter(t => t.toLowerCase().includes(qq) || (NAMES[t] || '').toLowerCase().includes(qq)) : ASSETS.filter(t => CRYPTO.has(t) === (s.bcat === 1));
-    const FIL = [['All', null], ['People', 'people'], ['AI', 'ai'], ['Crypto', 'crypto'], ['Markets', 'markets'], ['Leveraged', 'leveraged']];
+    const shownAssets = qq ? ASSETS.filter(t => t.toLowerCase().includes(qq) || (NAMES_EN[t] || '').toLowerCase().includes(qq) || (NAMES_ZH[t] || '').toLowerCase().includes(qq)) : ASSETS.filter(t => CRYPTO.has(t) === (s.bcat === 1));
+    const FIL = LANG === 'zh' ? [['全部', null], ['人物', 'people'], ['AI', 'ai'], ['加密', 'crypto'], ['美股', 'markets'], ['杠杆', 'leveraged']] : [['All', null], ['People', 'people'], ['AI', 'ai'], ['Crypto', 'crypto'], ['Markets', 'markets'], ['Leveraged', 'leveraged']];
     const fcat = FIL[s.filter][1];
     const people = FUNDS.filter(f => f.kind === 'PEOPLE');
     const themes = FUNDS.filter(f => f.kind === 'THEME' && (!fcat || f.cat === fcat));
@@ -851,15 +908,15 @@ class Component extends DCLogic {
     const fch = this.navChart(D && D.nav, R, s.fh, 600, 190);
     const shown = f.hold.reduce((a, h) => a + h[1], 0);
     const hold = f.hold.map(([t, w]) => ({ t, w, bar: w, name: NAMES[t], logo: LOGO(t) }));
-    if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: 'Rest of the basket', logo: 'app/l-usdt.png' });
+    if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: tr('Rest of the basket', '其余资产'), logo: 'app/l-usdt.png' });
     hold.forEach((h, i, a) => h.sep = sepL(i, a));
     // 波動與最大回撤由模型淨值算（navStats）；載入中顯示 —。EXTRA YIELD 待接後端的現金生息 APY（還沒有端點，先保留原本的字）。
     const NS = D && D.stats, mineStat = false;
-    const stats = [['APY', pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], ['EXTRA YIELD', f.cat === 'leveraged' ? '—' : typeof s0.seRates[f.id] === 'number' ? '+~' + s0.seRates[f.id].toFixed(1) + '%' : 'Soon', '#A8791F'], ['VOLATILITY', mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], ['MAX DRAWDOWN', mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], ['HOLDINGS', String(f.n), '#0B0F14'], ['REBALANCED', f.freqLabel || (D && D.rebal) || 'Monthly', '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
+    const stats = [[tr('APY', '年化收益'), pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], [tr('EXTRA YIELD', '加息'), f.cat === 'leveraged' ? '—' : typeof s0.seRates[f.id] === 'number' ? '+~' + s0.seRates[f.id].toFixed(1) + '%' : tr('Soon', '即将上线'), '#A8791F'], [tr('VOLATILITY', '波动率'), mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], [tr('MAX DRAWDOWN', '最大回撤'), mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], [tr('HOLDINGS', '资产数'), String(f.n), '#0B0F14'], [tr('REBALANCED', '调仓'), f.freqLabel || FREQ_LABEL()[D && D.rebal != null ? D.rebal : 2], '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
-    const mixBtn = s.picks.length === 0 ? { ...off, label: 'Pick at least 1' } : total !== 100 ? { ...off, label: total < 100 ? 'Add ' + (100 - total) + '% to continue' : 'Remove ' + (total - 100) + '% to continue' } : { ...cta, label: 'Buy this portfolio' };
+    const mixBtn = s.picks.length === 0 ? { ...off, label: tr('Pick at least 1', '至少选 1 个') } : total !== 100 ? { ...off, label: total < 100 ? tr('Add ' + (100 - total) + '% to continue', '还差 ' + (100 - total) + '%') : tr('Remove ' + (total - 100) + '% to continue', '多了 ' + (total - 100) + '%') } : { ...cta, label: tr('Buy this portfolio', '买入这个组合') };
     const FREQ = ['Every day', 'Every week', 'Every month', 'Every quarter'];
     // 再平衡起始日（月曆）：預設今天，不能選過去的日子；最多往後看 12 個月。
     const now = new Date(); const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -870,15 +927,16 @@ class Component extends DCLogic {
       const dt = new Date(calM.getFullYear(), calM.getMonth(), i + 1), past = dt < today, sel = dt.getTime() === start.getTime(), isToday = dt.getTime() === today.getTime();
       return { d: String(i + 1), bg: sel ? '#0B0F14' : 'transparent', fg: sel ? '#fff' : past ? '#C3CAD1' : '#0B0F14', bd: isToday && !sel ? '#0B0F14' : 'transparent', cur: past ? 'default' : 'pointer', pick: () => { if (!past) this.setState({ start: dt.getTime() }); } };
     }));
-    const startText = MON[start.getMonth()] + ' ' + start.getDate() + ', ' + start.getFullYear();
+    const startText = fmtDay(start, true);
     // Build 分四頁：選標的 → 設比例 → 再平衡頻率 → 取名買入。
     const inBuild = s.page === 'build' && !s.fund, bs = s.bstep;
-    const B_TITLES = [s.editing ? 'Edit basket' : 'Build', 'Set weights', 'Rebalance', 'Name it'];
-    const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: 'Next step' } : { ...off, label: 'Pick at least 1' }) : bs === 1 ? (total === 100 ? { ...cta, label: 'Next step' } : mixBtn) : bs === 2 ? { ...cta, label: 'Next step' } : s.editing && mixReady ? { ...cta, label: 'Save changes' } : mixBtn;
+    const B_TITLES = LANG === 'zh' ? [s.editing ? '编辑组合' : '自建组合', '设置比例', '调仓频率', '起个名字'] : [s.editing ? 'Edit basket' : 'Build', 'Set weights', 'Rebalance', 'Name it'];
+    const next = tr('Next step', '下一步');
+    const bNextBtn = bs === 0 ? (s.picks.length ? { ...cta, label: next } : { ...off, label: tr('Pick at least 1', '至少选 1 个') }) : bs === 1 ? (total === 100 ? { ...cta, label: next } : mixBtn) : bs === 2 ? { ...cta, label: next } : s.editing && mixReady ? { ...cta, label: tr('Save changes', '保存修改') } : mixBtn;
     const bNext = () => { if (bs === 0 && !s.picks.length) return; if (bs === 1 && total !== 100) return; if (bs < 3) { this.leaveY = window.scrollY; this.setState({ bstep: bs + 1 }); window.scrollTo(0, 0); } else if (mixReady && s.editing) {
       // 改組合：立即生效，存回原本那一筆，回到它的專屬頁。
       // 後端 PATCH /me/mixes/:id：名稱、頻率不用簽；成分改了要簽一次（立刻生效）。
-      const id = s.editing, name = s.mixName.trim() || 'My basket', m = s.mixes.find(x => x.id === id), FQ = ['daily', 'weekly', 'monthly', 'quarterly'];
+      const id = s.editing, name = s.mixName.trim() || tr('My basket', '我的组合'), m = s.mixes.find(x => x.id === id), FQ = ['daily', 'weekly', 'monthly', 'quarterly'];
       if (!m) return;
       const picks = s.picks.map(t => [t, s.weights[t]]), patch = {};
       if (name !== m.name) patch.name = name;
@@ -890,7 +948,7 @@ class Component extends DCLogic {
       history.go(-(bs + 1));
       if (Object.keys(patch).length) this.saveMix(id, patch);
     } else if (mixReady) {
-      const id = 'mix-new', name = s.mixName.trim() || 'My basket';
+      const id = 'mix-new', name = s.mixName.trim() || tr('My basket', '我的组合');
       const target = { id, name, cover: s.mixCover || 'app/cover-cre8.png', mix: { id, name, cover: s.mixCover, picks: s.picks.map(t => [t, s.weights[t]]), freq: s.freq, start: s.start || today.getTime(), ret: 0 } };
       if (this.needSignIn({ for: 'build', picks: s.picks, weights: s.weights, freq: s.freq, start: s.start, mixName: s.mixName, target })) return;
       this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', payFaucet: false, target });
@@ -901,126 +959,132 @@ class Component extends DCLogic {
     const R0 = s.result || {}, isMixBuild = !!(tgt.mix && !tgt.mixId), seRate = typeof s0.seRates[tgt.id] === 'number' ? s0.seRates[tgt.id] : null, seOff = s0.seRates[tgt.id] === 'unavailable';
     const amt = parseFloat(s.amount) || 0;
     const amtOk = sell ? amt > 0 && amt <= posMax : amt >= minBuy && amt <= s.cash;
-    const amtBtn = amt === 0 ? { ...off, label: 'Enter an amount' } : sell ? (amt > posMax ? { ...off, label: 'More than you hold' } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: 'Review' }) : amt < minBuy ? { ...off, label: 'Minimum ' + minBuy + ' USDT' } : amt > s.cash ? { ...off, label: 'Not enough USDT' } : { ...cta, label: 'Review' };
+    const amtBtn = amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : sell ? (amt > posMax ? { ...off, label: tr('More than you hold', '超过持仓') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起投') } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: tr('Review', '下一步') };
     const invested = s.holdings.reduce((a, h) => a + (h.val || 0), 0), totalVal = invested + s.cash;
     // 總資產的歷史走勢後端還沒有端點：先畫平線、變化顯示 —（待接）。
     const PR = RANGES[s.prange], pch = this.navChart(null, PR, s.ph, 600, 160);
     const own = s.holdings.find(h => h.id === f.id);
     const SH = ['#0B0F14', '#2F4A60', '#6F93AE', '#DCE4EA'];
-    const allocSrc = [...s.holdings.map(h => [h.name, h.val, h.cover]), ['Cash', s.cash, null]];
-    const navDef = [['home', 'Discover', 'M12 3a9 9 0 100 18 9 9 0 000-18zM15.5 8.5l-2 5-5 2 2-5z'], ['build', 'Build', 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16.5 13v7M13 16.5h7'], ['profile', 'Profile', 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6']];
+    const allocSrc = [...s.holdings.map(h => [h.name, h.val, h.cover]), [tr('Cash', '现金'), s.cash, null]];
+    const navDef = [['home', tr('Discover', '发现'), 'M12 3a9 9 0 100 18 9 9 0 000-18zM15.5 8.5l-2 5-5 2 2-5z'], ['build', tr('Build', '自建'), 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM16.5 13v7M13 16.5h7'], ['profile', tr('Profile', '我的'), 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6']];
     const curPage = s.fund ? 'home' : s.page;
     const W = !!s.wide;
     const L = W ? { max: 1200, hdrH: 64, pad: 24, mainPad: 8, bottom: 80, tile: 210, gap: 14, buildMax: '560px', colGap: 8, sideMax: '420px', sidePos: 'sticky', sideTop: 20, statsM: '0 16px', mixB: 28, pcH: 260, abH: 92, profW: '760px', buildW: '720px', aGap: 10, bTop: 28, bPad: '26px 28px', bLogo: 40, bT: 24, pGap: 14, pCols: 4, pAR: '4/5', pR: 18, pIn: 14, pName: 16, pRet: 14, pApy: 10 } : { max: 640, hdrH: 54, pad: 16, mainPad: 0, bottom: 150, tile: 150, gap: 10, buildMax: 'none', colGap: 0, sideMax: 'none', sidePos: 'static', sideTop: 0, statsM: '26px 16px 0', mixB: 96, pcH: 210, abH: 72, profW: 'none', buildW: 'none', aGap: 8, bTop: 24, bPad: '18px', bLogo: 32, bT: 18, pGap: 10, pCols: 2, pAR: '4/5', pR: 16, pIn: 12, pName: 15, pRet: 13, pApy: 9 };
     return {
       wide: W, narrow: !W, L,
-      showBack: !!s.fund || (inBuild && (bs > 0 || !!s.editing)), showLogo: !s.fund && !(inBuild && (bs > 0 || !!s.editing)), hdrTitleO: 1, hdrTitle: s.fund ? f.name : s.editing ? 'Edit basket' : 'Build',
+      // 固定字（模板用 t.xxx）與語言鈕：英文時顯示「中文」，中文時顯示「EN」。
+      t: STR[LANG], langBtn: tr('中文', 'EN'), langBtnLang: tr('zh-CN', 'en'), langAria: tr('切换到中文', 'Switch to English'), toggleLang: () => this.setLang(LANG === 'zh' ? 'en' : 'zh'),
+      showBack: !!s.fund || (inBuild && (bs > 0 || !!s.editing)), showLogo: !s.fund && !(inBuild && (bs > 0 || !!s.editing)), hdrTitleO: 1, hdrTitle: s.fund ? f.name : s.editing ? tr('Edit basket', '编辑组合') : tr('Build', '自建组合'),
       b0: bs === 0, b1: bs === 1, b2: bs === 2, b3: bs === 3, bTitle: B_TITLES[bs], bNext, mixBtn: bNextBtn,
       navTabs: navDef.map(([id, label, icon]) => ({ label, icon, go: () => this.go(id), col: curPage === id ? '#0B0F14' : '#6B7785', bg: curPage === id ? 'rgba(11,15,20,.07)' : 'transparent', tcol: curPage === id ? '#fff' : '#3C4651', tbg: curPage === id ? '#0B0F14' : 'transparent' })),
       navY: s.fund || s.modal || s.acct ? 140 : 0,
       pageHome: s.page === 'home' && !s.fund, pageFund: !!s.fund, pageBuild: s.page === 'build' && !s.fund, pageProfile: s.page === 'profile' && !s.fund && signedIn, pageProfileOut: s.page === 'profile' && !s.fund && !signedIn,
-      outText: w && w.waitlist && w.waitlist.state === 'waiting' ? 'You’re on the waitlist. We’ll let you in soon.' : 'Sign in to see your portfolios, cash and activity.', outBtn: 'Sign in', signInProfile: () => this.needSignIn({ for: 'profile' }),
-      pillText: signedIn ? shortAddr(w.address) : 'Sign in', pillClick: () => signedIn ? this.go('profile') : this.needSignIn({ for: 'profile' }),
+      outText: w && w.waitlist && w.waitlist.state === 'waiting' ? tr('You’re on the waitlist. We’ll let you in soon.', '你已在等候名单上，很快就轮到你。') : tr('Sign in to see your portfolios, cash and activity.', '登录查看你的组合、现金和记录。'), outBtn: tr('Sign in', '登录'), signInProfile: () => this.needSignIn({ for: 'profile' }),
+      pillText: signedIn ? shortAddr(w.address) : tr('Sign in', '登录'), pillClick: () => signedIn ? this.go('profile') : this.needSignIn({ for: 'profile' }),
       handleText: w && w.profile && w.profile.handle ? '@' + w.profile.handle : signedIn ? shortAddr(w.address) : '',
       goBuild: () => this.go('build'),
       market: [['S&P 500', '6,842.10', '+0.62%', '#16854F'], ['NASDAQ', '23,418.55', '+0.94%', '#16854F'], ['BTC', '$98,214', '−1.12%', '#D23F2E'], ['US MARKET', 'Open', 'closes 4:00 ET', '#6B7785']].map(([k, v, d, c]) => ({ k, v, d, c })),
       filters: FIL.map(([label], i) => ({ label, pick: () => this.setState({ filter: i }), bg: s.filter === i ? '#0B0F14' : '#FFFFFF', fg: s.filter === i ? '#fff' : '#3C4651', bd: s.filter === i ? '#0B0F14' : '#E6E9ED' })),
       showPeople: !fcat || fcat === 'people', showThemes: fcat !== 'people',
       people: people.map(card), themes: themes.map(card),
-      themeTitle: fcat ? FIL[s.filter][0] : 'Themes', themeCount: themes.length + ' PORTFOLIOS',
+      themeTitle: fcat ? FIL[s.filter][0] : tr('Themes', '主题'), themeCount: tr(themes.length + ' PORTFOLIOS', themes.length + ' 个组合'),
       closeFund: () => s.fund ? this.back({ fund: null }) : this.back(bs > 0 ? { bstep: bs - 1 } : { fund: s.editing, editing: null }),
-      cur: { ...f, kind: f.kind === 'PEOPLE' ? 'FOLLOW · PEOPLE' : f.kind === 'MINE' ? 'YOUR BASKET' : 'THEME', count: f.n + ' ASSETS', hold, stats },
+      cur: { ...f, kind: f.kind === 'PEOPLE' ? tr('FOLLOW · PEOPLE', '人物') : f.kind === 'MINE' ? tr('YOUR BASKET', '自建组合') : f.cat === 'leveraged' ? tr('THEME', '杠杆') : tr('THEME', '主题'), count: tr(f.n + ' ASSETS', f.n + ' 个资产'), hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
-      ranges: pills(RANGES.map(r => r[0]), s.range, i => this.setState({ range: i, fh: null })),
-      posLabel: own ? 'YOUR POSITION' : 'MINIMUM', posVal: own ? (own.val == null ? '—' : '$' + fmt(own.val)) : (LV ? LV.min : 50) + ' USDT',
+      ranges: pills(RANGES.map(r => tr(r[0], r[5])), s.range, i => this.setState({ range: i, fh: null })),
+      posLabel: own ? tr('YOUR POSITION', '我的持仓') : tr('MINIMUM', '起投'), posVal: own ? (own.val == null ? '—' : '$' + fmt(own.val)) : (LV ? LV.min : 50) + ' USDT',
       isMix: f.kind === 'MINE', notMix: f.kind !== 'MINE',
       editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, mixCover: m.cover || null, q: '', calOff: 0 }); window.scrollTo(0, 0); },
       openBuy: () => { const m = f.kind === 'MINE' ? s.mixes.find(x => x.id === f.id) : null; const target = { id: f.id, name: f.name, cover: f.cover, ...(m ? { mix: { id: m.id }, mixId: m.mixId, portfolioId: m.portfolioId, account: m.account } : {}) }; if (this.needSignIn({ for: 'buy', fund: f.id, target })) return; this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', payFaucet: false, target }); },
       openSell: () => { const target = { id: f.id, name: f.name, cover: f.cover }; if (this.needSignIn({ for: 'sell', fund: f.id, target })) return; this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target }); },
       hasPos: !!own, buyPad: own ? 26 : 34, buyFlex: own ? 'none' : '1',
-      bcats: ['Stock', 'Crypto'].map((label, i) => ({ label, pick: () => this.setState({ bcat: i }), bg: s.bcat === i ? '#0B0F14' : '#FFFFFF', fg: s.bcat === i ? '#fff' : '#3C4651', bd: s.bcat === i ? '#0B0F14' : '#E6E9ED' })),
+      bcats: tr(['Stock', 'Crypto'], ['美股', '加密']).map((label, i) => ({ label, pick: () => this.setState({ bcat: i }), bg: s.bcat === i ? '#0B0F14' : '#FFFFFF', fg: s.bcat === i ? '#fff' : '#3C4651', bd: s.bcat === i ? '#0B0F14' : '#E6E9ED' })),
       q: s.q, onQ: e => this.setState({ q: e.target.value }), noAssets: shownAssets.length === 0,
       assets: shownAssets.map(t => { const on = s.picks.includes(t); return { t, logo: LOGO(t), toggle: () => this.toggleAsset(t), on: on ? 1 : 0, sc: on ? 1 : .4, bg: on ? '#FFFFFF' : '#FFFFFF', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       pickCount: s.picks.length + ' / 10', hasPicks: s.picks.length > 0,
       ...this.splitView(s),
-      mixName: s.mixName, nameLen: s.mixName.length, mixCoverBg: 'url(' + (s.mixCover || 'app/cover-cre8.png') + ') center/cover no-repeat', hasMixCover: !!s.mixCover, mixCoverLabel: s.mixCover ? 'Change photo' : 'Add cover photo', removeMixCover: () => this.setState({ mixCover: null }), onMixCover: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ mixCover: URL.createObjectURL(f) }); e.target.value = ''; }, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
+      mixName: s.mixName, nameLen: s.mixName.length, mixCoverBg: 'url(' + (s.mixCover || 'app/cover-cre8.png') + ') center/cover no-repeat', hasMixCover: !!s.mixCover, mixCoverLabel: s.mixCover ? tr('Change photo', '更换封面') : tr('Add cover photo', '添加封面'), removeMixCover: () => this.setState({ mixCover: null }), onMixCover: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ mixCover: URL.createObjectURL(f) }); e.target.value = ''; }, onName: e => this.setState({ mixName: e.target.value.slice(0, 28) }),
       splitEven: () => this.setState(st => ({ weights: this.evenWeights(st.picks), wFixed: [] })),
-      freqs: pills(['Daily', 'Weekly', 'Monthly', 'Quarterly'], s.freq, i => this.setState({ freq: i })),
-      calTitle: MON[calM.getMonth()] + ' ' + calM.getFullYear(), calCells, calPrev: () => s.calOff > 0 && this.setState({ calOff: s.calOff - 1 }), calNext: () => s.calOff < 12 && this.setState({ calOff: s.calOff + 1 }), calPrevO: s.calOff > 0 ? 1 : .25, calNextO: s.calOff < 12 ? 1 : .25, startText,
-      buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || 'My basket', cover: s.mixCover || 'app/cover-cre8.png' } }),
+      freqs: pills(FREQ_LABEL(), s.freq, i => this.setState({ freq: i })),
+      calTitle: tr(MON[calM.getMonth()] + ' ' + calM.getFullYear(), calM.getFullYear() + '年' + (calM.getMonth() + 1) + '月'), calCells, calPrev: () => s.calOff > 0 && this.setState({ calOff: s.calOff - 1 }), calNext: () => s.calOff < 12 && this.setState({ calOff: s.calOff + 1 }), calPrevO: s.calOff > 0 ? 1 : .25, calNextO: s.calOff < 12 ? 1 : .25, startText,
+      buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || tr('My basket', '我的组合'), cover: s.mixCover || 'app/cover-cre8.png' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
       // 處理中不能關（錢包可能正要簽名）；做完或失敗才關。
       closeModal: () => s.step === 'proc' ? null : s.step === 'done' && s.target && s.target.mix && s.page === 'build' ? this.setState({ modal: false, bstep: 0, ...(R0.error ? {} : { page: 'profile' }) }) : this.back({ modal: false }),
       sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' ? this.back({ modal: false }) : null,
-      sheetLeftLabel: s.step === 'review' ? 'Back' : s.step === 'amount' ? 'Cancel' : '',
-      modalTitle: s.step === 'amount' ? (sell ? 'Sell ' : '') + tgt.name : s.step === 'review' ? (sell ? 'Review sale' : 'Review') : '',
-      availText: sell ? 'USDT · ' + fmt(posMax) + ' HELD' : 'USDT · ' + (cashNum == null ? '—' : fmt(s.cash)) + ' AVAILABLE',
+      sheetLeftLabel: s.step === 'review' ? tr('Back', '返回') : s.step === 'amount' ? tr('Cancel', '取消') : '',
+      modalTitle: s.step === 'amount' ? (sell ? tr('Sell ', '卖出') : '') + tgt.name : s.step === 'review' ? (sell ? tr('Review sale', '确认卖出') : tr('Review', '确认买入')) : '',
+      availText: sell ? tr('USDT · ' + fmt(posMax) + ' HELD', '持仓 ' + fmt(posMax) + ' USDT') : tr('USDT · ' + (cashNum == null ? '—' : fmt(s.cash)) + ' AVAILABLE', '可用 ' + (cashNum == null ? '—' : fmt(s.cash)) + ' USDT'),
       // 測試網：錢包沒有 USDT（或不夠）時，可以改用免費測試 USDT（第一次 10,000，之後每天 1,000，直接進這一檔）。
       showFaucet: !sell && cashNum != null && s.cash < Math.max(minBuy, amt || 0), useFaucet: () => this.setState({ payFaucet: true, step: 'review' }),
-      reviewNote: sell ? 'Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.' : 'Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.',
-      confBg: sell ? '#0B0F14' : '#E3B55B', confFg: sell ? '#fff' : '#0B0F14', confirmLabel: sell ? 'Confirm sale' : 'Confirm purchase', doneTitle: sell ? 'Sold' : 'You own it',
+      reviewNote: sell ? tr('Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.', '美股在开盘时卖出，加密资产马上卖出。USDT 回到你的钱包。') : tr('Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.', '美股在开盘时买入，加密资产马上买入。随时可以卖回 USDT。'),
+      confBg: sell ? '#0B0F14' : '#E3B55B', confFg: sell ? '#fff' : '#0B0F14', confirmLabel: sell ? tr('Confirm sale', '确认卖出') : tr('Confirm purchase', '确认买入'),
       mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done',
       sheetCover: tgt.cover, sheetName: tgt.name,
       amtText: faucet ? (isMixBuild || tgt.mixId ? '1,000' : '10,000') : s.amount === '' ? '0' : Number(s.amount.split('.')[0] || 0).toLocaleString('en-US') + (s.amount.includes('.') ? '.' + s.amount.split('.')[1] : ''),
       amtColor: s.amount === '' ? '#C3CAD1' : '#0B0F14', balText: fmt(s.cash),
-      quick: (sell ? [['25%', posMax * .25], ['50%', posMax * .5], ['75%', posMax * .75], ['ALL', posMax]] : [['50', 50], ['100', 100], ['500', 500], ['MAX', s.cash]]).map(([label, v]) => { const vv = sell ? Math.floor(v * 100) / 100 : Math.floor(v); const on = amt === vv; return { label, pick: () => this.setState({ amount: String(vv) }), bg: on ? '#0B0F14' : '#FFFFFF', fg: on ? '#fff' : '#3C4651', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
+      quick: (sell ? [['25%', posMax * .25], ['50%', posMax * .5], ['75%', posMax * .75], [tr('ALL', '全部'), posMax]] : [['50', 50], ['100', 100], ['500', 500], [tr('MAX', '最大'), s.cash]]).map(([label, v]) => { const vv = sell ? Math.floor(v * 100) / 100 : Math.floor(v); const on = amt === vv; return { label, pick: () => this.setState({ amount: String(vv) }), bg: on ? '#0B0F14' : '#FFFFFF', fg: on ? '#fff' : '#3C4651', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'].map(k => ({ k, press: () => this.press(k) })),
       amtBtn, toReview: () => amtOk && this.setState({ step: 'review' }),
-      reviewRows: (sell ? [['You get about', fmt(amt) + ' USDT'], ['Paid to', 'Your wallet'], ['Left in portfolio', '$' + fmt(Math.max(0, posMax - amt))]] : faucet ? [['You pay', 'Free test USDT'], ['Amount', tgt.mixId || isMixBuild ? '1,000 a day' : '10,000 first buy · then 1,000 a day'], ['Held in', 'Your account']] : [['You pay', fmt(amt) + ' USDT'], ['Held in', 'Your account'], ['Cash left', fmt(s.cash - amt) + ' USDT']]).concat(!sell && tLive && tLive.apy != null ? [['APY', '~' + pct(tLive.apy).replace('+', '') + (s.se && seRate != null ? ' + ~' + seRate.toFixed(1) + '% extra' : '')]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
-      confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, procText: s.procText || 'PREPARING',
+      reviewRows: (sell ? [[tr('You get about', '预计到账'), fmt(amt) + ' USDT'], [tr('Paid to', '到账'), tr('Your wallet', '你的钱包')], [tr('Left in portfolio', '组合剩余'), '$' + fmt(Math.max(0, posMax - amt))]] : faucet ? [[tr('You pay', '支付'), tr('Free test USDT', '免费测试 USDT')], [tr('Amount', '金额'), tgt.mixId || isMixBuild ? tr('1,000 a day', '每天 1,000') : tr('10,000 first buy · then 1,000 a day', '首次 10,000 · 之后每天 1,000')], [tr('Held in', '存放在'), tr('Your account', '你的账户')]] : [[tr('You pay', '支付'), fmt(amt) + ' USDT'], [tr('Held in', '存放在'), tr('Your account', '你的账户')], [tr('Cash left', '剩余现金'), fmt(s.cash - amt) + ' USDT']]).concat(!sell && tLive && tLive.apy != null ? [[tr('APY', '年化收益'), '~' + pct(tLive.apy).replace('+', '') + (s.se && seRate != null ? tr(' + ~' + seRate.toFixed(1) + '% extra', ' + 加息 ~' + seRate.toFixed(1) + '%') : '')]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
+      confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, procText: s.procText || tr('PREPARING', '准备中'),
       // 結果：成交＝You own it；錢已進帳戶但還沒成交＝Order placed（美股開盤後成交）；失敗＝紅色。
-      doneTitle: R0.error ? (sell ? 'Sale not completed' : s.side === 'edit' ? 'Not saved' : 'Not completed') : R0.saved ? 'Saved' : R0.sold ? 'Sold' : R0.pending ? 'Almost there' : R0.filled ? 'You own it' : 'Order placed',
-      doneText: R0.error ? tgt.name.toUpperCase() : R0.saved ? tgt.name.toUpperCase() : R0.sold ? tgt.name.toUpperCase() + ' · ' + fmt(R0.sent || 0) + ' USDT TO YOUR WALLET' : tgt.name.toUpperCase() + (R0.amount ? ' · ' + fmt(R0.amount) + ' USDT' : '') + (R0.filled ? '' : R0.pending ? '' : ' · WAITING TO FILL'),
-      doneNote: R0.error || R0.note || (!R0.error && !R0.filled && !R0.sold && !R0.saved && !R0.pending ? 'Crypto buys right away. Stocks buy when the US market is open (9:30–16:00 ET).' : null),
+      doneTitle: R0.error ? (sell ? tr('Sale not completed', '卖出没完成') : s.side === 'edit' ? tr('Not saved', '没保存上') : tr('Not completed', '没完成')) : R0.saved ? tr('Saved', '已保存') : R0.sold ? tr('Sold', '已卖出') : R0.pending ? tr('Almost there', '马上就好') : R0.filled ? tr('You own it', '买入成功') : tr('Order placed', '已下单'),
+      doneText: LANG === 'zh' ? tgt.name + (R0.error || R0.saved ? '' : R0.sold ? ' · ' + fmt(R0.sent || 0) + ' USDT 已到钱包' : (R0.amount ? ' · ' + fmt(R0.amount) + ' USDT' : '') + (R0.filled || R0.pending ? '' : ' · 等待成交')) : R0.error ? tgt.name.toUpperCase() : R0.saved ? tgt.name.toUpperCase() : R0.sold ? tgt.name.toUpperCase() + ' · ' + fmt(R0.sent || 0) + ' USDT TO YOUR WALLET' : tgt.name.toUpperCase() + (R0.amount ? ' · ' + fmt(R0.amount) + ' USDT' : '') + (R0.filled ? '' : R0.pending ? '' : ' · WAITING TO FILL'),
+      doneNote: R0.error || R0.note || (!R0.error && !R0.filled && !R0.sold && !R0.saved && !R0.pending ? tr('Crypto buys right away. Stocks buy when the US market is open (9:30–16:00 ET).', '加密资产马上成交，美股在开盘时段成交（美东 9:30\u2060–\u206016:00）。') : null),
       doneBg: R0.error ? '#D23F2E' : R0.filled || R0.sold || R0.saved ? '#16854F' : '#2F6690', doneSh: R0.error ? 'rgba(210,63,46,.5)' : R0.filled || R0.sold || R0.saved ? 'rgba(30,158,99,.6)' : 'rgba(47,102,144,.5)',
       doneIcon: R0.error ? 'M23 6v14M23 29v1' : R0.filled || R0.sold || R0.saved ? 'M4 18l12 12L42 4' : 'M11 18h.01M23 18h.01M35 18h.01',
       doneRight: () => R0.error ? this.setState({ step: s.side === 'edit' ? 'done' : 'review', ...(s.side === 'edit' ? { modal: false } : {}) }) : (this.setState({ modal: false, fund: null, page: 'profile', ptab: 0, bstep: 0 }), window.scrollTo(0, 0)),
-      doneRightLabel: R0.error ? (s.side === 'edit' ? 'Close' : 'Try again') : 'View portfolio',
-      profileName: s.pname || (w && w.profile && w.profile.name) || 'You', pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
+      doneRightLabel: R0.error ? (s.side === 'edit' ? tr('Close', '关闭') : tr('Try again', '重试')) : tr('View portfolio', '查看持仓'),
+      profileName: s.pname || (w && w.profile && w.profile.name) || tr('You', '你'), pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
       // 名稱、頭像存伺服器的端點還沒有：先用 Privy 的名字與 X 頭像當預設，改了只留在這個分頁（待接）。
       av: (() => { const ph = s.photo || (w && w.profile && w.profile.avatarUrl); const nm = s.pname || (w && w.profile && w.profile.name) || '?'; return { bg: ph ? 'center/cover no-repeat url(' + ph + ')' : AVC[s.avc], letter: ph ? '' : (nm.trim()[0] || '?').toUpperCase() }; })(),
       avOpts: AVC.map((bg, i) => ({ bg, pick: () => this.setState({ avc: i, photo: null }), ring: !s.photo && s.avc === i ? '0 0 0 2px #F3F3F3,0 0 0 4px #0B0F14' : '0 0 0 1px rgba(11,15,20,.08)' })),
       hasPhoto: !!s.photo, removePhoto: () => this.setState({ photo: null }),
       onPhoto: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ photo: URL.createObjectURL(f) }); e.target.value = ''; },
       pv: { big: signedIn && (s0.pf === null || s.holdings.some(h => h.loading) || cashNum == null) ? '—' : '$' + fmt(totalVal), chg: '—', col: '#6B7785', when: '' }, pc: pch.c, pScrub: this.scrub('ph', pch.n), pLeave: () => this.setState({ ph: null }),
-      pranges: pills(RANGES.map(r => r[0]), s.prange, i => this.setState({ prange: i, ph: null })),
+      pranges: pills(RANGES.map(r => tr(r[0], r[5])), s.prange, i => this.setState({ prange: i, ph: null })),
       fundCount: s.holdings.length + ' PORTFOLIOS + CASH',
       alloc: allocSrc.map(([n, v0, cv], i, a) => { const v = v0 || 0, p = Math.max(1, Math.round(v / (totalVal || 1) * 100)); return { n, pct: p, lo: p >= 9 ? 1 : 0, vt: '$' + fmt(v), bg: SH[Math.min(i, SH.length - 1)], fg: i < 3 ? '#fff' : '#0B0F14', ring: i >= 3 ? 'inset 0 0 0 1px #D6DCE2' : 'none', sep: i < a.length - 1 ? '1px solid #EEF0F2' : '0' }; }),
-      ptabs: pills(['Holdings', 'Activity'], s.ptab, i => this.setState({ ptab: i })),
+      ptabs: pills(tr(['Holdings', 'Activity'], ['持仓', '记录']), s.ptab, i => this.setState({ ptab: i })),
       showHold: s.ptab === 0, showAct: s.ptab === 1,
-      holdings: s.holdings.map((h, i) => ({ ...h, val: h.val == null ? '—' : '$' + fmt(h.val), sub: h.loading ? 'Loading…' : h.val == null ? 'Couldn’t load' : Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '% of portfolio', ret: h.ret == null ? '' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', open: () => h.id.startsWith('p') ? null : this.open(h.id) })),
-      holdNote: !signedIn ? null : s0.pf === null ? 'Loading your portfolios…' : s.holdings.length === 0 ? 'No portfolios yet. Pick one on Discover to start.' : null,
+      holdings: s.holdings.map((h, i) => ({ ...h, val: h.val == null ? '—' : '$' + fmt(h.val), sub: h.loading ? tr('Loading…', '加载中…') : h.val == null ? tr('Couldn’t load', '加载失败') : tr(Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '% of portfolio', '占总资产 ' + Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '%'), ret: h.ret == null ? '' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', open: () => h.id.startsWith('p') ? null : this.open(h.id) })),
+      holdNote: !signedIn ? null : s0.pf === null ? tr('Loading your portfolios…', '正在加载持仓…') : s.holdings.length === 0 ? tr('No portfolios yet. Pick one on Discover to start.', '还没有持仓，去“发现”挑一个组合。') : null,
       cashText: cashNum == null ? '—' : '$' + fmt(s.cash),
       // 現金區：錢包現金（Available）與現金生息（Earning）分兩行，永遠不加總；投組的借款不會出現在這裡。
-      cashSub: 'Available',
+      cashSub: tr('Available', '可用'),
       openEarn: () => signedIn ? this.setState({ ern: true }) : this.needSignIn({ for: 'profile' }),
-      earning: !!s0.earnPos, earnSub: s0.earnPos ? '~' + s0.earnPos.apy.toFixed(1) + '% APY · +' + fmt(s0.earnPos.today) + ' USDT today' : '', earnText: s0.earnPos ? '$' + fmt(s0.earnPos.amount) : '',
-      openEarnOut: () => this.setState({ modal: true, side: 'earn-out', step: 'amount', amount: '', target: { id: 'earn', name: 'Withdraw from Earn', cover: 'app/l-usdt.png' } }),
+      earning: !!s0.earnPos, earnSub: s0.earnPos ? tr('~' + s0.earnPos.apy.toFixed(1) + '% APY · +' + fmt(s0.earnPos.today) + ' USDT today', '年化 ~' + s0.earnPos.apy.toFixed(1) + '% · 今日 +' + fmt(s0.earnPos.today) + ' USDT') : '', earnText: s0.earnPos ? '$' + fmt(s0.earnPos.amount) : '',
+      openEarnOut: () => this.setState({ modal: true, side: 'earn-out', step: 'amount', amount: '', target: { id: 'earn', name: tr('Withdraw from Earn', '从生息领出'), cover: 'app/l-usdt.png' } }),
       ernO: s.ern ? 1 : 0, ernPE: s.ern ? 'auto' : 'none', ernY: s.ern ? 0 : 110, closeEarn: () => this.setState({ ern: false }),
-      ernTitle: 'Earn on your cash', ernSub: 'Your USDT earns interest. Withdraw any time, interest included.', ernSoon: !s0.vaults || s0.vaults.length === 0, hasVaults: !!(s0.vaults && s0.vaults.length),
+      ernTitle: tr('Earn on your cash', '闲置 USDT 生息'), ernSub: tr('Your USDT earns interest. Withdraw any time, interest included.', '存进去就开始生息，随时连本带息领出。'), ernSoon: !s0.vaults || s0.vaults.length === 0, hasVaults: !!(s0.vaults && s0.vaults.length),
       // vault 使用率太高時後端回 available: false：寫「Temporarily unavailable」，不能選，不顯示錯誤碼。
-      vaults: (s0.vaults || []).map((v, i, a) => ({ ...v, apy: v.available === false ? 'Unavailable' : '~' + v.apy.toFixed(1) + '%', about: v.available === false ? 'Temporarily unavailable. Try again later.' : v.about, best: v.available !== false && v.apy === Math.max(...a.filter(x => x.available !== false).map(x => x.apy)), sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0', bg: '#FFFFFF', pick: () => v.available !== false && this.setState({ ern: false, modal: true, side: 'earn', step: 'amount', amount: '', target: { id: 'earn:' + v.id, name: v.name, cover: 'app/l-usdt.png' } }) })),
+      vaults: (s0.vaults || []).map((v, i, a) => ({ ...v, apy: v.available === false ? tr('Unavailable', '不可用') : '~' + v.apy.toFixed(1) + '%', about: v.available === false ? tr('Temporarily unavailable. Try again later.', '暂时不可用，稍后再试。') : v.about, best: v.available !== false && v.apy === Math.max(...a.filter(x => x.available !== false).map(x => x.apy)), sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0', bg: '#FFFFFF', pick: () => v.available !== false && this.setState({ ern: false, modal: true, side: 'earn', step: 'amount', amount: '', target: { id: 'earn:' + v.id, name: v.name, cover: 'app/l-usdt.png' } }) })),
       // 策略加息（買入確認畫面的開關，預設關）。利率還沒有：顯示 Coming soon，開關停用。
       // 槓桿類（3x）不提供策略加息。後端回「暫時無法使用」（使用率太高）時 seRates[id] = 'unavailable'。
       showSE: s.side === 'buy' && !tgt.mix && !faucet && !!tLive && (FUNDS.find(x => x.id === tgt.id) || {}).cat !== 'leveraged', seOn: !!(s.se && seRate != null), seCur: seRate != null ? 'pointer' : 'default',
-      seTitle: seRate != null ? 'Earn extra ~' + seRate.toFixed(1) + '% on this portfolio' : 'Earn extra on this portfolio', seSub: seRate != null ? 'We use your shares to earn more. If prices fall fast, we automatically sell a little to keep you safe.' : seOff ? 'Temporarily unavailable. Try again later.' : 'Coming soon',
+      seTitle: seRate != null ? tr('Earn extra ~' + seRate.toFixed(1) + '% on this portfolio', '开启加息，多赚 ~' + seRate.toFixed(1) + '%') : tr('Earn extra on this portfolio', '开启加息'), seSub: seRate != null ? tr('We use your shares to earn more. If prices fall fast, we automatically sell a little to keep you safe.', '用组合里的股票多赚一点；价格急跌时，系统会自动卖掉一点保安全。') : seOff ? tr('Temporarily unavailable. Try again later.', '暂时不可用，稍后再试。') : tr('Coming soon', '即将上线'),
       seToggle: () => seRate != null && this.setState({ se: !s.se }), seBg: s.se && seRate != null ? '#16854F' : seRate != null ? '#C3CAD1' : '#EDF0F3', seJust: s.se && seRate != null ? 'flex-end' : 'flex-start',
       seRow: !!own && f.cat !== 'leveraged' && f.kind !== 'MINE',
-      seLine: typeof s0.seRates[f.id] === 'number' ? '~' + s0.seRates[f.id].toFixed(1) + '% extra' : s0.seRates[f.id] === 'unavailable' ? 'Temporarily unavailable' : 'Coming soon', seFundOn: false, seFundBg: '#EDF0F3', seFundJust: 'flex-start', seFundToggle: () => {},
-      activity: (s0.acts || []).map(a => { const d = new Date(a.at), when = MON[d.getMonth()] + ' ' + d.getDate() + ' · ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+      seLine: typeof s0.seRates[f.id] === 'number' ? tr('~' + s0.seRates[f.id].toFixed(1) + '% extra', '额外 ~' + s0.seRates[f.id].toFixed(1) + '%') : s0.seRates[f.id] === 'unavailable' ? tr('Temporarily unavailable', '暂时不可用') : tr('Coming soon', '即将上线'), seFundOn: false, seFundBg: '#EDF0F3', seFundJust: 'flex-start', seFundToggle: () => {},
+      activity: (s0.acts || []).map(a => { const d = new Date(a.at), when = fmtDay(d, false) + (LANG === 'zh' ? ' ' : ' · ') + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
         const ok = a.state === 'executed' || a.state === 'confirmed' || a.state === 'succeeded';
+        // 中文：交易回合的狀態與 My mix 事件（後端 mix_*）換成中文；認不出來的寫「组合有更新」。
+        const zhState = { executed: '已成交', confirmed: '已成交', succeeded: '已成交', pending: '处理中', submitted: '已提交', failed: '失败', reverted: '链上回滚', noop: '无需交易', unknown: '结果待确认', cancelled: '已取消' }[a.state] || '状态更新';
+        const zhKind = { mix_enrolled: '组合已启动', mix_allocation_changed: '比例已修改', mix_rebalanced: '已调仓', mix_exit_triggered: '开始卖出', mix_exit_stuck: '卖出卡住了', mix_cover: '封面已更新' }[a.kind] || '组合有更新';
+        if (LANG === 'zh') return a.kind ? ['↻', a.name, when + ' · ' + zhKind, '', '#2F6690', '#0B0F14'] : [ok ? '↻' : '·', a.name, when + ' · ' + zhState, a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14'];
         return a.kind ? ['↻', a.name, when + ' · ' + String(a.kind).replace(/_/g, ' '), '', '#2F6690', '#0B0F14'] : [ok ? '↻' : '·', a.name + (ok ? ' traded' : ''), when + ' · ' + String(a.state).replace(/_/g, ' '), a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14']; }).map(([g, t, d, v, fg, vc], i, a) => ({ g, t, d, v, fg, vc, sep: sepL(i, a) })),
-      actNote: s0.acts === null ? 'Loading…' : s0.acts.length === 0 ? 'No activity yet.' : null,
+      actNote: s0.acts === null ? tr('Loading…', '加载中…') : s0.acts.length === 0 ? tr('No activity yet.', '还没有记录。') : null,
       openAcct: () => this.setState({ acct: true }), closeAcct: () => this.back({ acct: false }),
       acctO: s.acct ? 1 : 0, acctPE: s.acct ? 'auto' : 'none', acctY: s.acct ? 0 : 110,
       // 帳號：Email 一列（email 或 Google 都算）、X 一列、一個錢包（使用者原則）。
       ...(() => { const ms = (w && w.methods) || [], em = ms.find(m => m.kind === 'email' || m.kind === 'google'), x = ms.find(m => m.kind === 'x');
-        return { emailLinked: !!em, emailOpen: !em, emailSub: em ? em.detail : 'Not linked', linkGoogle: () => WL && WL.link('google'), xLinked: !!x, xOpen: !x, xSub: x ? x.detail : 'Not linked', linkX: () => WL && WL.link('x') }; })(),
+        return { emailLinked: !!em, emailOpen: !em, emailSub: em ? em.detail : tr('Not linked', '未绑定'), linkGoogle: () => WL && WL.link('google'), xLinked: !!x, xOpen: !x, xSub: x ? x.detail : tr('Not linked', '未绑定'), linkX: () => WL && WL.link('x') }; })(),
       addrShort: signedIn ? shortAddr(w.address) : '', addrFull: signedIn ? w.address : '', linkErr: w && w.linkError,
       exportKey: () => WL && WL.exportWallet(), signOut: () => { this.setState({ acct: false, si: null, page: 'home', fund: null }); try { sessionStorage.removeItem('cre8.intent'); } catch (_) {} if (WL) WL.logout(); },
       addMoney: () => signedIn ? this.setState({ rc: true, copied: false }) : this.needSignIn({ for: 'profile' }),
       rcO: s.rc ? 1 : 0, rcPE: s.rc ? 'auto' : 'none', rcY: s.rc ? 0 : 110, closeRecv: () => this.setState({ rc: false }),
-      copyAddr: () => { try { navigator.clipboard.writeText(w.address); this.setState({ copied: true }); } catch (_) {} }, copyLabel: s.copied ? 'Copied' : 'Copy address',
+      copyAddr: () => { try { navigator.clipboard.writeText(w.address); this.setState({ copied: true }); } catch (_) {} }, copyLabel: s.copied ? tr('Copied', '已复制') : tr('Copy address', '复制地址'),
       ...this.signInView(s0),
     };
   }

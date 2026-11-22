@@ -53,6 +53,15 @@ Cloudflare Worker `cre8-web` (`wrangler.jsonc`, `_worker.js`). Run `npx wrangler
 - All landing and content-page CTAs say “Join waitlist” and link to `/waitlist` (content pages: `scripts/build-pages.mjs`).
 - `/api/*` on `tst.cre8.finance` and `localhost` is forwarded to the testnet backend (Railway `website` service, see `API_ORIGIN` in `_worker.js`). The landing domain doesn't forward it.
 
+## Languages in `app.html` (English, 简体中文)
+
+The app speaks English and Simplified Chinese. The language is picked in this order: `?lang=zh` or `?lang=en` in the URL (saved to `localStorage` `cre8.lang`, then removed from the URL), the saved choice, the browser language (`zh*` → Chinese), English. The button next to the account pill (and top right on the sign-in gate) switches instantly: it reads “中文” in English and “EN” in Chinese. Switching updates `<html lang>` and the title.
+
+- Template text is `{{ t.key }}` from `STR` in the page script; text built in code uses `tr(english, chinese)`.
+- Chinese fund names and descriptions (`ZH_FUND`) match the `zh` copy in `scripts/build-pages.mjs`; keep them in sync. Asset names are in `NAMES_ZH`.
+- Chinese text uses the system Chinese font (PingFang SC, Noto Sans SC) through `@font-face` aliases on Geist and Geist Mono with a CJK `unicode-range`; Latin letters and numbers stay in Geist.
+- `assets/vendor/cre8-wallet.js` follows `<html lang>`: its own messages are bilingual, and English messages from cre8-app code (trade failures, test USDT, setup errors) are mapped to Chinese in `scripts/vendor/wallet-entry.tsx`. Unknown ones show a general Chinese line and log the original to the console. The page calls `CRE8W.relang()` after switching.
+
 ## Testnet data in `app.html`
 
 The app reads live data from the backend through `/api` (same origin, so no CORS):
