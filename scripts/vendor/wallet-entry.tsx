@@ -562,7 +562,7 @@ function earnError(cause: unknown): Error {
     INSUFFICIENT_BALANCE: L('Not enough USDT in your wallet.', '钱包里的 USDT 不够。'),
     AMOUNT_TOO_SMALL: L('The minimum is 1 USDT.', '最少 1 USDT。'),
     AMOUNT_EXCEEDS_BALANCE: L('That’s more than you have earning.', '超过了生息中的金额。'),
-    NOTHING_TO_WITHDRAW: L('Nothing to withdraw.', '没有可领出的金额。'),
+    NOTHING_TO_WITHDRAW: L('Nothing to take out.', '没有可取出的金额。'),
     TX_FAILED: L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'),
     INSUFFICIENT_HOLDING: L('This portfolio doesn’t hold enough of it yet.', '组合里的持仓还不够。'),
     MIX_NO_STRATEGY_EARN: L('Earn extra isn’t available for your own baskets.', '自建组合暂不支持加息。'),
@@ -630,7 +630,7 @@ async function earnDepositRaw(args: { vaultId: string; amount: string; onStep?: 
  * 領回到錢包（含利息）：`amount` 是 USDT 字串或 'max'。有好幾個 vault 部位時從大的開始領；
  * vault 當下流動性不夠時丟一句「現在最多可領 X」，不報錯碼（max 則先領能領的部分）。
  */
-export const earnWithdraw = localized(earnWithdrawRaw, '领出没完成，再试一次。');
+export const earnWithdraw = localized(earnWithdrawRaw, '取出没完成，再试一次。');
 async function earnWithdrawRaw(args: { amount: string | 'max'; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet, owner } = need();
@@ -638,7 +638,7 @@ async function earnWithdrawRaw(args: { amount: string | 'max'; onStep?: Step }) 
   const acct = await earnApi<{ status: string; cashEarn: { positions: { vaultId: string; valueRaw: string | null; maxWithdrawRaw: string | null }[] } }>('/me/earn');
   if (acct.status !== 'ok') throw new Error(temporarily());
   const positions = acct.cashEarn.positions.filter((p) => p.valueRaw !== null && BigInt(p.valueRaw) > 0n).sort((a, b) => (BigInt(b.valueRaw!) > BigInt(a.valueRaw!) ? 1 : -1));
-  if (positions.length === 0) throw new Error(L('Nothing to withdraw.', '没有可领出的金额。'));
+  if (positions.length === 0) throw new Error(L('Nothing to take out.', '没有可取出的金额。'));
   const all = args.amount === 'max';
   let left = all ? 0n : parseUnits(args.amount, 18);
   const plans: { vaultId: string; amountRaw: string | 'max' }[] = [];
@@ -656,9 +656,9 @@ async function earnWithdrawRaw(args: { amount: string | 'max'; onStep?: Step }) 
     let calls = p.status === 'ready' ? p.calls : undefined, amountRaw = p.amountRaw;
     if (p.status === 'limited') {
       const max = usdtText(p.maxWithdrawRaw ?? '0');
-      if (!p.partial) throw new Error(L(`You can withdraw up to ${max} USDT right now.`, `现在最多可领 ${max} USDT。`));
+      if (!p.partial) throw new Error(L(`You can take out up to ${max} USDT right now.`, `现在最多可取 ${max} USDT。`));
       calls = p.partial.calls; amountRaw = p.partial.amountRaw;
-      note = L(`Only ${max} USDT could be withdrawn right now. Try the rest later.`, `现在只能领 ${max} USDT，其余稍后再领。`);
+      note = L(`Only ${max} USDT could come out right now. Try the rest later.`, `现在只能取 ${max} USDT，其余稍后再取。`);
     }
     if (!calls?.length) throw new Error(temporarily());
     const hash = await sendOwnerCalls(wallet, owner, t, calls, step);
