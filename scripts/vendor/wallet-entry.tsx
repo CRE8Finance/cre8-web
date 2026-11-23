@@ -153,11 +153,13 @@ const ZH_CODES: Record<string, string> = {
   PAYMASTER_SENDER_FORBIDDEN: '这个账户不属于现在登录的钱包，没有发出，钱没动。',
   PAYMASTER_EXPIRED: '手续费授权过期了，没有发出。再试一次。',
   PAYMASTER_RETRY_TOO_SOON: '上一笔还在处理，等一分钟再试。钱没动。',
+  PAYMASTER_WITHDRAW_RESERVED: '这部分 USDT 留给还在进行的买入，现在不能领回。钱没动。',
   NETWORK: '网络出问题了，再试一次。',
 };
 const EN_CODES: Record<string, string> = {
   MIX_BUSY: 'This basket is finishing another transaction. Nothing was sent. Wait a few seconds, then try again.',
   PORTFOLIO_BUSY: 'This portfolio is busy with another step. Nothing was sent. Try again in a moment.',
+  PAYMASTER_WITHDRAW_RESERVED: 'That USDT is set aside for a buy that is still in progress, so it can’t come out yet. Nothing was sent.',
 };
 const errorCode = (cause: unknown): string | null => (cause instanceof SponsorshipError || cause instanceof ApiError ? cause.code : null);
 function zhForCode(code: string | null): string | null {
@@ -186,6 +188,7 @@ function localized<A extends unknown[], R>(fn: (...args: A) => Promise<R>, fallb
       if (!isZh()) {
         const en = EN_MESSAGES.find(([re]) => re.test(msg));
         if (en) throw new Error(en[1]);
+        if (code && EN_CODES[code]) throw new Error(EN_CODES[code]);
         // 後端原文是中文：英文介面不能出現中文。
         if (cause instanceof ApiError && HAS_CJK.test(msg)) throw new Error((code && EN_CODES[code]) ?? 'That didn’t finish. Try again.');
         throw cause;
@@ -629,6 +632,22 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
  * 美股收盤時股票賣不動：回 `{ sentUsd, note }`，note 說明原因。
  */
 export const sell = localized(sellRaw, '卖出没完成，再试一次。');
+/**
+ * 這一檔帳戶現在能領回錢包的 USDT（backend#238 `/portfolios/:id/execution` 的 cash.withdrawableRaw）：
+ * 進行中的買入預留的現金不能領（領走會讓組合卡住）。讀不到回 null（照舊用帳戶餘額，代付那邊仍會擋）。
+ */
+async function freeCash(t: string, portfolioId: number): Promise<{ free: bigint; reserved: bigint } | null> {
+  try {
+    const e = await apiRequest<{ cash?: { withdrawableRaw?: unknown; reservedRaw?: unknown } }>(`/portfolios/${portfolioId}/execution`, { token: t });
+    const f = e.cash?.withdrawableRaw, r = e.cash?.reservedRaw;
+    return typeof f === 'string' && /^\d+$/.test(f) && typeof r === 'string' && /^\d+$/.test(r) ? { free: BigInt(f), reserved: BigInt(r) } : null;
+  } catch { return null; }
+}
+/** 給賣出畫面：預留給進行中買入的 USDT（不能部分領出；全部賣出時後端會先取消那筆買入）。 */
+export async function withdrawable(portfolioId: number): Promise<{ freeUsdt: string; reservedUsdt: string } | null> {
+  const c = await freeCash(token(), portfolioId);
+  return c === null ? null : { freeUsdt: formatUnits(c.free, 18), reservedUsdt: formatUnits(c.reserved, 18) };
+}
 async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet, owner } = need();
@@ -638,10 +657,14 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   if (!holding || !account) throw new Error(L('Portfolio not found.', '找不到这个组合。'));
   step(L('Checking your portfolio', '正在检查持仓'));
   let latest: PortfolioStatus = await getPortfolioStatus(t, holding.id);
-  const ceiling = totalUsdOf(latest.totalUsdE8);
-  const wanted = Math.min(args.all ? ceiling : args.usd, ceiling);
+  // 進行中的買入預留的現金不算可賣出／可領回（全部賣出時後端先取消那筆買入，預留就放出來）。
+  const cash0 = args.all ? null : await freeCash(t, holding.id);
+  const reservedUsd = cash0 === null ? 0 : Number(formatUnits(cash0.reserved, 18));
+  const ceiling = Math.max(0, totalUsdOf(latest.totalUsdE8) - reservedUsd);
+  const wanted = Math.min(args.all ? totalUsdOf(latest.totalUsdE8) : args.usd, args.all ? totalUsdOf(latest.totalUsdE8) : ceiling);
   let note: string | null = null;
-  const target = sellTargetUsd(wanted, cashUsdOf(latest.holdings ?? [], 'USDT'));
+  const cashUsd = cashUsdOf(latest.holdings ?? [], 'USDT');
+  const target = sellTargetUsd(wanted, cash0 === null ? cashUsd : Math.min(cashUsd, Number(formatUnits(cash0.free, 18))));
   if (target !== null) {
     step(L('Selling', '正在卖出'));
     try {
@@ -655,7 +678,13 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
     latest = await getPortfolioStatus(t, holding.id);
   }
   const balance = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
-  const value = withdrawAmountWei(args.all ? formatUnits(balance, 18) : wanted.toFixed(8), balance, 18);
+  const cash1 = await freeCash(t, holding.id);
+  const cap = cash1 === null || cash1.free >= balance ? balance : cash1.free;
+  if (cap < balance && note === null) {
+    const held = usdtText((balance - cap).toString());
+    note = L(`${held} USDT is set aside for a buy that is still in progress, so it stays in this portfolio for now.`, `有 ${held} USDT 留给还在进行的买入，暂时留在组合里。`);
+  }
+  const value = withdrawAmountWei(args.all ? formatUnits(cap, 18) : wanted.toFixed(8), cap, 18);
   if (value === 0n) return { sentUsdt: '0', note: note ?? L('Nothing could be sold right now.', '现在没有能卖出的部分。'), txHash: null };
   step(L('Approve in your wallet to receive your USDT', '在钱包里确认，领回 USDT'));
   const receipt = await sendWithdraw({ wallet, token: t, accountAddress: account, strategyId: holding.strategyId, asset: USDT, recipient: owner, amountWei: value });
@@ -1075,7 +1104,7 @@ export { transferCalldata };
 // IIFE 沒有匯出：掛到 window，通知 app.html。
 (window as unknown as { CRE8W: unknown }).CRE8W = {
   mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
-  portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, deleteMix, chain,
+  portfolios, status, activity, walletUsdt, buy, sell, withdrawable, mixes, mix, createMix, fundMixBasket, patchMix, deleteMix, chain,
   txReset, txs,
   earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
   dcaGet, dcaStart, dcaPause, dcaResume, dcaWithdraw,

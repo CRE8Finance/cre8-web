@@ -767,7 +767,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=8496473964'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=fd026fe96c'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -875,6 +875,11 @@ class Component extends DCLogic {
   loadDca() {
     const W = window.CRE8W; if (!W || !W.dcaGet || !this.state.pf) return;
     this.state.pf.forEach(p => W.dcaGet(p.id).then(r => this.setState(x => { const dcaP = { ...x.dcaP, [p.id]: r }; try { localStorage.setItem('cre8.dcaP', JSON.stringify(dcaP)); } catch (_) {} return { dcaP }; })).catch(() => {}));
+  }
+  // 賣出：進行中的買入預留的 USDT 不能部分領出（backend#238），部分賣出的上限要扣掉；全部賣出時後端先取消那筆買入。
+  loadSellReserved(fid) {
+    const W = window.CRE8W, h = this.holdingsOf(this.state).find(x => x.id === fid); if (!W || !W.withdrawable || !h) return;
+    W.withdrawable(h.pid).then(r => r && this.setState(x => ({ sellRes: { ...(x.sellRes || {}), [h.pid]: Number(r.reservedUsdt) || 0 } }))).catch(() => {});
   }
   // 活動：每個投組 /portfolios/:id/activity（交易回合）＋ My mix 的事件，合併成一個列表（新的在上）。
   async loadActivity() {
@@ -1366,8 +1371,11 @@ class Component extends DCLogic {
     const dcaStartMs = s.dcaStart && s.dcaStart > today.getTime() ? s.dcaStart : today.getTime();
     const dcaWhen = dcaStartMs <= today.getTime() ? tr('Today', '今天') : fmtDay(new Date(dcaStartMs));
     const dcaFq = DCA_FQ_LABEL()[s.dcaFreq];
-    const amtOk = dcaOn ? amt > 0 && dcaPer >= DCA_MIN && amt <= s.cash && !dcaHas : out ? amt > 0 && amt <= posMax : amt >= minBuy && amt <= s.cash;
-    const amtBtn = dcaOn && dcaHas ? { ...off, label: tr('Already buying on a schedule', 'DCA 进行中') } : amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : dcaOn ? (dcaPer < DCA_MIN ? { ...off, label: tr('At least ' + DCA_MIN + ' USDT each time', '每期至少 ' + DCA_MIN + ' USDT') } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: tr('Review', '下一步') }) : out ? (amt > posMax ? { ...off, label: eOut ? tr('More than you have earning', '超过生息中的金额') : tr('More than you hold', '超过持仓') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: eOut ? tr('Take out', '取出') : tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起' + (eIn ? '存' : '投')) } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: eIn ? tr('Earn', '存入') : tr('Review', '下一步') };
+    // 部分賣出的上限＝持倉－進行中買入預留的 USDT；全部賣出（＝持倉）照常可以。
+    const sellRes = sell && posH && s.sellRes ? s.sellRes[posH.pid] || 0 : 0, partMax = sellRes > 0 ? Math.max(0, Math.floor((posH.val - sellRes) * 100) / 100) : posMax;
+    const partGap = sell && amt > partMax && amt < posMax;
+    const amtOk = dcaOn ? amt > 0 && dcaPer >= DCA_MIN && amt <= s.cash && !dcaHas : out ? amt > 0 && amt <= posMax && !partGap : amt >= minBuy && amt <= s.cash;
+    const amtBtn = dcaOn && dcaHas ? { ...off, label: tr('Already buying on a schedule', 'DCA 进行中') } : amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : dcaOn ? (dcaPer < DCA_MIN ? { ...off, label: tr('At least ' + DCA_MIN + ' USDT each time', '每期至少 ' + DCA_MIN + ' USDT') } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: tr('Review', '下一步') }) : out ? (amt > posMax ? { ...off, label: eOut ? tr('More than you have earning', '超过生息中的金额') : tr('More than you hold', '超过持仓') } : partGap ? { ...off, label: tr('Up to ' + fmt(partMax) + ' now, or sell all', '现在最多 ' + fmt(partMax) + '，或全部卖出') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: eOut ? tr('Take out', '取出') : tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起' + (eIn ? '存' : '投')) } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: eIn ? tr('Earn', '存入') : tr('Review', '下一步') };
     // 總資產＝各投組淨值（已扣策略加息策略的負債）＋錢包現金＋現金生息；三者在下面各自一列，不合併。
     const invested = s.holdings.reduce((a, h) => a + (h.val || 0), 0), totalVal = invested + s.cash + earnTot;
     // 總資產的歷史走勢後端還沒有端點：先畫平線、變化顯示 —（待接）。
@@ -1406,7 +1414,7 @@ class Component extends DCLogic {
       openDelMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.setState({ modal: true, side: 'del', step: 'del', target: { id: m.id, name: m.name, cover: m.cover || 'app/cover-cre8.png', mixId: m.mixId, portfolioId: m.portfolioId } }); },
       editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, mixCover: m.cover || null, q: '', calOff: 0 }); window.scrollTo(0, 0); },
       openBuy: () => { const m = f.kind === 'MINE' ? s.mixes.find(x => x.id === f.id) : null; const target = { id: f.id, name: f.name, cover: f.cover, ...(m ? { mix: { id: m.id }, mixId: m.mixId, portfolioId: m.portfolioId, account: m.account } : {}) }; if (this.needSignIn({ for: 'buy', fund: f.id, target })) return; this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', payFaucet: false, se: false, target, dca: false, dcaFreq: 1, dcaN: 12, dcaStart: null }); },
-      openSell: () => { const target = { id: f.id, name: f.name, cover: f.cover }; if (this.needSignIn({ for: 'sell', fund: f.id, target })) return; this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target }); },
+      openSell: () => { const target = { id: f.id, name: f.name, cover: f.cover }; if (this.needSignIn({ for: 'sell', fund: f.id, target })) return; this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target }); this.loadSellReserved(f.id); },
       hasPos: !!own, buyPad: own ? 26 : 34, buyFlex: own ? 'none' : '1',
       bcats: tr(['Stock', 'Crypto'], ['美股', '加密']).map((label, i) => ({ label, pick: () => this.setState({ bcat: i }), bg: s.bcat === i ? '#0B0F14' : '#FFFFFF', fg: s.bcat === i ? '#fff' : '#3C4651', bd: s.bcat === i ? '#0B0F14' : '#E6E9ED' })),
       q: s.q, onQ: e => this.setState({ q: e.target.value }), noAssets: shownAssets.length === 0,
@@ -1442,7 +1450,7 @@ class Component extends DCLogic {
       sheetCover: tgt.cover, sheetName: tgt.name,
       amtText: faucet ? (isMixBuild || tgt.mixId ? '1,000' : '10,000') : s.amount === '' ? '0' : Number(s.amount.split('.')[0] || 0).toLocaleString('en-US') + (s.amount.includes('.') ? '.' + s.amount.split('.')[1] : ''),
       amtColor: s.amount === '' ? '#C3CAD1' : '#0B0F14', balText: fmt(s.cash),
-      quick: (out ? [['25%', posMax * .25], ['50%', posMax * .5], ['75%', posMax * .75], [tr('ALL', '全部'), posMax]] : [['50', 50], ['100', 100], ['500', 500], [tr('MAX', '最大'), s.cash]]).map(([label, v]) => { const vv = out ? Math.floor(v * 100) / 100 : Math.floor(v); const on = amt === vv; return { label, pick: () => this.setState({ amount: String(vv) }), bg: on ? '#0B0F14' : '#FFFFFF', fg: on ? '#fff' : '#3C4651', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
+      quick: (out ? [['25%', partMax * .25], ['50%', partMax * .5], ['75%', partMax * .75], [tr('ALL', '全部'), posMax]] : [['50', 50], ['100', 100], ['500', 500], [tr('MAX', '最大'), s.cash]]).map(([label, v]) => { const vv = out ? Math.floor(v * 100) / 100 : Math.floor(v); const on = amt === vv; return { label, pick: () => this.setState({ amount: String(vv) }), bg: on ? '#0B0F14' : '#FFFFFF', fg: on ? '#fff' : '#3C4651', bd: on ? '#0B0F14' : '#E6E9ED' }; }),
       keys: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '⌫'].map(k => ({ k, press: () => this.press(k) })),
       // 存入／取出沒有確認頁：金額頁的按鈕直接叫錢包簽名（錢包本身就是確認）。
       // 定投：金額頁頂端「一次买入／定投」；定投時輸入總額、選頻率、期數、首期日期，下面一行算好每期多少。
