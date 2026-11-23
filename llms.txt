@@ -18,6 +18,7 @@
 - Model APY is a backtest of current weights on historical prices, not a track record.
 - Status: testnet only, no real money. No mainnet date yet.
 - Availability: anyone outside the US, where local rules allow.
+- Not related to the CRE8 Finance project on Solana or to any CRE8 token. CRE8 has no token at present.
 
 ## People portfolios
 - [Pelosi Portfolio](https://cre8.finance/portfolios/pelosi): NVDA 19%, GOOGL 19%, MSFT 19%, AMZN 19%, INTC 19%, AVGO 5%. Model APY +24.8% (backtest as of 2026-11-22).
