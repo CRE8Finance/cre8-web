@@ -945,11 +945,11 @@ function dcaError(cause: unknown): Error {
   if (cause instanceof ApiError) {
     const m: Record<string, string> = {
       DCA_PERIOD_TOO_SMALL: L('Each period needs at least 10 USDT.', '每期至少 10 USDT。'),
-      DCA_ALREADY_ACTIVE: L('This portfolio already has a recurring buy.', '这个组合已经在定投了。'),
+      DCA_ALREADY_ACTIVE: L('This portfolio already has a recurring buy.', '这个组合已经开启 DCA 了。'),
       INVALID_START: L('Pick a start date from today to a year ahead.', '开始日期要在今天到一年内。'),
       INVALID_PERIODS: L('Pick 2 to 365 periods.', '期数要在 2 到 365 之间。'),
       DCA_BUSY: L('This period is buying right now. Try again in a minute.', '这一期正在买入，稍等一分钟再试。'),
-      DCA_NOT_FOUND: L('No recurring buy here.', '这个组合没有定投。'),
+      DCA_NOT_FOUND: L('No recurring buy here.', '这个组合没有开启 DCA。'),
     };
     if (m[cause.code]) return new Error(m[cause.code]);
   }
@@ -979,7 +979,7 @@ async function confirmDca(t: string, portfolioId: number, txHash: Hex): Promise<
  * 開始定投：（第一次買這檔就先開帳戶）→ 總額從錢包轉進這檔的帳戶 → 帳戶 owner 簽一次存進 vault（需要時連 session 權限一起裝）→ 記帳。
  * 帳戶裡已經有上次轉進來、還沒存進 vault 的總額時，不再轉一次（失敗重試不會重複扣款）。
  */
-export const dcaStart = localized(dcaStartRaw, '定投没开始，再试一次。');
+export const dcaStart = localized(dcaStartRaw, 'DCA 没有开启，再试一次。');
 async function dcaStartRaw(args: { strategyId?: number; onchainId?: number; shown?: { version: number; configHash: string } | null; mixPortfolioId?: number;
   total: string; periods: number; frequency: DcaFrequency; startAt: string; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
@@ -1025,7 +1025,7 @@ async function dcaStartRaw(args: { strategyId?: number; onchainId?: number; show
   const missing = executor && state ? state.missing.filter((a) => !approved.some((x) => x.toLowerCase() === a.toLowerCase())) : [];
   const extra = executor ? missing.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n })) : [];
   const together = core.length + extra.length <= APPROVALS_PER_USEROP;
-  step(L('Approve in your wallet to start', '在钱包里确认，开始定投'));
+  step(L('Approve in your wallet to start', '在钱包里确认，开始 DCA'));
   const r = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: together ? [...core, ...extra] : core });
   if (!r.success) throw new Error(L('The transaction didn’t go through. Your USDT is in this portfolio’s account; try again.', '交易没成功，USDT 在这个组合的账户里，再试一次即可。'));
   if (renewal) await recordRenewal(t, portfolioId, renewal);
