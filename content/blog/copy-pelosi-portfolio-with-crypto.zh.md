@@ -58,6 +58,10 @@ CRE8 的 [佩洛西持仓组合](https://cre8.finance/zh/portfolios/pelosi) 已�
 
 组合的整理方法写在组合页上：按佩洛西家族的 PTR 整理；申报里是看涨期权的，组合改为持有对应的正股；申报只有金额区间，所以权重由 CRE8 设定。截至 2026 年 11 月 23 日，权重是英伟达、谷歌、微软、亚马逊、英特尔各 19%，博通 5%。
 
+![chart](chart:weights-pelosi)
+
+![chart](chart:nav-pelosi)
+
 用 500 USDT 走一遍：
 
 | 股票 | 权重 | 500 USDT 分到 |

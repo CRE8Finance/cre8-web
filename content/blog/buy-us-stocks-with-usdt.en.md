@@ -22,6 +22,8 @@ A real share is registered with a broker in your name. It carries full dividend 
 
 As of November 23, 2026, tokenized US stocks across all chains were worth about $3.37 billion, held by about 4.97 million holders. The three largest issuers were Binance's bStock (about $1.2 billion), Ondo (about $852.6 million) and xStocks (about $648.1 million) ([rwa.xyz](https://app.rwa.xyz/stocks)).
 
+![chart](chart:issuers)
+
 ## Route 1: How do you buy stock tokens on an exchange?
 
 You sign up for an exchange and place an order with USDT, the same way you'd buy a coin. Binance sells its own bStock with a $5 minimum and 24/7 spot trading. Kraken, Bybit and others sell xStocks; on Kraken you can buy fractions from $1 ([Binance Learn](https://www.binance.com/en/learn/bstocks), [Kraken FAQ](https://support.kraken.com/articles/xstocks-faq)).

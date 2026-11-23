@@ -34,6 +34,8 @@ bStock 是一种「股票代币」：发行方先在托管机构买入真实股�
 
 bStock 2026 年 6 月 11 日上线（[DefiLlama Research](https://defillama.com/research/spotlight/stocks-onchain-how-binance-stocks-and-bstocks-cover-the-full-equities-spectrum)）。据 Finance Magnates 2026 年 10 月 15 日报道，bStock 已有近 100 只，管理资产超过 10 亿美元，累计交易量超过 400 亿美元（[Finance Magnates](https://www.financemagnates.com/cryptocurrency/exchange/binance-claims-fastest-1-billion-sprint-in-bstocks-with-6-billion-in-share-conversions/)）。第三方数据站 rwa.xyz 在 2026 年 11 月 23 日的统计是 112 个代币、总值约 12 亿美元，是全网规模最大的美股代币（[rwa.xyz](https://app.rwa.xyz/stocks)）。
 
+![chart](chart:issuers)
+
 ## bStock 和真股票差在哪？
 
 最核心的一点：真股票登记在你（或你的券商）名下，bStock 是发行方的凭证，你的权利取决于发行方和托管方。具体差在下面几处。

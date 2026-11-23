@@ -40,6 +40,8 @@ If all you hold is USDT, funding is the first hurdle. Interactive Brokers accept
 
 CRE8's DCA takes one deposit, buys in installments, and keeps the uninvested part earning in a USDT vault.
 
+![DCA setup: total amount, frequency and number of buys](/assets/blog/dca.en.webp)
+
 Here's how it works. You pick a portfolio, deposit the full amount of USDT into that portfolio's account, and set the number of installments and the frequency: daily, weekly, every two weeks or monthly. Each installment has to be at least 10 USDT.
 
 On each installment date, the system takes one share of the money and buys every asset in the portfolio at its target weight. The rest waits in a USDT vault at market rates; CRE8 doesn't promise a rate. You can withdraw the uninvested part whenever you like.
@@ -66,6 +68,8 @@ Say you pick the Pelosi Portfolio, deposit 1,000 USDT, and choose 10 weekly inst
 Weights are as shown on the [Pelosi Portfolio page](https://cre8.finance/portfolios/pelosi) on November 23, 2026.
 
 Now the waiting cash. After the first installment, 900 USDT is left in the vault; after the second, 800; after the tenth, nothing. Over the 10 weeks, an average of 450 USDT sits in the vault.
+
+![chart](chart:dca-schedule)
 
 To show how the interest adds up, take a hypothetical rate. If the vault paid 4% a year, those 10 weeks would earn about 450 × 4% × 10 ÷ 52 ≈ 3.5 USDT. The 4% is only there to show the math. It isn't CRE8's rate; real rates follow the market, and testnet rates are simulated.
 

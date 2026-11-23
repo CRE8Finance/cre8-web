@@ -22,6 +22,8 @@ status: 草稿（总览篇，第 1 篇）
 
 截至 2026 年 11 月 23 日，全网美股代币总值约 33.7 亿美元，持有人约 497 万。规模最大的三家是币安的 bStock（约 12 亿美元）、Ondo（约 8.5 亿美元）和 xStocks（约 6.5 亿美元）（[rwa.xyz](https://app.rwa.xyz/stocks)）。
 
+![chart](chart:issuers)
+
 ## 方法一：在交易所买股票代币，怎么做？
 
 注册交易所账户，用 USDT 直接下单买，和买币一样。币安卖自己的 bStock，最低 5 美元，现货 24 小时都能交易；Kraken、Bybit 等卖 xStocks，Kraken 上 1 美元就能买零股（[Binance Learn](https://www.binance.com/en/learn/bstocks)、[Kraken FAQ](https://support.kraken.com/articles/xstocks-faq)）。

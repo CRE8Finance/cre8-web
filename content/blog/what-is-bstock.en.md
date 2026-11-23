@@ -34,6 +34,8 @@ A proof of collateral is a daily public report showing how many shares sit in cu
 
 bStock launched on June 11, 2026 ([DefiLlama Research](https://defillama.com/research/spotlight/stocks-onchain-how-binance-stocks-and-bstocks-cover-the-full-equities-spectrum)). Finance Magnates reported on October 15, 2026 that Binance offered close to 100 bStocks, with more than $1 billion in assets and more than $40 billion in cumulative trading volume ([Finance Magnates](https://www.financemagnates.com/cryptocurrency/exchange/binance-claims-fastest-1-billion-sprint-in-bstocks-with-6-billion-in-share-conversions/)). As of November 23, 2026, the data site rwa.xyz counted 112 bStock tokens worth about $1.2 billion, the largest of any tokenized stock issuer ([rwa.xyz](https://app.rwa.xyz/stocks)).
 
+![chart](chart:issuers)
+
 ## How is bStock different from owning a real share?
 
 When you buy a share through a broker, it is registered to you (or to your broker on your behalf). A bStock is a certificate from the issuer, so your rights depend on the issuer and its custodian. Here is where that shows up.

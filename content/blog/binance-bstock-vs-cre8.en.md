@@ -47,6 +47,8 @@ If you want leverage or derivatives. CRE8 is spot only and doesn't offer either.
 
 Buying five stocks on Binance means placing five orders and working out the weights yourself. On CRE8 you pick a portfolio, enter an amount, and the system buys every holding at its target weight in one go. With the Pelosi Portfolio, 100 USDT becomes 19 USDT each of Nvidia, Alphabet, Microsoft, Amazon and Intel, plus 5 USDT of Broadcom.
 
+![chart](chart:weights-pelosi)
+
 ### The weights stay on target
 
 After prices move, a 19% position can grow to 25%. CRE8 rebalances once a month, and also whenever any holding drifts more than 5 percentage points from its target. You don't have to remember to do it.
@@ -58,6 +60,8 @@ bStock bought on Binance sits in your exchange account by default. To hold it yo
 ### Your bStock can earn extra yield
 
 On Binance, bStock as collateral is there to support trading. To earn interest with it, you'd withdraw it to a wallet, post it as collateral on a lending protocol, borrow, deposit what you borrowed, and keep an eye on it so you don't get liquidated.
+
+![Review screen with the yield strategy switch off by default](/assets/blog/confirm.en.webp)
 
 CRE8's yield strategy turns those steps into one switch. When it's on, the system deposits the portfolio's shares in a lending market, borrows only a small part of the USDT the market would allow, and puts that USDT in a vault to earn interest. If prices fall to the safety line, it automatically repays part of the loan from the vault, and your shares aren't sold. The switch is off by default and you can turn it off any time. More on how it works in [how to earn yield on idle USDT and bStock](/blog/earn-yield-on-idle-usdt-and-bstock).
 

@@ -1,0 +1,57 @@
+{
+ "type": "bar",
+ "unit": "usdM",
+ "title": {
+  "en": "Tokenized stocks by platform, total value",
+  "zh": "各平台代币化美股总值"
+ },
+ "source": {
+  "en": "Source: rwa.xyz Tokenized Stocks league table, as of 2026-11-23 (third-party data). Total across all platforms: $3.37B.",
+  "zh": "来源：rwa.xyz 代币化股票排行榜，截至 2026-11-23（第三方数据）。全部平台合计 33.7 亿美元。"
+ },
+ "rows": [
+  {
+   "label": {
+    "en": "bStocks",
+    "zh": "bStocks"
+   },
+   "value": 1200,
+   "highlight": true
+  },
+  {
+   "label": {
+    "en": "Ondo",
+    "zh": "Ondo"
+   },
+   "value": 852.6
+  },
+  {
+   "label": {
+    "en": "xStocks",
+    "zh": "xStocks"
+   },
+   "value": 648.1
+  },
+  {
+   "label": {
+    "en": "Securitize",
+    "zh": "Securitize"
+   },
+   "value": 200.3
+  },
+  {
+   "label": {
+    "en": "Reality",
+    "zh": "Reality"
+   },
+   "value": 156.7
+  },
+  {
+   "label": {
+    "en": "Robinhood",
+    "zh": "Robinhood"
+   },
+   "value": 133.2
+  }
+ ]
+}

@@ -14,6 +14,8 @@ status: 草稿（产品介绍，第 10 篇）
 
 CRE8（cre8.finance）是 BNB Chain 上的应用，用 USDT 一次买入美股代币和加密资产组合，资产放在你自己的智能账户里，还能开启加息策略，让 bStock 多赚一份收益。买入后组合会自动调仓，维持原来的比例。截至 2026 年 11 月 23 日，CRE8 只在 BNB Chain 测试网上运行，不涉及真钱，登录需要邀请码，也没有发行任何代币。
 
+![CRE8 发现页：人物组合和主题组合](/assets/blog/discover.zh.webp)
+
 ## 先说清楚几个词
 
 bStock 是币安关联公司 BTech Holdings 在 BNB Chain 上发行的美股代币。每枚由托管的正股 1:1 支撑，发行方每天公布抵押证明，价格跟着对应的股票走。币安官方写明「bStocks 不是股票」，分红先扣 30% 美国预扣税，再折成更多代币，不发现金（[Binance Learn](https://www.binance.com/en/learn/bstocks)）。

@@ -14,6 +14,8 @@ By CRE8 · November 23, 2026 · About 8 minutes
 
 CRE8 (cre8.finance) is an app on BNB Chain for buying baskets of tokenized US stocks and crypto with USDT, held in your own smart account, with yield strategies that put your bStock to work. After you buy, each portfolio rebalances automatically to keep its target weights. As of November 23, 2026, CRE8 runs only on BNB Chain testnet: no real money is involved, signing in needs an invite code, and CRE8 has no token.
 
+![CRE8 Discover page with people and theme portfolios](/assets/blog/discover.en.webp)
+
 ## What do the key terms mean?
 
 bStock is a tokenized US stock on BNB Chain, issued by BTech Holdings, a Binance affiliate. Each token is backed 1:1 by shares held with a custodian, the issuer publishes a daily proof of collateral, and the price tracks the underlying stock. Binance states that bStocks are not shares, and dividends arrive as extra tokens after a 30% US withholding tax rather than as cash ([Binance Learn](https://www.binance.com/en/learn/bstocks)).

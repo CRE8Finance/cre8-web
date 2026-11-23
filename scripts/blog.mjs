@@ -5,6 +5,7 @@
  */
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { loadCharts, chartHtml } from './blog-charts.mjs';
 
 // 文章順序（列表頁照這個排；第 1 篇是總覽）。新文章加在這裡。
 export const BLOG_ORDER = [
@@ -40,7 +41,7 @@ function inline(text) {
 
 const cells = (line) => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((c) => c.trim());
 
-function mdToHtml(md) {
+function mdToHtml(md, lang, charts) {
   const lines = md.split('\n');
   const out = [];
   let para = [];
@@ -52,6 +53,8 @@ function mdToHtml(md) {
     // 截圖佔位（[截图：…]／[Screenshot: …]）等實際截圖補上前不輸出。
     if (/^\[(截图|Screenshot)[：:]/.test(t)) { flush(); continue; }
     let m;
+    // 數據圖：![chart](chart:<id>)，資料在 content/blog/charts/<id>.json。
+    if ((m = t.match(/^!\[chart\]\(chart:([\w-]+)\)$/))) { flush(); const c = charts[m[1]]; if (!c) throw new Error(`blog：找不到數據圖 ${m[1]}`); out.push(chartHtml(c, lang)); continue; }
     // 圖片：![alt](/assets/blog/x.webp)，獨立一行。
     if ((m = t.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/))) { flush(); out.push(`<figure class="post-fig"><img src="${m[2]}" alt="${escHtml(m[1])}" loading="lazy" decoding="async"></figure>`); continue; }
     if ((m = t.match(/^(#{2,4})\s+(.*)$/))) { flush(); const n = m[1].length; out.push(`<h${n}>${inline(m[2])}</h${n}>`); continue; }
@@ -84,7 +87,7 @@ function mdToHtml(md) {
 
 const plain = (md) => md.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\*\*/g, '').replace(/\s+/g, ' ').trim();
 
-function parse(src, file) {
+function parse(src, file, lang, charts) {
   const fm = src.match(/^---\n([\s\S]*?)\n---\n/);
   if (!fm) throw new Error(`${file}：沒有 front matter`);
   const meta = Object.fromEntries(fm[1].split('\n').map((l) => l.match(/^(\w+):\s*(.*)$/)).filter(Boolean).map((m) => [m[1], m[2].trim()]));
@@ -96,13 +99,14 @@ function parse(src, file) {
   body = body.replace(/^(作者|By)[：:\s][^\n]*\n/, '').trim();
   const firstPara = body.split(/\n\s*\n/)[0];
   for (const k of ['published', 'updated']) if (!/^\d{4}-\d{2}-\d{2}$/.test(meta[k] || '')) throw new Error(`${file}：${k} 格式要 YYYY-MM-DD`);
-  return { title: h1[1].trim(), meta, lede: plain(firstPara), html: mdToHtml(body) };
+  return { title: h1[1].trim(), meta, lede: plain(firstPara), html: mdToHtml(body, lang, charts) };
 }
 
 // 回傳 [{ slug, en, zh }]，照 BLOG_ORDER 排；兩種語言都要有，缺了就停。
 export async function loadPosts(root) {
   const dir = join(root, 'content', 'blog');
   const files = await readdir(dir);
+  const charts = await loadCharts();
   const slugs = [...new Set(files.filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.(en|zh)\.md$/, '')))];
   for (const s of slugs) if (!BLOG_ORDER.includes(s)) throw new Error(`blog：${s} 沒列在 BLOG_ORDER`);
   const posts = [];
@@ -111,7 +115,7 @@ export async function loadPosts(root) {
     for (const lang of ['en', 'zh']) {
       const file = `${slug}.${lang}.md`;
       if (!files.includes(file)) throw new Error(`blog：缺 ${file}`);
-      post[lang] = parse(await readFile(join(dir, file), 'utf8'), file);
+      post[lang] = parse(await readFile(join(dir, file), 'utf8'), file, lang, charts);
     }
     posts.push(post);
   }

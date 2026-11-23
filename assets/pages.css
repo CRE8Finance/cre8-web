@@ -181,3 +181,7 @@ table.post-table{min-width:560px}
 .post-row .small{display:block;margin-top:8px}
 .post-fig{margin:24px 0 0}
 .post-fig img{display:block;width:100%;height:auto;border-radius:16px;box-shadow:0 0 0 1px rgba(11,15,20,.08)}
+.post-chart{padding:20px 20px 16px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(11,15,20,.08)}
+.post-chart svg{display:block;width:100%;height:auto;margin-top:12px}
+.post-chart__title{font-size:15px;font-weight:500;color:#0B0F14}
+.post-chart__src{margin-top:10px;font-size:12px;line-height:1.5;color:#6B7785}

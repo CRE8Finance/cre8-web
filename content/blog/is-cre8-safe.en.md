@@ -28,6 +28,8 @@ bStock is a tokenized US stock on BNB Chain, issued by BTech Holdings, a Binance
 
 In your own smart account. Every user has a separate smart account on BNB Chain, and your assets are never pooled with anyone else's.
 
+![Review screen with the yield strategy switch off by default](/assets/blog/confirm.en.webp)
+
 You can look up the account on a block explorer at any time and see which tokens it holds and how many. What a portfolio bought, and what each rebalance changed, is on-chain.
 
 ## Who can move your assets?

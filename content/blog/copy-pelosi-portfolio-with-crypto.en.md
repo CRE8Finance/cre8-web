@@ -56,6 +56,10 @@ CRE8's [Pelosi Portfolio](https://cre8.finance/portfolios/pelosi) turns the fili
 
 The portfolio page explains the method. It is built from the household's PTRs. Where the trades are call options, the portfolio holds the underlying shares instead. Because the filings only give ranges, CRE8 sets the weights. As of November 23, 2026, that's NVIDIA, Alphabet, Microsoft, Amazon and Intel at 19% each, plus 5% in Broadcom.
 
+![chart](chart:weights-pelosi)
+
+![chart](chart:nav-pelosi)
+
 Here is what 500 USDT looks like:
 
 | Stock | Weight | Out of 500 USDT |

@@ -20,6 +20,8 @@ A tokenized stock is a blockchain token whose price tracks a US stock, backed by
 
 As of November 23, 2026, rwa.xyz puts the total value of tokenized US stocks at about $3.37 billion across roughly 4.97 million holders. By size: bStock about $1.2 billion, Ondo about $853 million, xStocks about $648 million and Robinhood about $133 million. Dinari isn't in the top 10 ([rwa.xyz](https://app.rwa.xyz/stocks)). rwa.xyz figures don't always match what issuers report themselves, so treat them as a sense of scale.
 
+![chart](chart:issuers)
+
 ## How do the five issuers compare side by side?
 
 Every cell below comes from the issuer's or platform's own documents, with a few from major news outlets; links are in the sections below and at the end. Where the issuer hasn't published the information and we couldn't find a reliable source, the cell says "Not disclosed."

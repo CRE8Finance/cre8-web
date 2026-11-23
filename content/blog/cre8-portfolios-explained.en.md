@@ -18,6 +18,8 @@ CRE8 has 21 ready-made portfolios in three groups: 4 people portfolios, 15 theme
 
 A portfolio is a basket of assets at fixed target weights. On CRE8 you pick one, enter an amount, and one USDT payment buys every asset at its weight. The minimum is 50 USDT per purchase ([CRE8 How it works](https://cre8.finance/how-it-works)).
 
+![CRE8 Discover page with people and theme portfolios](/assets/blog/discover.en.webp)
+
 A weight is each asset's share of the portfolio. A 19% weight means 19 USDT of every 100 USDT goes into that asset.
 
 The US stocks are held as bStock, tokenized US stocks on BNB Chain issued by BTech Holdings, a Binance affiliate. Each token is backed 1:1 by shares held with a custodian. Binance states that bStocks are not shares ([Binance Learn](https://www.binance.com/en/learn/bstocks)).
@@ -104,6 +106,8 @@ There are two leveraged portfolios: [3x Semiconductors](https://cre8.finance/por
 Daily reset means the 3x applies to one day only. The next day starts over from the new price. Over weeks or months, the result can be far from three times what the index did.
 
 The numbers make it clear. Say an index rises 10% one day and falls 10% the next: 100 becomes 110, then 99, a 1% loss. The 3x product rises 30% and then falls 30%: 100 becomes 130, then 91, a 9% loss. That's 6 points worse than three times the index's loss. In a choppy market, the gap keeps growing.
+
+![chart](chart:leveraged-decay)
 
 The portfolio pages show the same thing. As of November 22, 2026, 3x Semiconductors returned −72.2% over the last 90 days in the model, and 3x Nasdaq returned −40.2%. Their model APYs (backtest) are +4.6% and +3.5%. Same portfolio, different time window, very different number.
 

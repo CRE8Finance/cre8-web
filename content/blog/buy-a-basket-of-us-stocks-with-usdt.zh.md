@@ -26,6 +26,10 @@ CRE8 是 BNB Chain 上的应用，用 USDT 一次买入美股代币和加密资�
 
 CRE8 的[美股七巨头组合](https://cre8.finance/zh/portfolios/mag7)是七只等权：苹果、谷歌、亚马逊、Meta 各 14.29%，微软、英伟达、特斯拉各 14.28%（[CRE8 llms.txt](https://cre8.finance/llms.txt)，2026-11-23 查询）。
 
+![chart](chart:weights-mag7)
+
+![chart](chart:nav-mag7)
+
 等权的意思是不按市值，每只放一样多的钱。这样市值最大的那一两只不会占掉大头。
 
 模型年化是 +13.1%，截至 2026 年 11 月 22 日。这是回测：用现在的权重套 2024 年 11 月 22 日到 2026 年 11 月 22 日的历史收盘价算出来的复利年化，不是实盘战绩。同一个页面也列出近 30 天是 −13.0%，近 1 年是 +0.4%（[美股七巨头组合页](https://cre8.finance/zh/portfolios/mag7)）。
@@ -33,6 +37,10 @@ CRE8 的[美股七巨头组合](https://cre8.finance/zh/portfolios/mag7)是七�
 ## AI 芯片组合怎么配？
 
 CRE8 的[AI 芯片组合](https://cre8.finance/zh/portfolios/ai-chips)有 7 只：英伟达、台积电、英特尔、SK 海力士各 21.25%，博通、Marvell、Penguin Solutions 各 5%（[CRE8 llms.txt](https://cre8.finance/llms.txt)）。
+
+![chart](chart:weights-ai-chips)
+
+![chart](chart:nav-ai-chips)
 
 为什么不是等权？CRE8 挑贴合主题、又能在链上用足够流动性买到的股票。链上池子深的放核心仓位，池子浅的每只约 5%。池子浅的股票买多了，成交价会被推高，所以只放一小份（[AI 芯片组合页](https://cre8.finance/zh/portfolios/ai-chips)）。
 

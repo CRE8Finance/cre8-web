@@ -26,6 +26,10 @@ CRE8 is an app on BNB Chain for buying baskets of tokenized US stocks and crypto
 
 CRE8's [Mag7 portfolio](https://cre8.finance/portfolios/mag7) is equal-weighted: Apple, Alphabet, Amazon and Meta at 14.29% each, and Microsoft, NVIDIA and Tesla at 14.28% each ([CRE8 llms.txt](https://cre8.finance/llms.txt), checked November 23, 2026).
 
+![chart](chart:weights-mag7)
+
+![chart](chart:nav-mag7)
+
 Equal weight means each company gets the same dollar amount, regardless of market cap. The largest one or two companies don't end up dominating the basket.
 
 The model APY is +13.1% as of November 22, 2026. That's a backtest: current weights applied to daily closing prices from November 22, 2024 to November 22, 2026, compounded and annualized. It is not a track record. The same page shows −13.0% over the last 30 days and +0.4% over one year ([Mag7 portfolio page](https://cre8.finance/portfolios/mag7)).
@@ -33,6 +37,10 @@ The model APY is +13.1% as of November 22, 2026. That's a backtest: current weig
 ## How is the AI Chips portfolio weighted?
 
 CRE8's [AI Chips portfolio](https://cre8.finance/portfolios/ai-chips) holds seven names: NVIDIA, TSMC, Intel and SK hynix at 21.25% each, and Broadcom, Marvell and Penguin Solutions at 5% each ([CRE8 llms.txt](https://cre8.finance/llms.txt)).
+
+![chart](chart:weights-ai-chips)
+
+![chart](chart:nav-ai-chips)
 
 Why not equal weights? CRE8 picks companies that fit the theme and can be bought on-chain with enough liquidity. Names with deep on-chain markets form the core; names with thin markets get about 5% each, because buying a lot of a thinly traded token pushes up the price you pay ([AI Chips portfolio page](https://cre8.finance/portfolios/ai-chips)).
 
