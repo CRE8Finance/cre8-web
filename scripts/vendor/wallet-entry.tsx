@@ -880,6 +880,39 @@ async function earnDepositRaw(args: { vaultId: string; amount: string; onStep?: 
 }
 
 /**
+ * 提現：把錢包裡的 USDT 轉到使用者貼上的外部地址（BNB Chain）。`amount` 是 USDT 字串或 'max'（整個錢包餘額）。
+ * 跟錢包付款買入一樣：gas 不夠先由水龍頭補，再由 owner 錢包送一筆 USDT transfer，等上鏈。
+ */
+export const withdrawUsdt = localized(withdrawUsdtRaw, '提现没完成，再试一次。');
+async function withdrawUsdtRaw(args: { to: string; amount: string | 'max'; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t, wallet, owner } = need();
+  const to = args.to.trim();
+  if (!isAddress(to, { strict: false })) throw new Error(L('That address doesn’t look right. Check it and try again.', '地址格式不对，请检查后再试。'));
+  if (to.toLowerCase() === owner.toLowerCase()) throw new Error(L('That’s your own wallet address.', '这是你自己的钱包地址。'));
+  if (to.toLowerCase() === USDT.toLowerCase()) throw new Error(L('That’s the USDT contract, not a wallet. Nothing was sent.', '这是 USDT 合约地址，不是钱包，没有转出。'));
+  step(L('Checking your balance', '正在检查余额'));
+  const balance = await readWalletUsdt(owner);
+  if (balance === null) throw new Error(temporarily());
+  const value = args.amount === 'max' ? balance : parseUnits(args.amount, 18);
+  if (value <= 0n) throw new Error(L('Enter an amount.', '请输入金额。'));
+  if (value > balance) throw new Error(L(`You have ${formatUnits(balance, 18)} USDT in your wallet.`, `钱包里只有 ${formatUnits(balance, 18)} USDT。`));
+  const reader = publicClientFor(wallet);
+  step(L('Getting the network fee', '正在准备 gas'));
+  await ensureOwnerGas({
+    readBalance: () => reader.getBalance({ address: owner }),
+    requestGas: () => postGasFaucet(t),
+    waitForTx: async (h) => { await reader.waitForTransactionReceipt({ hash: h as Hex, confirmations: 1, timeout: 30_000 }); },
+  });
+  step(L('Approve the USDT transfer in your wallet', '在钱包里确认 USDT 转账'));
+  const hash = await sendUsdt(wallet, to as Address, value);
+  step(L('Waiting for the network', '等待链上确认'));
+  const receipt = await reader.waitForTransactionReceipt({ hash, confirmations: 1, timeout: 60_000 });
+  if (receipt.status !== 'success') throw new Error(L('The transfer didn’t go through. Nothing was sent.', '转账没成功，资金没动。'));
+  return { amountUsdt: formatUnits(value, 18), txHash: hash };
+}
+
+/**
  * 領回到錢包（含利息）：`amount` 是 USDT 字串或 'max'。有好幾個 vault 部位時從大的開始領；
  * vault 當下流動性不夠時丟一句「現在最多可領 X」，不報錯碼（max 則先領能領的部分）。
  */
@@ -1163,6 +1196,7 @@ export { transferCalldata };
   mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, withdrawable, mixes, mix, createMix, fundMixBasket, patchMix, deleteMix, chain,
   txReset, txs,
+  withdrawUsdt,
   earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
   dcaGet, dcaStart, dcaPause, dcaResume, dcaWithdraw,
   /** 頁面換語言後呼叫：重推一次快照，讓錯誤訊息換成新語言。 */
