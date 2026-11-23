@@ -932,14 +932,30 @@ async function strategyOpenRaw(args: { portfolioId: number; assets: string[]; on
   const st = await getPortfolioStatus(t, args.portfolioId);
   const held = (st.holdings ?? []).filter((h) => args.assets.includes(h.symbol) && BigInt(h.amountWei) > 0n);
   if (held.length === 0) return strategyAutoOn(t, wallet, args.portfolioId, step);
-  const calls: EarnCall[] = [], opened: string[] = [];
-  for (const h of held) {
-    const r = await earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/open`, { method: 'POST', body: { asset: h.symbol, collateralRaw: h.amountWei } });
-    if (r.status === 'ready' && r.calls?.length) { calls.push(...r.calls); opened.push(h.symbol); }
+  // Venus 的借款是整個帳戶共用（同一個 comptroller）：同一筆 UserOp 裡開第二檔時，後端算的 maxDebt 沒算到第一檔剛借的，
+  // 合約回 DebtAboveConsent（2026-11-23 實測 TSLAB＋SPCXB）。所以一檔一筆、依序送，每次都讀上一筆之後的鏈上狀態。
+  const opened: string[] = [];
+  let lastError: unknown = null;
+  for (const [i, h] of held.entries()) {
+    const quote = () => earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/open`, { method: 'POST', body: { asset: h.symbol, collateralRaw: h.amountWei } });
+    step(held.length > 1 ? L(`Approve in your wallet to turn on Earn extra (${i + 1} of ${held.length})`, `在钱包里确认，开启加息（${i + 1}/${held.length}）`) : L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const r = await quote();
+        if (r.status !== 'ready' || !r.calls?.length) break;
+        await sendStrategyCalls(t, wallet, args.portfolioId, r.calls);
+        opened.push(h.symbol); lastError = null;
+        break;
+      } catch (cause) {
+        lastError = cause;
+        // 讀到的還是上一筆之前的狀態（節點落後）：等幾秒重新報價一次。
+        if (attempt === 0 && /0x4a9b9d93|DebtAboveConsent/.test(cause instanceof Error ? cause.message : String(cause))) { await sleep(4_000); continue; }
+        break;
+      }
+    }
+    if (i < held.length - 1 && opened.includes(h.symbol)) await sleep(3_000);
   }
-  if (calls.length === 0) throw new Error(temporarily());
-  step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
-  await sendStrategyCalls(t, wallet, args.portfolioId, calls);
+  if (opened.length === 0) { if (lastError) throw lastError; throw new Error(temporarily()); }
   return { opened };
 }
 
