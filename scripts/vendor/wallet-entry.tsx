@@ -950,6 +950,21 @@ function dcaError(cause: unknown): Error {
       INVALID_PERIODS: L('Pick 2 to 365 periods.', '期数要在 2 到 365 之间。'),
       DCA_BUSY: L('This period is buying right now. Try again in a minute.', '这一期正在买入，稍等一分钟再试。'),
       DCA_NOT_FOUND: L('No recurring buy here.', '这个组合没有开启 DCA。'),
+      // 前端已經自動把總額轉進帳戶、重問過還是不夠：帳戶裡的現金有一部分還在等之前的買入。
+      DCA_FUNDS_NOT_IN_ACCOUNT: L('Your USDT is in this portfolio’s account, but part of the account’s cash is still set aside for an earlier buy, so DCA can’t start yet. Try again in a few minutes.',
+        'USDT 已经在这个组合账户里，但账户里有一部分钱还在等之前的买入，DCA 暂时开不了。几分钟后再试。'),
+      DCA_DEPOSIT_MISMATCH: L('The amount that went into the vault doesn’t match your DCA total. Your USDT is in this portfolio’s account; contact us.',
+        '存进 vault 的金额和 DCA 总额对不上。USDT 在这个组合账户里，请联系我们。'),
+      NO_DCA_DEPOSIT: L('That transaction didn’t put USDT into the DCA vault. Try again.', '这笔交易没有把 USDT 存进 DCA 的 vault，再试一次。'),
+      NO_DCA_RETURN: L('That transaction didn’t bring the DCA balance back to your wallet. Try again.', '这笔交易没有把 DCA 余额领回钱包，再试一次。'),
+      DCA_CHAIN_UNAVAILABLE: L('DCA is only on the testnet for now.', 'DCA 目前只在测试网开放。'),
+      DCA_UNAVAILABLE: temporarily(),
+      INVALID_AMOUNT: L('Enter a valid amount.', '请输入有效的金额。'),
+      INVALID_FREQUENCY: L('Pick daily, weekly, every two weeks or monthly.', '请选每天、每周、每两周或每月。'),
+      INVALID_VAULT: L('Pick a vault.', '请选一个 vault。'),
+      INVALID_DCA_REQUEST: L('Something in the request was off. Refresh and try again.', '请求有误，刷新页面后再试。'),
+      INVALID_TX_HASH: L('Something in the request was off. Refresh and try again.', '请求有误，刷新页面后再试。'),
+      FORBIDDEN: L('This portfolio belongs to another wallet.', '这个组合属于别的钱包。'),
     };
     if (m[cause.code]) return new Error(m[cause.code]);
   }
