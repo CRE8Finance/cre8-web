@@ -230,7 +230,19 @@ export function mount(options: { waitlist?: 'auto' | 'manual' } = {}): void {
   usePrivyAuth.subscribe(() => { emit(); void handleWaitlist(); });
   useSession.subscribe(emit);
   useWallet.subscribe(emit);
+  closeWalletReceipts();
   emit();
+}
+
+// Privy 錢包送出交易後會多一頁「Transaction complete! … All Done」：app.html 自己會顯示結果，這頁一出現就幫用戶關掉，
+// 不用多按一次（錢包的確認頁照常顯示）。Privy 沒有只關掉成功頁的設定，所以從畫面上找那顆按鈕。
+function closeWalletReceipts(): void {
+  const check = () => {
+    const box = document.getElementById('privy-modal-content');
+    if (box === null) return;
+    for (const b of box.querySelectorAll('button')) if (b.textContent?.trim() === 'All Done') { b.click(); return; }
+  };
+  new MutationObserver(check).observe(document.body, { childList: true, subtree: true });
 }
 
 export function subscribe(fn: (s: Snapshot) => void): () => void {
