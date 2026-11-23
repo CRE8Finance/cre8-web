@@ -21,6 +21,7 @@ import {
   getPortfolioActivity,
   getPortfolioStatus,
   getPortfolios,
+  getStrategy,
   getRenewalParams,
   postBuyFunding,
   postFaucetUsdt,
@@ -33,7 +34,8 @@ import {
   prepareEnrollment,
   redeemPortfolio,
 } from './lib/api';
-import type { PortfolioStatus, RedeemResult } from './lib/api';
+import type { PortfolioStatus, RedeemResult, StrategyDetail } from './lib/api';
+import { SponsorshipError } from './lib/paymaster';
 import { CHAIN, approveCalldata, assertRpcChain, bsc as appChain, publicClientFor, readOnlyClient, sendSudoCalls, sendWithdraw, transferCalldata } from './lib/kernel';
 import type { RenewalWallet } from './lib/kernel';
 import { assertShownVersion, waitForAccountCode, waitForPreparation } from './lib/first-enroll';
@@ -50,7 +52,7 @@ import { isWaitlistPending, signalWaitlistApproved } from './lib/waitlist-signal
 import { normalizeInviteCode, parseWaitlist } from './lib/waitlist';
 import { freshCreationPayload, fundMix, readWalletUsdt, signMix } from './features/mix/mix-chain';
 import { createElement } from 'react';
-import { createWalletClient, custom, encodeFunctionData, erc20Abi, formatUnits, parseUnits } from 'viem';
+import { createWalletClient, custom, encodeFunctionData, erc20Abi, formatUnits, isAddress, parseUnits } from 'viem';
 import type { Address, Hex } from 'viem';
 
 type Step = (text: string) => void;
@@ -392,42 +394,85 @@ async function sendUsdt(wallet: RenewalWallet, to: Address, value: bigint): Prom
 }
 
 /** 第一次買：後端先部署帳戶 → owner 簽 enroll＋approve → 後端確認建投組（cre8-app FundPage `deposit`）。 */
-async function ensurePortfolio(args: { token: string; wallet: RenewalWallet; strategyId: number; onchainId: number; shown: { version: number; configHash: string } | null; step: Step }) {
+type Holding = Awaited<ReturnType<typeof getPortfolios>>[number];
+async function ensurePortfolio(args: { token: string; wallet: RenewalWallet; strategyId: number; onchainId: number; shown: { version: number; configHash: string } | null; step: Step }): Promise<{ portfolio: Holding; approved: readonly Address[] }> {
   const list = await getPortfolios(args.token);
   const existing = list.find((p) => p.strategyId === args.strategyId && p.smartAccounts[0]?.address);
-  if (existing) return existing;
+  if (existing) return { portfolio: existing, approved: [] };
   args.step(L('Setting up your account', '正在开通账户'));
   const registry = CHAIN.contracts?.registry as Address, executor = CHAIN.contracts?.executor as Address;
+  // 同時讀這檔的資產（買入提速）：加入那一筆順便授權，不用加入後再簽一次。讀不到就照舊，加入後由 allocate 授權。
+  const strategy = getStrategy(args.token, args.strategyId).catch(() => null);
   const prepared = await waitForPreparation(() => apiPrepare(args.token, args.strategyId));
   if (args.shown !== null) assertShownVersion(args.shown, prepared);
-  await waitForAccountCode((address) => readOnlyClient().getCode({ address }), prepared.account);
+  await waitForAccountCode((address) => readOnlyClient().getCode({ address }), prepared.account, { attempts: 40, delayMs: 500 });
   const calls = await firstEnrollCalls(readOnlyClient(), { registry, executor, usdt: USDT, account: prepared.account, id: BigInt(args.onchainId), expectedVersion: prepared.expectedVersion, configHash: prepared.configHash });
+  let approved: readonly Address[] = [];
   if (calls !== null) {
     args.step(L('Approve in your wallet to join this portfolio', '在钱包里确认，加入这个组合'));
-    const joined = await sendSudoCalls({ wallet: args.wallet, token: args.token, accountAddress: prepared.account, strategyId: args.strategyId, calls });
+    const assets = enrollApprovals(await Promise.race([strategy, sleep(3_000).then(() => null)]), prepared.expectedVersion, calls.length);
+    const join = (more: readonly Address[]) => sendSudoCalls({ wallet: args.wallet, token: args.token, accountAddress: prepared.account, strategyId: args.strategyId,
+      calls: [...calls, ...more.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n }))] });
+    let joined: Awaited<ReturnType<typeof join>>;
+    try {
+      joined = await join(assets);
+      approved = assets;
+    } catch (cause) {
+      // 代付不收合併的那一筆（後端還沒上線 backend#221）：在簽名前就被拒，退回原本只送 enroll＋USDT 授權。
+      if (assets.length === 0 || !(cause instanceof SponsorshipError)) throw cause;
+      joined = await join([]);
+    }
     if (!joined.success) throw new Error(L(`Joining landed on-chain but reverted (${joined.txHash}). Nothing was transferred.`, `加入组合的交易上链后被回滚（${joined.txHash}），资金没有转出。`));
   }
-  return confirmEnrollment(args.token, args.strategyId);
+  return { portfolio: await confirmEnrollment(args.token, args.strategyId), approved };
 }
 const apiPrepare = (t: string, strategyId: number) => prepareEnrollment(t, strategyId);
 
+/** 加入那一筆要順便授權的資產：這一版的配置（不含 USDT，它在 enroll calls 裡），每個一次，整筆不超過一個 UserOp 的上限。 */
+function enrollApprovals(strategy: StrategyDetail | null, version: number, used: number): Address[] {
+  const out: Address[] = [];
+  for (const row of strategy?.versions?.find((v) => v.version === version)?.allocation?.assets ?? []) {
+    const address = row?.address;
+    if (typeof address !== 'string' || !isAddress(address) || address.toLowerCase() === USDT.toLowerCase() || out.some((a) => a.toLowerCase() === address.toLowerCase())) continue;
+    out.push(address as Address);
+  }
+  return out.slice(0, Math.max(0, APPROVALS_PER_USEROP - used));
+}
+
+/** allocate 要的：executor、這檔的資產、還沒授權給 executor 的資產。讀不到狀態回 null。 */
+type ApprovalState = { executor: Address | null; universe: Address[]; missing: Address[] };
+async function readApprovalState(token: string, portfolioId: number, account: Address): Promise<ApprovalState | null> {
+  const fresh = await getPortfolioStatus(token, portfolioId).catch(() => null);
+  if (fresh === null) return null;
+  const executor = (fresh.executorAddress ?? null) as Address | null;
+  const universe = (fresh.drift?.assets ?? []).map((row) => row.asset as Address);
+  if (!executor || universe.length === 0) return { executor, universe, missing: [] };
+  const missing = (await Promise.all(universe.map(async (asset) => {
+    const allowance = await readOnlyClient().readContract({ address: asset, abi: erc20Abi, functionName: 'allowance', args: [account, executor] }).catch(() => 0n);
+    return allowance > 0n ? null : asset;
+  }))).filter((asset) => asset !== null);
+  return { executor, universe, missing };
+}
+
 /** 投入後：沒授權過的資產一次 approve 給 executor（owner 簽），然後請後端跑一輪配置。美股收盤時不會成交，排程會在開盤後買。 */
 type SudoCall = { to: Address; data: Hex; value: bigint };
-async function allocate(args: { token: string; wallet: RenewalWallet; account: Address; strategyId: number; portfolioId: number; step: Step; extra?: SudoCall[] }) {
-  const fresh = await getPortfolioStatus(args.token, args.portfolioId).catch(() => null);
-  const executor = fresh?.executorAddress as Address | null | undefined;
-  const universe = fresh?.drift?.assets ?? [];
+async function allocate(args: { token: string; wallet: RenewalWallet; account: Address; strategyId: number; portfolioId: number; step: Step; extra?: SudoCall[];
+  /** 買入提速：轉帳／領 USDT 的同時先讀好的授權狀態；讀不到或還沒有資產清單就在這裡重讀。 */
+  prefetched?: Promise<ApprovalState | null>;
+  /** 剛在加入那一筆授權過的資產（RPC 可能還沒看到，不再要一次）。 */
+  approved?: readonly Address[] }) {
+  let state = args.prefetched === undefined ? null : await args.prefetched;
+  if (state === null || !state.executor || state.universe.length === 0) state = await readApprovalState(args.token, args.portfolioId, args.account);
+  const executor = state?.executor ?? null;
+  const justApproved = new Set((args.approved ?? []).map((a) => a.toLowerCase()));
   // 策略加息的同意 calls（`extra`）接在授權後面，同一個 UserOp 一起簽；超過代付上限（32 個 call）才分開送。
   let extra = args.extra ?? [], earnSent = false;
   const send = (calls: SudoCall[]) => sendSudoCalls({ wallet: args.wallet, token: args.token, accountAddress: args.account, strategyId: args.strategyId, calls });
-  if (executor && universe.length > 0) {
-    const missing = (await Promise.all(universe.map(async (row) => {
-      const allowance = await readOnlyClient().readContract({ address: row.asset as Address, abi: erc20Abi, functionName: 'allowance', args: [args.account, executor] }).catch(() => 0n);
-      return allowance > 0n ? null : row;
-    }))).filter((row) => row !== null);
+  if (executor && state !== null && state.universe.length > 0) {
+    const missing = state.missing.filter((asset) => !justApproved.has(asset.toLowerCase()));
     if (missing.length > 0) {
       args.step(L('Approve in your wallet so we can buy the assets', '在钱包里授权，才能买入资产'));
-      const approvals = missing.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n }));
+      const approvals = missing.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n }));
       let together = false;
       if (extra.length > 0 && approvals.length + extra.length <= APPROVALS_PER_USEROP) {
         // 合在一起失敗（例如加息那段被拒）時，不讓買入卡住：退回只送授權，加息這次不開。
@@ -435,7 +480,7 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
         if (together) { earnSent = true; extra = []; } else extra = [];
       }
       if (!together) {
-        await sendInBatches(missing, (batch) => send(batch.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n }))));
+        await sendInBatches(missing, (batch) => send(batch.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n }))));
       }
     }
   }
@@ -463,20 +508,26 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
   const step = args.onStep ?? (() => {});
   const { token: t, wallet, owner } = need();
   const busy = { onBusy: () => step(L('Setting up your account', '正在开通账户')) };
-  const portfolio = await ensurePortfolio({ token: t, wallet, strategyId: args.strategyId, onchainId: args.onchainId, shown: args.shown ?? null, step });
+  // 買入提速：錢包付款要的 gas 跟開帳戶互不相干，同時跑（失敗一樣在轉帳前丟出）。
+  const reader = publicClientFor(wallet);
+  const walletAmount = args.pay === 'wallet' ? (() => { try { return parseUnits(args.amount ?? '0', 18); } catch { return 0n; } })() : 0n;
+  const gas = walletAmount > 0n ? ensureOwnerGas({
+    readBalance: () => reader.getBalance({ address: owner }),
+    requestGas: () => postGasFaucet(t),
+    waitForTx: async (h) => { await reader.waitForTransactionReceipt({ hash: h as Hex, confirmations: 1, timeout: 30_000 }); },
+  }) : null;
+  gas?.catch(() => undefined);
+  const { portfolio, approved } = await ensurePortfolio({ token: t, wallet, strategyId: args.strategyId, onchainId: args.onchainId, shown: args.shown ?? null, step });
   const account = portfolio.smartAccounts[0]?.address as Address | undefined;
   if (!account) throw new Error(L('The server returned no account for this portfolio.', '服务器没有返回这个组合的账户。'));
+  // 買入提速：授權狀態（投組狀態＋每個資產的 allowance）跟入金無關，入金的同時先讀。
+  const prefetched = readApprovalState(t, portfolio.id, account).catch(() => null);
   let amountWei = 0n;
   if (args.pay === 'wallet') {
     amountWei = parseUnits(args.amount ?? '0', 18);
     if (amountWei <= 0n) throw new Error(L('Enter an amount.', '请输入金额。'));
     step(L('Getting the network fee', '正在准备 gas'));
-    const reader = publicClientFor(wallet);
-    await ensureOwnerGas({
-      readBalance: () => reader.getBalance({ address: owner }),
-      requestGas: () => postGasFaucet(t),
-      waitForTx: async (h) => { await reader.waitForTransactionReceipt({ hash: h as Hex, confirmations: 1, timeout: 30_000 }); },
-    });
+    await gas;
     step(L('Approve the USDT transfer in your wallet', '在钱包里确认 USDT 转账'));
     const hash = await sendUsdt(wallet, account, amountWei);
     step(L('Waiting for the network', '等待链上确认'));
@@ -517,7 +568,7 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
       } else earnExtra = 'unavailable';
     } catch { earnExtra = 'unavailable'; }
   }
-  const result = await allocate({ token: t, wallet, account, strategyId: portfolio.strategyId, portfolioId: portfolio.id, step, extra });
+  const result = await allocate({ token: t, wallet, account, strategyId: portfolio.strategyId, portfolioId: portfolio.id, step, extra, prefetched, approved });
   if (extra.length > 0 && !result.earnSent) earnExtra = 'unavailable';
   if (result.earnSent) {
     earnExtra = 'on';
