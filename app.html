@@ -316,6 +316,10 @@
 <button onClick="{{ confirm }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:{{ confBg }};color:{{ confFg }};font:600 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 8V5a2 2 0 012-2h3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3M9 9v1.5M15 9v1.5M12 9v4.5h-1M9 16.5c1.6 1.2 4.4 1.2 6 0"></path></svg>{{ confirmLabel }}</button>
 </sc-if>
 
+<sc-if value="{{ mSe }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;margin-top:18px"><div style="font:300 44px 'Geist';letter-spacing:-.045em;color:{{ seBigC }}">{{ seBig }}</div><p style="margin:10px 2px 0;font:400 15px/1.5 'Geist';color:#3C4651;text-wrap:balance">{{ seSheetLine }}</p><button onClick="{{ seSheetDt }}" style="margin-top:8px;border:0;background:transparent;font:500 13px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ dtLabel }}</button></div>
+<button onClick="{{ confirm }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:{{ seBtnBg }};color:{{ seBtnFg }};font:600 16px 'Geist';cursor:pointer">{{ seBtn }}</button>
+</sc-if>
 <sc-if value="{{ mDel }}" hint-placeholder-val="{{ false }}">
 <p style="margin:18px 2px 0;font:400 15px/1.5 'Geist';color:#3C4651;text-align:center;text-wrap:balance">{{ delLine }}</p>
 <button onClick="{{ confirmDel }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:#D23F2E;color:#fff;font:600 16px 'Geist';cursor:pointer">{{ delBtn }}</button>
@@ -1310,16 +1314,20 @@ class Component extends DCLogic {
       closeModal: () => s.step === 'proc' ? null : s.step === 'done' ? this.closeDone() : this.back({ modal: false }),
       // 成功畫面點任何地方都收起。
       sheetTap: () => s.step === 'done' && !R0.error && !R0.askDel && this.closeDone(),
-      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' || s.step === 'del' ? this.back({ modal: false }) : s.step === 'done' && R0.error ? this.closeDone() : null,
-      sheetLeftLabel: s.step === 'review' ? tr('Back', '返回') : s.step === 'amount' || s.step === 'del' || (s.step === 'done' && R0.error) ? tr('Cancel', '取消') : '',
-      modalTitle: s.step === 'del' ? tgt.name : s.step === 'amount' ? (eIn ? '' : (sell ? tr('Sell ', '卖出') : '') + tgt.name) : s.step === 'review' ? (sell ? tr('Review sale', '确认卖出') : eIn ? tr('Review', '确认存入') : eOut ? tr('Review', '确认取出') : tr('Review', '确认买入')) : '',
+      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' || s.step === 'del' || s.step === 'se' ? this.back({ modal: false }) : s.step === 'done' && R0.error ? this.closeDone() : null,
+      sheetLeftLabel: s.step === 'review' ? tr('Back', '返回') : s.step === 'amount' || s.step === 'del' || s.step === 'se' || (s.step === 'done' && R0.error) ? tr('Cancel', '取消') : '',
+      modalTitle: s.step === 'del' || s.step === 'se' ? tgt.name : s.step === 'amount' ? (eIn ? '' : (sell ? tr('Sell ', '卖出') : '') + tgt.name) : s.step === 'review' ? (sell ? tr('Review sale', '确认卖出') : eIn ? tr('Review', '确认存入') : eOut ? tr('Review', '确认取出') : tr('Review', '确认买入')) : '',
       availText: sell ? tr('USDT · ' + fmt(posMax) + ' HELD', '持仓 ' + fmt(posMax) + ' USDT') : eOut ? tr('USDT · ' + fmt(posMax) + ' EARNING', '生息中 ' + fmt(posMax) + ' USDT') : tr('USDT · ' + (cashNum == null ? '—' : fmt(s.cash)) + ' AVAILABLE', '可用 ' + (cashNum == null ? '—' : fmt(s.cash)) + ' USDT'),
       // 測試網：錢包沒有 USDT（或不夠）時，可以改用免費測試 USDT（第一次 10,000，之後每天 1,000，直接進這一檔）。
       showFaucet: s.side === 'buy' && cashNum != null && s.cash < Math.max(minBuy, amt || 0), useFaucet: () => this.setState({ payFaucet: true, step: 'review' }),
       reviewNote: eIn ? tr('Take it out any time, interest included.', '随时连本带息取出。') : eOut ? tr('Interest included. USDT lands in your wallet.', '含利息，USDT 回到你的钱包。') : sell ? tr('Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.', '美股在开盘时卖出，加密资产马上卖出。USDT 回到你的钱包。') : tr('Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.', '美股在开盘时买入，加密资产马上买入。随时可以卖回 USDT。'),
       confBg: out ? '#0B0F14' : '#E3B55B', confFg: out ? '#fff' : '#0B0F14', confirmLabel: sell ? tr('Confirm sale', '确认卖出') : eIn ? tr('Confirm', '确认存入') : eOut ? tr('Take out', '确认取出') : tr('Confirm purchase', '确认买入'),
-      mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done', mDel: s.step === 'del',
+      mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done', mDel: s.step === 'del', mSe: s.step === 'se',
       delLine: tr('Sell everything, send the USDT to your wallet, and delete this basket', '全部卖出，USDT 回到你的钱包，组合会被删除'), delBtn: tr('Delete', '删除'),
+      seBig: s.side === 'se-off' ? '+' + fmt(tgt.seEarned || 0) + ' USDT' : '+' + (tgt.seRate != null ? tgt.seRate.toFixed(1) : '—') + '%', seBigC: '#16854F',
+      seSheetLine: s.side === 'se-off' ? tr('We repay first and give your shares back. They stay in the portfolio.', '先还清借款、取回股票，股票留在组合里。') : tr('Your shares earn more. If prices drop to the safety line, we repay automatically.', '让持仓多赚一点，跌到安全线会自动还款。'),
+      seSheetDt: () => this.setState({ dtOpen: true, dt: { kind: 'se', fundId: tgt.id } }),
+      seBtn: s.side === 'se-off' ? tr('Turn off', '关闭加息策略') : tr('Turn on', '开启加息策略'), seBtnBg: s.side === 'se-off' ? '#0B0F14' : '#E3B55B', seBtnFg: s.side === 'se-off' ? '#fff' : '#0B0F14',
       confirmDel: () => this.deleteMix(), doneAsk: !R0.error && !!R0.askDel, askLine: tr('Delete this basket?', '删掉这个组合？'), keepBtn: tr('Keep', '保留'),
       keepMix: () => this.closeDone(), askDelGo: () => this.deleteMix(),
       sheetCover: tgt.cover, sheetName: tgt.name,
@@ -1420,7 +1428,8 @@ class Component extends DCLogic {
         // 已賺（估）＝earnNetUsd（vault－負債，利差累積）＋待領激勵（USDT）；backend#209 給正式欄位後改讀。
         const earned = on ? Math.max(0, h.seOn.reduce((a, x) => a + (Number(x.earnNetUsd != null ? x.earnNetUsd : Number(x.vaultAssetsRaw || 0) - Number(x.debtRaw || 0)) + Number(x.pendingRewardsRaw || 0)) / 1e18, 0)) : 0;
         const can = !armed && (on || !!(h && fSE && fSE.rate != null && !h.loading));
-        const run = (side, syms) => this.setState({ modal: true, side, step: 'proc', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (fSE ? fSE.syms : []) } }, () => this.confirm());
+        // 開關先打開確認視窗（一句話＋一顆按鈕），按了才真的開／關（使用者 2026-11-23：直接執行太突然）。
+        const run = (side, syms) => this.setState({ modal: true, side, step: 'se', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (fSE ? fSE.syms : []), seRate: fSE && fSE.rate, seEarned: earned } });
         return {
           seRow: show,
           seLine: armed ? tr('Starts when your order fills', '成交后自动开始') : on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : fSE && fSE.rate != null ? tr('+' + fSE.rate.toFixed(1) + '% a year', '年化 +' + fSE.rate.toFixed(1) + '%') : tr('Temporarily unavailable', '暂时无法使用'),
