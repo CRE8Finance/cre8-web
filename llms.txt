@@ -1,6 +1,6 @@
 # CRE8
 
-> CRE8 lets you buy baskets of tokenized US stocks (bStock) and crypto with USDT, in one payment, and hold them in an on-chain smart account on BNB Chain that only you control. Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: https://cre8.finance/zh
+> CRE8 (cre8.finance) is an app on BNB Chain for buying baskets of tokenized US stocks and crypto with USDT, held in your own smart account, with yield strategies that put your bStock to work. Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: https://cre8.finance/zh
 
 ## Key pages
 - [How it works](https://cre8.finance/how-it-works): buying, custody, fees, selling and withdrawing, US market hours, idle-cash yield, testnet status.

@@ -243,6 +243,12 @@ const crumbs = (lang, items) => {
 };
 
 const ORG = { '@type': 'Organization', name: 'CRE8', url: SITE + '/', logo: SITE + '/assets/cre8-mark-512.png', sameAs: [X] };
+// 一句話描述：seo-aeo-geo repo 的 facts.md 定稿，全站與社群簡介逐字一致；改這裡要同步改 facts.md。
+const PITCH = {
+  en: 'CRE8 (cre8.finance) is an app on BNB Chain for buying baskets of tokenized US stocks and crypto with USDT, held in your own smart account, with yield strategies that put your bStock to work.',
+  zh: 'CRE8（cre8.finance）是 BNB Chain 上的应用，用 USDT 一次买入美股代币和加密资产组合，资产放在你自己的智能账户里，还能开启加息策略，让 bStock 多赚一份收益。',
+};
+const orgFor = (lang) => ({ '@context': 'https://schema.org', ...ORG, description: PITCH[lang], disambiguatingDescription: lang === 'zh' ? '与 Solana 上的 CRE8 Finance 或任何 CRE8 代币无关。CRE8 目前没有发行代币。' : 'Not related to the CRE8 Finance project on Solana or to any CRE8 token. CRE8 has no token at present.' });
 
 function fundRow(f, lang, opts = {}) {
   const m = f.meta[lang];
@@ -721,7 +727,7 @@ async function zhHome(enHtml, funds) {
   html = replaceBlock(html, 'faq', faqBlock('zh'));
   html = html.replace(/(data-apy="([a-z0-9-]+)"[^>]*>)[^<]*(<)/g, (m0, open, key, close) => `${open}年化 ${pct(funds.find((x) => x.key === key).apy)}${close}`);
   const site = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'CRE8', url: SITE + '/zh', inLanguage: 'zh-Hans', description: tb.description };
-  html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ld([{ '@context': 'https://schema.org', ...ORG }, site, faqSchema('zh')]));
+  html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ld([orgFor('zh'), site, faqSchema('zh')]));
   // 首頁用相對路徑；/zh 底下要改成從根目錄起算。
   html = html.replace(/(src|href)="(assets|app)\//g, '$1="/$2/').replace(/url\((assets|app)\//g, 'url(/$1/').replace(/"\.\/(support|image-slot)\.js"/g, '"/$1.js"').replace(/":"assets\/vendor\//g, '":"/assets/vendor/');
   // 連到中文版對應頁；語言切換改成 EN → 英文首頁。
@@ -798,7 +804,7 @@ function updateHome(html, funds) {
   });
   const desc = 'Buy baskets of US stocks and crypto with USDT. Follow Pelosi, Trump and Musk, or build your own. Yield on idle capital, in your own wallet. Now on testnet.';
   const schema = [
-    { '@context': 'https://schema.org', ...ORG },
+    orgFor('en'),
     { '@context': 'https://schema.org', '@type': 'WebSite', name: 'CRE8', url: SITE + '/', description: desc },
     faqSchema('en'),
   ];
@@ -827,7 +833,7 @@ function llms(funds) {
   const g = (cat) => funds.filter((f) => f.category === cat).map((f) => `- [${f.meta.en.name}](${abs('/portfolios/' + f.key)}): ${f.holdings.map((h) => `${h.ticker} ${wt(h.weight)}`).join(', ')}. Model APY ${pct(f.apy)} (backtest as of ${f.asOf}).`).join('\n');
   return `# CRE8
 
-> CRE8 lets you buy baskets of tokenized US stocks (bStock) and crypto with USDT, in one payment, and hold them in an on-chain smart account on BNB Chain that only you control. Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: ${SITE}/zh
+> ${PITCH.en} Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: ${SITE}/zh
 
 ## Key pages
 - [How it works](${SITE}/how-it-works): buying, custody, fees, selling and withdrawing, US market hours, idle-cash yield, testnet status.
