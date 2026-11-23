@@ -52,6 +52,8 @@ function mdToHtml(md) {
     // 截圖佔位（[截图：…]／[Screenshot: …]）等實際截圖補上前不輸出。
     if (/^\[(截图|Screenshot)[：:]/.test(t)) { flush(); continue; }
     let m;
+    // 圖片：![alt](/assets/blog/x.webp)，獨立一行。
+    if ((m = t.match(/^!\[([^\]]*)\]\(([^)\s]+)\)$/))) { flush(); out.push(`<figure class="post-fig"><img src="${m[2]}" alt="${escHtml(m[1])}" loading="lazy" decoding="async"></figure>`); continue; }
     if ((m = t.match(/^(#{2,4})\s+(.*)$/))) { flush(); const n = m[1].length; out.push(`<h${n}>${inline(m[2])}</h${n}>`); continue; }
     if (/^---+$/.test(t)) { flush(); out.push('<hr>'); continue; }
     if (t.startsWith('|') && i + 1 < lines.length && /^\|?\s*:?-{3,}/.test(lines[i + 1].trim())) {

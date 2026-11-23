@@ -58,6 +58,7 @@
 <h2>第一步：怎么拿到测试网的邀请码？</h2>
 <p>测试网是邀请制，先去 <a href="/zh/waitlist">cre8.finance/zh/waitlist</a> 加入等候名单。页面会请你连接 X 账号、关注 @CRE8Finance；另外有几个可选的加分任务，比如发帖提到 @CRE8Finance、回答几个小问题、加入 Telegram 社群。</p>
 <p>已经有邀请码的话，等候名单页上有「有邀请码？」的入口，可以直接去测试网。测试网应用的网址是 <a href="https://tst.cre8.finance" rel="noopener" target="_blank">tst.cre8.finance</a>，没有其他网址，看到别的域名不要登录。</p>
+<figure class="post-fig"><img src="/assets/blog/waitlist.zh.webp" alt="CRE8 等候名单页" loading="lazy" decoding="async"></figure>
 <h2>第二步：怎么登录？</h2>
 <p>第一次登录要输入邀请码，再连接 X 账号；开通之后，也可以用 X、Google 或邮箱登录。登录后，CRE8 会在 BNB Chain 上为你开一个只属于你的智能账户（<a href="/zh/how-it-works">CRE8 使用指南</a>）。</p>
 <p>测试网登录需要邀请码。</p>
@@ -65,10 +66,13 @@
 <h2>第三步：账户里的 USDT 从哪来？</h2>
 <p>测试网上可以在应用里免费领测试 USDT。测试 USDT 只在测试网有用，没有真实价值，也不能换成真钱。</p>
 <p>领到以后，USDT 就在你自己的智能账户里。还没投出去的这部分可以放着不动，也可以点 Earn 存进白名单里的 USDT 金库（Lista、Venus、Aave），随存随取。你不点，CRE8 不会动你的现金。测试网上的金库和利率都是模拟的。想了解这部分，看<a href="/zh/blog/earn-yield-on-idle-usdt-and-bstock">闲置 USDT 怎么生息</a>。</p>
+<figure class="post-fig"><img src="/assets/blog/profile.zh.webp" alt="CRE8 账户页，显示测试网余额" loading="lazy" decoding="async"></figure>
 <h2>第四步：组合怎么挑？</h2>
 <p>CRE8 有 21 个精选组合，分三类：人物（佩洛西、特朗普、段永平、马斯克）、主题 15 个、杠杆 2 个（3 倍半导体、3 倍纳指）。每个组合页都公开成分、权重和模型年化。</p>
 <p>模型年化是用现在的权重套历史价格算出来的回测，不是实盘战绩。比如<a href="/zh/portfolios/mag7">美股七巨头</a>的模型年化是 +13.1%，<a href="/zh/portfolios/ai-chips">AI 芯片</a>是 +61.4%，都是截至 2026 年 11 月 22 日的回测（<a href="/llms.txt">CRE8 llms.txt</a>，2026-11-23 查询）。数字高的组合，跌起来通常也更猛。</p>
 <p>第一次用，可以先挑一个你认得名单的组合，比如七巨头，看懂流程再说。不想用现成的，也可以自己挑股票、定比例，CRE8 一样帮你调仓，做法见<a href="/zh/blog/build-your-own-portfolio-on-cre8">自己配组合</a>。</p>
+<figure class="post-fig"><img src="/assets/blog/discover.zh.webp" alt="CRE8 发现页：人物组合和主题组合" loading="lazy" decoding="async"></figure>
+<figure class="post-fig"><img src="/assets/blog/mag7.zh.webp" alt="美股七巨头组合页：持仓和权重" loading="lazy" decoding="async"></figure>
 <h2>第五步：金额怎么填，一次买还是定投？</h2>
 <p>在组合页输入金额后确认。每笔最少 50 USDT。确认一次，CRE8 会按目标权重把整个组合买齐，不用你一只一只下单。</p>
 <p>这里有两种买法可以选：</p>
@@ -76,6 +80,9 @@
 <p>DCA（定投）：先把一笔 U 存进这个组合的账户，每期自动买一份，频率可选每天、每周、每两周、每月，每期最少 10 USDT。还没买的部分在等待期间会生息。细节见<a href="/zh/blog/dca-us-stocks-with-usdt">用 USDT 定投美股</a>。</p>
 <p>确认前还可以选择要不要打开加息策略，它默认关闭。打开后，CRE8 会把这个组合的股票存进借贷市场做抵押，按保守比例借出一小笔 USDT 存进 USDT 金库；价格跌到安全线时，系统自动用金库的 USDT 还一部分借款，不卖股票。随时可以关。风险很低，但不是零。杠杆组合不提供加息策略（<a href="/zh/how-it-works">CRE8 使用指南</a>）。</p>
 <p>第一次买，可以先不开，熟悉之后再说。</p>
+<figure class="post-fig"><img src="/assets/blog/buy.zh.webp" alt="买入面板：金额和一次买入／DCA 切换" loading="lazy" decoding="async"></figure>
+<figure class="post-fig"><img src="/assets/blog/dca.zh.webp" alt="DCA 设置：总额、频率和期数" loading="lazy" decoding="async"></figure>
+<figure class="post-fig"><img src="/assets/blog/confirm.zh.webp" alt="确认页：加息策略开关默认关闭" loading="lazy" decoding="async"></figure>
 <h2>第六步：确认后会发生什么？</h2>
 <p>确认后，交易只走白名单里的链上 DEX（PancakeSwap、KyberSwap、OpenOcean）。每个资产有单笔上限，大单会自动拆成几笔成交（<a href="/zh/how-it-works">CRE8 使用指南</a>）。</p>
 <p>如果美股正在休市，股票代币不会成交。你的单会在账户里排队，下次开盘时成交；在那之前，USDT 一直留在你自己的账户里。</p>
@@ -91,6 +98,7 @@
 <p>组合可以部分或全部卖回 USDT，钱回到你的账户。之后可以把 USDT 提到任意 BNB Chain 地址，包括交易所的充值地址（<a href="/zh/how-it-works">CRE8 使用指南</a>）。</p>
 <p>大额卖出会按每个资产的单笔上限分几笔成交。休市时卖股票代币，一样要等下次开盘。</p>
 <p>提走 USDT 要你本人签名，CRE8 的自动化只能在你的账户里交易，转不出去。测试网上的 USDT 没有真实价值，提到交易所也不能用；这一步在主网上才有实际意义。</p>
+<figure class="post-fig"><img src="/assets/blog/sell.zh.webp" alt="组合的卖出面板" loading="lazy" decoding="async"></figure>
 <h2>和其他买法比，第一次上手差在哪？</h2>
 <div class="table-wrap"><table class="cmp post-table"><thead><tr><th scope="col"></th><th scope="col">交易所逐只买 bStock</th><th scope="col">自己在链上逐只买</th><th scope="col">CRE8（测试网）</th></tr></thead><tbody><tr><th scope="row">要准备什么</th><td>交易所账户</td><td>自己的钱包、助记词、BNB 付 gas</td><td>邀请码和 X 账号</td></tr><tr><th scope="row">买一篮要下几单</th><td>一只一单</td><td>一只换一次</td><td>一笔 USDT 买齐</td></tr><tr><th scope="row">比例谁算</th><td>自己算</td><td>自己算</td><td>组合页公开；也可以自己配</td></tr><tr><th scope="row">资产放哪</th><td>交易所账户</td><td>自己的钱包</td><td>自己的智能账户</td></tr><tr><th scope="row">最低金额</th><td>单只约 5 美元</td><td>看 gas</td><td>每笔 50 USDT；DCA 每期 10 USDT</td></tr><tr><th scope="row">什么时候成交</th><td>24 小时</td><td>看 DEX 池子</td><td>股票代币只在美股交易时段</td></tr><tr><th scope="row">之后比例跑掉</th><td>自己调</td><td>自己调</td><td>自动调仓</td></tr><tr><th scope="row">目前状态</th><td>正式上线</td><td>正式上线</td><td>BNB Chain 测试网，不涉及真钱</td></tr></tbody></table></div>
 <p>资料查询日：2026-11-23。币安数据见 <a href="https://www.binance.com/en/learn/bstocks" rel="noopener" target="_blank">Binance Learn</a>。</p>

@@ -44,23 +44,21 @@ Sign in first. The testnet needs an invite code: the first sign-in uses the code
 
 Step 1: In the app, go to the build-your-own option and pick the stocks you want from the available assets.
 
-[Screenshot: build-your-own entry point and the list of available assets]
+![Build: pick up to 10 stocks or crypto assets](/assets/blog/build-pick.en.webp)
 
 Step 2: Set a weight for each asset, adding up to 100%.
 
-[Screenshot: weight settings for each asset, showing a 100% total]
+![Build: set the weight of each asset](/assets/blog/build-weights.en.webp)
 
 Step 3: Choose how often to rebalance: daily, weekly, monthly or quarterly.
 
-[Screenshot: the four rebalancing frequency options]
+![Build: choose how often to rebalance and the start date](/assets/blog/build-frequency.en.webp)
 
 Step 4: Enter an amount and confirm. The minimum is 50 USDT per purchase. One confirmation buys every asset at the weights you set.
 
-[Screenshot: amount entry and purchase confirmation]
-
 Trades go only through allowlisted on-chain venues (PancakeSwap, KyberSwap and OpenOcean), and each asset has a per-trade cap, so large orders are split into several trades. Stock tokens only trade during US market hours. An order placed while the market is closed waits for the next open, and your USDT stays in your own account until then ([How CRE8 works](https://cre8.finance/how-it-works)).
 
-[Screenshot: holdings page showing each asset's target and current weight]
+![A self-built basket with its target weights](/assets/blog/mix-holding.en.webp)
 
 ## How should you choose a rebalancing frequency?
 
@@ -132,7 +130,7 @@ Smart contract risk applies. CRE8 runs on smart contracts that get a third-party
 
 ### Which assets can I choose?
 
-The list of available assets is shown in the testnet app.
+Both US stock tokens and crypto, up to 10 per portfolio. The exact list is whatever the testnet app shows.
 
 ### What's the minimum?
 

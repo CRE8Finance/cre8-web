@@ -30,7 +30,7 @@ The testnet is invite-only, so start at [cre8.finance/waitlist](https://cre8.fin
 
 If you already have a code, the waitlist page has a "Have an invite?" link that takes you to the testnet. The testnet app lives at [tst.cre8.finance](https://tst.cre8.finance) and nowhere else. Don't sign in on any other domain.
 
-[Screenshot: waitlist page showing the Connect X and Follow @CRE8Finance steps]
+![CRE8 waitlist page](/assets/blog/waitlist.en.webp)
 
 ## Step 2: How do you sign in?
 
@@ -38,15 +38,13 @@ The first time, enter your invite code and connect your X account; after that yo
 
 You don't need to sign in just to look around. Every portfolio's holdings, weights and history are public on the [portfolios page](https://cre8.finance/portfolios).
 
-[Screenshot: sign-in screen with the invite code field and Connect X]
-
 ## Step 3: Where does the USDT come from?
 
 On testnet, you claim free test USDT inside the app. Test USDT only works on testnet. It has no real value and can't be turned into real money.
 
 Once claimed, it sits in your own smart account. You can leave it there, or tap Earn to put it in one of CRE8's allowlisted USDT vaults (Lista, Venus, Aave) and take it out whenever you like. CRE8 never moves your cash unless you ask. Testnet vaults and rates are simulated. More on this in [how to earn yield on idle USDT](/blog/earn-yield-on-idle-usdt-and-bstock).
 
-[Screenshot: account home showing the balance after claiming test USDT]
+![CRE8 account page with the testnet balance](/assets/blog/profile.en.webp)
 
 ## Step 4: Which portfolio should you pick?
 
@@ -56,9 +54,9 @@ Model APY is a backtest: current weights applied to historical prices. It is not
 
 For a first run, pick a portfolio whose names you recognize, like Mag7, and learn the flow. If you'd rather choose your own stocks and weights, CRE8 rebalances those too; see [build your own portfolio](/blog/build-your-own-portfolio-on-cre8).
 
-[Screenshot: portfolio list with the three groups and their model APYs]
+![CRE8 Discover page with people and theme portfolios](/assets/blog/discover.en.webp)
 
-[Screenshot: Mag7 portfolio page with holdings and weights]
+![Mag7 portfolio page with holdings and weights](/assets/blog/mag7.en.webp)
 
 ## Step 5: How much do you enter, and do you buy now or DCA?
 
@@ -74,9 +72,11 @@ Before you confirm, you can also choose whether to turn on the yield strategy. I
 
 For your first purchase, it's fine to leave it off until you know the app.
 
-[Screenshot: buy panel on a portfolio page, with the amount field and the buy-once / DCA switch]
+![Buy panel with the amount and the One-time / DCA switch](/assets/blog/buy.en.webp)
 
-[Screenshot: yield strategy toggle in its default off state]
+![DCA setup: total amount, frequency and number of buys](/assets/blog/dca.en.webp)
+
+![Review screen with the yield strategy switch off by default](/assets/blog/confirm.en.webp)
 
 ## Step 6: What happens after you confirm?
 
@@ -85,10 +85,6 @@ Trades go only through allowlisted on-chain venues: PancakeSwap, KyberSwap and O
 If the US market is closed, stock tokens don't trade. Your order waits in your account and goes through at the next open, and your USDT stays in your own account until then.
 
 After you buy, the portfolio keeps its shape. Curated portfolios rebalance once a month, and whenever an asset drifts more than 5 percentage points from its target weight. For a worked rebalancing example, see [how to buy a basket of US stocks with USDT](/blog/buy-a-basket-of-us-stocks-with-usdt).
-
-[Screenshot: holdings page after the purchase, with each asset's amount and weight]
-
-[Screenshot: an order placed while the market is closed, shown as waiting for the open]
 
 ## What does it look like with 100 USDT?
 
@@ -112,9 +108,7 @@ Large sales go through in a few trades because of the per-asset cap. Selling sto
 
 Withdrawals need your signature. CRE8's automation can only trade inside your account; it can't move anything out. On testnet, the USDT has no real value and an exchange won't credit it, so this step only matters once mainnet launches.
 
-[Screenshot: sell screen with the partial / full sell-back option]
-
-[Screenshot: withdraw screen with a BNB Chain address field]
+![Sell panel for a portfolio](/assets/blog/sell.en.webp)
 
 ## How does a first purchase compare with other ways to buy?
 
