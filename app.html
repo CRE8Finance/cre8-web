@@ -761,7 +761,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=f4be99d6bf'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=293467888a'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -877,7 +877,9 @@ class Component extends DCLogic {
     const rows = [];
     await Promise.all(this.state.pf.map(p => W.activity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), state: a.state, usd: a.usdAfterE8 != null ? Number(a.usdAfterE8) / 1e8 : null }))).catch(() => {})));
     // 加息策略的事件（backend#204 帳本）：減倉、收掉、領獎、開啟、賣出前還款。自建組合沒有（回錯誤就略過）。
-    if (W.strategyActivity) await Promise.all(this.state.pf.map(p => W.strategyActivity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), se: a.kind, asset: a.asset ? String(a.asset).replace(/B$/, '') : null, amount: a.amountRaw != null ? Number(a.amountRaw) / 1e18 : null }))).catch(() => {})));
+    // 自建組合（My mix）沒有加息：不問（後端回 409，只是雜訊）。
+    const smx = this.state.smx || [], isMix = p => p.personalMix || smx.some(m => m.portfolioId === p.id || m.strategyId === p.strategyId);
+    if (W.strategyActivity) await Promise.all(this.state.pf.filter(p => !isMix(p)).map(p => W.strategyActivity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), se: a.kind, asset: a.asset ? String(a.asset).replace(/B$/, '') : null, amount: a.amountRaw != null ? Number(a.amountRaw) / 1e18 : null }))).catch(() => {})));
     (this.state.smx || []).forEach(m => (m.events || []).forEach(e => rows.push({ at: e.at, name: m.name, kind: e.kind })));
     rows.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
     this.setState({ acts: rows.slice(0, 50) });

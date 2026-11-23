@@ -35,7 +35,7 @@ import {
   redeemPortfolio,
 } from './lib/api';
 import type { PortfolioStatus, RedeemResult, StrategyDetail } from './lib/api';
-import { SponsorshipError } from './lib/paymaster';
+import { SponsorshipError, retryMixBusy } from './lib/paymaster';
 import { CHAIN, approveCalldata, assertRpcChain, bsc as appChain, publicClientFor, readOnlyClient, sendSudoCalls as kernelSendSudoCalls, sendWithdraw as kernelSendWithdraw, transferCalldata } from './lib/kernel';
 import { sendUsdtToMix as mixSendUsdt } from './features/mix/mix-chain';
 import type { RenewalWallet } from './lib/kernel';
@@ -124,7 +124,8 @@ const ZH_MESSAGES: [RegExp, string][] = [
   [/^(\d+) assets? (is|are) approved; (\d+) still need approval/, '已授权 $1 个资产，还有 $3 个要授权。再点一次按钮完成。'],
   [/no USDT on this chain/, '这条链上没有 USDT。'],
   [/user (rejected|denied|cancel)|rejected the request|denied/i, '你在钱包里取消了。'],
-  [/network|fetch|timeout|timed out/i, '网络出问题了，再试一次。'],
+  // 只有真的連不上／逾時才說網路問題。代付等後端拒絕用錯誤碼對照（ZH_CODES），不靠字面（英文句子裡有 “network fee”）。
+  [/^(Failed to fetch|Load failed|NetworkError when attempting to fetch|fetch failed)|\btimed out\b|\btimeout\b|took too long to respond/i, '网络出问题了，再试一次。'],
   [/^NO_WALLET$/, '钱包还在创建，稍后再试。'],
   // My mix 簽名前核對（cre8-app mix-chain.ts 的 MixPayloadError）：說清楚是哪一類，沒簽名、錢沒動。
   [/^signing payload: (approve\.to|enroll\.strategy assets)/, '组合里有暂时不支持的资产，没有签名，钱没动。换一个资产再试。'],
@@ -140,6 +141,32 @@ const EN_MESSAGES: [RegExp, string][] = [
   [/^signing payload: enroll\.strategy picks/, 'The weights on chain don’t match your picks. Nothing was signed. Refresh and build it again.'],
   [/^signing payload/, 'Your basket didn’t pass our checks. Nothing was signed or moved. Try again.'],
 ];
+// 後端／代付的錯誤碼 → 一句白話（後端原文是繁中、偏工程用語，不上畫面）。SponsorshipError 與 ApiError 都帶 code。
+const ZH_CODES: Record<string, string> = {
+  MIX_BUSY: '组合正在处理上一笔交易，等几秒再试一次。钱没动。',
+  PORTFOLIO_BUSY: '组合正在处理别的操作，等一下再试。钱没动。',
+  PAYMASTER_CALL_FORBIDDEN: '这个操作暂时不能由平台代付手续费，没有发出，钱没动。',
+  PAYMASTER_QUOTA_EXCEEDED: '今天的免费手续费额度用完了，明天再试。钱没动。',
+  GAS_BUDGET_EXCEEDED: '今天的免费手续费额度用完了，明天再试。钱没动。',
+  PAYMASTER_DEPOSIT_INSUFFICIENT: '平台的手续费余额不够了，我们会尽快补上。没有发出，钱没动。',
+  PAYMASTER_ACCOUNT_UNDEPLOYED: '组合账户还在创建，等几秒再试一次。',
+  PAYMASTER_SENDER_FORBIDDEN: '这个账户不属于现在登录的钱包，没有发出，钱没动。',
+  PAYMASTER_EXPIRED: '手续费授权过期了，没有发出。再试一次。',
+  PAYMASTER_RETRY_TOO_SOON: '上一笔还在处理，等一分钟再试。钱没动。',
+  NETWORK: '网络出问题了，再试一次。',
+};
+const EN_CODES: Record<string, string> = {
+  MIX_BUSY: 'This basket is finishing another transaction. Nothing was sent. Wait a few seconds, then try again.',
+  PORTFOLIO_BUSY: 'This portfolio is busy with another step. Nothing was sent. Try again in a moment.',
+};
+const errorCode = (cause: unknown): string | null => (cause instanceof SponsorshipError || cause instanceof ApiError ? cause.code : null);
+function zhForCode(code: string | null): string | null {
+  if (code === null) return null;
+  if (ZH_CODES[code]) return ZH_CODES[code];
+  if (/^PAYMASTER_(ACCOUNT_|FACTORY_)/.test(code)) return '这个账户还不能由平台代付手续费，没有发出，钱没动。';
+  if (/^(PAYMASTER|GAS_BUDGET)_/.test(code)) return '平台这次没能代付手续费，没有发出，钱没动。稍后再试。';
+  return null;
+}
 function zhMessage(message: string, fallback = '没有完成，再试一次。'): string {
   if (HAS_CJK.test(message)) return message;
   for (const [re, zh] of ZH_MESSAGES) {
@@ -153,12 +180,21 @@ function zhMessage(message: string, fallback = '没有完成，再试一次。')
 function localized<A extends unknown[], R>(fn: (...args: A) => Promise<R>, fallback?: string): (...args: A) => Promise<R> {
   return async (...args: A) => {
     try { return await fn(...args); } catch (cause) {
+      const msg = cause instanceof Error ? cause.message : String(cause), code = errorCode(cause);
+      // 原文一律記在 console（畫面上只給白話）。
+      console.warn('[cre8-wallet]', code ?? '', msg);
       if (!isZh()) {
-        const msg = cause instanceof Error ? cause.message : String(cause), en = EN_MESSAGES.find(([re]) => re.test(msg));
-        if (en) { console.warn('[cre8-wallet]', msg); throw new Error(en[1]); }
+        const en = EN_MESSAGES.find(([re]) => re.test(msg));
+        if (en) throw new Error(en[1]);
+        // 後端原文是中文：英文介面不能出現中文。
+        if (cause instanceof ApiError && HAS_CJK.test(msg)) throw new Error((code && EN_CODES[code]) ?? 'That didn’t finish. Try again.');
         throw cause;
       }
-      throw new Error(zhMessage(cause instanceof Error ? cause.message : String(cause), fallback));
+      const byCode = zhForCode(code);
+      if (byCode) throw new Error(byCode);
+      // 認不出的後端錯誤碼：原文是繁中，不上畫面。
+      if (cause instanceof ApiError && HAS_CJK.test(msg)) throw new Error(fallback ?? '没有完成，再试一次。');
+      throw new Error(zhMessage(msg, fallback));
     }
   };
 }
@@ -582,7 +618,7 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
   if (extra.length > 0 && !result.earnSent) earnExtra = 'unavailable';
   if (result.earnSent) {
     earnExtra = 'on';
-    if (renewal) await postRenewalResult(t, portfolio.id, { keyRef: renewal.keyRef, permissionId: renewal.permissionId, validUntil: renewal.validUntil, policySnapshot: renewal.policySnapshot }).catch(() => undefined);
+    if (renewal) await recordRenewal(t, portfolio.id, renewal);
   }
   return { ...result, pending: false, portfolioId: portfolio.id, amountUsdt: formatUnits(amountWei, 18), earnExtra };
 }
@@ -875,7 +911,7 @@ async function strategyAutoOn(t: string, wallet: RenewalWallet, portfolioId: num
   step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
   const receipt = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls });
   if (!receipt.success) throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
-  if (renewal) await postRenewalResult(t, portfolioId, { keyRef: renewal.keyRef, permissionId: renewal.permissionId, validUntil: renewal.validUntil, policySnapshot: renewal.policySnapshot }).catch(() => undefined);
+  if (renewal) await recordRenewal(t, portfolioId, renewal);
   return { opened: [] as string[], auto: true };
 }
 
@@ -924,6 +960,11 @@ async function dcaApi<T>(t: string, path: string, init: { method?: 'GET' | 'POST
 }
 /** 定投狀態（`GET /portfolios/:id/dca`）：plan、還沒買的部分、已賺、下一期、生息利率（offer）。 */
 export const dcaGet = (portfolioId: number) => dcaApi<unknown>(token(), `/portfolios/${portfolioId}/dca`);
+/** 新的 session 權限已上鏈：記到後端（定投每期、加息都要用這把 key）。My mix 正在處理別的交易時回 409 MIX_BUSY，等一下再記。 */
+async function recordRenewal(t: string, portfolioId: number, r: Awaited<ReturnType<typeof getRenewalParams>>): Promise<void> {
+  await retryMixBusy(() => postRenewalResult(t, portfolioId, { keyRef: r.keyRef, permissionId: r.permissionId, validUntil: r.validUntil, policySnapshot: r.policySnapshot }),
+    { delaysMs: [1_000, 2_000, 3_000, 4_000, 5_000, 5_000, 5_000, 5_000] }).catch((e) => { console.warn('[cre8-wallet] renewal-result not recorded', errorCode(e) ?? '', e instanceof Error ? e.message : e); });
+}
 /** 記帳（`/dca/confirm`，冪等）：鏈上還沒定案回 pending，等一下再問。 */
 async function confirmDca(t: string, portfolioId: number, txHash: Hex): Promise<{ state: string; returnedRaw?: string } | null> {
   for (let i = 0; i < 12; i++) {
@@ -987,7 +1028,7 @@ async function dcaStartRaw(args: { strategyId?: number; onchainId?: number; show
   step(L('Approve in your wallet to start', '在钱包里确认，开始定投'));
   const r = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: together ? [...core, ...extra] : core });
   if (!r.success) throw new Error(L('The transaction didn’t go through. Your USDT is in this portfolio’s account; try again.', '交易没成功，USDT 在这个组合的账户里，再试一次即可。'));
-  if (renewal) await postRenewalResult(t, portfolioId, { keyRef: renewal.keyRef, permissionId: renewal.permissionId, validUntil: renewal.validUntil, policySnapshot: renewal.policySnapshot }).catch(() => undefined);
+  if (renewal) await recordRenewal(t, portfolioId, renewal);
   if (!together && executor) await sendInBatches(missing, (batch) => sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: batch.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n })) })).catch(() => undefined);
   step(L('Confirming', '正在确认'));
   const done = await confirmDca(t, portfolioId, r.txHash as Hex);
