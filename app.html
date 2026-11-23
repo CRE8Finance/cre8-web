@@ -235,7 +235,7 @@
 <div style="flex:1;min-width:0"><div style="font:500 17px 'Geist'">{{ profileName }}</div><div style="font:400 13px 'Geist';color:#6B7785">{{ handleText }}</div></div>
 <button onClick="{{ openAcct }}" aria-label="{{ t.account }}" style="width:38px;height:38px;border-radius:50%;border:0;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0F14" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"></path></svg></button>
 </div>
-<div style="padding:26px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px"><div style="min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785">{{ t.pv }}</div><div style="font:300 46px/1 'Geist';letter-spacing:-.045em;margin-top:10px">{{ pv.big }}</div><div style="display:flex;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ pv.col }}"><span>{{ pv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ pv.when }}</span></div></div><div style="display:flex;gap:8px;flex:none"><button onClick="{{ addMoney }}" style="height:42px;padding:0 20px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)">{{ t.addMoney }}</button><button style="height:42px;padding:0 20px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">{{ t.withdraw }}</button></div></div>
+<div style="padding:26px 16px 0;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px"><div style="min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.1em;color:#6B7785">{{ t.pv }}</div><div style="font:300 46px/1 'Geist';letter-spacing:-.045em;margin-top:10px;{{ pv.sk }}">{{ pv.big }}</div><div style="display:flex;gap:8px;margin-top:8px;font:500 14px 'Geist Mono';color:{{ pv.col }}"><span>{{ pv.chg }}</span><span style="color:#6B7785;font-family:'Geist'">{{ pv.when }}</span></div></div><div style="display:flex;gap:8px;flex:none"><button onClick="{{ addMoney }}" style="height:42px;padding:0 20px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)">{{ t.addMoney }}</button><button onClick="{{ withdraw }}" style="height:42px;padding:0 20px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 15px 'Geist';cursor:pointer">{{ t.withdraw }}</button></div></div>
 <div onPointerMove="{{ pScrub }}" onPointerLeave="{{ pLeave }}" style="position:relative;height:{{ L.pcH }}px;margin:20px 16px 0;touch-action:pan-y;cursor:crosshair">
 <svg viewBox="0 0 600 160" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><defs><linearGradient id="pga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F6690" stop-opacity=".18"></stop><stop offset="1" stop-color="#2F6690" stop-opacity="0"></stop></linearGradient></defs><path d="{{ pc.area }}" fill="url(#pga)"></path><path d="{{ pc.p }}" fill="none" stroke="#2F6690" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"></path></svg>
 <div style="position:absolute;top:0;bottom:0;left:{{ pc.hx }}%;width:1px;background:rgba(11,15,20,.25);opacity:{{ pc.ho }};pointer-events:none"></div>
@@ -308,6 +308,7 @@
 <sc-if value="{{ dcaSwitch }}" hint-placeholder-val="{{ false }}"><div style="margin:0 auto;width:min(260px,100%);padding:3px;background:#F3F5F7;border-radius:999px;display:flex"><sc-for list="{{ dcaModes }}" as="q" hint-placeholder-count="2"><button onClick="{{ q.pick }}" style="flex:1;height:32px;border:0;border-radius:999px;cursor:pointer;font:500 14px 'Geist';background:{{ q.bg }};color:{{ q.fg }};box-shadow:{{ q.sh }};transition:background .2s">{{ q.label }}</button></sc-for></div></sc-if>
 <sc-if value="{{ wheelOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:-6px"><span style="font:500 18px 'Geist';letter-spacing:-.01em">{{ wheelLead }}</span><div style="position:relative;width:156px;height:108px"><div style="position:absolute;left:0;right:0;top:36px;height:36px;border-radius:10px;background:#F3F5F7"></div><div data-wheel="1" class="cre8-wheel" onScroll="{{ onWheelScroll }}" style="position:relative;height:108px;padding:36px 0;box-sizing:border-box;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:none;-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.18) 0,#000 34%,#000 66%,rgba(0,0,0,.18) 100%);mask-image:linear-gradient(180deg,rgba(0,0,0,.18) 0,#000 34%,#000 66%,rgba(0,0,0,.18) 100%)"><sc-for list="{{ wheelItems }}" as="w" hint-placeholder-count="3"><div onClick="{{ w.pick }}" style="height:36px;scroll-snap-align:center;scroll-snap-stop:always;display:flex;align-items:center;padding:0 12px;font:{{ w.fw }} 18px 'Geist';letter-spacing:-.01em;color:{{ w.col }};cursor:pointer;white-space:nowrap;transition:color .15s">{{ w.label }}</div></sc-for></div></div></div></sc-if>
 <div style="text-align:center;margin-top:clamp(6px,2vh,20px)"><div style="font:300 clamp(44px,8vh,60px)/1 'Geist';letter-spacing:-.05em;color:{{ amtColor }}">{{ amtText }}</div><div style="font:500 11px 'Geist Mono';letter-spacing:.08em;color:#6B7785;margin-top:12px">{{ availText }}</div><sc-if value="{{ showFaucet }}" hint-placeholder-val="{{ false }}"><button onClick="{{ useFaucet }}" style="margin-top:10px;border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ t.useFaucet }}</button></sc-if><sc-if value="{{ showCashDt }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:center;gap:18px;margin-top:10px"><sc-if value="{{ showVaultPick }}" hint-placeholder-val="{{ false }}"><button onClick="{{ pickVault }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ vaultPickText }}</button></sc-if><button onClick="{{ cashDt }}" style="border:0;background:transparent;font:500 14px 'Geist';color:#6B7785;cursor:pointer;padding:0">{{ dtLabel }}</button></div></sc-if></div>
+<sc-if value="{{ wdOn }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;height:46px;margin-top:clamp(10px,2vh,16px);padding:0 14px;border:1px solid {{ wdBd }};border-radius:14px"><input value="{{ wdAddr }}" onInput="{{ onWdAddr }}" placeholder="{{ wdPh }}" aria-label="{{ wdPh }}" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 14px 'Geist Mono';color:#0B0F14;padding:0"></div></sc-if>
 <sc-if value="{{ dcaOn }}" hint-placeholder-val="{{ false }}">
 <div style="margin-top:clamp(10px,2vh,18px);padding:3px;background:#F3F5F7;border-radius:999px;display:flex"><sc-for list="{{ dcaFreqs }}" as="q" hint-placeholder-count="4"><button onClick="{{ q.pick }}" style="flex:1;height:32px;border:0;border-radius:999px;cursor:pointer;font:500 13px 'Geist';background:{{ q.bg }};color:{{ q.fg }};box-shadow:{{ q.sh }};transition:background .2s">{{ q.label }}</button></sc-for></div>
 <div style="display:flex;gap:8px;margin-top:8px"><div style="flex:1;display:flex;align-items:center;justify-content:space-between;height:44px;padding:0 6px;border:1px solid #E6E9ED;border-radius:14px"><button onClick="{{ dcaMinus }}" aria-label="{{ dcaLessLabel }}" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;font:400 20px/1 'Geist';color:#0B0F14;cursor:pointer;padding:0">−</button><span style="font:500 15px 'Geist'">{{ dcaNText }}</span><button onClick="{{ dcaPlus }}" aria-label="{{ dcaMoreLabel }}" style="width:32px;height:32px;border:0;border-radius:50%;background:#F3F5F7;font:400 20px/1 'Geist';color:#0B0F14;cursor:pointer;padding:0">+</button></div><button onClick="{{ dcaPickDate }}" style="flex:1;height:44px;border:1px solid #E6E9ED;border-radius:14px;background:#FFFFFF;font:500 15px 'Geist';color:#0B0F14;cursor:pointer">{{ dcaStartText }}</button></div>
@@ -767,7 +768,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=4cf12cc2cf'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=320a06ec22'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -832,10 +833,12 @@ class Component extends DCLogic {
   }
   applyOverview(d) {
     if (!d) return;
-    const pst = {}, seP = {};
+    const pst = {}, seP = {}, prev = this.state.pst || {};
     d.portfolios.forEach(p => {
       if (p.totalUsdE8 != null) pst[p.id] = { usd: Number(p.totalUsdE8) / 1e8 };
       else if (p.state === 'unavailable') pst[p.id] = { err: true, code: p.error && p.error.code };
+      // 後端重啟或第一次讀還沒好（state pending、沒有數字）：沿用畫面上已有的數字（本機快取或上一次），不要退回「—」。
+      else if (prev[p.id] && prev[p.id].usd != null) pst[p.id] = prev[p.id];
       seP[p.id] = p.strategyEarn || { status: 'none', positions: [] };
     });
     const st = { pf: d.portfolios.map(p => ({ id: p.id, strategyId: p.strategyId, strategyName: p.strategyName })), pst, seP };
@@ -851,7 +854,13 @@ class Component extends DCLogic {
     if (!d || !Array.isArray(d.portfolios)) return false;
     if (!W.get().signedIn || W.get().address !== w.address) return true;
     this.applyOverview(d);
-    try { localStorage.setItem('cre8.ov.' + String(w.address).toLowerCase(), JSON.stringify(d)); } catch (_) {}
+    // 存快取時，後端還沒數字的項目（pending）留著上一份快取的數字：不然下次打開讀到的是空的，又要等到後端讀完。
+    try {
+      const old = this.cachedOverview(w.address), keep = { ...d, portfolios: d.portfolios.map(p => { const o = old && p.totalUsdE8 == null && old.portfolios.find(x => x.id === p.id); return o && o.totalUsdE8 != null ? { ...p, totalUsdE8: o.totalUsdE8 } : p; }) };
+      if (old && !(d.cash && d.cash.value) && old.cash && old.cash.value) keep.cash = old.cash;
+      if (old && !(d.earn && d.earn.value) && old.earn && old.earn.value) keep.earn = old.earn;
+      localStorage.setItem('cre8.ov.' + String(w.address).toLowerCase(), JSON.stringify(keep));
+    } catch (_) {}
     const busy = [...d.portfolios, d.cash, d.earn].some(x => x && (x.refreshing || x.state === 'pending'));
     clearTimeout(this.ovT);
     if (busy && (this.ovPolls = (this.ovPolls || 0) + 1) <= 20) this.ovT = setTimeout(() => this.loadOverview(false), 3000);
@@ -1122,7 +1131,7 @@ class Component extends DCLogic {
     const W = window.CRE8W, s = this.state, t = s.target, amt = s.amount;
     this.retryFn = () => this.confirm();
     // 處理中第一句：一句人話（之後由錢包程式的步驟接手）。
-    const first = { 'dca-out': tr('Getting your USDT back', '正在帮你领回'), earn: tr('Putting your USDT to work', '正在帮你存进去'), 'earn-out': tr('Getting your USDT back', '正在帮你取出'), 'se-on': tr('Turning on the yield strategy', '正在开启加息策略'), 'se-off': tr('Settling the yield strategy', '正在结清加息策略'), sell: tr('Selling for you', '正在帮你卖出'), buy: tr('Buying for you', '正在帮你买入') }[s.side] || tr('Preparing', '准备中');
+    const first = { withdraw: tr('Sending your USDT', '正在转出'), 'dca-out': tr('Getting your USDT back', '正在帮你领回'), earn: tr('Putting your USDT to work', '正在帮你存进去'), 'earn-out': tr('Getting your USDT back', '正在帮你取出'), 'se-on': tr('Turning on the yield strategy', '正在开启加息策略'), 'se-off': tr('Settling the yield strategy', '正在结清加息策略'), sell: tr('Selling for you', '正在帮你卖出'), buy: tr('Buying for you', '正在帮你买入') }[s.side] || tr('Preparing', '准备中');
     if (W && W.txReset) W.txReset();
     this.setState({ step: 'proc', procOff: 264, procText: first.toUpperCase() }); this.later(() => this.setState({ procOff: 70 }), 60);
     const onStep = x => this.step(x);
@@ -1130,6 +1139,13 @@ class Component extends DCLogic {
       if (!W) throw new Error(tr('Sign-in is still loading.', '登录组件还在加载。'));
       // 現金生息：存入白名單 vault／領回錢包（owner 錢包簽，後端給 calls 再記帳）。
       if (s.side === 'earn') { const r = await W.earnDeposit({ vaultId: t.vaultId, amount: amt, onStep }); const n = Number(r.amountUsdt) || 0; this.bump([{ k: 'cash', d: -n }, { k: 'earn', d: n }]); return this.finish({ earned: true, amount: n }); }
+      // 提現：錢包 USDT 轉到使用者貼上的地址（gas 不夠時先補）。
+      if (s.side === 'withdraw') {
+        const cash = s.cashWei != null ? Number(s.cashWei) / 1e18 : 0, all = (parseFloat(amt) || 0) >= Math.floor(cash * 100) / 100;
+        const r = await W.withdrawUsdt({ to: String(s.wdTo || '').trim(), amount: all ? 'max' : amt, onStep });
+        const n = Number(r.amountUsdt) || 0; this.bump([{ k: 'cash', d: -n }]);
+        return this.finish({ sentOut: true, amount: n });
+      }
       if (s.side === 'earn-out') {
         const all = (parseFloat(amt) || 0) >= Math.floor(this.earnTotal(s) * 100) / 100;
         const r = await W.earnWithdraw({ amount: all ? 'max' : amt, onStep });
@@ -1358,8 +1374,10 @@ class Component extends DCLogic {
     } };
     const tgt = s.target || { name: f.name, cover: f.cover };
     // side：buy／sell／earn（存入現金生息）／earn-out（領回錢包）／se-on、se-off（基金頁加息策略開關，只有處理中與結果）。
-    const sell = s.side === 'sell', eIn = s.side === 'earn', eOut = s.side === 'earn-out', out = sell || eOut, earnTot = this.earnTotal(s0);
-    const posH = s.holdings.find(h => h.id === tgt.id), posMax = eOut ? Math.floor(earnTot * 100) / 100 : posH && posH.val ? Math.floor(posH.val * 100) / 100 : 0;
+    const sell = s.side === 'sell', eIn = s.side === 'earn', eOut = s.side === 'earn-out', wd = s.side === 'withdraw', out = sell || eOut || wd, earnTot = this.earnTotal(s0);
+    // 提現（錢包 USDT → 外部地址）：上限＝錢包現金；收款地址要是 0x 開頭 40 碼、不能是自己。
+    const wdTo = String(s.wdTo || '').trim(), wdOk = /^0x[0-9a-fA-F]{40}$/.test(wdTo) && !!signedIn && wdTo.toLowerCase() !== String(w.address || '').toLowerCase();
+    const posH = s.holdings.find(h => h.id === tgt.id), posMax = wd ? Math.floor(s.cash * 100) / 100 : eOut ? Math.floor(earnTot * 100) / 100 : posH && posH.val ? Math.floor(posH.val * 100) / 100 : 0;
     const tLive = s.live && s.live[tgt.id], minBuy = eIn ? 1 : tLive ? tLive.min : 50, faucet = s.payFaucet && s.side === 'buy';
     const R0 = s.result || {}, isMixBuild = !!(tgt.mix && !tgt.mixId);
     // 買入確認卡的加息策略：後端 extraApyBps 依權重算成 %，再換成「每年多賺約 X USDT」（依這次投入金額）。
@@ -1374,8 +1392,8 @@ class Component extends DCLogic {
     // 部分賣出的上限＝持倉－進行中買入預留的 USDT；全部賣出（＝持倉）照常可以。
     const sellRes = sell && posH && s.sellRes ? s.sellRes[posH.pid] || 0 : 0, partMax = sellRes > 0 ? Math.max(0, Math.floor((posH.val - sellRes) * 100) / 100) : posMax;
     const partGap = sell && amt > partMax && amt < posMax;
-    const amtOk = dcaOn ? amt > 0 && dcaPer >= DCA_MIN && amt <= s.cash && !dcaHas : out ? amt > 0 && amt <= posMax && !partGap : amt >= minBuy && amt <= s.cash;
-    const amtBtn = dcaOn && dcaHas ? { ...off, label: tr('Already buying on a schedule', 'DCA 进行中') } : amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : dcaOn ? (dcaPer < DCA_MIN ? { ...off, label: tr('At least ' + DCA_MIN + ' USDT each time', '每期至少 ' + DCA_MIN + ' USDT') } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: tr('Review', '下一步') }) : out ? (amt > posMax ? { ...off, label: eOut ? tr('More than you have earning', '超过生息中的金额') : tr('More than you hold', '超过持仓') } : partGap ? { ...off, label: tr('Up to ' + fmt(partMax) + ' now, or sell all', '现在最多 ' + fmt(partMax) + '，或全部卖出') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: eOut ? tr('Take out', '取出') : tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起' + (eIn ? '存' : '投')) } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: eIn ? tr('Earn', '存入') : tr('Review', '下一步') };
+    const amtOk = dcaOn ? amt > 0 && dcaPer >= DCA_MIN && amt <= s.cash && !dcaHas : out ? amt > 0 && amt <= posMax && !partGap && (!wd || wdOk) : amt >= minBuy && amt <= s.cash;
+    const amtBtn = wd && amt > 0 && amt <= posMax && !wdOk ? { ...off, label: wdTo ? tr('Check the address', '请检查地址') : tr('Enter an address', '输入收款地址') } : dcaOn && dcaHas ? { ...off, label: tr('Already buying on a schedule', 'DCA 进行中') } : amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : dcaOn ? (dcaPer < DCA_MIN ? { ...off, label: tr('At least ' + DCA_MIN + ' USDT each time', '每期至少 ' + DCA_MIN + ' USDT') } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: tr('Review', '下一步') }) : out ? (amt > posMax ? { ...off, label: eOut ? tr('More than you have earning', '超过生息中的金额') : tr('More than you hold', '超过持仓') } : partGap ? { ...off, label: tr('Up to ' + fmt(partMax) + ' now, or sell all', '现在最多 ' + fmt(partMax) + '，或全部卖出') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: eOut ? tr('Take out', '取出') : tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起' + (eIn ? '存' : '投')) } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: eIn ? tr('Earn', '存入') : tr('Review', '下一步') };
     // 總資產＝各投組淨值（已扣策略加息策略的負債）＋錢包現金＋現金生息；三者在下面各自一列，不合併。
     const invested = s.holdings.reduce((a, h) => a + (h.val || 0), 0), totalVal = invested + s.cash + earnTot;
     // 總資產的歷史走勢後端還沒有端點：先畫平線、變化顯示 —（待接）。
@@ -1433,12 +1451,12 @@ class Component extends DCLogic {
       sheetTap: () => s.step === 'done' && !R0.error && !R0.askDel && this.closeDone(),
       sheetLeft: () => s.step === 'review' || s.step === 'dcaDate' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' || s.step === 'del' || s.step === 'se' || s.step === 'dcaM' ? this.back({ modal: false }) : s.step === 'done' && R0.error ? this.closeDone() : null,
       sheetLeftLabel: s.step === 'review' || s.step === 'dcaDate' ? tr('Back', '返回') : s.step === 'amount' || s.step === 'del' || s.step === 'se' || (s.step === 'done' && R0.error) ? tr('Cancel', '取消') : s.step === 'dcaM' ? tr('Close', '关闭') : '',
-      modalTitle: s.step === 'del' || s.step === 'se' || s.step === 'dcaM' ? tgt.name : s.step === 'dcaDate' ? tr('First buy', '开始日期') : s.step === 'amount' ? (eIn ? '' : (sell ? tr('Sell ', '卖出') : '') + tgt.name) : s.step === 'review' ? (sell ? tr('Review sale', '确认卖出') : eIn ? tr('Review', '确认存入') : eOut ? tr('Review', '确认取出') : dcaOn ? tr('Review', '确认 DCA') : tr('Review', '确认买入')) : '',
+      modalTitle: s.step === 'del' || s.step === 'se' || s.step === 'dcaM' ? tgt.name : s.step === 'dcaDate' ? tr('First buy', '开始日期') : s.step === 'amount' ? (eIn ? '' : (sell ? tr('Sell ', '卖出') : '') + tgt.name) : s.step === 'review' ? (wd ? tr('Review', '确认提现') : sell ? tr('Review sale', '确认卖出') : eIn ? tr('Review', '确认存入') : eOut ? tr('Review', '确认取出') : dcaOn ? tr('Review', '确认 DCA') : tr('Review', '确认买入')) : '',
       availText: sell ? tr('USDT · ' + fmt(posMax) + ' HELD', '持仓 ' + fmt(posMax) + ' USDT') : eOut ? tr('USDT · ' + fmt(posMax) + ' EARNING', '生息中 ' + fmt(posMax) + ' USDT') : tr('USDT · ' + (cashNum == null ? '—' : fmt(s.cash)) + ' AVAILABLE', '可用 ' + (cashNum == null ? '—' : fmt(s.cash)) + ' USDT'),
       // 測試網：錢包沒有 USDT（或不夠）時，可以改用免費測試 USDT（第一次 10,000，之後每天 1,000，直接進這一檔）。
       showFaucet: s.side === 'buy' && !dcaOn && cashNum != null && s.cash < Math.max(minBuy, amt || 0), useFaucet: () => this.setState({ payFaucet: true, step: 'review' }),
-      reviewNote: dcaOn ? tr('Buys automatically each time. Stocks fill when the US market opens. Pause or take the rest back any time.', '每期到点自动买入，美股开盘成交。随时可暂停或领回剩余。') : eIn ? tr('Take it out any time, interest included.', '随时连本带息取出。') : eOut ? tr('Interest included. USDT lands in your wallet.', '含利息，USDT 回到你的钱包。') : sell ? tr('Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.', '美股在开盘时卖出，加密资产马上卖出。USDT 回到你的钱包。') : tr('Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.', '美股在开盘时买入，加密资产马上买入。随时可以卖回 USDT。'),
-      confBg: out ? '#0B0F14' : '#E3B55B', confFg: out ? '#fff' : '#0B0F14', confirmLabel: dcaOn ? tr('Start DCA', '开始 DCA') : sell ? tr('Confirm sale', '确认卖出') : eIn ? tr('Confirm', '确认存入') : eOut ? tr('Take out', '确认取出') : tr('Confirm purchase', '确认买入'),
+      reviewNote: wd ? tr('Check the address. A transfer can’t be undone.', '请核对地址，转出后无法撤回。') : dcaOn ? tr('Buys automatically each time. Stocks fill when the US market opens. Pause or take the rest back any time.', '每期到点自动买入，美股开盘成交。随时可暂停或领回剩余。') : eIn ? tr('Take it out any time, interest included.', '随时连本带息取出。') : eOut ? tr('Interest included. USDT lands in your wallet.', '含利息，USDT 回到你的钱包。') : sell ? tr('Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.', '美股在开盘时卖出，加密资产马上卖出。USDT 回到你的钱包。') : tr('Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.', '美股在开盘时买入，加密资产马上买入。随时可以卖回 USDT。'),
+      confBg: out ? '#0B0F14' : '#E3B55B', confFg: out ? '#fff' : '#0B0F14', confirmLabel: wd ? tr('Withdraw', '确认提现') : dcaOn ? tr('Start DCA', '开始 DCA') : sell ? tr('Confirm sale', '确认卖出') : eIn ? tr('Confirm', '确认存入') : eOut ? tr('Take out', '确认取出') : tr('Confirm purchase', '确认买入'),
       mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done', mDel: s.step === 'del', mSe: s.step === 'se', mDcaDate: s.step === 'dcaDate', mDcaM: s.step === 'dcaM',
       delLine: tr('Sell everything, send the USDT to your wallet, and delete this basket', '全部卖出，USDT 回到你的钱包，组合会被删除'), delBtn: tr('Delete', '删除'),
       seBig: s.side === 'se-off' ? '+' + fmt(tgt.seEarned || 0) + ' USDT' : '+' + (tgt.seRate != null ? tgt.seRate.toFixed(1) : '—') + '%', seBigC: '#16854F',
@@ -1493,9 +1511,10 @@ class Component extends DCLogic {
           },
         };
       })(),
+      wdOn: wd, wdAddr: s.wdTo || '', wdPh: tr('Address on BNB Chain (0x…)', 'BNB Chain 收款地址（0x…）'), wdBd: wd && wdTo && !wdOk ? '#C2410C' : '#E6E9ED', onWdAddr: e => this.setState({ wdTo: e.target.value }),
       amtBtn, toReview: () => amtOk && (eIn || eOut ? this.confirm() : this.setState({ step: 'review' })),
       reviewRows: (dcaOn ? (() => { const best = (Array.isArray(s0.vaults) ? s0.vaults : []).filter(v => v.depositOpen && v.apyBps != null).sort((a, b) => b.apyBps - a.apyBps)[0];
-        return [[tr('Total', '总额'), fmt(amt) + ' USDT'], [tr('Each time', '每期'), fmt(dcaPerT) + ' USDT'], [tr('How often', '频率'), dcaFq + tr(' · ' + s.dcaN + ' times', ' · 共 ' + s.dcaN + ' 期')], [tr('Starts', '开始'), dcaWhen]].concat(best ? [[tr('Not bought yet earns', '还没买的部分'), '~' + (best.apyBps / 100).toFixed(1) + tr('% a year', '% 生息')]] : []); })() : eIn ? [[tr('Per year', '每年约'), '+' + fmt(amt * (tgt.apy || 0) / 100) + ' USDT'], [tr('Rate', '年化'), '~' + (tgt.apy || 0).toFixed(1) + '%']] : eOut ? [[tr('To', '到账'), tr('Your wallet', '你的钱包')], [tr('Still earning', '继续生息'), fmt(Math.max(0, posMax - amt)) + ' USDT']] : sell ? [[tr('You get about', '预计到账'), fmt(amt) + ' USDT'], [tr('Paid to', '到账'), tr('Your wallet', '你的钱包')], [tr('Left in portfolio', '组合剩余'), '$' + fmt(Math.max(0, posMax - amt))]] : faucet ? [[tr('You pay', '支付'), tr('Free test USDT', '免费测试 USDT')], [tr('Amount', '金额'), tgt.mixId || isMixBuild ? tr('1,000 a day', '每天 1,000') : tr('10,000 first buy · then 1,000 a day', '首次 10,000 · 之后每天 1,000')], [tr('Held in', '存放在'), tr('Your account', '你的账户')]] : [[tr('You pay', '支付'), fmt(amt) + ' USDT'], [tr('Held in', '存放在'), tr('Your account', '你的账户')], [tr('Cash left', '剩余现金'), fmt(s.cash - amt) + ' USDT']]).concat(s.side === 'buy' && !dcaOn && tLive && tLive.apy != null ? [[tr('APY', '年化收益'), tLive.apy >= 0 ? '~' + pct(tLive.apy).replace('+', '') : pct(tLive.apy)]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
+        return [[tr('Total', '总额'), fmt(amt) + ' USDT'], [tr('Each time', '每期'), fmt(dcaPerT) + ' USDT'], [tr('How often', '频率'), dcaFq + tr(' · ' + s.dcaN + ' times', ' · 共 ' + s.dcaN + ' 期')], [tr('Starts', '开始'), dcaWhen]].concat(best ? [[tr('Not bought yet earns', '还没买的部分'), '~' + (best.apyBps / 100).toFixed(1) + tr('% a year', '% 生息')]] : []); })() : eIn ? [[tr('Per year', '每年约'), '+' + fmt(amt * (tgt.apy || 0) / 100) + ' USDT'], [tr('Rate', '年化'), '~' + (tgt.apy || 0).toFixed(1) + '%']] : wd ? [[tr('To', '收款地址'), wdTo.slice(0, 6) + '…' + wdTo.slice(-4)], [tr('Network', '网络'), tr('BNB Chain testnet', 'BNB Chain 测试网')]] : eOut ? [[tr('To', '到账'), tr('Your wallet', '你的钱包')], [tr('Still earning', '继续生息'), fmt(Math.max(0, posMax - amt)) + ' USDT']] : sell ? [[tr('You get about', '预计到账'), fmt(amt) + ' USDT'], [tr('Paid to', '到账'), tr('Your wallet', '你的钱包')], [tr('Left in portfolio', '组合剩余'), '$' + fmt(Math.max(0, posMax - amt))]] : faucet ? [[tr('You pay', '支付'), tr('Free test USDT', '免费测试 USDT')], [tr('Amount', '金额'), tgt.mixId || isMixBuild ? tr('1,000 a day', '每天 1,000') : tr('10,000 first buy · then 1,000 a day', '首次 10,000 · 之后每天 1,000')], [tr('Held in', '存放在'), tr('Your account', '你的账户')]] : [[tr('You pay', '支付'), fmt(amt) + ' USDT'], [tr('Held in', '存放在'), tr('Your account', '你的账户')], [tr('Cash left', '剩余现金'), fmt(s.cash - amt) + ' USDT']]).concat(s.side === 'buy' && !dcaOn && tLive && tLive.apy != null ? [[tr('APY', '年化收益'), tLive.apy >= 0 ? '~' + pct(tLive.apy).replace('+', '') : pct(tLive.apy)]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
       confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, procText: s.procText || tr('PREPARING', '准备中'),
       // 結果：成交＝You own it；錢已進帳戶但還沒成交＝Order placed（美股開盤後成交）；失敗＝紅色。
       // 結果一句話：成功＝做了什麼＋金額；失敗＝沒完成。
@@ -1503,6 +1522,7 @@ class Component extends DCLogic {
         : R0.deleted ? (R0.sent >= 0.01 ? tr('Deleted · ' + fmt(R0.sent) + ' USDT to your wallet', '已删除 · ' + fmt(R0.sent) + ' USDT 已到钱包') : tr('Deleted', '已删除'))
         : R0.deleting ? tr('Deleting · sells at market open', '删除中 · 开盘后卖出')
         : R0.earned ? tr('Deposited ' + fmt(R0.amount || 0) + ' USDT', '已存入 ' + fmt(R0.amount || 0) + ' USDT')
+        : R0.sentOut ? tr('Sent ' + fmt(R0.amount || 0) + ' USDT', '已转出 ' + fmt(R0.amount || 0) + ' USDT')
         : R0.withdrawn ? tr(fmt(R0.amount || 0) + ' USDT back in your wallet', '已取出 ' + fmt(R0.amount || 0) + ' USDT')
         : R0.dca ? tr('DCA started', 'DCA 已开始') : R0.dcaOut ? tr(fmt(R0.amount || 0) + ' USDT back in your wallet', '已领回 ' + fmt(R0.amount || 0) + ' USDT')
         : R0.seOn ? tr('Yield strategy on', '加息策略已开启') : R0.seOff ? tr('Yield strategy off', '加息策略已关闭')
@@ -1521,7 +1541,7 @@ class Component extends DCLogic {
       avOpts: AVC.map((bg, i) => ({ bg, pick: () => this.setState({ avc: i, photo: null }), ring: !s.photo && s.avc === i ? '0 0 0 2px #F3F3F3,0 0 0 4px #0B0F14' : '0 0 0 1px rgba(11,15,20,.08)' })),
       hasPhoto: !!s.photo, removePhoto: () => this.setState({ photo: null }),
       onPhoto: e => { const f = e.target.files && e.target.files[0]; if (!f) return; this.setState({ photo: URL.createObjectURL(f) }); e.target.value = ''; },
-      pv: { big: signedIn && (s0.pf === null || s.holdings.some(h => h.loading) || cashNum == null) ? '—' : '$' + fmt(totalVal), chg: '—', col: '#6B7785', when: '' }, pc: pch.c, pScrub: this.scrub('ph', pch.n), pLeave: () => this.setState({ ph: null }),
+      pv: (() => { const wait = signedIn && (s0.pf === null || s.holdings.some(h => h.loading) || cashNum == null); return { big: wait ? '\u00a0' : '$' + fmt(totalVal), sk: wait ? SKEL + 'width:180px' : '', chg: '—', col: '#6B7785', when: '' }; })(), pc: pch.c, pScrub: this.scrub('ph', pch.n), pLeave: () => this.setState({ ph: null }),
       pranges: pills(RANGES.map(r => tr(r[0], r[5])), s.prange, i => this.setState({ prange: i, ph: null })),
       fundCount: s.holdings.length + ' PORTFOLIOS + CASH',
       alloc: allocSrc.map(([n, v0, cv], i, a) => { const v = v0 || 0, p = Math.max(1, Math.round(v / (totalVal || 1) * 100)); return { n, pct: p, lo: p >= 9 ? 1 : 0, vt: '$' + fmt(v), bg: SH[Math.min(i, SH.length - 1)], fg: i < 3 ? '#fff' : '#0B0F14', ring: i >= 3 ? 'inset 0 0 0 1px #D6DCE2' : 'none', sep: i < a.length - 1 ? '1px solid #EEF0F2' : '0' }; }),
@@ -1569,7 +1589,7 @@ class Component extends DCLogic {
       })(),
       // 買入確認卡：一句話＋開關＋「每年多賺約 X USDT」，預設關。% 只在點文字後才出現。槓桿與自建組合沒有；低於 0.3% 不顯示。
       showSE: s.side === 'buy' && !!tSE && tSE.state === 'ok', seOn: !!(s.se && seRate != null), seCur: seRate != null ? 'pointer' : 'default',
-      seTitle: seRate != null ? tr('Earn +' + seRate.toFixed(1) + '%', '加息策略 +' + seRate.toFixed(1) + '%') : tr('Yield strategy', '加息策略'),
+      seTitle: seRate != null ? tr('Yield strategy +' + seRate.toFixed(1) + '%', '加息策略 +' + seRate.toFixed(1) + '%') : tr('Yield strategy', '加息策略'),
       seSub: seRate != null ? tr('Your shares earn more. If prices drop to the safety line, we repay automatically.', '让持仓多赚一点，跌到安全线会自动还款。') : tr('Temporarily unavailable', '暂时无法使用'),
       // 詳情入口（小字，不是必經）：現金生息的金額／確認頁、vault 列表、買入加息策略卡、基金頁加息策略列。
       ...(() => { const DT = this.details(s0, s0.dt); return { dtTitle: DT.title, dtSecs: DT.secs, dtO: s0.dtOpen ? 1 : 0, dtPE: s0.dtOpen ? 'auto' : 'none', dtY: s0.dtOpen ? 0 : 110, closeDt: () => this.setState({ dtOpen: false }) }; })(),
@@ -1604,7 +1624,7 @@ class Component extends DCLogic {
         const zhKind = { mix_enrolled: '组合已启动', mix_allocation_changed: '比例已修改', mix_rebalanced: '已调仓', mix_exit_triggered: '开始卖出', mix_exit_stuck: '卖出卡住了', mix_cover: '封面已更新' }[a.kind] || '组合有更新';
         // 加息策略事件：一句人話（不出現抵押、借款比例等術語）。
         if (a.se) { const T = a.asset || tr('your shares', '持仓'), n = a.amount != null ? fmt(a.amount) : '';
-          const SE = { open: [tr('Yield strategy turned on', '加息策略已开启'), ''], deleverage: [tr(T + ' fell, so we repaid ' + n + ' USDT to stay safe', T + ' 下跌，已自动还款 ' + n + ' USDT 保安全'), ''], unwind: [tr('The yield strategy wasn’t worth it, so we settled it', '加息策略暂时不划算，已自动结清'), ''], repay: [tr('Settled the yield strategy before selling', '卖出前已先结清加息策略'), ''], close: [tr('Yield strategy turned off · shares back', '加息策略已关闭，股票已回到组合'), ''], claim: [tr('Earn rewards received', '收到加息策略奖励'), '+' + n + ' USDT'] }[a.se] || [tr('Yield strategy updated', '加息策略有更新'), ''];
+          const SE = { open: [tr('Yield strategy turned on', '加息策略已开启'), ''], deleverage: [tr(T + ' fell, so we repaid ' + n + ' USDT to stay safe', T + ' 下跌，已自动还款 ' + n + ' USDT 保安全'), ''], unwind: [tr('The yield strategy wasn’t worth it, so we settled it', '加息策略暂时不划算，已自动结清'), ''], repay: [tr('Settled the yield strategy before selling', '卖出前已先结清加息策略'), ''], close: [tr('Yield strategy turned off · shares back', '加息策略已关闭，股票已回到组合'), ''], claim: [tr('Yield strategy rewards received', '收到加息策略奖励'), '+' + n + ' USDT'] }[a.se] || [tr('Yield strategy updated', '加息策略有更新'), ''];
           return ['%', a.name, when + ' · ' + SE[0], SE[1], a.se === 'deleverage' ? '#A8791F' : '#16854F', a.se === 'claim' ? '#16854F' : '#0B0F14']; }
         if (LANG === 'zh') return a.kind ? ['r', a.name, when + ' · ' + zhKind, '', '#2F6690', '#0B0F14'] : [ok ? 'r' : '·', a.name, when + ' · ' + zhState, a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14'];
         return a.kind ? ['r', a.name, when + ' · ' + String(a.kind).replace(/_/g, ' '), '', '#2F6690', '#0B0F14'] : [ok ? 'r' : '·', a.name + (ok ? ' traded' : ''), when + ' · ' + String(a.state).replace(/_/g, ' '), a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14']; }).map(([g, t, d, v, fg, vc], i, a) => ({ g, gr: g === 'r', gt: g !== 'r', t, d, v, fg, vc, sep: sepL(i, a) })),
@@ -1616,6 +1636,7 @@ class Component extends DCLogic {
         return { emailLinked: !!em, emailOpen: !em, emailSub: em ? em.detail : tr('Not linked', '未绑定'), linkGoogle: () => WL && WL.link('google'), xLinked: !!x, xOpen: !x, xSub: x ? x.detail : tr('Not linked', '未绑定'), linkX: () => WL && WL.link('x') }; })(),
       addrShort: signedIn ? shortAddr(w.address) : '', addrFull: signedIn ? w.address : '', linkErr: w && w.linkError,
       exportKey: () => WL && WL.exportWallet(), signOut: () => { this.setState({ acct: false, si: null, page: 'home', fund: null }); try { sessionStorage.removeItem('cre8.intent'); } catch (_) {} if (WL) WL.logout(); },
+      withdraw: () => signedIn ? this.setState({ modal: true, side: 'withdraw', step: 'amount', amount: '', wdTo: '', payFaucet: false, target: { id: 'withdraw', name: STR[LANG].withdraw, cover: 'app/l-usdt.png' } }) : this.needSignIn({ for: 'profile' }),
       addMoney: () => signedIn ? this.setState({ rc: true, copied: false }) : this.needSignIn({ for: 'profile' }),
       rcO: s.rc ? 1 : 0, rcPE: s.rc ? 'auto' : 'none', rcY: s.rc ? 0 : 110, closeRecv: () => this.setState({ rc: false }),
       copyAddr: () => { try { navigator.clipboard.writeText(w.address); this.setState({ copied: true }); } catch (_) {} }, copyLabel: s.copied ? tr('Copied', '已复制') : tr('Copy address', '复制地址'),
