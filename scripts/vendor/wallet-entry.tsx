@@ -510,7 +510,8 @@ type SudoCall = { to: Address; data: Hex; value: bigint };
  * 什麼都沒送，等幾秒用同一個請求再問（2026-11-23 實測第一次買入、賣出都撞到）。其他結果照原樣回。
  */
 const SCHEDULER_BUSY = /^\[(DEX_QUEUED|PORTFOLIO_LOCK_BUSY)\]/;
-async function retryBusyRound<T extends { outcome: string; reason: string }>(run: () => Promise<T>, delaysMs: readonly number[] = [3_000, 5_000, 8_000, 12_000]): Promise<T> {
+// 後端讓使用者的那一輪優先等通道（backend#244），沒等到就很快再問一次，讓排程器在下一個投組前看到我們在等。
+async function retryBusyRound<T extends { outcome: string; reason: string }>(run: () => Promise<T>, delaysMs: readonly number[] = [1_000, 1_000, 2_000, 2_000, 3_000, 3_000]): Promise<T> {
   for (let i = 0; ; i++) {
     const r = await run();
     const delay = delaysMs[i];
