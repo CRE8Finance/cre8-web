@@ -890,7 +890,7 @@ class Component extends DCLogic {
       // 淨值＝投組總值（/status，已含抵押中的股票）＋earnNetUsd（vault－負債，1e18，可為負）。不加 netValueUsd（含抵押品，會重複算）。
       const st = s.pst[p.id], se = s.seP[p.id], seOn = se && se.positions ? se.positions.filter(x => x.status === 'on') : [];
       const seNet = se && se.earnNetUsd != null ? Number(se.earnNetUsd) / 1e18 : 0;
-      return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || tr('Portfolio', '组合')), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd + seNet : null, loading: !st || !se, ret: m && m.ret != null ? m.ret : null, seOn, seUnknown: !!(se && se.status === 'unavailable') };
+      return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || tr('Portfolio', '组合')), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd + seNet : null, loading: !st || !se, ret: m && m.ret != null ? m.ret : null, seOn, seAuto: !!(se && se.autoOpen), seUnknown: !!(se && se.status === 'unavailable') };
     }).filter(h => h.loading || h.val >= 0.01 || h.val == null);
   }
   // /me/mixes → 畫面用的組合（代號、百分比、頻率索引）。封面、頭像存伺服器的端點還沒有：封面先只留在這個分頁。
@@ -1323,8 +1323,8 @@ class Component extends DCLogic {
       // 基金頁一行：開著＝「開啟中 · ~x% · 已賺 y USDT」，可以關；關著＝每年多賺約多少，可以開。
       ...(() => {
         const h = own, on = !!(h && h.seOn && h.seOn.length);
-        // 還沒成交時已簽同意（armed）：開關顯示開著、寫「成交后自动开始」，成交後排程自動開，之後就是真的 on。
-        const armed = !on && !!(h && s.seArmed && s.seArmed[h.pid]);
+        // 還沒成交時已簽同意（armed）：後端回 autoOpen（重整也記得），或這次剛簽完。開關顯示開著、寫「成交后自动开始」，成交後排程自動開，之後就是真的 on。
+        const armed = !on && !!(h && (h.seAuto || (s.seArmed && s.seArmed[h.pid])));
         const show = !!h && !!fSE && (on || armed || fSE.state === 'ok');
         // 已賺（估）＝earnNetUsd（vault－負債，利差累積）＋待領激勵（USDT）；backend#209 給正式欄位後改讀。
         const earned = on ? Math.max(0, h.seOn.reduce((a, x) => a + (Number(x.earnNetUsd != null ? x.earnNetUsd : Number(x.vaultAssetsRaw || 0) - Number(x.debtRaw || 0)) + Number(x.pendingRewardsRaw || 0)) / 1e18, 0)) : 0;
