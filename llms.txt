@@ -4,7 +4,7 @@
 
 ## Key pages
 - [How it works](https://cre8.finance/how-it-works): buying, custody, fees, selling and withdrawing, US market hours, idle-cash yield, testnet status.
-- [Compare](https://cre8.finance/compare): CRE8 vs buying bStock on Binance, xStocks/Ondo tokens, Venzo, and a US brokerage account.
+- [Compare](https://cre8.finance/compare): ways to buy US stocks with USDT: an exchange, stock tokens bought yourself, a US broker, and CRE8.
 - [All portfolios](https://cre8.finance/portfolios): 21 portfolios with holdings, weights and model APY.
 - 中文：[首页](https://cre8.finance/zh)、[怎么运作](https://cre8.finance/zh/how-it-works)、[对比](https://cre8.finance/zh/compare)、[全部组合](https://cre8.finance/zh/portfolios)
 
