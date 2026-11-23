@@ -505,6 +505,19 @@ async function readApprovalState(token: string, portfolioId: number, account: Ad
 
 /** 投入後：沒授權過的資產一次 approve 給 executor（owner 簽），然後請後端跑一輪配置。美股收盤時不會成交，排程會在開盤後買。 */
 type SudoCall = { to: Address; data: Hex; value: bigint };
+/**
+ * 這一輪被擋只是因為排程器正在處理別的基金（共用市場 [DEX_QUEUED]）或這一檔（[PORTFOLIO_LOCK_BUSY]）：
+ * 什麼都沒送，等幾秒用同一個請求再問（2026-11-23 實測第一次買入、賣出都撞到）。其他結果照原樣回。
+ */
+const SCHEDULER_BUSY = /^\[(DEX_QUEUED|PORTFOLIO_LOCK_BUSY)\]/;
+async function retryBusyRound<T extends { outcome: string; reason: string }>(run: () => Promise<T>, delaysMs: readonly number[] = [3_000, 5_000, 8_000, 12_000]): Promise<T> {
+  for (let i = 0; ; i++) {
+    const r = await run();
+    const delay = delaysMs[i];
+    if (r.outcome !== 'blocked' || !SCHEDULER_BUSY.test(r.reason) || delay === undefined) return r;
+    await sleep(delay);
+  }
+}
 async function allocate(args: { token: string; wallet: RenewalWallet; account: Address; strategyId: number; portfolioId: number; step: Step; extra?: SudoCall[];
   /** 買入提速：轉帳／領 USDT 的同時先讀好的授權狀態；讀不到或還沒有資產清單就在這裡重讀。 */
   prefetched?: Promise<ApprovalState | null>;
@@ -539,7 +552,7 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
   }
   args.step(L('Placing your order', '正在下单'));
   try {
-    const round = await postRebalance(args.token, args.portfolioId);
+    const round = await retryBusyRound(() => postRebalance(args.token, args.portfolioId));
     if (round.outcome === 'executed') { noteTx(round.txHash); return { filled: true, note: null, txHash: round.txHash, earnSent }; }
     const f = explainTradeFailure(round);
     return { filled: false, note: f.kind === 'nothing-to-do' ? null : tradeNote(f), txHash: null, earnSent };
@@ -668,7 +681,7 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   if (target !== null) {
     step(L('Selling', '正在卖出'));
     try {
-      const first = () => (args.all ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)) as Promise<RedeemResult>;
+      const first = () => retryBusyRound(() => (args.all ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)) as Promise<RedeemResult>);
       const run = await runSellBatches({ first, next: (rest) => continueRedeem(t, holding.id, rest), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
       if (afterSellRun(run) !== 'proceed' || run.status === 'stalled') note = tradeNote(explainTradeFailure({ outcome: run.lastOutcome, reason: run.lastReason }));
     } catch (cause) {
@@ -680,11 +693,12 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   const balance = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
   const cash1 = await freeCash(t, holding.id);
   const cap = cash1 === null || cash1.free >= balance ? balance : cash1.free;
-  if (cap < balance && note === null) {
+  const value = withdrawAmountWei(args.all ? formatUnits(cap, 18) : wanted.toFixed(8), cap, 18);
+  // 只有真的少領（全部賣出卻有預留、或部分領回不到要的金額）才說原因。
+  if (cap < balance && note === null && (args.all || value < withdrawAmountWei(wanted.toFixed(8), balance, 18))) {
     const held = usdtText((balance - cap).toString());
     note = L(`${held} USDT is set aside for a buy that is still in progress, so it stays in this portfolio for now.`, `有 ${held} USDT 留给还在进行的买入，暂时留在组合里。`);
   }
-  const value = withdrawAmountWei(args.all ? formatUnits(cap, 18) : wanted.toFixed(8), cap, 18);
   if (value === 0n) return { sentUsdt: '0', note: note ?? L('Nothing could be sold right now.', '现在没有能卖出的部分。'), txHash: null };
   step(L('Approve in your wallet to receive your USDT', '在钱包里确认，领回 USDT'));
   const receipt = await sendWithdraw({ wallet, token: t, accountAddress: account, strategyId: holding.strategyId, asset: USDT, recipient: owner, amountWei: value });
