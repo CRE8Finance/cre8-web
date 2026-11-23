@@ -705,7 +705,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=cae1912dd0'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=ec310b402f'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -957,8 +957,9 @@ class Component extends DCLogic {
       // 基金頁的加息策略開關：開＝帳戶裡有開放市場的資產全部拿去開；關＝先還款再取回抵押，股票留在組合裡。
       if (s.side === 'se-on') {
         const r = await W.strategyOpen({ portfolioId: t.pid, assets: t.syms, onStep });
-        if (!r.opened.length) throw new Error(tr('Your order hasn’t filled yet. Try again after it fills.', '还没成交，成交后再开启。'));
-        return this.finish({ seOn: true });
+        // 還沒成交：已簽同意，成交後自動開始（不叫用戶之後回來重開）。
+        if (r.auto) this.setState(x => ({ seArmed: { ...(x.seArmed || {}), [t.pid]: true } }));
+        return this.finish({ seOn: true, note: r.auto ? tr('Starts when your order fills.', '成交后自动开始。') : null });
       }
       if (s.side === 'se-off') { await W.strategyClose({ portfolioId: t.pid, onStep }); return this.finish({ seOff: true }); }
       if (s.side === 'sell') {
@@ -1322,15 +1323,17 @@ class Component extends DCLogic {
       // 基金頁一行：開著＝「開啟中 · ~x% · 已賺 y USDT」，可以關；關著＝每年多賺約多少，可以開。
       ...(() => {
         const h = own, on = !!(h && h.seOn && h.seOn.length);
-        const show = !!h && !!fSE && (on || fSE.state === 'ok');
+        // 還沒成交時已簽同意（armed）：開關顯示開著、寫「成交后自动开始」，成交後排程自動開，之後就是真的 on。
+        const armed = !on && !!(h && s.seArmed && s.seArmed[h.pid]);
+        const show = !!h && !!fSE && (on || armed || fSE.state === 'ok');
         // 已賺（估）＝earnNetUsd（vault－負債，利差累積）＋待領激勵（USDT）；backend#209 給正式欄位後改讀。
         const earned = on ? Math.max(0, h.seOn.reduce((a, x) => a + (Number(x.earnNetUsd != null ? x.earnNetUsd : Number(x.vaultAssetsRaw || 0) - Number(x.debtRaw || 0)) + Number(x.pendingRewardsRaw || 0)) / 1e18, 0)) : 0;
-        const can = on || !!(h && fSE && fSE.rate != null && !h.loading);
+        const can = !armed && (on || !!(h && fSE && fSE.rate != null && !h.loading));
         const run = (side, syms) => this.setState({ modal: true, side, step: 'proc', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (fSE ? fSE.syms : []) } }, () => this.confirm());
         return {
           seRow: show,
-          seLine: on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : fSE && fSE.rate != null ? tr('+' + fSE.rate.toFixed(1) + '% a year', '年化 +' + fSE.rate.toFixed(1) + '%') : tr('Temporarily unavailable', '暂时无法使用'),
-          seFundOn: on, seFundBg: on ? '#16854F' : can ? '#C3CAD1' : '#EDF0F3', seFundJust: on ? 'flex-end' : 'flex-start', seFundCur: can ? 'pointer' : 'default',
+          seLine: armed ? tr('Starts when your order fills', '成交后自动开始') : on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : fSE && fSE.rate != null ? tr('+' + fSE.rate.toFixed(1) + '% a year', '年化 +' + fSE.rate.toFixed(1) + '%') : tr('Temporarily unavailable', '暂时无法使用'),
+          seFundOn: on || armed, seFundBg: on || armed ? '#16854F' : can ? '#C3CAD1' : '#EDF0F3', seFundJust: on || armed ? 'flex-end' : 'flex-start', seFundCur: can ? 'pointer' : 'default',
           seFundToggle: () => can && run(on ? 'se-off' : 'se-on'),
         };
       })(),
