@@ -763,7 +763,7 @@ async function strategyOpenRaw(args: { portfolioId: number; assets: string[]; on
   step(L('Checking your portfolio', '正在检查持仓'));
   const st = await getPortfolioStatus(t, args.portfolioId);
   const held = (st.holdings ?? []).filter((h) => args.assets.includes(h.symbol) && BigInt(h.amountWei) > 0n);
-  if (held.length === 0) return { opened: [] as string[] };
+  if (held.length === 0) return strategyAutoOn(t, wallet, args.portfolioId, step);
   const calls: EarnCall[] = [], opened: string[] = [];
   for (const h of held) {
     const r = await earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/open`, { method: 'POST', body: { asset: h.symbol, collateralRaw: h.amountWei } });
@@ -773,6 +773,25 @@ async function strategyOpenRaw(args: { portfolioId: number; assets: string[]; on
   step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
   await sendStrategyCalls(t, wallet, args.portfolioId, calls);
   return { opened };
+}
+
+/**
+ * 還沒成交（帳戶裡只有 USDT、還沒有股票）時開加息：跟買入確認畫面一樣先簽同意（`/strategy-earn/auto`，額度＝帳戶裡等著買的 USDT），
+ * 成交後由排程自動抵押、借款。回 `{ opened: [], auto: true }`，畫面顯示「已開啟・成交後自動開始」，不再叫用戶成交後回來重開。
+ */
+async function strategyAutoOn(t: string, wallet: RenewalWallet, portfolioId: number, step: Step) {
+  const { account, strategyId } = await portfolioAccount(t, portfolioId);
+  const budget = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
+  if (budget <= 0n) throw new Error(L('Buy into this portfolio first, then turn this on.', '先买入这个组合，再开启加息。'));
+  const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${portfolioId}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: budget.toString() } });
+  if (a.status !== 'ready' || !a.calls?.length) throw new Error(temporarily());
+  const renewal = a.authorization === 'renewal_required' ? await getRenewalParams(t, portfolioId) : null;
+  const calls = [...(renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []), ...a.calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
+  step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
+  const receipt = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls });
+  if (!receipt.success) throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
+  if (renewal) await postRenewalResult(t, portfolioId, { keyRef: renewal.keyRef, permissionId: renewal.permissionId, validUntil: renewal.validUntil, policySnapshot: renewal.policySnapshot }).catch(() => undefined);
+  return { opened: [] as string[], auto: true };
 }
 
 /** 關閉加息（關掉、或賣出前）：每個開著的資產先還款再取回抵押，合成一筆 UserOp。沒有開著的就什麼都不送。 */
