@@ -549,9 +549,20 @@ function shape(v, W, H) {
 const spark = (seed, ret) => shape(series(seed, ret, 30, 1.6), 100, 30).p;
 const dateAt = (days, frac, withYear) => fmtDay(new Date(TODAY.getTime() - days * (1 - frac) * 864e5), withYear);
 
+// 網址跟著畫面走：/discover、/discover/<組合>、/build、/portfolio。重整或分享連結會回到同一頁（不再一律回 Discover）。
+const PAGE_PATH = { home: '/discover', build: '/build', profile: '/portfolio' };
+const pathOfNav = n => n.fund ? '/discover/' + encodeURIComponent(n.fund) : PAGE_PATH[n.page] || '/discover';
+const navFromPath = () => {
+  const seg = location.pathname.replace(/\/+$/, '').split('/').filter(Boolean);
+  if (seg[0] === 'build') return { page: 'build', fund: null };
+  if (seg[0] === 'portfolio') return { page: 'profile', fund: null };
+  if (seg[0] === 'discover' && seg[1]) { try { const id = decodeURIComponent(seg[1]); if (id.startsWith('mix-') || FUNDS.some(f => f.id === id)) return { page: 'home', fund: id }; } catch (_) {} }
+  return { page: 'home', fund: null };
+};
+
 class Component extends DCLogic {
   state = {
-    page: 'home', fund: null, range: 3, fh: null, prange: 1, ph: null, filter: 0,
+    ...navFromPath(), range: 3, fh: null, prange: 1, ph: null, filter: 0,
     modal: false, step: 'amount', amount: '', target: null, procOff: 264, doneSc: .4,
     live: null, det: {}, // 測試網真資料：live＝/strategies 列表（依 catalogKey），det＝/strategies/:id（淨值、持股）
     picks: [], weights: {}, bcat: 0, q: '', bstep: 0, editing: null, freq: 2, start: null, calOff: 0, mixName: '', mixCover: null, acct: false, ptab: 0, pname: '', photo: null, avc: 0,
@@ -571,7 +582,7 @@ class Component extends DCLogic {
     this.onRs = () => { const w = innerWidth >= 960; if (w !== this.state.wide) this.setState({ wide: w }); }; addEventListener('resize', this.onRs); this.onRs();
     // 換頁寫進瀏覽器歷史：手機的返回鍵回上一個畫面，不會直接離開 app。
     this.navPrev = this.navOf(this.state); this.navKey = JSON.stringify(this.navPrev);
-    history.replaceState({ nav: this.navPrev, d: 0 }, '');
+    history.replaceState({ nav: this.navPrev, d: 0 }, '', pathOfNav(this.navPrev) + location.search + location.hash);
     this.onPop = e => {
       const n = e.state && e.state.nav; if (!n) return;
       if (JSON.stringify(n) !== this.navKey) { this.popping = true; this.setState(n); }
@@ -617,10 +628,10 @@ class Component extends DCLogic {
     if (this.popping) { this.popping = false; return; }
     const st = history.state || { d: 0 }, d = st.d || 0;
     // 買完直接跳到別頁：取代視窗那一筆，返回時不會再打開視窗。
-    if (prev.modal && !n.modal) { history.replaceState({ nav: n, d }, ''); return; }
+    if (prev.modal && !n.modal) { history.replaceState({ nav: n, d }, '', pathOfNav(n)); return; }
     history.replaceState({ ...st, y: this.leaveY != null ? this.leaveY : window.scrollY }, '');
     this.leaveY = null;
-    history.pushState({ nav: n, d: d + 1, y: 0 }, '');
+    history.pushState({ nav: n, d: d + 1, y: 0 }, '', pathOfNav(n));
   }
   back(fallback) { if (history.state && history.state.d > 0) history.back(); else this.setState(fallback); }
   later(fn, ms) { this.timers.push(setTimeout(fn, ms)); }
@@ -734,6 +745,36 @@ class Component extends DCLogic {
   // 「我的」頁的數字（backend#216 GET /me/overview）：一個請求拿全部持倉、現金、生息的快照，先畫上次存在這台裝置的那份，
   // 新的回來再無聲換掉；還在背景更新的項目每 3 秒再問一次。第一次之後的 refresh（交易、存取之後）帶 fresh=1 叫後端馬上重讀。
   cachedOverview(addr) { try { const d = JSON.parse(localStorage.getItem('cre8.ov.' + String(addr).toLowerCase()) || 'null'); return d && Array.isArray(d.portfolios) ? d : null; } catch (_) { return null; } }
+  // 交易／存取完成的當下先把數字改好（樂觀更新），不用等後端快照：組合多了／少了多少、現金、生息各記一筆。
+  // 後端回來的那一項只要讀取時間（updatedAt）還早於這筆動作，就繼續疊上這筆；讀到動作之後的值就以後端為準。3 分鐘後一律丟掉。
+  bump(list) {
+    const at = Date.now(); this.opt = (this.opt || []).filter(o => at - o.at < 180000).concat(list.map(o => ({ ...o, at })));
+    this.setState(x => this.withOpt({ pf: x.pf, pst: x.pst, seP: x.seP, cashWei: x.cashWei, earnAcct: x.earnAcct }, null));
+  }
+  withOpt(st, d) {
+    const now = Date.now(), ops = (this.opt = (this.opt || []).filter(o => now - o.at < 180000));
+    if (!ops.length) return st;
+    const stale = (o, item) => !d || !item || !item.updatedAt || Date.parse(item.updatedAt) < o.at;
+    const wei = n => BigInt(Math.round(n * 1e6)) * 10n ** 12n;
+    const keep = [], pst = { ...(st.pst || {}) }, seP = { ...(st.seP || {}) }; let pf = st.pf ? st.pf.slice() : st.pf, cashWei = st.cashWei, earnAcct = st.earnAcct;
+    ops.forEach(o => {
+      if (o.k === 'pf') {
+        const item = d && d.portfolios.find(p => p.id === o.pid);
+        if (!stale(o, item)) return; keep.push(o);
+        if (pf && !pf.some(p => p.id === o.pid)) pf.push({ id: o.pid, strategyId: o.sid, strategyName: o.name || null });
+        if (!seP[o.pid]) seP[o.pid] = { status: 'none', positions: [] };
+        const cur = pst[o.pid]; pst[o.pid] = { usd: Math.max(0, (cur && cur.usd != null ? cur.usd : 0) + o.d) };
+      } else if (o.k === 'cash') {
+        if (!stale(o, d && d.cash)) return; keep.push(o);
+        if (cashWei != null) { const v = BigInt(cashWei) + wei(o.d); cashWei = String(v > 0n ? v : 0n); }
+      } else if (o.k === 'earn') {
+        if (!stale(o, d && d.earn)) return; keep.push(o);
+        if (earnAcct && earnAcct.status === 'ok') { const ce = earnAcct.cashEarn, v = BigInt(ce.earningRaw || '0') + wei(o.d); earnAcct = { ...earnAcct, cashEarn: { ...ce, earningRaw: String(v > 0n ? v : 0n) } }; }
+      }
+    });
+    if (d) this.opt = keep;
+    return { ...st, pf, pst, seP, cashWei, earnAcct };
+  }
   applyOverview(d) {
     if (!d) return;
     const pst = {}, seP = {};
@@ -747,7 +788,7 @@ class Component extends DCLogic {
     const a = d.earn && d.earn.value;
     if (a && a.status === 'ok') { st.earnAcct = a; st.earnHad = a.cashEarn.positions.length > 0; try { st.earnHad ? localStorage.setItem('cre8.earnHad', '1') : localStorage.removeItem('cre8.earnHad'); } catch (_) {} }
     else if (d.earn && (d.earn.state === 'unavailable' || a)) st.earnAcct = a || { status: 'unavailable' };
-    this.setState(st);
+    this.setState(x => this.withOpt({ cashWei: x.cashWei, earnAcct: x.earnAcct, ...st }, d));
   }
   async loadOverview(fresh) {
     const W = window.CRE8W, w = W && W.get(); if (!w || !w.signedIn || !w.token) return false;
@@ -948,10 +989,11 @@ class Component extends DCLogic {
     try {
       if (!W) throw new Error(tr('Sign-in is still loading.', '登录组件还在加载。'));
       // 現金生息：存入白名單 vault／領回錢包（owner 錢包簽，後端給 calls 再記帳）。
-      if (s.side === 'earn') { const r = await W.earnDeposit({ vaultId: t.vaultId, amount: amt, onStep }); return this.finish({ earned: true, amount: Number(r.amountUsdt) }); }
+      if (s.side === 'earn') { const r = await W.earnDeposit({ vaultId: t.vaultId, amount: amt, onStep }); const n = Number(r.amountUsdt) || 0; this.bump([{ k: 'cash', d: -n }, { k: 'earn', d: n }]); return this.finish({ earned: true, amount: n }); }
       if (s.side === 'earn-out') {
         const all = (parseFloat(amt) || 0) >= Math.floor(this.earnTotal(s) * 100) / 100;
         const r = await W.earnWithdraw({ amount: all ? 'max' : amt, onStep });
+        const n = Number(r.amountUsdt) || 0; this.bump([{ k: 'earn', d: -n }, { k: 'cash', d: n }]);
         return this.finish({ withdrawn: true, amount: Number(r.amountUsdt), note: r.note });
       }
       // 基金頁的加息策略開關：開＝帳戶裡有開放市場的資產全部拿去開；關＝先還款再取回抵押，股票留在組合裡。
@@ -968,6 +1010,7 @@ class Component extends DCLogic {
         const all = (parseFloat(amt) || 0) >= Math.floor((h.val || 0) * 100) / 100;
         // 開著加息策略也直接賣：後端會先還款、取回股票再賣（backend#204），剩下的部位維持加息策略。
         const r = await W.sell({ portfolioId: h.pid, usd: parseFloat(amt) || 0, all, onStep });
+        const n = Number(r.sentUsdt) || 0; if (n > 0) this.bump([{ k: 'pf', pid: h.pid, d: -n }, { k: 'cash', d: n }]);
         return this.finish({ sold: true, sent: Number(r.sentUsdt), note: r.note });
       }
       if (t.mix) {
@@ -984,6 +1027,7 @@ class Component extends DCLogic {
           if (portfolioId == null) return this.finish({ made: true, note: tr('Ready in about a minute. Then open it and tap Buy.', '大约一分钟后就绪，到时打开它点“买入”。') });
         }
         const r = await W.fundMixBasket({ mixId, portfolioId, account, pay: s.payFaucet ? 'faucet' : 'wallet', amount: amt, onStep });
+        if (!s.payFaucet && portfolioId != null) { const n = parseFloat(amt) || 0; this.bump([{ k: 'pf', pid: portfolioId, d: n, name: t.name }, { k: 'cash', d: -n }]); }
         return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: r.recorded ? null : tr('Your USDT arrived. We’ll schedule it to buy shortly.', 'USDT 已到账，稍后自动买入。') });
       }
       const LV = s.live && s.live[t.id], D = s.det[t.id];
@@ -991,6 +1035,7 @@ class Component extends DCLogic {
       // 確認卡開了加息策略（backend#204）：同意的 calls 跟買入同一次簽名；美股還沒成交也一樣，成交後由系統自動開。
       const se = s.se ? this.seInfo(s, t.id) : null;
       const r = await W.buy({ strategyId: LV.sid, onchainId: LV.onchainId, shown: D && D.version ? { version: D.version, configHash: D.configHash } : null, amount: amt, pay: s.payFaucet ? 'faucet' : 'wallet', earnExtra: !!(se && se.rate != null), onStep });
+      if (!r.pending && r.portfolioId != null) { const n = Number(r.amountUsdt) || 0; this.bump([{ k: 'pf', pid: r.portfolioId, sid: LV.sid, d: n }].concat(s.payFaucet ? [] : [{ k: 'cash', d: -n }])); }
       const seNote = r.earnExtra === 'unavailable' ? tr('The yield strategy didn’t turn on this time. You can turn it on from the portfolio page.', '这次加息策略没开启，可以到组合页再开。') : null;
       this.finish({ filled: r.filled, pending: r.pending, amount: Number(r.amountUsdt), note: [r.note, seNote].filter(Boolean).join(' ') || null });
     } catch (e) { this.fail(e); }
