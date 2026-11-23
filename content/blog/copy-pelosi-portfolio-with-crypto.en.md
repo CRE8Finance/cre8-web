@@ -2,6 +2,8 @@
 title: How to Copy the Pelosi Portfolio With Crypto (and How Late the Data Is)
 slug: /blog/copy-pelosi-portfolio-with-crypto
 lang: en
+seo_title: How to Copy Nancy Pelosi's Stock Portfolio With Crypto
+description: Where Pelosi's stock disclosures come from, how late they are, and how to buy the Pelosi Portfolio with USDT. Holdings, weights and a model backtest.
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23

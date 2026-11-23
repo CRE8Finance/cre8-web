@@ -2,6 +2,8 @@
 title: CRE8 的组合怎么选：人物、主题、杠杆各是什么
 slug: /zh/blog/cre8-portfolios-explained
 lang: zh-Hans
+seo_title: CRE8 组合怎么选：人物、主题、杠杆
+description: CRE8 全部 21 个组合按类型介绍：佩洛西、特朗普、段永平、马斯克等人物组合，AI 芯片、七巨头等主题，以及 3 倍杠杆。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -194,7 +196,7 @@ CRE8 目前只在 BNB Chain 测试网上，价格是模拟的，不涉及真钱�
 
 ---
 
-延伸阅读：[CRE8 是什么](/zh/blog/what-is-cre8)、[用 USDT 一次买一篮美股](/zh/blog/buy-a-basket-of-us-stocks-with-usdt)、[自己配组合](/zh/blog/build-your-own-portfolio-on-cre8)。
+延伸阅读：[CRE8 是什么](/zh/blog/what-is-cre8)、[用 USDT 一次买一篮美股](/zh/blog/buy-us-stock-basket-with-usdt)、[自己配组合](/zh/blog/build-your-own-portfolio)。
 
 资料来源（查询日期 2026-11-23）：[CRE8 llms.txt](https://cre8.finance/llms.txt)、[CRE8 全部组合](https://cre8.finance/zh/portfolios)（含各组合页）、[CRE8 使用指南](https://cre8.finance/zh/how-it-works)、[Binance Learn：bStocks](https://www.binance.com/en/learn/bstocks)。
 

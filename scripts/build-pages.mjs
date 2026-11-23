@@ -675,7 +675,7 @@ function blogIndexPage(posts, funds, lang) {
 ${c.html}
 <h1>${zh ? '文章' : 'Blog'}</h1>
 <section class="section post-list">
-${posts.map((p) => { const cv = coverOf(p.slug, lang); return `<a class="post-row${cv ? ' post-row--cover' : ''}" href="${P(lang, '/blog/' + p.slug)}">${cv ? `<img src="${cv}" alt="" width="1200" height="630" loading="lazy" decoding="async">` : ''}<div><h2>${esc(p[lang].title)}</h2><p>${esc(clip(p[lang].lede, zh ? 90 : 200))}</p><span class="muted small">${postDate(p[lang].meta.updated, lang)}</span></div></a>`; }).join('\n')}
+${posts.map((p) => { const cv = coverOf(p.slug, lang); return `<a class="post-row${cv ? ' post-row--cover' : ''}" href="${P(lang, '/blog/' + p.slug)}">${cv ? `<img src="${cv}" alt="" width="1200" height="630" loading="lazy" decoding="async">` : ''}<div><h2>${esc(p[lang].title)}</h2><p>${esc(p[lang].meta.description || clip(p[lang].lede, zh ? 90 : 200))}</p><span class="muted small">${postDate(p[lang].meta.updated, lang)}</span></div></a>`; }).join('\n')}
 </section>
 ${ctaBand(lang)}
 </main>
@@ -688,19 +688,21 @@ function blogPostPage(post, posts, funds, lang) {
   const a = post[lang];
   const path = '/blog/' + post.slug;
   const c = crumbs(lang, [[t.home, '/'], [t.blog, '/blog'], [a.title, path]]);
-  const description = clip(a.lede, zh ? 110 : 160);
-  const article = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title, description, inLanguage: t.htmlLang, url: abs(P(lang, path)),
+  const description = a.meta.description || clip(a.lede, zh ? 110 : 160);
+  const seo = a.meta.seo_title || a.title;
+  const docTitle = [...seo].length <= (zh ? 24 : 52) ? `${seo} | CRE8` : seo;
+  const article = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: seo, description, inLanguage: t.htmlLang, url: abs(P(lang, path)),
     mainEntityOfPage: abs(P(lang, path)), datePublished: a.meta.published, dateModified: a.meta.updated, author: ORG, publisher: ORG, image: SITE + (coverOf(post.slug, lang) || '/assets/og.jpg') };
   const cover = coverOf(post.slug, lang);
   const more = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
   const updated = a.meta.updated !== a.meta.published ? (zh ? ` · 更新于 ${postDate(a.meta.updated, lang)}` : ` · Updated ${postDate(a.meta.updated, lang)}`) : '';
-  return head({ lang, path, title: `${a.title} | CRE8`, description, schema: [article, c.schema], ...(cover ? { image: cover } : {}) }) + `
+  return head({ lang, path, title: docTitle, description, schema: [article, c.schema], ...(cover ? { image: cover } : {}) }) + `
 <main class="wrap">
 ${c.html}
 <article class="post">
 <h1>${esc(a.title)}</h1>
 <p class="post-meta muted small">${zh ? '作者' : 'By'} CRE8 · <time datetime="${a.meta.published}">${postDate(a.meta.published, lang)}</time>${updated}</p>
-${cover ? `<img class="post-cover" src="${cover}" alt="" width="1200" height="630" fetchpriority="high">` : ''}
+${cover ? `<img class="post-cover" src="${cover}" alt="${esc(a.title)}" width="1200" height="630" fetchpriority="high">` : ''}
 <div class="prose">
 ${a.html}
 </div>
@@ -928,7 +930,7 @@ ${g('theme')}
 ${g('leveraged')}
 
 ## Guides
-${posts.map((p) => `- [${p.en.title}](${abs('/blog/' + p.slug)}): ${clip(p.en.lede, 220)}`).join('\n')}
+${posts.map((p) => `- [${p.en.meta.seo_title || p.en.title}](${abs('/blog/' + p.slug)}): ${p.en.meta.description || clip(p.en.lede, 220)}`).join('\n')}
 
 ## Links
 - Website: ${SITE}/

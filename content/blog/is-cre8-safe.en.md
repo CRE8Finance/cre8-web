@@ -2,6 +2,8 @@
 title: Is CRE8 Safe? Custody, Permissions and Risks
 slug: /blog/is-cre8-safe
 lang: en
+seo_title: Is CRE8 Safe? Custody, Permissions and Risks
+description: Where your assets sit on CRE8, who can move them, what protects the yield strategy, and the risks that remain: smart contracts, the bStock issuer, prices.
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -149,7 +151,7 @@ For the full rules on buying, custody, fees and withdrawals, read [How CRE8 work
 
 ---
 
-Further reading: [What is CRE8?](/blog/what-is-cre8), [Can you self-custody US stock tokens on BNB Chain?](/blog/self-custody-us-stock-tokens-bnb-chain), [How to earn yield on idle USDT and bStock](/blog/earn-yield-on-idle-usdt-and-bstock)
+Further reading: [What is CRE8?](/blog/what-is-cre8), [Can you self-custody US stock tokens on BNB Chain?](/blog/buy-tokenized-stocks-on-bnb-chain), [How to earn yield on idle USDT and bStock](/blog/earn-yield-on-usdt-and-bstock)
 
 Sources (checked November 23, 2026): [CRE8 How it works](https://cre8.finance/how-it-works), [CRE8 llms.txt](https://cre8.finance/llms.txt), [Binance Learn: bStocks](https://www.binance.com/en/learn/bstocks), [DEXTools](https://www.dextools.io/news/xstocks-on-bnb-chain-the-reality-of-245-trading).
 

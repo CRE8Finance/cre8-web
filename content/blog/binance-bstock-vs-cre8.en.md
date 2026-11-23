@@ -2,6 +2,8 @@
 title: "Binance bStock vs CRE8: What Binance Does, Where CRE8 Differs"
 slug: /blog/binance-bstock-vs-cre8
 lang: en
+seo_title: Binance bStock vs CRE8: What's the Difference?
+description: Binance lets you buy bStock with USDT. CRE8 buys a whole basket in one payment, keeps it in your own account and adds a yield strategy. A side-by-side look.
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -63,7 +65,7 @@ On Binance, bStock as collateral is there to support trading. To earn interest w
 
 ![Review screen with the yield strategy switch off by default](/assets/blog/confirm.en.webp)
 
-CRE8's yield strategy turns those steps into one switch. When it's on, the system deposits the portfolio's shares in a lending market, borrows only a small part of the USDT the market would allow, and puts that USDT in a vault to earn interest. If prices fall to the safety line, it automatically repays part of the loan from the vault, and your shares aren't sold. The switch is off by default and you can turn it off any time. More on how it works in [how to earn yield on idle USDT and bStock](/blog/earn-yield-on-idle-usdt-and-bstock).
+CRE8's yield strategy turns those steps into one switch. When it's on, the system deposits the portfolio's shares in a lending market, borrows only a small part of the USDT the market would allow, and puts that USDT in a vault to earn interest. If prices fall to the safety line, it automatically repays part of the loan from the vault, and your shares aren't sold. The switch is off by default and you can turn it off any time. More on how it works in [how to earn yield on idle USDT and bStock](/blog/earn-yield-on-usdt-and-bstock).
 
 ### DCA money earns while it waits
 

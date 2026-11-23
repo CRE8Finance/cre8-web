@@ -2,6 +2,8 @@
 title: 怎么用加密货币跟投佩洛西持仓？申报从哪来、晚多久、怎么买
 slug: /zh/blog/copy-pelosi-portfolio-with-crypto
 lang: zh-Hans
+seo_title: 怎么用加密货币跟投佩洛西持仓
+description: 佩洛西的持股申报从哪来、晚多久，怎么用 USDT 买佩洛西持仓组合。附持仓、权重和模型回测。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23

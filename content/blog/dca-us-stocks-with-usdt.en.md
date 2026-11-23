@@ -2,6 +2,8 @@
 title: How to DCA Into US Stocks With USDT (and Earn on the Cash Waiting to Be Invested)
 slug: /blog/dca-us-stocks-with-usdt
 lang: en
+seo_title: How to DCA Into US Stocks With USDT
+description: Dollar-cost average into US stocks with USDT: Binance recurring buys, broker plans, and CRE8's DCA, where the cash waiting to be invested earns yield.
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -141,7 +143,7 @@ Testnet is free, and CRE8 pays the gas. Mainnet fees will be announced before la
 
 ## Next step
 
-To see how waiting cash and the bStock in a portfolio can earn, read [How to earn yield on idle USDT](/blog/earn-yield-on-idle-usdt-and-bstock).
+To see how waiting cash and the bStock in a portfolio can earn, read [How to earn yield on idle USDT](/blog/earn-yield-on-usdt-and-bstock).
 
 ---
 

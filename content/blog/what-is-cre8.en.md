@@ -2,6 +2,8 @@
 title: What Is CRE8? Buy a Basket of US Stocks and Crypto With USDT
 slug: /blog/what-is-cre8
 lang: en
+seo_title: What Is CRE8? Buy US Stock Baskets With USDT on BNB Chain
+description: CRE8 is a BNB Chain app for buying baskets of tokenized US stocks and crypto with USDT, held in your own smart account, with yield strategies for bStock.
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -73,7 +75,7 @@ USDT in your account can just sit there, or you can press Earn to put it in an a
 
 When you buy a portfolio, you can switch on the yield strategy. It's off unless you turn it on. CRE8 then deposits the portfolio's shares in a lending market, borrows a small part of what the market would allow in USDT, and puts that USDT in a vault to earn interest. If prices fall to the safety line, the system automatically repays part of the loan from the vault, without selling your shares, and your activity log shows how much was repaid. You can switch it off at any time. Leveraged portfolios don't offer it.
 
-Your cash, each portfolio's money and the USDT a yield strategy borrows are always kept apart. More in [How to earn yield on idle USDT and bStock](/blog/earn-yield-on-idle-usdt-and-bstock).
+Your cash, each portfolio's money and the USDT a yield strategy borrows are always kept apart. More in [How to earn yield on idle USDT and bStock](/blog/earn-yield-on-usdt-and-bstock).
 
 ## What does 1,000 USDT look like on CRE8?
 

@@ -2,6 +2,8 @@
 title: CRE8 Portfolios Explained: People, Themes and Leveraged
 slug: /blog/cre8-portfolios-explained
 lang: en
+seo_title: CRE8 Portfolios Explained: People, Themes and Leveraged
+description: All 21 CRE8 portfolios by type: people (Pelosi, Trump, Duan Yongping, Musk), themes like AI Chips and Mag7, and 3x leveraged. Holdings and risks.
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -194,7 +196,7 @@ Open the one you're curious about from [All portfolios](https://cre8.finance/por
 
 ---
 
-Further reading: [What is CRE8?](/blog/what-is-cre8), [How to buy a basket of US stocks with USDT](/blog/buy-a-basket-of-us-stocks-with-usdt), [Build your own portfolio on CRE8](/blog/build-your-own-portfolio-on-cre8)
+Further reading: [What is CRE8?](/blog/what-is-cre8), [How to buy a basket of US stocks with USDT](/blog/buy-us-stock-basket-with-usdt), [Build your own portfolio on CRE8](/blog/build-your-own-portfolio)
 
 Sources (checked November 23, 2026): [CRE8 llms.txt](https://cre8.finance/llms.txt), [CRE8 All portfolios](https://cre8.finance/portfolios) (including each portfolio page), [CRE8 How it works](https://cre8.finance/how-it-works), [Binance Learn: bStocks](https://www.binance.com/en/learn/bstocks).
 

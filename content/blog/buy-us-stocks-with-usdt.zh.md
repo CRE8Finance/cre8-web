@@ -2,6 +2,8 @@
 title: 用 USDT 买美股有哪几种方法？5 种做法各适合谁
 slug: /zh/blog/buy-us-stocks-with-usdt
 lang: zh-Hans
+seo_title: 用 USDT 买美股的 5 种方法对比
+description: 手上有 USDT 想买美股？交易所股票代币、链上代币、加密平台真股、海外券商和 CRE8，5 种做法的差别和适合谁。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23

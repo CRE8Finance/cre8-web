@@ -2,6 +2,8 @@
 title: bStock 是什么？怎么买，和真股票差在哪
 slug: /zh/blog/what-is-bstock
 lang: zh-Hans
+seo_title: bStock 是什么？币安美股代币怎么买
+description: bStock 是币安关联公司在 BNB Chain 上发行的美股代币，1:1 由正股支撑。怎么买、和真股票差在哪、有什么风险。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -107,7 +109,7 @@ CRE8 的交易只走白名单 DEX（PancakeSwap、KyberSwap、OpenOcean），只
 
 在链上：Venus 核心池 2026 年 6 月 20 日上架 TSLAB、NVDAB、SPCXB 当抵押品，抵押率分别是 60%、60%、50%（[CryptoSlate](https://cryptoslate.com/tokenized-stocks-defi-collateral-venus/)）。Lista DAO 约在 2026 年 6 月 16 日支持 NVDAB、TSLAB、MUB（[Crypto Briefing](https://cryptobriefing.com/bstocks-lista-dao-defi-integration/)）。抵押率 60% 的意思是，价值 100 美元的 NVDAB 最多能借出 60 美元。
 
-自己去借贷协议操作，要自己盯价格，跌太多会被清算。CRE8 的加息策略把这几步放进一个开关：用组合里的股票做抵押，只借一小笔 USDT 存进金库生息，跌到安全线时自动用金库的 USDT 还款，不卖股票。详细做法和风险见 [闲置 USDT 怎么生息](/zh/blog/earn-yield-on-idle-usdt-and-bstock)。
+自己去借贷协议操作，要自己盯价格，跌太多会被清算。CRE8 的加息策略把这几步放进一个开关：用组合里的股票做抵押，只借一小笔 USDT 存进金库生息，跌到安全线时自动用金库的 USDT 还款，不卖股票。详细做法和风险见 [闲置 USDT 怎么生息](/zh/blog/earn-yield-on-usdt-and-bstock)。
 
 ## 什么情况不用 bStock，用别的就好？
 
@@ -115,7 +117,7 @@ CRE8 的交易只走白名单 DEX（PancakeSwap、KyberSwap、OpenOcean），只
 
 只想买一两只、习惯把钱放交易所，直接在币安现货买 bStock 最快，不需要 CRE8。
 
-资产在 Solana 或以太坊上，或者想要几百只的选择，可以看其他发行方的股票代币，比如 Ondo、xStocks。几家的差别见 [代币化美股怎么选](/zh/blog/tokenized-stocks-compared)。
+资产在 Solana 或以太坊上，或者想要几百只的选择，可以看其他发行方的股票代币，比如 Ondo、xStocks。几家的差别见 [代币化美股怎么选](/zh/blog/bstock-vs-xstocks-vs-ondo)。
 
 ## 有哪些风险？
 

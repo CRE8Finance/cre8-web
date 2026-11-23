@@ -2,6 +2,8 @@
 title: 用 USDT 定投美股（DCA）：没买的钱也能生息
 slug: /zh/blog/dca-us-stocks-with-usdt
 lang: zh-Hans
+seo_title: 用 USDT 定投美股（DCA）怎么做
+description: 用 USDT 定投美股的三种做法：币安定期买入、券商定投，以及 CRE8 的 DCA，没买的钱先放金库生息。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -141,7 +143,7 @@ CRE8 用的是智能合约，合约有出错的可能，上主网前会做第三
 
 ## 下一步
 
-想了解等着买的钱和组合里的 bStock 怎么生息，读 [闲置 USDT 怎么生息](/zh/blog/earn-yield-on-idle-usdt-and-bstock)。
+想了解等着买的钱和组合里的 bStock 怎么生息，读 [闲置 USDT 怎么生息](/zh/blog/earn-yield-on-usdt-and-bstock)。
 
 ---
 

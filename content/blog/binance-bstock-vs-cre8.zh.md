@@ -2,6 +2,8 @@
 title: 币安能买美股代币，为什么还要用 CRE8？差别在哪
 slug: /zh/blog/binance-bstock-vs-cre8
 lang: zh-Hans
+seo_title: 币安 bStock 和 CRE8 有什么区别？
+description: 币安能用 USDT 买 bStock；CRE8 一笔钱买一整篮、资产放在自己的账户、还能开加息策略。逐项对比给你看。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23

@@ -2,6 +2,8 @@
 title: CRE8 安全吗？资产放在哪、谁能动、有哪些风险
 slug: /zh/blog/is-cre8-safe
 lang: zh-Hans
+seo_title: CRE8 安全吗？资产放哪、谁能动、有哪些风险
+description: CRE8 的资产放在哪、谁能转出、加息策略有什么保护，以及还有哪些风险：智能合约、bStock 发行方、价格和测试网。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -149,7 +151,7 @@ bStock 发行方风险。bStock 不是股票本身，你持有的是 BTech Holdi
 
 ---
 
-延伸阅读：[CRE8 是什么](/zh/blog/what-is-cre8)、[美股代币能放自己钱包吗](/zh/blog/self-custody-us-stock-tokens-bnb-chain)、[闲置 USDT 怎么生息](/zh/blog/earn-yield-on-idle-usdt-and-bstock)。
+延伸阅读：[CRE8 是什么](/zh/blog/what-is-cre8)、[美股代币能放自己钱包吗](/zh/blog/buy-tokenized-stocks-on-bnb-chain)、[闲置 USDT 怎么生息](/zh/blog/earn-yield-on-usdt-and-bstock)。
 
 资料来源（查询日期 2026-11-23）：[CRE8 使用指南](https://cre8.finance/zh/how-it-works)、[CRE8 llms.txt](https://cre8.finance/llms.txt)、[Binance Learn：bStocks](https://www.binance.com/en/learn/bstocks)、[DEXTools](https://www.dextools.io/news/xstocks-on-bnb-chain-the-reality-of-245-trading)。
 

@@ -2,6 +2,8 @@
 title: What Is bStock? How to Buy It and How It Differs From Real Shares
 slug: /blog/what-is-bstock
 lang: en
+seo_title: What Is bStock? Binance's Tokenized US Stocks Explained
+description: bStock is Binance's tokenized US stock on BNB Chain, backed 1:1 by shares. How it works, where to buy it, and how it differs from owning real shares.
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -107,7 +109,7 @@ On Binance: since September 21, 2026, all eligible users can post bStock as coll
 
 On-chain: Venus listed TSLAB, NVDAB and SPCXB in its Core Pool on June 20, 2026, with collateral factors of 60%, 60% and 50% ([CryptoSlate](https://cryptoslate.com/tokenized-stocks-defi-collateral-venus/)). Lista DAO added NVDAB, TSLAB and MUB around June 16, 2026 ([Crypto Briefing](https://cryptobriefing.com/bstocks-lista-dao-defi-integration/)). A 60% collateral factor means $100 of NVDAB lets you borrow up to $60.
 
-If you do this yourself, you have to watch prices; a sharp drop can get your position liquidated. CRE8's yield strategy wraps those steps in one switch. It posts the portfolio's shares as collateral, borrows a small amount of USDT into a vault to earn interest, and if prices fall to the safety line it repays part of the loan from the vault without selling the shares. The details and risks are in [How to earn yield on idle USDT and bStock](/blog/earn-yield-on-idle-usdt-and-bstock).
+If you do this yourself, you have to watch prices; a sharp drop can get your position liquidated. CRE8's yield strategy wraps those steps in one switch. It posts the portfolio's shares as collateral, borrows a small amount of USDT into a vault to earn interest, and if prices fall to the safety line it repays part of the loan from the vault without selling the shares. The details and risks are in [How to earn yield on idle USDT and bStock](/blog/earn-yield-on-usdt-and-bstock).
 
 ## When is something other than bStock the better choice?
 
@@ -115,7 +117,7 @@ If you want full shareholder rights and cash dividends, buy real shares through 
 
 If you only want one or two stocks and are happy keeping funds on an exchange, buying bStock directly on Binance spot is the quickest route. You don't need CRE8 for that.
 
-If your crypto is on Solana or Ethereum, or you want hundreds of tickers, look at other issuers such as Ondo or xStocks. We compare them in [Tokenized stocks compared](/blog/tokenized-stocks-compared).
+If your crypto is on Solana or Ethereum, or you want hundreds of tickers, look at other issuers such as Ondo or xStocks. We compare them in [Tokenized stocks compared](/blog/bstock-vs-xstocks-vs-ondo).
 
 ## What are the risks?
 

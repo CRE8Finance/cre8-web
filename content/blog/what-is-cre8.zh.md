@@ -2,6 +2,8 @@
 title: CRE8 是什么？用 USDT 一次买一篮美股和加密资产
 slug: /zh/blog/what-is-cre8
 lang: zh-Hans
+seo_title: CRE8 是什么？用 USDT 一次买一篮美股
+description: CRE8 是 BNB Chain 上的应用，用 USDT 一次买入美股代币和加密资产组合，资产放在自己的智能账户，还能开加息策略。
 author: CRE8
 published: 2026-11-23
 updated: 2026-11-23
@@ -73,7 +75,7 @@ bStock 是币安关联公司 BTech Holdings 在 BNB Chain 上发行的美股代�
 
 买组合时可以顺手打开加息策略，它默认关闭。打开后，系统把组合里的股票存进借贷市场当抵押，只借市场允许额度的一小部分 USDT，再存进 USDT 金库赚利息。价格跌到安全线时，系统自动用金库里的 USDT 还掉一部分借款，股票不卖，事后在活动记录里告诉你还了多少。随时可以关，杠杆组合不提供。
 
-现金、每个组合的资金、加息策略借来的 USDT 永远分开，互不混用。更多见 [闲置 USDT 怎么生息](/zh/blog/earn-yield-on-idle-usdt-and-bstock)。
+现金、每个组合的资金、加息策略借来的 USDT 永远分开，互不混用。更多见 [闲置 USDT 怎么生息](/zh/blog/earn-yield-on-usdt-and-bstock)。
 
 ## 1,000 USDT 用 CRE8 是什么样？
 
