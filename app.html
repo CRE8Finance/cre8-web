@@ -697,7 +697,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=bbc7726357'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=577a624e9a'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
