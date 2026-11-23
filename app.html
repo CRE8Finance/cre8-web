@@ -292,7 +292,7 @@
 </nav></sc-if></sc-if>
 
 <sc-if value="{{ inApp }}" hint-placeholder-val="{{ true }}"><div onClick="{{ closeModal }}" style="position:fixed;inset:0;z-index:80;background:rgba(11,15,20,.32);opacity:{{ modalO }};pointer-events:{{ modalPE }};transition:opacity .35s"></div>
-<div style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ sheetY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(20px,env(safe-area-inset-bottom))">
+<div onClick="{{ sheetTap }}" style="position:fixed;left:50%;bottom:0;z-index:90;width:min(560px,100%);max-height:calc(100dvh - 8px);overflow-y:auto;transform:translate(-50%,{{ sheetY }}%);transition:transform .5s cubic-bezier(.32,.72,0,1);background:#FFFFFF;border-radius:28px 28px 0 0;border-top:1px solid #E6E9ED;padding:8px 16px max(20px,env(safe-area-inset-bottom))">
 <div style="width:36px;height:5px;border-radius:3px;background:#D6DCE2;margin:0 auto"></div>
 <div style="display:flex;align-items:center;justify-content:space-between;height:46px;margin-top:4px">
 <button onClick="{{ sheetLeft }}" style="border:0;background:transparent;font:400 16px 'Geist';color:#2F6690;cursor:pointer;min-width:60px;text-align:left;padding:0">{{ sheetLeftLabel }}</button>
@@ -320,12 +320,11 @@
 </sc-if>
 
 <sc-if value="{{ mDone }}" hint-placeholder-val="{{ false }}">
-<div style="display:flex;flex-direction:column;align-items:center;padding:36px 0 0">
-<div style="width:80px;height:80px;border-radius:50%;background:{{ doneBg }};display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px {{ doneSh }}"><svg width="36" height="28" viewBox="0 0 46 36"><path d="{{ doneIcon }}" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
-<div style="font:500 26px 'Geist';letter-spacing:-.03em;margin-top:22px">{{ doneTitle }}</div>
-<div style="font:500 12px 'Geist Mono';letter-spacing:.04em;color:#5E6A76;margin-top:8px;text-align:center">{{ doneText }}</div>
-<sc-if value="{{ doneNote }}" hint-placeholder-val="{{ false }}"><p style="margin:14px 2px 0;font:400 13px/1.5 'Geist';color:#6B7785;text-align:center;text-wrap:balance">{{ doneNote }}</p></sc-if>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:30px;width:100%"><button onClick="{{ closeModal }}" style="height:50px;border:1px solid #D6DCE2;border-radius:999px;background:transparent;font:500 15px 'Geist';cursor:pointer">{{ t.done }}</button><button onClick="{{ doneRight }}" style="height:50px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 15px 'Geist';cursor:pointer">{{ doneRightLabel }}</button></div>
+<div style="display:flex;flex-direction:column;align-items:center;padding:28px 0 32px">
+<div style="width:80px;height:80px;border-radius:50%;background:{{ doneBg }};display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px {{ doneSh }}"><svg width="36" height="28" viewBox="0 0 46 36"><path d="{{ doneIcon }}" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:60;stroke-dashoffset:{{ doneDash }};transition:stroke-dashoffset .42s cubic-bezier(.65,0,.35,1) .14s"></path></svg></div>
+<div style="font:500 22px/1.3 'Geist';letter-spacing:-.02em;margin-top:22px;text-align:center;text-wrap:balance">{{ doneTitle }}</div>
+<sc-if value="{{ doneNote }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 2px 0;font:400 14px/1.5 'Geist';color:#6B7785;text-align:center;text-wrap:balance">{{ doneNote }}</p></sc-if>
+<sc-if value="{{ doneErr }}" hint-placeholder-val="{{ false }}"><button onClick="{{ retry }}" style="margin-top:28px;width:100%;height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer">{{ t.tryAgain }}</button></sc-if>
 </div>
 </sc-if>
 </div>
@@ -418,10 +417,17 @@ let LANG = (() => {
   return /^zh/i.test(navigator.language || '') ? 'zh' : 'en';
 })();
 const tr = (en, zh) => LANG === 'zh' ? zh : en;
+// 失敗訊息一律白話：程式錯誤（xxx is not a function、0x…、錯誤碼）不給用戶看，換成一句通用的；細節記在 console。
+const plainError = e => {
+  const m = String((e && e.message) || e || '').split('\n')[0].trim();
+  if (/user (rejected|denied|cancel)|rejected the request/i.test(m)) return tr('You cancelled in your wallet.', '你在钱包里取消了。');
+  const code = !m || (e && /^(TypeError|ReferenceError|SyntaxError|RangeError|EvalError|URIError|AbortError)$/.test(e.name)) || /is not a function|is not defined|undefined|\bnull\b|cannot read|unexpected|\.(m?js|tsx?):\d|0x[0-9a-f]{6,}|[{}[\]<>]|\b[A-Z]+_[A-Z_]+\b|\bHTTP\b|JSON|\bRPC\b|\bAA\d\d\b|UserOp|nonce|calldata|execution|fetch/i.test(m);
+  return code ? tr('Something went wrong. Please try again.', '出了点问题，请重试。') : m.slice(0, 220);
+};
 // 模板裡的固定字（{{ t.xxx }}）。
 const STR = {
   en: { home: "CRE8 home", back: "Back", loading: "Loading", joinWaitlist: "Join waitlist", signIn: "Sign in", contX: "Continue with X", contGoogle: "Continue with Google", contEmail: "Continue with Email", inviteCode: "Invite code", tryAgain: "Try again", discover: "Discover", famous: "Follow the famous", apy: "APY", buildOwn: "Build your own basket", startBuilding: "Start building", holdings: "Holdings", edit: "Edit", earnExtra: "Yield strategy", buy: "Buy", sell: "Sell", pickUpTo: "PICK UP TO 10", search: "Search", searchAssets: "Search assets", noMatch: "No match", splitEven: "Split evenly", addRemove: "Add or remove stocks", startDate: "START DATE", prevMonth: "Previous month", nextMonth: "Next month", week: ["S", "M", "T", "W", "T", "F", "S"], basketCover: "Basket cover", removeCover: "Remove photo", myBasket: "My basket", profile: "Profile", editProfile: "Edit profile", account: "Account", pv: "PORTFOLIO VALUE", addMoney: "Add money", withdraw: "Withdraw", cash: "Cash", earn: "Earn", earning: "Earning", earnOut: "Take out", done: "Done", useFaucet: "Use free test USDT instead", avatarColor: "Avatar colour", removePhoto: "Remove photo", displayName: "DISPLAY NAME", yourName: "Your name", signInMethods: "SIGN-IN", email: "Email", linked: "LINKED", linkGoogle: "Link Google", linkX: "Link X", wallet: "WALLET", onlyYou: "Only you hold the key", exportKey: "Export key", signOut: "Sign out", cancel: "Cancel", inviteCodeCap: "INVITE CODE", newHere: "New here? Enter your code", haveAccess: "ALREADY HAVE ACCESS", testnetNote: "Testnet. Test USDT has no value.", bestRate: "BEST RATE", sendTo: "SEND USDT ON BNB CHAIN TESTNET TO", noTestUsdt: "No test USDT yet? When you buy, choose “Use free test USDT”: 10,000 on your first buy, then 1,000 a day." },
-  zh: { home: "CRE8 首页", back: "返回", loading: "加载中", joinWaitlist: "加入等候名单", signIn: "登录", contX: "用 X 登录", contGoogle: "用 Google 登录", contEmail: "用邮箱登录", inviteCode: "邀请码", tryAgain: "重试", discover: "发现", famous: "跟着名人买", apy: "年化", buildOwn: "自建你的组合", startBuilding: "开始自建", holdings: "持仓", edit: "编辑", earnExtra: "加息策略", buy: "买入", sell: "卖出", pickUpTo: "最多选 10 个", search: "搜索", searchAssets: "搜索资产", noMatch: "没有找到", splitEven: "平均分配", addRemove: "增减资产", startDate: "开始日期", prevMonth: "上个月", nextMonth: "下个月", week: ["日", "一", "二", "三", "四", "五", "六"], basketCover: "组合封面", removeCover: "移除封面", myBasket: "我的组合", profile: "我的", editProfile: "编辑资料", account: "账户", pv: "总资产", addMoney: "充值", withdraw: "提现", cash: "现金", earn: "生息", earning: "生息中", earnOut: "取出", done: "完成", useFaucet: "改用免费测试 USDT", avatarColor: "头像颜色", removePhoto: "移除头像", displayName: "昵称", yourName: "你的昵称", signInMethods: "登录方式", email: "邮箱", linked: "已绑定", linkGoogle: "绑定 Google", linkX: "绑定 X", wallet: "钱包", onlyYou: "私钥只在你手上", exportKey: "导出私钥", signOut: "退出登录", cancel: "取消", inviteCodeCap: "邀请码", newHere: "新用户输入邀请码", haveAccess: "已开通", testnetNote: "测试网，测试 USDT 没有价值。", bestRate: "利率最高", sendTo: "在 BNB Chain 测试网把 USDT 转到", noTestUsdt: "还没有测试 USDT？买入时选“改用免费测试 USDT”：首次 10,000，之后每天 1,000。" },
+  zh: { home: "CRE8 首页", back: "返回", loading: "加载中", joinWaitlist: "加入等候名单", signIn: "登录", contX: "用 X 登录", contGoogle: "用 Google 登录", contEmail: "用邮箱登录", inviteCode: "邀请码", tryAgain: "再试一次", discover: "发现", famous: "跟着名人买", apy: "年化", buildOwn: "自建你的组合", startBuilding: "开始自建", holdings: "持仓", edit: "编辑", earnExtra: "加息策略", buy: "买入", sell: "卖出", pickUpTo: "最多选 10 个", search: "搜索", searchAssets: "搜索资产", noMatch: "没有找到", splitEven: "平均分配", addRemove: "增减资产", startDate: "开始日期", prevMonth: "上个月", nextMonth: "下个月", week: ["日", "一", "二", "三", "四", "五", "六"], basketCover: "组合封面", removeCover: "移除封面", myBasket: "我的组合", profile: "我的", editProfile: "编辑资料", account: "账户", pv: "总资产", addMoney: "充值", withdraw: "提现", cash: "现金", earn: "生息", earning: "生息中", earnOut: "取出", done: "完成", useFaucet: "改用免费测试 USDT", avatarColor: "头像颜色", removePhoto: "移除头像", displayName: "昵称", yourName: "你的昵称", signInMethods: "登录方式", email: "邮箱", linked: "已绑定", linkGoogle: "绑定 Google", linkX: "绑定 X", wallet: "钱包", onlyYou: "私钥只在你手上", exportKey: "导出私钥", signOut: "退出登录", cancel: "取消", inviteCodeCap: "邀请码", newHere: "新用户输入邀请码", haveAccess: "已开通", testnetNote: "测试网，测试 USDT 没有价值。", bestRate: "利率最高", sendTo: "在 BNB Chain 测试网把 USDT 转到", noTestUsdt: "还没有测试 USDT？买入时选“改用免费测试 USDT”：首次 10,000，之后每天 1,000。" },
 };
 const applyLang = () => { document.documentElement.lang = tr('en', 'zh-CN'); document.title = tr('CRE8 App (Testnet)', 'CRE8 应用（测试网）'); };
 applyLang();
@@ -697,7 +703,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=bbc7726357'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=31d40b40ab'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -873,11 +879,31 @@ class Component extends DCLogic {
     else if (it.for === 'build') this.setState({ page: 'build', fund: null, bstep: 3, picks: it.picks || [], weights: it.weights || {}, freq: it.freq != null ? it.freq : 2, start: it.start || null, mixName: it.mixName || '', modal: true, side: 'buy', step: 'amount', amount: '', target: it.target, payFaucet: false });
   }
   step(text) { this.setState({ procText: String(text).toUpperCase() }); }
-  finish(result) { this.setState({ step: 'done', doneSc: .4, result }); this.later(() => this.setState({ doneSc: 1 }), 40); this.refresh(); }
-  fail(e) { this.setState({ step: 'done', doneSc: .4, result: { error: (e && e.message ? e.message : String(e)).split('\n')[0].slice(0, 220) } }); this.later(() => this.setState({ doneSc: 1 }), 40); this.refresh(); }
+  // 成功：iOS 式打勾＋一句結果，自己收起（有一句要看的多留一下），點任何地方也會立刻收起，不用按按鈕。
+  finish(result) {
+    const tok = this.doneTok = {};
+    this.setState({ step: 'done', doneSc: .4, doneDash: 60, result }); this.later(() => this.setState({ doneSc: 1, doneDash: 0 }), 40); this.refresh();
+    this.later(() => this.doneTok === tok && this.closeDone(), this.doneNote({ ...this.state, result }) ? 2600 : 1400);
+  }
+  // 失敗：白話一句＋「再试一次」；關閉在左上角。程式錯誤記在 console，不給用戶看。
+  fail(e) { console.error('[cre8] action failed:', e); this.doneTok = null; this.setState({ step: 'done', doneSc: .4, doneDash: 0, result: { error: plainError(e) } }); this.later(() => this.setState({ doneSc: 1 }), 40); this.refresh(); }
+  closeDone() {
+    const s = this.state; this.doneTok = null;
+    if (!s.modal || s.step !== 'done') return;
+    if (s.target && s.target.mix && s.page === 'build') this.setState({ modal: false, bstep: 0, ...(s.result && s.result.error ? {} : { page: 'profile' }) });
+    else this.back({ modal: false });
+  }
+  // 結果第二行：只放用戶真的要知道的（美股等開盤成交、組合還在準備、加息這次沒開…）。
+  doneNote(s) {
+    const R = s.result || {};
+    if (R.error) return null;
+    if (R.note) return R.note;
+    return s.side === 'buy' && !R.filled && !R.pending ? tr('Stocks fill when the US market opens.', '美股开盘后成交。') : null;
+  }
   // 確認：真的送出。買＝第一次開帳戶（簽一次）→ 錢包轉 USDT 或領測試 USDT → 記成投入 → 下單；美股收盤時等開盤成交。
   async confirm() {
     const W = window.CRE8W, s = this.state, t = s.target, amt = s.amount;
+    this.retryFn = () => this.confirm();
     // 處理中第一句：一句人話（之後由錢包程式的步驟接手）。
     const first = { earn: tr('Putting your USDT to work', '正在帮你存进去'), 'earn-out': tr('Getting your USDT back', '正在帮你取出'), 'se-on': tr('Turning on the yield strategy', '正在开启加息策略'), 'se-off': tr('Settling the yield strategy', '正在结清加息策略'), sell: tr('Selling for you', '正在帮你卖出'), buy: tr('Buying for you', '正在帮你买入') }[s.side] || tr('Preparing', '准备中');
     this.setState({ step: 'proc', procOff: 264, procText: first.toUpperCase() }); this.later(() => this.setState({ procOff: 70 }), 60);
@@ -917,7 +943,7 @@ class Component extends DCLogic {
           this.mixKey = null; mixId = made.mixId; portfolioId = made.portfolioId; account = made.account;
           if (s.mixCover) this.setState(x => ({ mixCovers: { ...x.mixCovers, [mixId]: s.mixCover } }));
           this.setState(x => ({ target: { ...x.target, id: 'mix-' + mixId, mixId, portfolioId, account }, picks: [], weights: {}, mixName: '', mixCover: null, start: null }));
-          if (portfolioId == null) return this.finish({ filled: false, note: tr('Your basket is set up. It takes a minute to get ready — then open it and press Buy to add money.', '组合建好了，大约一分钟后就绪。到时打开它，点“买入”投钱进去。') });
+          if (portfolioId == null) return this.finish({ made: true, note: tr('Ready in about a minute. Then open it and tap Buy.', '大约一分钟后就绪，到时打开它点“买入”。') });
         }
         const r = await W.fundMixBasket({ mixId, portfolioId, account, pay: s.payFaucet ? 'faucet' : 'wallet', amount: amt, onStep });
         return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: r.recorded ? null : tr('Your USDT arrived. We’ll schedule it to buy shortly.', 'USDT 已到账，稍后自动买入。') });
@@ -939,7 +965,7 @@ class Component extends DCLogic {
     const W = window.CRE8W; if (!W || this.state.redeeming) return;
     this.setState({ redeeming: true, siErr: null });
     try { await W.redeemInvite(this.state.invite); this.later(() => this.setState({ redeeming: false }), 25000); }
-    catch (e) { this.setState({ redeeming: false, siErr: e.message }); }
+    catch (e) { this.setState({ redeeming: false, siErr: plainError(e) }); }
   }
   signInView(s) {
     const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn), open = gate || !!it, gs = s.gStep || 'start';
@@ -955,7 +981,7 @@ class Component extends DCLogic {
     const gForm = gate && !gBusy && !gPending && !gErr;
     const codeStep = w && (w.emailStep === 'awaiting-code-input' || w.emailStep === 'submitting-code');
     const err = s.siErr || (wl.state === 'error' ? wl.message : null) || (waiting ? wl.message : null) || (w && (w.oauthError || w.emailError)) || (w && ph === 'error' && !waiting && wl.state !== 'checking' ? (w.errorText || tr('Sign-in didn’t finish.', '登录没完成。')) : null);
-    const W2 = fn => () => { if (!W) return this.setState({ siErr: tr('Sign-in is still loading. Try again in a moment.', '登录组件还在加载，稍后再试。') }); try { const r = fn(); if (r && r.catch) r.catch(e => this.setState({ siErr: e.message })); } catch (e) { this.setState({ siErr: e.message }); } };
+    const W2 = fn => () => { if (!W) return this.setState({ siErr: tr('Sign-in is still loading. Try again in a moment.', '登录组件还在加载，稍后再试。') }); try { const r = fn(); if (r && r.catch) r.catch(e => { console.error('[cre8] sign-in failed:', e); this.setState({ siErr: plainError(e) }); }); } catch (e) { console.error('[cre8] sign-in failed:', e); this.setState({ siErr: plainError(e) }); } };
     return {
       gated: gate, inApp: !gate,
       // 入口頁每一步自己的標題（invite‑only 用不斷行連字號）。
@@ -989,6 +1015,7 @@ class Component extends DCLogic {
   async saveMix(id, patch, back) {
     const W = window.CRE8W, m = this.mixesOf(this.state).find(x => x.id === id);
     if (!W || !m) return;
+    this.retryFn = () => this.saveMix(id, patch, back);
     this.setState({ modal: true, side: 'edit', step: 'proc', procOff: 264, procText: tr('SAVING', '保存中'), target: { id, name: patch.name || m.name, cover: m.cover || 'app/cover-cre8.png' } });
     this.later(() => this.setState({ procOff: 70 }), 60);
     try { await W.patchMix({ id: m.mixId, patch, onStep: x => this.step(x) }); this.finish({ saved: true }); } catch (e) { this.fail(e); }
@@ -1104,7 +1131,6 @@ class Component extends DCLogic {
     // 買入確認卡的加息策略：後端 extraApyBps 依權重算成 %，再換成「每年多賺約 X USDT」（依這次投入金額）。
     const tSE = s.side === 'buy' && !tgt.mix ? this.seInfo(s0, tgt.id) : null, seRate = tSE && tSE.rate != null ? tSE.rate : null, seOff = !!(tSE && tSE.state === 'unavailable');
     const amt = parseFloat(s.amount) || 0;
-    const seSide = s.side === 'se-on' || s.side === 'se-off', R0ok = !!(R0.filled || R0.sold || R0.saved || R0.earned || R0.withdrawn || R0.seOn || R0.seOff);
     const amtOk = out ? amt > 0 && amt <= posMax : amt >= minBuy && amt <= s.cash;
     const amtBtn = amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : out ? (amt > posMax ? { ...off, label: eOut ? tr('More than you have earning', '超过生息中的金额') : tr('More than you hold', '超过持仓') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: eOut ? tr('Take out', '取出') : tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起' + (eIn ? '存' : '投')) } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: eIn ? tr('Earn', '存入') : tr('Review', '下一步') };
     // 總資產＝各投組淨值（已扣策略加息策略的負債）＋錢包現金＋現金生息；三者在下面各自一列，不合併。
@@ -1158,9 +1184,11 @@ class Component extends DCLogic {
       buyMix: () => mixReady && this.setState({ modal: true, step: 'amount', amount: '', side: 'buy', target: { id: null, name: s.mixName.trim() || tr('My basket', '我的组合'), cover: s.mixCover || 'app/cover-cre8.png' } }),
       modalO: s.modal ? 1 : 0, modalPE: s.modal ? 'auto' : 'none', sheetY: s.modal ? 0 : 110,
       // 處理中不能關（錢包可能正要簽名）；做完或失敗才關。
-      closeModal: () => s.step === 'proc' ? null : s.step === 'done' && s.target && s.target.mix && s.page === 'build' ? this.setState({ modal: false, bstep: 0, ...(R0.error ? {} : { page: 'profile' }) }) : this.back({ modal: false }),
-      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' ? this.back({ modal: false }) : null,
-      sheetLeftLabel: s.step === 'review' ? tr('Back', '返回') : s.step === 'amount' ? tr('Cancel', '取消') : '',
+      closeModal: () => s.step === 'proc' ? null : s.step === 'done' ? this.closeDone() : this.back({ modal: false }),
+      // 成功畫面點任何地方都收起。
+      sheetTap: () => s.step === 'done' && !R0.error && this.closeDone(),
+      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' ? this.back({ modal: false }) : s.step === 'done' && R0.error ? this.closeDone() : null,
+      sheetLeftLabel: s.step === 'review' ? tr('Back', '返回') : s.step === 'amount' || (s.step === 'done' && R0.error) ? tr('Cancel', '取消') : '',
       modalTitle: s.step === 'amount' ? (eIn ? '' : (sell ? tr('Sell ', '卖出') : '') + tgt.name) : s.step === 'review' ? (sell ? tr('Review sale', '确认卖出') : eIn ? tr('Review', '确认存入') : eOut ? tr('Review', '确认取出') : tr('Review', '确认买入')) : '',
       availText: sell ? tr('USDT · ' + fmt(posMax) + ' HELD', '持仓 ' + fmt(posMax) + ' USDT') : eOut ? tr('USDT · ' + fmt(posMax) + ' EARNING', '生息中 ' + fmt(posMax) + ' USDT') : tr('USDT · ' + (cashNum == null ? '—' : fmt(s.cash)) + ' AVAILABLE', '可用 ' + (cashNum == null ? '—' : fmt(s.cash)) + ' USDT'),
       // 測試網：錢包沒有 USDT（或不夠）時，可以改用免費測試 USDT（第一次 10,000，之後每天 1,000，直接進這一檔）。
@@ -1178,13 +1206,19 @@ class Component extends DCLogic {
       reviewRows: (eIn ? [[tr('Per year', '每年约'), '+' + fmt(amt * (tgt.apy || 0) / 100) + ' USDT'], [tr('Rate', '年化'), '~' + (tgt.apy || 0).toFixed(1) + '%']] : eOut ? [[tr('To', '到账'), tr('Your wallet', '你的钱包')], [tr('Still earning', '继续生息'), fmt(Math.max(0, posMax - amt)) + ' USDT']] : sell ? [[tr('You get about', '预计到账'), fmt(amt) + ' USDT'], [tr('Paid to', '到账'), tr('Your wallet', '你的钱包')], [tr('Left in portfolio', '组合剩余'), '$' + fmt(Math.max(0, posMax - amt))]] : faucet ? [[tr('You pay', '支付'), tr('Free test USDT', '免费测试 USDT')], [tr('Amount', '金额'), tgt.mixId || isMixBuild ? tr('1,000 a day', '每天 1,000') : tr('10,000 first buy · then 1,000 a day', '首次 10,000 · 之后每天 1,000')], [tr('Held in', '存放在'), tr('Your account', '你的账户')]] : [[tr('You pay', '支付'), fmt(amt) + ' USDT'], [tr('Held in', '存放在'), tr('Your account', '你的账户')], [tr('Cash left', '剩余现金'), fmt(s.cash - amt) + ' USDT']]).concat(s.side === 'buy' && tLive && tLive.apy != null ? [[tr('APY', '年化收益'), tLive.apy >= 0 ? '~' + pct(tLive.apy).replace('+', '') : pct(tLive.apy)]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
       confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, procText: s.procText || tr('PREPARING', '准备中'),
       // 結果：成交＝You own it；錢已進帳戶但還沒成交＝Order placed（美股開盤後成交）；失敗＝紅色。
-      doneTitle: R0.error ? (sell ? tr('Sale not completed', '卖出没完成') : s.side === 'edit' ? tr('Not saved', '没保存上') : tr('Not completed', '没完成')) : R0.earned ? tr('Earning', '开始生息') : R0.withdrawn ? tr('Taken out', '已取出') : R0.seOn ? tr('Yield strategy on', '加息策略已开启') : R0.seOff ? tr('Yield strategy off', '加息策略已关闭') : R0.saved ? tr('Saved', '已保存') : R0.sold ? tr('Sold', '已卖出') : R0.pending ? tr('Almost there', '马上就好') : R0.filled ? tr('You own it', '买入成功') : tr('Order placed', '已下单'),
-      doneText: R0.error ? (LANG === 'zh' ? tgt.name : tgt.name.toUpperCase()) : R0.earned ? tr(fmt(R0.amount || 0) + ' USDT EARNING', fmt(R0.amount || 0) + ' USDT 生息中') : R0.withdrawn ? tr(fmt(R0.amount || 0) + ' USDT TO YOUR WALLET', fmt(R0.amount || 0) + ' USDT 已到钱包') : R0.seOff ? tr('SHARES STAY IN YOUR PORTFOLIO', '股票还在组合里') : R0.seOn ? (LANG === 'zh' ? tgt.name : tgt.name.toUpperCase()) : LANG === 'zh' ? tgt.name + (R0.error || R0.saved ? '' : R0.sold ? ' · ' + fmt(R0.sent || 0) + ' USDT 已到钱包' : (R0.amount ? ' · ' + fmt(R0.amount) + ' USDT' : '') + (R0.filled || R0.pending ? '' : ' · 等待成交')) : R0.error ? tgt.name.toUpperCase() : R0.saved ? tgt.name.toUpperCase() : R0.sold ? tgt.name.toUpperCase() + ' · ' + fmt(R0.sent || 0) + ' USDT TO YOUR WALLET' : tgt.name.toUpperCase() + (R0.amount ? ' · ' + fmt(R0.amount) + ' USDT' : '') + (R0.filled ? '' : R0.pending ? '' : ' · WAITING TO FILL'),
-      doneNote: R0.error || R0.note || (!R0.error && !R0.filled && !R0.sold && !R0.saved && !R0.pending && s.side === 'buy' ? tr('Crypto buys right away. Stocks buy when the US market is open (9:30–16:00 ET).', '加密资产马上成交，美股在开盘时段成交（美东 9:30\u2060–\u206016:00）。') : null),
-      doneBg: R0.error ? '#D23F2E' : R0ok ? '#16854F' : '#2F6690', doneSh: R0.error ? 'rgba(210,63,46,.5)' : R0ok ? 'rgba(30,158,99,.6)' : 'rgba(47,102,144,.5)',
-      doneIcon: R0.error ? 'M23 6v14M23 29v1' : R0ok ? 'M4 18l12 12L42 4' : 'M11 18h.01M23 18h.01M35 18h.01',
-      doneRight: () => R0.error ? this.setState({ step: s.side === 'edit' ? 'done' : eIn || eOut ? 'amount' : 'review', ...(s.side === 'edit' || seSide ? { modal: false } : {}) }) : (this.setState({ modal: false, fund: null, page: 'profile', ptab: 0, bstep: 0 }), window.scrollTo(0, 0)),
-      doneRightLabel: R0.error ? (s.side === 'edit' || seSide ? tr('Close', '关闭') : tr('Try again', '重试')) : tr('View portfolio', '查看持仓'),
+      // 結果一句話：成功＝做了什麼＋金額；失敗＝沒完成。
+      doneTitle: R0.error ? (sell ? tr('Sale not completed', '卖出没完成') : s.side === 'edit' ? tr('Not saved', '没保存上') : tr('Not completed', '没完成'))
+        : R0.earned ? tr('Deposited ' + fmt(R0.amount || 0) + ' USDT', '已存入 ' + fmt(R0.amount || 0) + ' USDT')
+        : R0.withdrawn ? tr(fmt(R0.amount || 0) + ' USDT back in your wallet', '已取出 ' + fmt(R0.amount || 0) + ' USDT')
+        : R0.seOn ? tr('Yield strategy on', '加息策略已开启') : R0.seOff ? tr('Yield strategy off', '加息策略已关闭')
+        : R0.saved ? tr('Saved', '已保存') : R0.made ? tr('Basket created', '组合建好了')
+        : R0.sold ? tr('Sold · ' + fmt(R0.sent || 0) + ' USDT to your wallet', '已卖出 · ' + fmt(R0.sent || 0) + ' USDT 已到钱包')
+        : R0.pending ? tr('Almost there', '马上就好') : R0.filled ? tr('You own it', '买入成功')
+        : R0.amount ? tr('Order placed · ' + fmt(R0.amount) + ' USDT', '已下单 · ' + fmt(R0.amount) + ' USDT') : tr('Order placed', '已下单'),
+      doneErr: !!R0.error, doneDash: s.doneDash || 0, retry: () => this.retryFn && this.retryFn(),
+      doneNote: R0.error || this.doneNote(s),
+      doneBg: R0.error ? '#D23F2E' : '#16854F', doneSh: R0.error ? 'rgba(210,63,46,.5)' : 'rgba(30,158,99,.6)',
+      doneIcon: R0.error ? 'M23 6v14M23 29v1' : 'M4 18l12 12L42 4',
       profileName: s.pname || (w && w.profile && w.profile.name) || tr('You', '你'), pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
       // 名稱、頭像存伺服器的端點還沒有：先用 Privy 的名字與 X 頭像當預設，改了只留在這個分頁（待接）。
       av: (() => { const ph = s.photo || (w && w.profile && w.profile.avatarUrl); const nm = s.pname || (w && w.profile && w.profile.name) || '?'; return { bg: ph ? 'center/cover no-repeat url(' + ph + ')' : AVC[s.avc], letter: ph ? '' : (nm.trim()[0] || '?').toUpperCase() }; })(),
