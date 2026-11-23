@@ -449,8 +449,12 @@ let LANG = (() => {
 })();
 const tr = (en, zh) => LANG === 'zh' ? zh : en;
 // 失敗訊息一律白話：程式錯誤（xxx is not a function、0x…、錯誤碼）不給用戶看，換成一句通用的；細節記在 console。
+// 後端的錯誤原文是繁體、偏工程用語：一律不直接給用戶看（中文介面要簡體白話；英文介面不能出現中文）。
+const TRAD = /[無確認組資請後試們這個為與時會說對還沒錢帳號錯誤處態開關選擇設經單幣價購買賣讓問題據過額數鏈戶進狀給從應該準備庫檢擋執筆條項邊際總計結單據]/;
+const userText = m => !m ? m : LANG === 'zh' ? (TRAD.test(m) ? null : m) : (/[\u3400-\u9fff]/.test(m) ? null : m);
 const plainError = e => {
   const m = String((e && e.message) || e || '').split('\n')[0].trim();
+  if (m && !userText(m)) return tr('Didn’t go through. Please try again in a moment.', '没成功，稍等一下再试一次。');
   if (/user (rejected|denied|cancel)|rejected the request/i.test(m)) return tr('You cancelled in your wallet.', '你在钱包里取消了。');
   const code = !m || (e && /^(TypeError|ReferenceError|SyntaxError|RangeError|EvalError|URIError|AbortError)$/.test(e.name)) || /is not a function|is not defined|undefined|\bnull\b|cannot read|unexpected|\.(m?js|tsx?):\d|0x[0-9a-f]{6,}|[{}[\]<>]|\b[A-Z]+_[A-Z_]+\b|\bHTTP\b|JSON|\bRPC\b|\bAA\d\d\b|UserOp|nonce|calldata|execution|fetch/i.test(m);
   return code ? tr('Something went wrong. Please try again.', '出了点问题，请重试。') : m.slice(0, 220);
@@ -1051,7 +1055,7 @@ class Component extends DCLogic {
   doneNote(s) {
     const R = s.result || {};
     if (R.error) return null;
-    if (R.note) return R.note;
+    if (R.note) return userText(R.note) || null;
     if (R.dca || R.dcaOut) return null;
     return s.side === 'buy' && !R.filled && !R.pending ? tr('Stocks fill when the US market opens.', '美股开盘后成交。') : null;
   }
