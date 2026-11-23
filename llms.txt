@@ -35,7 +35,7 @@
 - [US Market](https://cre8.finance/portfolios/us-market): QQQ 50%, SPY 50%. Model APY +9.6% (backtest as of 2026-11-22).
 - [Everyday Brands](https://cre8.finance/portfolios/everyday): AAPL 15.84%, AMZN 15.84%, NFLX 15.83%, GOOGL 15.83%, META 15.83%, MSFT 15.83%, RDDT 5%. Model APY +9.6% (backtest as of 2026-11-22).
 - [China Tech](https://cre8.finance/portfolios/china): BABA 50%, PDD 50%. Model APY −2.4% (backtest as of 2026-11-22).
-- [Gold + Bitcoin](https://cre8.finance/portfolios/gold-bitcoin): XAUt 50%, BTC 50%. Model APY −3.0% (backtest as of 2026-11-22).
+- [Gold + Bitcoin](https://cre8.finance/portfolios/gold-bitcoin): XAUt 50%, BTC 50%. Model APY −2.8% (backtest as of 2026-11-22).
 - [Crypto Infrastructure](https://cre8.finance/portfolios/crypto-infrastructure): CRCL 33.33%, COIN 33.34%, HOOD 33.33%. Model APY −15.9% (backtest as of 2026-11-22).
 - [Crypto Treasuries](https://cre8.finance/portfolios/crypto-treasuries): MSTR 31.66%, BMNR 31.67%, BNC 31.67%, CYPH 5%. Model APY −18.4% (backtest as of 2026-11-22).
 - [New Giants](https://cre8.finance/portfolios/new-giants): SPCX 50%, ANT 50%. Model APY −24.3% (backtest as of 2026-11-22).

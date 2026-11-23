@@ -218,7 +218,7 @@ function siteHead(lang, path) {
   return `<header class="site-head"><div class="site-head__bar">
 <a class="site-head__logo" href="${P(lang, '/')}"><img src="/assets/cre8-logo-dark.svg" alt="CRE8" width="107" height="20"></a>
 <nav aria-label="${lang === 'zh' ? '主导航' : 'Main'}"><a href="${P(lang, '/portfolios')}"${cur('/portfolios')}>${t.portfolios}</a><a href="${P(lang, '/how-it-works')}"${cur('/how-it-works')}>${t.how}</a><a href="${P(lang, '/compare')}"${cur('/compare')}>${t.compare}</a></nav>
-<div class="site-head__right"><a class="site-head__lang" href="${other}" hreflang="${lang === 'zh' ? 'en' : 'zh-Hans'}" lang="${lang === 'zh' ? 'en' : 'zh-Hans'}">${t.other}</a><a class="btn btn--gold btn--sm" href="${WL(lang)}">${t.openApp} <span aria-hidden="true">→</span></a></div>
+<div class="site-head__right"><a class="site-head__lang" href="${other}" hreflang="${lang === 'zh' ? 'en' : 'zh-Hans'}" lang="${lang === 'zh' ? 'en' : 'zh-Hans'}">${t.other}</a><a class="btn btn--gold btn--sm" href="${WL(lang)}">${t.openApp} <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div>
 </div></header>`;
 }
 
@@ -246,13 +246,13 @@ const ORG = { '@type': 'Organization', name: 'CRE8', url: SITE + '/', logo: SITE
 function fundRow(f, lang, opts = {}) {
   const m = f.meta[lang];
   const sub = opts.sub ? `<small>${esc(opts.sub)}</small>` : '';
-  return `<a class="fund-row" href="${P(lang, '/portfolios/' + f.key)}"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/${f.meta.img}.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">${esc(m.name)}${sub}</span></span><span class="fund-row__r"><span class="${cls(f.apy)}">${pct(f.apy)}</span><i aria-hidden="true">↗︎</i></span></a>`;
+  return `<a class="fund-row" href="${P(lang, '/portfolios/' + f.key)}"><span class="fund-row__l"><span class="fund-row__img"><img src="/app/${f.meta.img}.jpg" alt="" width="128" height="128" loading="lazy" decoding="async"></span><span class="fund-row__nm">${esc(m.name)}${sub}</span></span><span class="fund-row__r"><span class="${cls(f.apy)}">${pct(f.apy)}</span><i aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M7 17L17 7M9 7h8v8"/></svg></i></span></a>`;
 }
 
 const ctaBand = (lang) =>
   lang === 'zh'
-    ? `<section class="cta"><h2>50 USDT 就能上车</h2><p>目前在测试网，测试 USDT 免费领，登录需要邀请码。</p><div class="actions"><a class="btn btn--light" href="${WAITLIST_ZH}">加入等候名单 <span aria-hidden="true">→</span></a></div></section>`
-    : `<section class="cta"><h2>Start with 50 USDT.</h2><p>CRE8 is on testnet. Test USDT is free, and signing in needs an invite code.</p><div class="actions"><a class="btn btn--light" href="${WAITLIST}">Join waitlist <span aria-hidden="true">→</span></a></div></section>`;
+    ? `<section class="cta"><h2>50 USDT 就能上车</h2><p>目前在测试网，测试 USDT 免费领，登录需要邀请码。</p><div class="actions"><a class="btn btn--light" href="${WAITLIST_ZH}">加入等候名单 <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div></section>`
+    : `<section class="cta"><h2>Start with 50 USDT.</h2><p>CRE8 is on testnet. Test USDT is free, and signing in needs an invite code.</p><div class="actions"><a class="btn btn--light" href="${WAITLIST}">Join waitlist <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div></section>`;
 
 // ---------------------------------------------------------------- 基金頁
 function sourceText(f, lang) {
@@ -373,7 +373,7 @@ ${c.html}
 <div><b>${f.holdings.length}</b><span>${zh ? '个资产' : f.holdings.length > 1 ? 'assets' : 'asset'}</span></div>
 <div><b>${f.min}</b><span>${t.min}</span></div>
 </div>
-<div class="actions"><a class="btn btn--gold" href="${WL(lang)}">${zh ? '加入等候名单' : 'Join waitlist'} <span aria-hidden="true">→</span></a><a class="btn btn--line" href="${P(lang, '/how-it-works')}">${t.how}</a></div>
+<div class="actions"><a class="btn btn--gold" href="${WL(lang)}">${zh ? '加入等候名单' : 'Join waitlist'} <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a><a class="btn btn--line" href="${P(lang, '/how-it-works')}">${t.how}</a></div>
 ${crown}
 </div>
 <div class="hero__art"><img src="/app/${f.meta.img}.jpg" alt="${esc(m.name)}" width="1200" height="900" fetchpriority="high"></div>
@@ -408,7 +408,7 @@ ${methodText(f, lang).map((p) => `<p>${esc(p)}</p>`).join('\n')}</div>
 <ol class="steps">${steps.map(([b, p], i) => `<li><span>0${i + 1} / 0${steps.length}</span><b>${esc(b)}</b><p>${p}</p></li>`).join('')}</ol>
 </section>
 
-${related.length ? `<section class="section"><div class="section__head"><h2>${zh ? `更多${t.groups[f.category]}` : `More ${t.groups[f.category].toLowerCase()}`}</h2><a class="link" href="${P(lang, '/portfolios')}">${zh ? '查看全部组合' : 'All portfolios'} →</a></div><div class="fund-list">${related.map((x) => fundRow(x, lang)).join('')}</div></section>` : ''}
+${related.length ? `<section class="section"><div class="section__head"><h2>${zh ? `更多${t.groups[f.category]}` : `More ${t.groups[f.category].toLowerCase()}`}</h2><a class="link" href="${P(lang, '/portfolios')}">${zh ? '查看全部组合' : 'All portfolios'} <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></a></div><div class="fund-list">${related.map((x) => fundRow(x, lang)).join('')}</div></section>` : ''}
 
 ${ctaBand(lang)}
 </main>
@@ -575,7 +575,7 @@ function howPage(funds, lang) {
   return head({ lang, path, title, description, schema: [page, c.schema] }) + `
 <main class="wrap">
 ${c.html}${body}
-<section class="section"><div class="section__head"><h2>${zh ? '从一个组合开始' : 'Start with a portfolio'}</h2><a class="link" href="${P(lang, '/portfolios')}">${zh ? '查看全部组合' : 'All portfolios'} →</a></div><div class="fund-list">${['pelosi', 'ai-chips', 'mag7', 'us-market'].map((k) => funds.find((f) => f.key === k)).filter(Boolean).map((f) => fundRow(f, lang)).join('')}</div></section>
+<section class="section"><div class="section__head"><h2>${zh ? '从一个组合开始' : 'Start with a portfolio'}</h2><a class="link" href="${P(lang, '/portfolios')}">${zh ? '查看全部组合' : 'All portfolios'} <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></a></div><div class="fund-list">${['pelosi', 'ai-chips', 'mag7', 'us-market'].map((k) => funds.find((f) => f.key === k)).filter(Boolean).map((f) => fundRow(f, lang)).join('')}</div></section>
 ${ctaBand(lang)}
 </main>
 ` + siteFoot(lang, funds);
@@ -771,7 +771,7 @@ function replaceBlock(html, name, content) {
 
 function homeRow(f, lang = 'en') {
   const name = esc(f.meta[lang].name);
-  return `<a href="${P(lang, '/portfolios/' + f.key)}" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="${name}" style="display:block;width:100%;height:100%;background:#F1F3F5 url(app/${f.meta.img}.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist';letter-spacing:-.03em">${name}</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist';letter-spacing:-.03em;white-space:nowrap;color:${f.apy >= 0 ? '#1E8A5C' : '#D23F2E'}">${pct(f.apy)}</span><span style="font:300 24px 'Geist'">↗︎</span></span></a>`;
+  return `<a href="${P(lang, '/portfolios/' + f.key)}" style="display:flex;justify-content:space-between;align-items:center;gap:24px;padding:28px 0;border-top:1px solid rgba(11,15,20,.08)" style-hover="opacity:1;background:#F6F8FA"><span style="display:flex;align-items:center;gap:clamp(12px,2vw,20px);min-width:0"><span style="flex:none;width:clamp(52px,6vw,72px);height:clamp(52px,6vw,72px);border-radius:16px;overflow:hidden;background:#F1F3F5;box-shadow:inset 0 0 0 1px rgba(11,15,20,.06)"><span role="img" aria-label="${name}" style="display:block;width:100%;height:100%;background:#F1F3F5 url(app/${f.meta.img}.jpg) 50% 22%/cover no-repeat"></span></span><span style="min-width:0;overflow-wrap:anywhere;font:500 clamp(24px,2.2vw,32px)/1.15 'Geist';letter-spacing:-.03em">${name}</span></span><span style="flex:none;display:flex;align-items:center;gap:clamp(12px,2vw,28px)"><span style="font:400 clamp(24px,2.2vw,32px) 'Geist';letter-spacing:-.03em;white-space:nowrap;color:${f.apy >= 0 ? '#1E8A5C' : '#D23F2E'}">${pct(f.apy)}</span><span style="font:300 24px 'Geist'"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M7 17L17 7M9 7h8v8"/></svg></span></span></a>`;
 }
 
 const faqBlock = (lang) => faqs(lang).map(([q, a], i, all) => `<details style="border-top:1px solid rgba(11,15,20,.08)${i === all.length - 1 ? ';border-bottom:1px solid #D5DBE0' : ''}"><summary style="display:flex;justify-content:space-between;gap:20px;padding:28px 0;font:500 clamp(20px,1.7vw,24px)/1.2 'Geist';letter-spacing:-.02em">${esc(q)}<span class="pm" style="font:300 28px 'Geist';transition:transform .2s">+</span></summary><p style="font:400 16px/1.6 'Geist';color:#3A4652;margin:0;padding:0 0 28px;max-width:46ch">${a.replace(/<a /g, '<a style="color:#2F5B7C;text-decoration:underline" ')}</p></details>`).join('\n');
