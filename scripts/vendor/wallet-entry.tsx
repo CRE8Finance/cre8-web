@@ -554,6 +554,10 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
   try {
     const round = await retryBusyRound(() => postRebalance(args.token, args.portfolioId));
     if (round.outcome === 'executed') { noteTx(round.txHash); return { filled: true, note: null, txHash: round.txHash, earnSent }; }
+    // 排程器還在處理別的基金（重問後仍在排隊）：錢已進組合，排程器幾分鐘內會自己買，不是「沒送出」。
+    if (round.outcome === 'blocked' && SCHEDULER_BUSY.test(round.reason)) {
+      return { filled: false, note: L('Your USDT is in this portfolio. The buy is queued and will go through on its own in a few minutes.', '钱已经进了组合，买入在排队，几分钟内会自动完成。'), txHash: null, earnSent };
+    }
     const f = explainTradeFailure(round);
     return { filled: false, note: f.kind === 'nothing-to-do' ? null : tradeNote(f), txHash: null, earnSent };
   } catch (cause) {
