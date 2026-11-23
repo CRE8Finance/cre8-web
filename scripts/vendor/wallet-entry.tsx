@@ -36,7 +36,8 @@ import {
 } from './lib/api';
 import type { PortfolioStatus, RedeemResult, StrategyDetail } from './lib/api';
 import { SponsorshipError } from './lib/paymaster';
-import { CHAIN, approveCalldata, assertRpcChain, bsc as appChain, publicClientFor, readOnlyClient, sendSudoCalls, sendWithdraw, transferCalldata } from './lib/kernel';
+import { CHAIN, approveCalldata, assertRpcChain, bsc as appChain, publicClientFor, readOnlyClient, sendSudoCalls as kernelSendSudoCalls, sendWithdraw as kernelSendWithdraw, transferCalldata } from './lib/kernel';
+import { sendUsdtToMix as mixSendUsdt } from './features/mix/mix-chain';
 import type { RenewalWallet } from './lib/kernel';
 import { assertShownVersion, waitForAccountCode, waitForPreparation } from './lib/first-enroll';
 import { firstEnrollCalls } from './lib/atp-contracts';
@@ -50,12 +51,20 @@ import { withdrawAmountWei } from './lib/format';
 import { explainTradeFailure } from './lib/trade-failure';
 import { isWaitlistPending, signalWaitlistApproved } from './lib/waitlist-signal';
 import { normalizeInviteCode, parseWaitlist } from './lib/waitlist';
-import { freshCreationPayload, fundMix, readWalletUsdt, sendUsdtToMix, signMix } from './features/mix/mix-chain';
+import { freshCreationPayload, fundMix, readWalletUsdt, signMix } from './features/mix/mix-chain';
 import { createElement } from 'react';
 import { createWalletClient, custom, encodeFunctionData, erc20Abi, formatUnits, isAddress, parseUnits } from 'viem';
 import type { Address, Hex } from 'viem';
 
 type Step = (text: string) => void;
+// 這次動作送出的交易（給結果畫面放 BscScan 連結）：app.html 動作開始前 txReset()，結束後 txs() 拿最後一筆。
+const TXS: string[] = [];
+const noteTx = (h: unknown): void => { if (typeof h === 'string' && /^0x[0-9a-fA-F]{64}$/.test(h)) TXS.push(h); };
+export const txReset = (): void => { TXS.length = 0; };
+export const txs = (): string[] => [...TXS];
+const sendSudoCalls = async (...a: Parameters<typeof kernelSendSudoCalls>) => { const r = await kernelSendSudoCalls(...a); noteTx(r.txHash); return r; };
+const sendWithdraw = async (...a: Parameters<typeof kernelSendWithdraw>) => { const r = await kernelSendWithdraw(...a); noteTx(r.txHash); return r; };
+const sendUsdtToMix = async (...a: Parameters<typeof mixSendUsdt>) => { const h = await mixSendUsdt(...a); noteTx(h); return h; };
 const USDT = (CHAIN.contracts?.usdt ?? '') as Address;
 const INVITE_KEY = 'cre8.waitlist.invite';
 
@@ -390,7 +399,8 @@ async function sendUsdt(wallet: RenewalWallet, to: Address, value: bigint): Prom
   await assertRpcChain();
   if (wallet.kind !== 'injected') throw new Error('wallet');
   const data = encodeFunctionData({ abi: erc20Abi, functionName: 'transfer', args: [to, value] });
-  return createWalletClient({ account: wallet.address, chain: appChain, transport: custom(wallet.provider as never) }).sendTransaction({ to: USDT, data, chain: appChain });
+  const hash = await createWalletClient({ account: wallet.address, chain: appChain, transport: custom(wallet.provider as never) }).sendTransaction({ to: USDT, data, chain: appChain });
+  noteTx(hash); return hash;
 }
 
 /** 第一次買：後端先部署帳戶 → owner 簽 enroll＋approve → 後端確認建投組（cre8-app FundPage `deposit`）。 */
@@ -491,7 +501,7 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
   args.step(L('Placing your order', '正在下单'));
   try {
     const round = await postRebalance(args.token, args.portfolioId);
-    if (round.outcome === 'executed') return { filled: true, note: null, txHash: round.txHash, earnSent };
+    if (round.outcome === 'executed') { noteTx(round.txHash); return { filled: true, note: null, txHash: round.txHash, earnSent }; }
     const f = explainTradeFailure(round);
     return { filled: false, note: f.kind === 'nothing-to-do' ? null : tradeNote(f), txHash: null, earnSent };
   } catch (cause) {
@@ -732,7 +742,7 @@ async function sendOwnerCalls(wallet: RenewalWallet, owner: Address, t: string, 
     step(L('Waiting for the network', '等待链上确认'));
     const receipt = await reader.waitForTransactionReceipt({ hash, confirmations: 1, timeout: 60_000 });
     if (receipt.status !== 'success') throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
-    last = hash;
+    last = hash; noteTx(hash);
   }
   if (last === null) throw new Error(temporarily());
   return last;
@@ -1010,6 +1020,7 @@ export { transferCalldata };
 (window as unknown as { CRE8W: unknown }).CRE8W = {
   mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, deleteMix, chain,
+  txReset, txs,
   earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
   dcaGet, dcaStart, dcaPause, dcaResume, dcaWithdraw,
   /** 頁面換語言後呼叫：重推一次快照，讓錯誤訊息換成新語言。 */
