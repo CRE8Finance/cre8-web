@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Blog 封面：背景圖（cre8-visual-style 產生，放在 content/blog/covers/<slug>.png）＋文章標題，
+ * Blog 封面：背景圖（cre8-visual-style 產生，放在 content/blog/covers/<slug>.jpg）＋文章標題，
  * 英文與簡體各一張，寫到 assets/blog/covers/<slug>.<en|zh>.jpg（1200×630，同時當文章頂圖與 og:image）。
  * 用本機 Chrome 截圖（macOS），字型用官網的 Switzer（標題）與 Geist。
  *
@@ -45,14 +45,14 @@ h1{margin-top:auto;font-family:'Switzer','Noto Sans SC','PingFang SC',sans-serif
 </body></html>`;
 }
 
-const slugs = (await readdir(join(ROOT, 'content/blog/covers'))).filter((f) => f.endsWith('.png')).map((f) => f.replace(/\.png$/, '')).filter((s) => !only.length || only.includes(s));
+const slugs = (await readdir(join(ROOT, 'content/blog/covers'))).filter((f) => f.endsWith('.jpg')).map((f) => f.replace(/\.jpg$/, '')).filter((s) => !only.length || only.includes(s));
 const tmp = await mkdtemp(join(tmpdir(), 'cre8-cover-'));
 await mkdir(join(ROOT, 'assets/blog/covers'), { recursive: true });
 for (const slug of slugs) {
   if (!existsSync(join(ROOT, 'content/blog', `${slug}.en.md`))) throw new Error(`封面 ${slug} 沒有對應文章`);
   for (const lang of ['en', 'zh']) {
     const html = join(tmp, `${slug}.${lang}.html`), png = join(tmp, `${slug}.${lang}.png`);
-    await writeFile(html, card(url(`content/blog/covers/${slug}.png`), await title(slug, lang), lang));
+    await writeFile(html, card(url(`content/blog/covers/${slug}.jpg`), await title(slug, lang), lang));
     execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--allow-file-access-from-files', '--force-device-scale-factor=1', '--window-size=1200,630', '--virtual-time-budget=8000', `--user-data-dir=${join(tmp, 'profile')}`, `--screenshot=${png}`, pathToFileURL(html).href], { stdio: 'ignore' });
     execFileSync('sips', ['-s', 'format', 'jpeg', '-s', 'formatOptions', '82', png, '--out', join(ROOT, 'assets/blog/covers', `${slug}.${lang}.jpg`)], { stdio: 'ignore' });
   }
