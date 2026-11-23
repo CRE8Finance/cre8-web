@@ -91,6 +91,16 @@ try {
   const banner = `/*! cre8-wallet.js — built by cre8-web scripts/build-vendor.ts from cre8-app ${commit} (${new Date().toISOString().slice(0, 10)}). Bundles Privy, viem and ZeroDev (see their licenses). */\n`;
   writeFileSync(out, banner + code + '\n');
   console.log(`wrote ${out} (${(statSync(out).size / 1024 / 1024).toFixed(2)} MB) from cre8-app ${commit.slice(0, 7)}`);
+  // 載入網址帶內容雜湊，重打包後瀏覽器一定抓新檔（不會用到快取的舊版）。
+  const v = (await import('node:crypto')).createHash('sha256').update(banner + code + '\n').digest('hex').slice(0, 10);
+  for (const page of ['app.html', 'waitlist.html']) {
+    const file = join(import.meta.dir, '..', page);
+    const html = readFileSync(file, 'utf8');
+    const next = html.replace(/(assets\/vendor\/cre8-wallet\.js)(\?v=[0-9a-f]+)?'/, `$1?v=${v}'`);
+    if (next === html && !html.includes(`cre8-wallet.js?v=${v}'`)) throw new Error(`${page}：找不到 cre8-wallet.js 的載入網址`);
+    writeFileSync(file, next);
+  }
+  console.log(`cre8-wallet.js 版本 ${v} 已寫進 app.html、waitlist.html（記得重跑 build-pages 更新 /zh/waitlist）`);
 } finally {
   rmSync(work, { recursive: true, force: true });
 }
