@@ -8,6 +8,7 @@ import { join } from 'node:path';
 
 // 文章順序（列表頁照這個排；第 1 篇是總覽）。新文章加在這裡。
 export const BLOG_ORDER = [
+  'what-is-cre8',
   'buy-us-stocks-with-usdt',
   'what-is-bstock',
   'tokenized-stocks-compared',
@@ -17,6 +18,10 @@ export const BLOG_ORDER = [
   'copy-pelosi-portfolio-with-crypto',
   'dca-us-stocks-with-usdt',
   'earn-yield-on-idle-usdt-and-bstock',
+  'how-to-buy-your-first-portfolio-on-cre8',
+  'cre8-portfolios-explained',
+  'build-your-own-portfolio-on-cre8',
+  'is-cre8-safe',
 ];
 
 const escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -44,6 +49,8 @@ function mdToHtml(md) {
     const line = lines[i];
     const t = line.trim();
     if (!t) { flush(); continue; }
+    // 截圖佔位（[截图：…]／[Screenshot: …]）等實際截圖補上前不輸出。
+    if (/^\[(截图|Screenshot)[：:]/.test(t)) { flush(); continue; }
     let m;
     if ((m = t.match(/^(#{2,4})\s+(.*)$/))) { flush(); const n = m[1].length; out.push(`<h${n}>${inline(m[2])}</h${n}>`); continue; }
     if (/^---+$/.test(t)) { flush(); out.push('<hr>'); continue; }
