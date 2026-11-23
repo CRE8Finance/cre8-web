@@ -115,6 +115,19 @@ const ZH_MESSAGES: [RegExp, string][] = [
   [/user (rejected|denied|cancel)|rejected the request|denied/i, '你在钱包里取消了。'],
   [/network|fetch|timeout|timed out/i, '网络出问题了，再试一次。'],
   [/^NO_WALLET$/, '钱包还在创建，稍后再试。'],
+  // My mix 簽名前核對（cre8-app mix-chain.ts 的 MixPayloadError）：說清楚是哪一類，沒簽名、錢沒動。
+  [/^signing payload: (approve\.to|enroll\.strategy assets)/, '组合里有暂时不支持的资产，没有签名，钱没动。换一个资产再试。'],
+  [/^signing payload: enroll\.strategy unreadable/, '链上还没读到你的组合，等几秒再试一次。'],
+  [/^signing payload: enroll\.strategy picks/, '链上的比例和你选的不一样，没有签名。刷新页面后再建一次。'],
+  [/^signing payload/, '组合资料核对没通过，没有签名，钱没动。再试一次。'],
+  [/^Account was not deployed|account code/i, '组合账户还在创建，等几秒再试一次。'],
+];
+// 英文時 cre8-app 的核對錯誤也換成一句白話（原文記在 console）。
+const EN_MESSAGES: [RegExp, string][] = [
+  [/^signing payload: (approve\.to|enroll\.strategy assets)/, 'Your basket has an asset we can’t sign for yet. Nothing was signed or moved. Try a different asset.'],
+  [/^signing payload: enroll\.strategy unreadable/, 'Your basket isn’t on chain yet. Wait a few seconds and try again.'],
+  [/^signing payload: enroll\.strategy picks/, 'The weights on chain don’t match your picks. Nothing was signed. Refresh and build it again.'],
+  [/^signing payload/, 'Your basket didn’t pass our checks. Nothing was signed or moved. Try again.'],
 ];
 function zhMessage(message: string, fallback = '没有完成，再试一次。'): string {
   if (HAS_CJK.test(message)) return message;
@@ -129,7 +142,11 @@ function zhMessage(message: string, fallback = '没有完成，再试一次。')
 function localized<A extends unknown[], R>(fn: (...args: A) => Promise<R>, fallback?: string): (...args: A) => Promise<R> {
   return async (...args: A) => {
     try { return await fn(...args); } catch (cause) {
-      if (!isZh()) throw cause;
+      if (!isZh()) {
+        const msg = cause instanceof Error ? cause.message : String(cause), en = EN_MESSAGES.find(([re]) => re.test(msg));
+        if (en) { console.warn('[cre8-wallet]', msg); throw new Error(en[1]); }
+        throw cause;
+      }
       throw new Error(zhMessage(cause instanceof Error ? cause.message : String(cause), fallback));
     }
   };
