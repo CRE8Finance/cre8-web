@@ -44,7 +44,7 @@
 <div style="display:flex;align-items:center;gap:4px">
 <a class="wl-home" href="/" style="padding:10px 14px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">Home</a>
 <a href="/zh/waitlist" lang="zh-Hans" hreflang="zh-Hans" aria-label="简体中文" style="padding:10px 12px;font:500 14px 'Geist';color:#0B0F14;white-space:nowrap">中文</a>
-<a href="https://tst.cre8.finance/" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">Have an invite? <span>→</span></a>
+<a href="https://tst.cre8.finance/" style="height:40px;padding:0 18px;border-radius:999px;background:#E3B55B;color:#0B0F14;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35);display:inline-flex;align-items:center;gap:10px;font:500 14px 'Geist';white-space:nowrap" style-hover="background:#EEC46E;opacity:1">Have an invite? <span><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a>
 </div>
 </div>
 </header>
@@ -79,7 +79,7 @@
 </div>
 
 <sc-if value="{{ err }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:12px 0 0;font:500 13px/1.4 'Geist';color:#B42318">{{ err }}</p></sc-if>
-<sc-if value="{{ approved }}" hint-placeholder-val="{{ false }}"><a href="https://tst.cre8.finance/" style="margin-top:16px;height:48px;border-radius:999px;background:#E3B55B;color:#0B0F14;display:flex;align-items:center;justify-content:center;gap:10px;font:500 16px 'Geist';box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35)">Open the testnet <span>→</span></a></sc-if>
+<sc-if value="{{ approved }}" hint-placeholder-val="{{ false }}"><a href="https://tst.cre8.finance/" style="margin-top:16px;height:48px;border-radius:999px;background:#E3B55B;color:#0B0F14;display:flex;align-items:center;justify-content:center;gap:10px;font:500 16px 'Geist';box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 4px 14px rgba(227,181,91,.35)">Open the testnet <span><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></sc-if>
 <div style="margin-top:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px">
 <div><div style="font:500 12px 'Geist Mono';letter-spacing:.1em;color:#4A5B6A">BONUS POINTS</div><div style="font:400 14px/1.4 'Geist';color:#4A5563;margin-top:6px">{{ bonusHint }}</div></div>
 <div style="text-align:right;white-space:nowrap"><span style="font:300 44px/1 'Geist';letter-spacing:-.05em">{{ pts }}</span><span style="font:400 14px 'Geist Mono';color:#4A5B6A"> / 35</span></div>
@@ -93,7 +93,7 @@
 <div style="flex:1 1 120px;min-width:0"><div style="font:500 15px/1.35 'Geist'">Post about <span style="white-space:nowrap">@CRE8Finance</span></div></div>
 <div style="margin-left:auto;display:flex;align-items:center;gap:10px"><span style="font:500 12px 'Geist Mono';padding:5px 9px;border-radius:999px;background:{{ t1.pillBg }};color:{{ t1.pillCol }}">+5</span>
 <sc-if value="{{ postLocked }}" hint-placeholder-val="{{ true }}"><button type="button" disabled style="height:38px;padding:0 14px;border:0;border-radius:999px;background:#E3E8EC;color:#5A6673;font:500 14px 'Geist';white-space:nowrap">Post on X</button></sc-if>
-<sc-if value="{{ postReady }}" hint-placeholder-val="{{ false }}"><a href="https://x.com/intent/post?text=Just%20joined%20the%20%40CRE8Finance%20testnet%20waitlist." target="_blank" rel="noopener" onClick="{{ startPost }}" style="height:38px;padding:0 14px;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';white-space:nowrap;display:inline-flex;align-items:center;gap:6px">Post on X <span aria-hidden="true">↗</span></a></sc-if>
+<sc-if value="{{ postReady }}" hint-placeholder-val="{{ false }}"><a href="https://x.com/intent/post?text=Just%20joined%20the%20%40CRE8Finance%20testnet%20waitlist." target="_blank" rel="noopener" onClick="{{ startPost }}" style="height:38px;padding:0 14px;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';white-space:nowrap;display:inline-flex;align-items:center;gap:6px">Post on X <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M7 17L17 7M9 7h8v8"/></svg></span></a></sc-if>
 <sc-if value="{{ t1.done }}" hint-placeholder-val="{{ false }}"><span style="font:500 14px 'Geist';color:#17714B;white-space:nowrap">✓ Verified</span></sc-if>
 </div>
 </div>
