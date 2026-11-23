@@ -653,6 +653,11 @@ ${ctaBand(lang)}
 // ---------------------------------------------------------------- Blog（文章在 content/blog，scripts/blog.mjs 轉成 HTML）
 const clip = (s, n) => (s.length <= n ? s : s.slice(0, n - 1).replace(/[\s,，、。；;:：]+\S*$/, '') + '…');
 const postDate = (iso, lang) => (lang === 'zh' ? `${+iso.slice(0, 4)} 年 ${+iso.slice(5, 7)} 月 ${+iso.slice(8, 10)} 日` : date(iso, 'en'));
+// 封面：scripts/build-covers.mjs 產生（背景＋標題，1200×630）；還沒有封面的文章用全站分享圖、列表不放圖。
+const coverOf = (slug, lang) => {
+  const rel = `/assets/blog/covers/${slug}.${lang}.jpg`;
+  return existsSync(join(ROOT, rel)) ? rel : null;
+};
 
 function blogIndexPage(posts, funds, lang) {
   const t = T[lang];
@@ -670,7 +675,7 @@ function blogIndexPage(posts, funds, lang) {
 ${c.html}
 <h1>${zh ? '文章' : 'Blog'}</h1>
 <section class="section post-list">
-${posts.map((p) => `<a class="post-row" href="${P(lang, '/blog/' + p.slug)}"><h2>${esc(p[lang].title)}</h2><p>${esc(clip(p[lang].lede, zh ? 90 : 200))}</p><span class="muted small">${postDate(p[lang].meta.updated, lang)}</span></a>`).join('\n')}
+${posts.map((p) => { const cv = coverOf(p.slug, lang); return `<a class="post-row${cv ? ' post-row--cover' : ''}" href="${P(lang, '/blog/' + p.slug)}">${cv ? `<img src="${cv}" alt="" width="1200" height="630" loading="lazy" decoding="async">` : ''}<div><h2>${esc(p[lang].title)}</h2><p>${esc(clip(p[lang].lede, zh ? 90 : 200))}</p><span class="muted small">${postDate(p[lang].meta.updated, lang)}</span></div></a>`; }).join('\n')}
 </section>
 ${ctaBand(lang)}
 </main>
@@ -685,15 +690,17 @@ function blogPostPage(post, posts, funds, lang) {
   const c = crumbs(lang, [[t.home, '/'], [t.blog, '/blog'], [a.title, path]]);
   const description = clip(a.lede, zh ? 110 : 160);
   const article = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: a.title, description, inLanguage: t.htmlLang, url: abs(P(lang, path)),
-    mainEntityOfPage: abs(P(lang, path)), datePublished: a.meta.published, dateModified: a.meta.updated, author: ORG, publisher: ORG, image: SITE + '/assets/og.jpg' };
+    mainEntityOfPage: abs(P(lang, path)), datePublished: a.meta.published, dateModified: a.meta.updated, author: ORG, publisher: ORG, image: SITE + (coverOf(post.slug, lang) || '/assets/og.jpg') };
+  const cover = coverOf(post.slug, lang);
   const more = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
   const updated = a.meta.updated !== a.meta.published ? (zh ? ` · 更新于 ${postDate(a.meta.updated, lang)}` : ` · Updated ${postDate(a.meta.updated, lang)}`) : '';
-  return head({ lang, path, title: `${a.title} | CRE8`, description, schema: [article, c.schema] }) + `
+  return head({ lang, path, title: `${a.title} | CRE8`, description, schema: [article, c.schema], ...(cover ? { image: cover } : {}) }) + `
 <main class="wrap">
 ${c.html}
 <article class="post">
 <h1>${esc(a.title)}</h1>
 <p class="post-meta muted small">${zh ? '作者' : 'By'} CRE8 · <time datetime="${a.meta.published}">${postDate(a.meta.published, lang)}</time>${updated}</p>
+${cover ? `<img class="post-cover" src="${cover}" alt="" width="1200" height="630" fetchpriority="high">` : ''}
 <div class="prose">
 ${a.html}
 </div>
