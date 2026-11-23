@@ -614,7 +614,8 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   step(L('Approve in your wallet to receive your USDT', '在钱包里确认，领回 USDT'));
   const receipt = await sendWithdraw({ wallet, token: t, accountAddress: account, strategyId: holding.strategyId, asset: USDT, recipient: owner, amountWei: value });
   if (!receipt.success) throw new Error(L(`The transfer landed but reverted (${receipt.txHash}).`, `转账上链后被回滚（${receipt.txHash}）。`));
-  return { sentUsdt: formatUnits(value, 18), note, txHash: receipt.txHash };
+  // emptied：全部賣完、USDT 全數領回（My mix 賣完後問要不要刪掉組合）。
+  return { sentUsdt: formatUnits(value, 18), note, txHash: receipt.txHash, emptied: !!args.all && note === null };
 }
 
 // ---- My mix（自建籃子） ---------------------------------------------------------------------
@@ -623,8 +624,31 @@ const mixApi = {
   get: (t: string, id: number) => apiRequest<unknown>(`/me/mixes/${id}`, { token: t }),
   create: (t: string, input: unknown, key: string) => apiRequest<unknown>('/me/mixes', { method: 'POST', token: t, body: input, headers: { 'Idempotency-Key': key } }),
   patch: (t: string, id: number, body: unknown) => apiRequest<unknown>(`/me/mixes/${id}`, { method: 'PATCH', token: t, body }),
+  remove: (t: string, id: number) => apiRequest<{ mixId: number; status: 'deleted' | 'deleting' }>(`/me/mixes/${id}/delete`, { method: 'POST', token: t }),
 };
 export const mixes = () => mixApi.list(token());
+/**
+ * 刪除 My mix：有持倉先全部賣成 USDT 並領回錢包（同 `sell` all），再 `POST /me/mixes/:id/delete`。
+ * 回 `deleted`（已刪）或 `deleting`（美股收盤賣不完：後端開盤時賣完，之後在「我的」領回 USDT 即刪除，也是呼叫這支）。
+ * 組合帳戶的 session key 只能呼叫 executor、不能把 USDT 轉回錢包，所以領回一律由 owner 簽。
+ */
+export const deleteMix = localized(deleteMixRaw, '没删掉，再试一次。');
+async function deleteMixRaw(args: { mixId: number; portfolioId: number | null; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t } = need();
+  const sold = args.portfolioId == null ? null : await sellRaw({ portfolioId: args.portfolioId, usd: 0, all: true, onStep: step });
+  step(L('Deleting', '正在删除'));
+  // 剛領回的 USDT 可能還沒反映在後端讀到的區塊（MIX_HAS_CASH）：稍等再試幾次。
+  for (let attempt = 0; ; attempt++) {
+    try {
+      const r = await mixApi.remove(t, args.mixId);
+      return { status: r.status, sentUsdt: sold ? sold.sentUsdt : '0' };
+    } catch (cause) {
+      if (!(cause instanceof ApiError) || cause.code !== 'MIX_HAS_CASH' || attempt >= 3) throw cause;
+      await sleep(3000);
+    }
+  }
+}
 export const mix = (id: number) => mixApi.get(token(), id);
 
 type MixInput = { name: string; assets: { assetId: Address; weightBps: number }[]; rebalance: { frequency: 'daily' | 'weekly' | 'monthly' | 'quarterly'; startDate: string } };
@@ -871,7 +895,7 @@ export { transferCalldata };
 // IIFE 沒有匯出：掛到 window，通知 app.html。
 (window as unknown as { CRE8W: unknown }).CRE8W = {
   mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
-  portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, chain,
+  portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, deleteMix, chain,
   earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
   /** 頁面換語言後呼叫：重推一次快照，讓錯誤訊息換成新語言。 */
   relang: () => { if (mounted) emit(); },

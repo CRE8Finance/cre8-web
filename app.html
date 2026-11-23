@@ -137,6 +137,7 @@
 </sc-for>
 </div>
 <p style="margin:18px 16px 0;font:400 15px/1.55 'Geist';color:#5E6A76;text-wrap:pretty">{{ cur.about }}</p>
+<sc-if value="{{ isMix }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openDelMix }}" style="margin:28px 16px 0;border:0;background:transparent;font:400 15px 'Geist';color:#D23F2E;cursor:pointer;padding:0">{{ delMixLabel }}</button></sc-if>
 
 </div>
 <div style="flex:1 1 340px;min-width:0;max-width:{{ L.sideMax }};position:{{ L.sidePos }};top:86px;padding-top:{{ L.sideTop }}px">
@@ -254,7 +255,7 @@
 <div role="img" style="width:40px;height:40px;border-radius:11px;background:#EDF0F3 url({{ h.cover }}) center/cover no-repeat"></div>
 <div style="min-width:0"><div style="font:500 15px 'Geist';white-space:nowrap;overflow:hidden;text-overflow:ellipsis;{{ h.nsk }}">{{ h.name }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px;{{ h.ssk }}">{{ h.sub }}</div></div>
 
-<div style="text-align:right"><div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums;{{ h.vsk }}">{{ h.val }}</div><div style="font:500 12px 'Geist Mono';color:{{ h.col }};margin-top:2px">{{ h.ret }}</div></div>
+<div style="text-align:right"><div style="font:400 15px 'Geist';letter-spacing:-.01em;white-space:nowrap;font-variant-numeric:tabular-nums;{{ h.vsk }}">{{ h.val }}</div><div style="font:500 12px 'Geist Mono';color:{{ h.col }};margin-top:2px">{{ h.ret }}</div><sc-if value="{{ h.claim }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;margin-top:4px;height:32px;padding:0 14px;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 13px 'Geist';white-space:nowrap">{{ h.claimT }}</span></sc-if></div>
 </button>
 </sc-for>
 <div style="display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:12px 14px">
@@ -315,6 +316,11 @@
 <button onClick="{{ confirm }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:{{ confBg }};color:{{ confFg }};font:600 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 8V5a2 2 0 012-2h3M16 3h3a2 2 0 012 2v3M21 16v3a2 2 0 01-2 2h-3M8 21H5a2 2 0 01-2-2v-3M9 9v1.5M15 9v1.5M12 9v4.5h-1M9 16.5c1.6 1.2 4.4 1.2 6 0"></path></svg>{{ confirmLabel }}</button>
 </sc-if>
 
+<sc-if value="{{ mDel }}" hint-placeholder-val="{{ false }}">
+<p style="margin:18px 2px 0;font:400 15px/1.5 'Geist';color:#3C4651;text-align:center;text-wrap:balance">{{ delLine }}</p>
+<button onClick="{{ confirmDel }}" style="margin-top:20px;width:100%;height:52px;border:0;border-radius:999px;background:#D23F2E;color:#fff;font:600 16px 'Geist';cursor:pointer">{{ delBtn }}</button>
+</sc-if>
+
 <sc-if value="{{ mProc }}" hint-placeholder-val="{{ false }}">
 <div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:60px 0 80px"><svg width="84" height="84" viewBox="0 0 96 96"><circle cx="48" cy="48" r="42" fill="none" stroke="#EDF0F3" stroke-width="4"></circle><circle cx="48" cy="48" r="42" fill="none" stroke="#2F6690" stroke-width="4" stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="{{ procOff }}" transform="rotate(-90 48 48)" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)"></circle></svg><div style="font:500 11px 'Geist Mono';letter-spacing:.1em;color:#5E6A76;text-align:center;padding:0 12px">{{ procText }}</div></div>
 </sc-if>
@@ -324,6 +330,7 @@
 <div style="width:80px;height:80px;border-radius:50%;background:{{ doneBg }};display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px {{ doneSh }}"><svg width="36" height="28" viewBox="0 0 46 36"><path d="{{ doneIcon }}" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:60;stroke-dashoffset:{{ doneDash }};transition:stroke-dashoffset .42s cubic-bezier(.65,0,.35,1) .14s"></path></svg></div>
 <div style="font:500 22px/1.3 'Geist';letter-spacing:-.02em;margin-top:22px;text-align:center;text-wrap:balance">{{ doneTitle }}</div>
 <sc-if value="{{ doneNote }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 2px 0;font:400 14px/1.5 'Geist';color:#6B7785;text-align:center;text-wrap:balance">{{ doneNote }}</p></sc-if>
+<sc-if value="{{ doneAsk }}" hint-placeholder-val="{{ false }}"><div style="font:400 15px 'Geist';color:#3C4651;margin-top:18px;text-align:center">{{ askLine }}</div><div style="display:flex;gap:10px;width:100%;margin-top:16px"><button onClick="{{ keepMix }}" style="flex:1;height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer">{{ keepBtn }}</button><button onClick="{{ askDelGo }}" style="flex:1;height:52px;border:0;border-radius:999px;background:#D23F2E;color:#fff;font:600 16px 'Geist';cursor:pointer">{{ delBtn }}</button></div></sc-if>
 <sc-if value="{{ doneErr }}" hint-placeholder-val="{{ false }}"><button onClick="{{ retry }}" style="margin-top:28px;width:100%;height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer">{{ t.tryAgain }}</button></sc-if>
 </div>
 </sc-if>
@@ -928,16 +935,19 @@ class Component extends DCLogic {
     const mixes = this.mixesOf(s);
     return (s.pf || []).map(p => {
       const fund = FUNDS.find(x => x.id === bySid[p.strategyId]), m = mixes.find(x => x.portfolioId === p.id || x.strategyId === p.strategyId);
+      // 已刪除的 My mix（/me/mixes 不再回傳）：退出殘留不再列出。
+      if ((s.delPids && s.delPids[p.id]) || (p.personalMix && Array.isArray(s.smx) && !s.smx.some(x => x.portfolioId === p.id || x.strategyId === p.strategyId))) return null;
       // 淨值＝投組總值（/status，已含抵押中的股票）＋earnNetUsd（vault－負債，1e18，可為負）。不加 netValueUsd（含抵押品，會重複算）。
       const st = s.pst[p.id], se = s.seP[p.id], seOn = se && se.positions ? se.positions.filter(x => x.status === 'on') : [];
       const seNet = se && se.earnNetUsd != null ? Number(se.earnNetUsd) / 1e18 : 0;
-      return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || tr('Portfolio', '组合')), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd + seNet : null, loading: !st || !se, ret: m && m.ret != null ? m.ret : null, seOn, seAuto: !!(se && se.autoOpen), seUnknown: !!(se && se.status === 'unavailable') };
-    }).filter(h => h.loading || h.val >= 0.01 || h.val == null);
+      return { pid: p.id, strategyId: p.strategyId, id: fund ? fund.id : m ? m.id : 'p' + p.id, name: fund ? fund.name : m ? m.name : (p.strategyName || tr('Portfolio', '组合')), cover: fund ? fund.cover : m ? m.cover || 'app/cover-cre8.png' : 'app/cover-cre8.png', val: st && st.usd != null ? st.usd + seNet : null, loading: !st || !se, ret: m && m.ret != null && !m.del ? m.ret : null, del: m ? m.del : null, mixId: m ? m.mixId : null, seOn, seAuto: !!(se && se.autoOpen), seUnknown: !!(se && se.status === 'unavailable') };
+    }).filter(h => h && (h.loading || h.val >= 0.01 || h.val == null));
   }
   // /me/mixes → 畫面用的組合（代號、百分比、頻率索引）。封面、頭像存伺服器的端點還沒有：封面先只留在這個分頁。
   mixesOf(s) {
     const FQ = ['daily', 'weekly', 'monthly', 'quarterly'];
     return (s.smx || []).filter(m => m.status !== 'exited').map(m => ({ id: 'mix-' + m.id, mixId: m.id, strategyId: m.strategyId, portfolioId: m.portfolioId, account: m.account, status: m.status, name: m.name, cover: s.mixCovers[m.id] || null,
+      del: m.status === 'deleting' ? 'selling' : m.status === 'ready_to_delete' ? 'ready' : null,
       picks: (m.assets || []).map(a => [TICKER[String(a.assetId).toLowerCase()] || String(a.assetId).slice(0, 6), a.weightBps / 100]), freq: Math.max(0, FQ.indexOf(m.rebalance && m.rebalance.frequency)), start: m.rebalance && m.rebalance.startDate ? Date.parse(m.rebalance.startDate + 'T00:00:00') : Date.parse(m.createdAt), ret: m.returnBps != null ? Number(m.returnBps) / 100 : 0 }));
   }
   // 要簽名或動錢才登入：記下要做的事（Privy 的 X／Google 登入會整頁轉走再回來），登入完接著做。
@@ -963,12 +973,33 @@ class Component extends DCLogic {
     this.setState({ step: 'done', doneSc: .4, doneDash: 60, result }); this.later(() => this.setState({ doneSc: 1, doneDash: 0 }), 40); this.refresh();
     this.later(() => this.doneTok === tok && this.closeDone(), this.doneNote({ ...this.state, result }) ? 2600 : 1400);
   }
+  // 賣完 My mix（帳戶清空）：結果畫面問要不要刪掉組合，不自動收起。
+  ask(result) {
+    this.doneTok = null;
+    this.setState({ step: 'done', doneSc: .4, doneDash: 60, result }); this.later(() => this.setState({ doneSc: 1, doneDash: 0 }), 40); this.refresh();
+  }
+  // 刪除 My mix：有持倉先全部賣出、USDT 回錢包，再刪；美股收盤賣不完＝刪除中，開盤後賣完在「我的」領回即刪除（同一支）。
+  async deleteMix(tgt) {
+    const W = window.CRE8W, t = tgt || this.state.target;
+    this.retryFn = () => this.deleteMix(t);
+    this.setState({ modal: true, target: t, side: 'del', step: 'proc', procOff: 264, procText: tr('DELETING', '正在删除') }); this.later(() => this.setState({ procOff: 70 }), 60);
+    try {
+      if (!W) throw new Error(tr('Sign-in is still loading.', '登录组件还在加载。'));
+      const r = await W.deleteMix({ mixId: t.mixId, portfolioId: t.portfolioId == null ? null : t.portfolioId, onStep: x => this.step(x) });
+      // 樂觀更新（同 bump）：賣回的 USDT 從組合移到現金；刪掉的組合馬上消失，刪除中的馬上改成刪除中。
+      const n = Number(r.sentUsdt) || 0; if (n > 0 && t.portfolioId != null) this.bump([{ k: 'pf', pid: t.portfolioId, d: -n }, { k: 'cash', d: n }]);
+      this.setState(x => ({ smx: x.smx && (r.status === 'deleted' ? x.smx.filter(m => m.id !== t.mixId) : x.smx.map(m => m.id === t.mixId ? { ...m, status: 'deleting' } : m)),
+        delPids: r.status === 'deleted' && t.portfolioId != null ? { ...(x.delPids || {}), [t.portfolioId]: true } : x.delPids }));
+      this.finish({ deleted: r.status === 'deleted', deleting: r.status === 'deleting', sent: n });
+    } catch (e) { this.fail(e); }
+  }
   // 失敗：白話一句＋「再试一次」；關閉在左上角。程式錯誤記在 console，不給用戶看。
   fail(e) { console.error('[cre8] action failed:', e); this.doneTok = null; this.setState({ step: 'done', doneSc: .4, doneDash: 0, result: { error: plainError(e) } }); this.later(() => this.setState({ doneSc: 1 }), 40); this.refresh(); }
   closeDone() {
     const s = this.state; this.doneTok = null;
     if (!s.modal || s.step !== 'done') return;
     if (s.target && s.target.mix && s.page === 'build') this.setState({ modal: false, bstep: 0, ...(s.result && s.result.error ? {} : { page: 'profile' }) });
+    else if (s.result && (s.result.deleted || s.result.deleting)) this.setState({ modal: false, fund: null, page: 'profile' });
     else this.back({ modal: false });
   }
   // 結果第二行：只放用戶真的要知道的（美股等開盤成交、組合還在準備、加息這次沒開…）。
@@ -1011,6 +1042,10 @@ class Component extends DCLogic {
         // 開著加息策略也直接賣：後端會先還款、取回股票再賣（backend#204），剩下的部位維持加息策略。
         const r = await W.sell({ portfolioId: h.pid, usd: parseFloat(amt) || 0, all, onStep });
         const n = Number(r.sentUsdt) || 0; if (n > 0) this.bump([{ k: 'pf', pid: h.pid, d: -n }, { k: 'cash', d: n }]);
+        if (r.emptied && h.mixId != null && !h.del) {
+          this.setState(x => ({ target: { ...x.target, mixId: h.mixId, portfolioId: h.pid } }));
+          return this.ask({ sold: true, sent: Number(r.sentUsdt), askDel: true });
+        }
         return this.finish({ sold: true, sent: Number(r.sentUsdt), note: r.note });
       }
       if (t.mix) {
@@ -1250,7 +1285,8 @@ class Component extends DCLogic {
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => tr(r[0], r[5])), s.range, i => this.setState({ range: i, fh: null })),
       posLabel: own ? tr('YOUR POSITION', '我的持仓') : tr('MINIMUM', '起投'), posVal: own ? (own.val == null ? '—' : '$' + fmt(own.val)) : (LV ? LV.min : 50) + ' USDT',
-      isMix: f.kind === 'MINE', notMix: f.kind !== 'MINE',
+      isMix: f.kind === 'MINE', notMix: f.kind !== 'MINE', delMixLabel: tr('Delete basket', '删除组合'),
+      openDelMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.setState({ modal: true, side: 'del', step: 'del', target: { id: m.id, name: m.name, cover: m.cover || 'app/cover-cre8.png', mixId: m.mixId, portfolioId: m.portfolioId } }); },
       editMix: () => { const m = s.mixes.find(x => x.id === f.id); if (!m) return; this.leaveY = window.scrollY; this.setState({ fund: null, page: 'build', bstep: 0, editing: m.id, picks: m.picks.map(p => p[0]), weights: Object.fromEntries(m.picks), freq: m.freq, start: m.start, mixName: m.name, mixCover: m.cover || null, q: '', calOff: 0 }); window.scrollTo(0, 0); },
       openBuy: () => { const m = f.kind === 'MINE' ? s.mixes.find(x => x.id === f.id) : null; const target = { id: f.id, name: f.name, cover: f.cover, ...(m ? { mix: { id: m.id }, mixId: m.mixId, portfolioId: m.portfolioId, account: m.account } : {}) }; if (this.needSignIn({ for: 'buy', fund: f.id, target })) return; this.setState({ modal: true, side: 'buy', step: 'amount', amount: '', payFaucet: false, se: false, target }); },
       openSell: () => { const target = { id: f.id, name: f.name, cover: f.cover }; if (this.needSignIn({ for: 'sell', fund: f.id, target })) return; this.setState({ modal: true, side: 'sell', step: 'amount', amount: '', target }); },
@@ -1269,16 +1305,19 @@ class Component extends DCLogic {
       // 處理中不能關（錢包可能正要簽名）；做完或失敗才關。
       closeModal: () => s.step === 'proc' ? null : s.step === 'done' ? this.closeDone() : this.back({ modal: false }),
       // 成功畫面點任何地方都收起。
-      sheetTap: () => s.step === 'done' && !R0.error && this.closeDone(),
-      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' ? this.back({ modal: false }) : s.step === 'done' && R0.error ? this.closeDone() : null,
-      sheetLeftLabel: s.step === 'review' ? tr('Back', '返回') : s.step === 'amount' || (s.step === 'done' && R0.error) ? tr('Cancel', '取消') : '',
-      modalTitle: s.step === 'amount' ? (eIn ? '' : (sell ? tr('Sell ', '卖出') : '') + tgt.name) : s.step === 'review' ? (sell ? tr('Review sale', '确认卖出') : eIn ? tr('Review', '确认存入') : eOut ? tr('Review', '确认取出') : tr('Review', '确认买入')) : '',
+      sheetTap: () => s.step === 'done' && !R0.error && !R0.askDel && this.closeDone(),
+      sheetLeft: () => s.step === 'review' ? this.setState({ step: 'amount', payFaucet: false }) : s.step === 'amount' || s.step === 'del' ? this.back({ modal: false }) : s.step === 'done' && R0.error ? this.closeDone() : null,
+      sheetLeftLabel: s.step === 'review' ? tr('Back', '返回') : s.step === 'amount' || s.step === 'del' || (s.step === 'done' && R0.error) ? tr('Cancel', '取消') : '',
+      modalTitle: s.step === 'del' ? tgt.name : s.step === 'amount' ? (eIn ? '' : (sell ? tr('Sell ', '卖出') : '') + tgt.name) : s.step === 'review' ? (sell ? tr('Review sale', '确认卖出') : eIn ? tr('Review', '确认存入') : eOut ? tr('Review', '确认取出') : tr('Review', '确认买入')) : '',
       availText: sell ? tr('USDT · ' + fmt(posMax) + ' HELD', '持仓 ' + fmt(posMax) + ' USDT') : eOut ? tr('USDT · ' + fmt(posMax) + ' EARNING', '生息中 ' + fmt(posMax) + ' USDT') : tr('USDT · ' + (cashNum == null ? '—' : fmt(s.cash)) + ' AVAILABLE', '可用 ' + (cashNum == null ? '—' : fmt(s.cash)) + ' USDT'),
       // 測試網：錢包沒有 USDT（或不夠）時，可以改用免費測試 USDT（第一次 10,000，之後每天 1,000，直接進這一檔）。
       showFaucet: s.side === 'buy' && cashNum != null && s.cash < Math.max(minBuy, amt || 0), useFaucet: () => this.setState({ payFaucet: true, step: 'review' }),
       reviewNote: eIn ? tr('Take it out any time, interest included.', '随时连本带息取出。') : eOut ? tr('Interest included. USDT lands in your wallet.', '含利息，USDT 回到你的钱包。') : sell ? tr('Stocks sell when the US market is open. Crypto sells right away. USDT lands in your wallet.', '美股在开盘时卖出，加密资产马上卖出。USDT 回到你的钱包。') : tr('Stocks buy when the US market is open. Crypto buys right away. Sell back to USDT any time.', '美股在开盘时买入，加密资产马上买入。随时可以卖回 USDT。'),
       confBg: out ? '#0B0F14' : '#E3B55B', confFg: out ? '#fff' : '#0B0F14', confirmLabel: sell ? tr('Confirm sale', '确认卖出') : eIn ? tr('Confirm', '确认存入') : eOut ? tr('Take out', '确认取出') : tr('Confirm purchase', '确认买入'),
-      mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done',
+      mAmount: s.step === 'amount', mReview: s.step === 'review', mProc: s.step === 'proc', mDone: s.step === 'done', mDel: s.step === 'del',
+      delLine: tr('Sell everything, send the USDT to your wallet, and delete this basket', '全部卖出，USDT 回到你的钱包，组合会被删除'), delBtn: tr('Delete', '删除'),
+      confirmDel: () => this.deleteMix(), doneAsk: !R0.error && !!R0.askDel, askLine: tr('Delete this basket?', '删掉这个组合？'), keepBtn: tr('Keep', '保留'),
+      keepMix: () => this.closeDone(), askDelGo: () => this.deleteMix(),
       sheetCover: tgt.cover, sheetName: tgt.name,
       amtText: faucet ? (isMixBuild || tgt.mixId ? '1,000' : '10,000') : s.amount === '' ? '0' : Number(s.amount.split('.')[0] || 0).toLocaleString('en-US') + (s.amount.includes('.') ? '.' + s.amount.split('.')[1] : ''),
       amtColor: s.amount === '' ? '#C3CAD1' : '#0B0F14', balText: fmt(s.cash),
@@ -1290,7 +1329,9 @@ class Component extends DCLogic {
       confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, procText: s.procText || tr('PREPARING', '准备中'),
       // 結果：成交＝You own it；錢已進帳戶但還沒成交＝Order placed（美股開盤後成交）；失敗＝紅色。
       // 結果一句話：成功＝做了什麼＋金額；失敗＝沒完成。
-      doneTitle: R0.error ? (sell ? tr('Sale not completed', '卖出没完成') : s.side === 'edit' ? tr('Not saved', '没保存上') : tr('Not completed', '没完成'))
+      doneTitle: R0.error ? (sell ? tr('Sale not completed', '卖出没完成') : s.side === 'edit' ? tr('Not saved', '没保存上') : s.side === 'del' ? tr('Not deleted', '没删掉') : tr('Not completed', '没完成'))
+        : R0.deleted ? (R0.sent >= 0.01 ? tr('Deleted · ' + fmt(R0.sent) + ' USDT to your wallet', '已删除 · ' + fmt(R0.sent) + ' USDT 已到钱包') : tr('Deleted', '已删除'))
+        : R0.deleting ? tr('Deleting · sells at market open', '删除中 · 开盘后卖出')
         : R0.earned ? tr('Deposited ' + fmt(R0.amount || 0) + ' USDT', '已存入 ' + fmt(R0.amount || 0) + ' USDT')
         : R0.withdrawn ? tr(fmt(R0.amount || 0) + ' USDT back in your wallet', '已取出 ' + fmt(R0.amount || 0) + ' USDT')
         : R0.seOn ? tr('Yield strategy on', '加息策略已开启') : R0.seOff ? tr('Yield strategy off', '加息策略已关闭')
@@ -1315,7 +1356,8 @@ class Component extends DCLogic {
       ptabs: pills(tr(['Holdings', 'Activity'], ['持仓', '记录']), s.ptab, i => this.setState({ ptab: i })),
       showHold: s.ptab === 0, showAct: s.ptab === 1,
       // 還沒有數字：灰色骨架（不寫 Loading）；讀不到的那一檔寫白話狀態，其他檔照常顯示。
-      holdings: (signedIn && s0.pf === null ? [0, 1].map(i => ({ id: 'sk' + i, name: '\u00a0', cover: '', loading: true, val: null, ret: null })) : s.holdings).map((h, i) => ({ ...h, nsk: h.id.startsWith('sk') ? SKEL + 'width:120px;height:14px' : '', vsk: h.loading ? SKEL + 'width:72px;height:15px;margin-left:auto' : '', ssk: h.loading ? SKEL + 'width:96px;height:11px;margin-top:5px' : '', val: h.loading ? '\u00a0' : h.val == null ? '—' : '$' + fmt(h.val), sub: h.loading ? '\u00a0' : h.val == null ? tr('Can’t update right now', '暂时无法更新') : tr(Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '% of portfolio', '占总资产 ' + Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '%'), ret: h.ret == null ? '' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', open: () => h.id.startsWith('p') || h.id.startsWith('sk') ? null : this.open(h.id) })),
+      holdings: (signedIn && s0.pf === null ? [0, 1].map(i => ({ id: 'sk' + i, name: '\u00a0', cover: '', loading: true, val: null, ret: null })) : s.holdings).map((h, i) => ({ ...h, nsk: h.id.startsWith('sk') ? SKEL + 'width:120px;height:14px' : '', vsk: h.loading ? SKEL + 'width:72px;height:15px;margin-left:auto' : '', ssk: h.loading ? SKEL + 'width:96px;height:11px;margin-top:5px' : '', val: h.loading ? '\u00a0' : h.val == null ? '—' : '$' + fmt(h.val), sub: h.loading ? '\u00a0' : h.del === 'selling' ? tr('Deleting · sells at market open', '删除中 · 开盘后卖出') : h.del === 'ready' ? tr('Sold out', '已卖完') : h.val == null ? tr('Can’t update right now', '暂时无法更新') : tr(Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '% of portfolio', '占总资产 ' + Math.max(1, Math.round(h.val / (totalVal || 1) * 100)) + '%'), ret: h.ret == null ? '' : pct(h.ret), col: h.ret < 0 ? '#D23F2E' : '#16854F', claim: h.del === 'ready', claimT: tr('Claim USDT', '领回 USDT'),
+        open: () => h.del === 'ready' ? this.deleteMix({ id: h.id, name: h.name, cover: h.cover, mixId: h.mixId, portfolioId: h.pid }) : h.del || h.id.startsWith('p') || h.id.startsWith('sk') ? null : this.open(h.id) })),
       holdNote: !signedIn || s0.pf === null ? null : s.holdings.length === 0 ? tr('No portfolios yet. Pick one on Discover to start.', '还没有持仓，去“发现”挑一个组合。') : null,
       cashText: cashNum == null ? '—' : '$' + fmt(s.cash),
       // 現金區：錢包現金（Available）與現金生息（Earning）分兩行，永遠不加總；投組的借款不會出現在這裡。
