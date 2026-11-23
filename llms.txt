@@ -1,6 +1,6 @@
 # CRE8
 
-> CRE8 lets you buy baskets of tokenized US stocks (bStock) and crypto with USDT, in one payment, and hold them in an on-chain smart account on BNB Chain that only you control. Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: https://cre8.finance/zh
+> CRE8 (cre8.finance) is an app on BNB Chain for buying baskets of tokenized US stocks and crypto with USDT, held in your own smart account, with yield strategies that put your bStock to work. Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: https://cre8.finance/zh
 
 ## Key pages
 - [How it works](https://cre8.finance/how-it-works): buying, custody, fees, selling and withdrawing, US market hours, idle-cash yield, testnet status.
@@ -18,6 +18,7 @@
 - Model APY is a backtest of current weights on historical prices, not a track record.
 - Status: testnet only, no real money. No mainnet date yet.
 - Availability: anyone outside the US, where local rules allow.
+- Not related to the CRE8 Finance project on Solana or to any CRE8 token. CRE8 has no token at present.
 
 ## People portfolios
 - [Pelosi Portfolio](https://cre8.finance/portfolios/pelosi): NVDA 19%, GOOGL 19%, MSFT 19%, AMZN 19%, INTC 19%, AVGO 5%. Model APY +24.8% (backtest as of 2026-11-22).

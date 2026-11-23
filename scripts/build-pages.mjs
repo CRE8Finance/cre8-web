@@ -18,6 +18,7 @@
  * 只用 node 內建（fetch、fs），不加依賴。
  */
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -167,7 +168,7 @@ const T = {
 };
 const P = (lang, p) => (lang === 'zh' ? zhPath(p) : enPath(p));
 
-function head({ lang, path, title, description, schema, extraHead = '' }) {
+function head({ lang, path, title, description, schema, extraHead = '', image = '/assets/og.jpg' }) {
   const t = T[lang];
   const self = P(lang, path);
   return `<!DOCTYPE html>
@@ -190,14 +191,14 @@ function head({ lang, path, title, description, schema, extraHead = '' }) {
 <meta property="og:url" content="${abs(self)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:image" content="${SITE}/assets/og.jpg">
+<meta property="og:image" content="${SITE}${image}">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@CRE8Finance">
 <meta name="twitter:title" content="${esc(title)}">
 <meta name="twitter:description" content="${esc(description)}">
-<meta name="twitter:image" content="${SITE}/assets/og.jpg">
+<meta name="twitter:image" content="${SITE}${image}">
 ${schema.map(ld).join('\n')}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -242,6 +243,12 @@ const crumbs = (lang, items) => {
 };
 
 const ORG = { '@type': 'Organization', name: 'CRE8', url: SITE + '/', logo: SITE + '/assets/cre8-mark-512.png', sameAs: [X] };
+// 一句話描述：seo-aeo-geo repo 的 facts.md 定稿，全站與社群簡介逐字一致；改這裡要同步改 facts.md。
+const PITCH = {
+  en: 'CRE8 (cre8.finance) is an app on BNB Chain for buying baskets of tokenized US stocks and crypto with USDT, held in your own smart account, with yield strategies that put your bStock to work.',
+  zh: 'CRE8（cre8.finance）是 BNB Chain 上的应用，用 USDT 一次买入美股代币和加密资产组合，资产放在你自己的智能账户里，还能开启加息策略，让 bStock 多赚一份收益。',
+};
+const orgFor = (lang) => ({ '@context': 'https://schema.org', ...ORG, description: PITCH[lang], disambiguatingDescription: lang === 'zh' ? '与 Solana 上的 CRE8 Finance 或任何 CRE8 代币无关。CRE8 目前没有发行代币。' : 'Not related to the CRE8 Finance project on Solana or to any CRE8 token. CRE8 has no token at present.' });
 
 function fundRow(f, lang, opts = {}) {
   const m = f.meta[lang];
@@ -336,6 +343,12 @@ function riskText(f, lang) {
   return items;
 }
 
+// 組合頁的分享圖：scripts/build-og.mjs 產生在 assets/og/；還沒產生的（新基金）先用全站那張。
+const ogImage = (key, lang) => {
+  const rel = `/assets/og/${key}${lang === 'zh' ? '-zh' : ''}.jpg`;
+  return existsSync(join(ROOT, rel)) ? rel : '/assets/og.jpg';
+};
+
 function fundPage(f, funds, lang) {
   const t = T[lang];
   const m = f.meta[lang];
@@ -360,7 +373,7 @@ function fundPage(f, funds, lang) {
   const retLabels = zh ? [['近 7 天', 'd7'], ['近 30 天', 'd30'], ['近 90 天', 'd90'], ['近 1 年', 'y1'], [`${date(f.start, 'zh')}至今`, 'all']] : [['7 days', 'd7'], ['30 days', 'd30'], ['90 days', 'd90'], ['1 year', 'y1'], [`Since ${date(f.start, 'en')}`, 'all']];
   const risks = riskText(f, lang).slice(f.category === 'leveraged' ? 1 : 0);
 
-  return head({ lang, path, title, description, schema: [product, c.schema] }) + `
+  return head({ lang, path, title, description, schema: [product, c.schema], image: ogImage(f.key, lang) }) + `
 <main class="wrap">
 ${c.html}
 <section class="hero">
@@ -456,6 +469,7 @@ function faqs(lang) {
     ['最低投多少？', '每笔 50 USDT 起投。'],
     ['收费吗？', '测试网全免费，gas 也由 CRE8 承担。主网费率会在上线前公布。'],
     ['谁可以用？', '美国以外、当地法规允许的用户都可以。测试网期间需要邀请码才能登录。'],
+    ['CRE8 和 Solana 上的 CRE8 Finance 是同一个项目吗？', '不是。CRE8（cre8.finance）是 BNB Chain 上用 USDT 一次买入美股代币和加密资产组合的应用，和 Solana 上同名的 CRE8 Finance 或任何 CRE8 代币都没有关系。CRE8 目前没有发行代币。'],
   ];
   return [
     ['Is this real money?', 'Not yet. CRE8 is on BNB Chain testnet, and test USDT is free. There’s no mainnet date yet.'],
@@ -468,6 +482,7 @@ function faqs(lang) {
     ['What’s the minimum?', '50 USDT per purchase.'],
     ['What does it cost?', 'Nothing on testnet, and CRE8 pays the gas. Mainnet fees will be announced before launch.'],
     ['Who can use it?', 'Anyone outside the US, where local rules allow. During testnet you need an invite code to sign in.'],
+    ['Is CRE8 the same as CRE8 Finance on Solana?', 'No. CRE8 (cre8.finance) is an app on BNB Chain for buying baskets of tokenized US stocks and crypto with USDT. It isn’t related to the CRE8 Finance project on Solana or to any CRE8 token. CRE8 has no token at present.'],
   ];
 }
 const faqSchema = (lang) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', inLanguage: T[lang].htmlLang, mainEntity: faqs(lang).map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: strip(a) } })) });
@@ -712,7 +727,7 @@ async function zhHome(enHtml, funds) {
   html = replaceBlock(html, 'faq', faqBlock('zh'));
   html = html.replace(/(data-apy="([a-z0-9-]+)"[^>]*>)[^<]*(<)/g, (m0, open, key, close) => `${open}年化 ${pct(funds.find((x) => x.key === key).apy)}${close}`);
   const site = { '@context': 'https://schema.org', '@type': 'WebSite', name: 'CRE8', url: SITE + '/zh', inLanguage: 'zh-Hans', description: tb.description };
-  html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ld([{ '@context': 'https://schema.org', ...ORG }, site, faqSchema('zh')]));
+  html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/, ld([orgFor('zh'), site, faqSchema('zh')]));
   // 首頁用相對路徑；/zh 底下要改成從根目錄起算。
   html = html.replace(/(src|href)="(assets|app)\//g, '$1="/$2/').replace(/url\((assets|app)\//g, 'url(/$1/').replace(/"\.\/(support|image-slot)\.js"/g, '"/$1.js"').replace(/":"assets\/vendor\//g, '":"/assets/vendor/');
   // 連到中文版對應頁；語言切換改成 EN → 英文首頁。
@@ -789,7 +804,7 @@ function updateHome(html, funds) {
   });
   const desc = 'Buy baskets of US stocks and crypto with USDT. Follow Pelosi, Trump and Musk, or build your own. Yield on idle capital, in your own wallet. Now on testnet.';
   const schema = [
-    { '@context': 'https://schema.org', ...ORG },
+    orgFor('en'),
     { '@context': 'https://schema.org', '@type': 'WebSite', name: 'CRE8', url: SITE + '/', description: desc },
     faqSchema('en'),
   ];
@@ -818,7 +833,7 @@ function llms(funds) {
   const g = (cat) => funds.filter((f) => f.category === cat).map((f) => `- [${f.meta.en.name}](${abs('/portfolios/' + f.key)}): ${f.holdings.map((h) => `${h.ticker} ${wt(h.weight)}`).join(', ')}. Model APY ${pct(f.apy)} (backtest as of ${f.asOf}).`).join('\n');
   return `# CRE8
 
-> CRE8 lets you buy baskets of tokenized US stocks (bStock) and crypto with USDT, in one payment, and hold them in an on-chain smart account on BNB Chain that only you control. Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: ${SITE}/zh
+> ${PITCH.en} Portfolios rebalance automatically. CRE8 is on BNB Chain testnet: test USDT is free and signing in needs an invite code. 简体中文: ${SITE}/zh
 
 ## Key pages
 - [How it works](${SITE}/how-it-works): buying, custody, fees, selling and withdrawing, US market hours, idle-cash yield, testnet status.
@@ -836,6 +851,7 @@ function llms(funds) {
 - Model APY is a backtest of current weights on historical prices, not a track record.
 - Status: testnet only, no real money. No mainnet date yet.
 - Availability: anyone outside the US, where local rules allow.
+- Not related to the CRE8 Finance project on Solana or to any CRE8 token. CRE8 has no token at present.
 
 ## People portfolios
 ${g('person')}
@@ -880,4 +896,6 @@ await out('zh/index.html', await zhHome(home, funds));
 await out('zh/waitlist/index.html', await zhWaitlist());
 await out('sitemap.xml', sitemap(paths));
 await out('llms.txt', llms(funds));
+// 分享圖要用的資料（名稱、分類、代號、封面），給 scripts/build-og.mjs。
+await out('scripts/og-data.json', JSON.stringify(funds.map((f) => ({ key: f.key, img: f.meta.img, en: { name: f.meta.en.name, kind: T.en.kinds[f.category] }, zh: { name: f.meta.zh.name, kind: T.zh.kinds[f.category] }, tickers: f.holdings.map((h) => h.ticker) })), null, 1) + '\n');
 console.log(`OK：${funds.length} 檔基金（asOf ${funds[0]?.asOf}），${paths.length * 2} 個網址寫進 sitemap。`);

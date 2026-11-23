@@ -1,0 +1,376 @@
+[
+ {
+  "key": "pelosi",
+  "img": "p-pelosi",
+  "en": {
+   "name": "Pelosi Portfolio",
+   "kind": "People"
+  },
+  "zh": {
+   "name": "佩洛西持仓",
+   "kind": "人物"
+  },
+  "tickers": [
+   "NVDA",
+   "GOOGL",
+   "MSFT",
+   "AMZN",
+   "INTC",
+   "AVGO"
+  ]
+ },
+ {
+  "key": "trump",
+  "img": "p-trump",
+  "en": {
+   "name": "Trump Holdings",
+   "kind": "People"
+  },
+  "zh": {
+   "name": "特朗普持仓",
+   "kind": "人物"
+  },
+  "tickers": [
+   "NVDA",
+   "AAPL",
+   "MSFT",
+   "AMZN",
+   "META",
+   "TSLA",
+   "GOOGL",
+   "NFLX"
+  ]
+ },
+ {
+  "key": "duan",
+  "img": "p-duan",
+  "en": {
+   "name": "Duan Yongping",
+   "kind": "People"
+  },
+  "zh": {
+   "name": "段永平持仓",
+   "kind": "人物"
+  },
+  "tickers": [
+   "AAPL",
+   "PDD",
+   "NVDA",
+   "TSLA"
+  ]
+ },
+ {
+  "key": "musk",
+  "img": "p-musk",
+  "en": {
+   "name": "Musk Basket",
+   "kind": "People"
+  },
+  "zh": {
+   "name": "马斯克宇宙",
+   "kind": "人物"
+  },
+  "tickers": [
+   "TSLA",
+   "SPCX",
+   "BTC",
+   "DOGE"
+  ]
+ },
+ {
+  "key": "ai-memory",
+  "img": "p-aimem",
+  "en": {
+   "name": "AI Memory",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "AI 存储",
+   "kind": "主题"
+  },
+  "tickers": [
+   "SKHY",
+   "MU",
+   "SNDK"
+  ]
+ },
+ {
+  "key": "korea-semiconductors",
+  "img": "p-korea",
+  "en": {
+   "name": "Korea Semis",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "韩国半导体",
+   "kind": "主题"
+  },
+  "tickers": [
+   "SKHY",
+   "EWY"
+  ]
+ },
+ {
+  "key": "ai-chips",
+  "img": "p-ai",
+  "en": {
+   "name": "AI Chips",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "AI 芯片",
+   "kind": "主题"
+  },
+  "tickers": [
+   "NVDA",
+   "TSM",
+   "INTC",
+   "SKHY",
+   "AVGO",
+   "MRVL",
+   "PENG"
+  ]
+ },
+ {
+  "key": "bnb",
+  "img": "p-bnb",
+  "en": {
+   "name": "BNB Ecosystem",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "BNB 生态",
+   "kind": "主题"
+  },
+  "tickers": [
+   "BNB",
+   "BNC"
+  ]
+ },
+ {
+  "key": "ai-models",
+  "img": "p-aimodel",
+  "en": {
+   "name": "AI Model Makers",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "AI 大模型",
+   "kind": "主题"
+  },
+  "tickers": [
+   "ANT",
+   "AMZN",
+   "GOOGL",
+   "MSFT",
+   "SPCX",
+   "META"
+  ]
+ },
+ {
+  "key": "mag7",
+  "img": "p-mag7",
+  "en": {
+   "name": "Mag7",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "美股七巨头",
+   "kind": "主题"
+  },
+  "tickers": [
+   "AAPL",
+   "MSFT",
+   "GOOGL",
+   "AMZN",
+   "NVDA",
+   "META",
+   "TSLA"
+  ]
+ },
+ {
+  "key": "us-market",
+  "img": "p-us",
+  "en": {
+   "name": "US Market",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "美股大盘",
+   "kind": "主题"
+  },
+  "tickers": [
+   "QQQ",
+   "SPY"
+  ]
+ },
+ {
+  "key": "everyday",
+  "img": "p-everyday",
+  "en": {
+   "name": "Everyday Brands",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "天天在用",
+   "kind": "主题"
+  },
+  "tickers": [
+   "AAPL",
+   "AMZN",
+   "NFLX",
+   "GOOGL",
+   "META",
+   "MSFT",
+   "RDDT"
+  ]
+ },
+ {
+  "key": "china",
+  "img": "p-china",
+  "en": {
+   "name": "China Tech",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "中概电商",
+   "kind": "主题"
+  },
+  "tickers": [
+   "BABA",
+   "PDD"
+  ]
+ },
+ {
+  "key": "gold-bitcoin",
+  "img": "p-goldbtc",
+  "en": {
+   "name": "Gold + Bitcoin",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "黄金+比特币",
+   "kind": "主题"
+  },
+  "tickers": [
+   "XAUt",
+   "BTC"
+  ]
+ },
+ {
+  "key": "crypto-infrastructure",
+  "img": "p-cinfra",
+  "en": {
+   "name": "Crypto Infrastructure",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "加密基建",
+   "kind": "主题"
+  },
+  "tickers": [
+   "CRCL",
+   "COIN",
+   "HOOD"
+  ]
+ },
+ {
+  "key": "crypto-treasuries",
+  "img": "p-ctsy",
+  "en": {
+   "name": "Crypto Treasuries",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "囤币上市公司",
+   "kind": "主题"
+  },
+  "tickers": [
+   "MSTR",
+   "BMNR",
+   "BNC",
+   "CYPH"
+  ]
+ },
+ {
+  "key": "new-giants",
+  "img": "p-giants",
+  "en": {
+   "name": "New Giants",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "新晋巨头",
+   "kind": "主题"
+  },
+  "tickers": [
+   "SPCX",
+   "ANT"
+  ]
+ },
+ {
+  "key": "meme",
+  "img": "p-meme",
+  "en": {
+   "name": "Meme Stocks",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "迷因股",
+   "kind": "主题"
+  },
+  "tickers": [
+   "GME",
+   "DOGE",
+   "AMC",
+   "DJT"
+  ]
+ },
+ {
+  "key": "bitcoin-plus",
+  "img": "p-btcplus",
+  "en": {
+   "name": "Bitcoin Plus",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "比特币加强版",
+   "kind": "主题"
+  },
+  "tickers": [
+   "BTC",
+   "MSTR",
+   "COIN"
+  ]
+ },
+ {
+  "key": "soxl",
+  "img": "p-soxl",
+  "en": {
+   "name": "3x Semiconductors",
+   "kind": "Leveraged"
+  },
+  "zh": {
+   "name": "3 倍半导体",
+   "kind": "杠杆"
+  },
+  "tickers": [
+   "SOXL"
+  ]
+ },
+ {
+  "key": "tqqq",
+  "img": "p-tqqq",
+  "en": {
+   "name": "3x Nasdaq",
+   "kind": "Leveraged"
+  },
+  "zh": {
+   "name": "3 倍纳指",
+   "kind": "杠杆"
+  },
+  "tickers": [
+   "TQQQ"
+  ]
+ }
+]
