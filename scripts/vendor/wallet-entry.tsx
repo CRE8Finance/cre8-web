@@ -50,7 +50,7 @@ import { withdrawAmountWei } from './lib/format';
 import { explainTradeFailure } from './lib/trade-failure';
 import { isWaitlistPending, signalWaitlistApproved } from './lib/waitlist-signal';
 import { normalizeInviteCode, parseWaitlist } from './lib/waitlist';
-import { freshCreationPayload, fundMix, readWalletUsdt, signMix } from './features/mix/mix-chain';
+import { freshCreationPayload, fundMix, readWalletUsdt, sendUsdtToMix, signMix } from './features/mix/mix-chain';
 import { createElement } from 'react';
 import { createWalletClient, custom, encodeFunctionData, erc20Abi, formatUnits, isAddress, parseUnits } from 'viem';
 import type { Address, Hex } from 'viem';
@@ -889,6 +889,120 @@ async function strategyCloseRaw(args: { portfolioId: number; onStep?: Step }) {
   return { closed: on.map((p) => p.asset) };
 }
 
+// ---- 定投（DCA，backend docs/dca.zh-TW.md）--------------------------------------------------------
+// 總額先進這一檔自己的帳戶（同買入的錢包轉帳，但不記成 funding lot），帳戶再整筆存進白名單 vault 生息；
+// 每期由系統領出一期、照權重買。還沒買的錢屬於這一檔，不跟現金、現金生息、加息策略混在一起。
+type DcaFrequency = 'daily' | 'weekly' | 'biweekly' | 'monthly';
+type DcaPrepared = { status: 'ready' | 'unavailable'; planId?: string; authorization?: string; vaultId?: string; vaultName?: string; apyBps?: number | null;
+  trancheRaw?: string; startAt?: string; calls?: EarnCall[]; reason?: string; message?: string };
+function dcaError(cause: unknown): Error {
+  if (cause instanceof ApiError) {
+    const m: Record<string, string> = {
+      DCA_PERIOD_TOO_SMALL: L('Each period needs at least 10 USDT.', '每期至少 10 USDT。'),
+      DCA_ALREADY_ACTIVE: L('This portfolio already has a recurring buy.', '这个组合已经在定投了。'),
+      INVALID_START: L('Pick a start date from today to a year ahead.', '开始日期要在今天到一年内。'),
+      INVALID_PERIODS: L('Pick 2 to 365 periods.', '期数要在 2 到 365 之间。'),
+      DCA_BUSY: L('This period is buying right now. Try again in a minute.', '这一期正在买入，稍等一分钟再试。'),
+      DCA_NOT_FOUND: L('No recurring buy here.', '这个组合没有定投。'),
+    };
+    if (m[cause.code]) return new Error(m[cause.code]);
+  }
+  return earnError(cause);
+}
+async function dcaApi<T>(t: string, path: string, init: { method?: 'GET' | 'POST'; body?: unknown } = {}): Promise<T> {
+  try { return await apiRequest<T>(path, { ...init, token: t }); } catch (cause) { throw dcaError(cause); }
+}
+/** 定投狀態（`GET /portfolios/:id/dca`）：plan、還沒買的部分、已賺、下一期、生息利率（offer）。 */
+export const dcaGet = (portfolioId: number) => dcaApi<unknown>(token(), `/portfolios/${portfolioId}/dca`);
+/** 記帳（`/dca/confirm`，冪等）：鏈上還沒定案回 pending，等一下再問。 */
+async function confirmDca(t: string, portfolioId: number, txHash: Hex): Promise<{ state: string; returnedRaw?: string } | null> {
+  for (let i = 0; i < 12; i++) {
+    const r = await dcaApi<{ status: string; state: string; returnedRaw?: string }>(t, `/portfolios/${portfolioId}/dca/confirm`, { method: 'POST', body: { txHash } }).catch(() => ({ status: 'pending', state: '' }));
+    if (r.status === 'confirmed') return r;
+    await sleep(2500);
+  }
+  return null;
+}
+
+/**
+ * 開始定投：（第一次買這檔就先開帳戶）→ 總額從錢包轉進這檔的帳戶 → 帳戶 owner 簽一次存進 vault（需要時連 session 權限一起裝）→ 記帳。
+ * 帳戶裡已經有上次轉進來、還沒存進 vault 的總額時，不再轉一次（失敗重試不會重複扣款）。
+ */
+export const dcaStart = localized(dcaStartRaw, '定投没开始，再试一次。');
+async function dcaStartRaw(args: { strategyId?: number; onchainId?: number; shown?: { version: number; configHash: string } | null; mixPortfolioId?: number;
+  total: string; periods: number; frequency: DcaFrequency; startAt: string; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t, wallet } = need();
+  let portfolioId: number, account: Address, strategyId: number, approved: readonly Address[] = [];
+  if (args.mixPortfolioId != null) {
+    portfolioId = args.mixPortfolioId;
+    ({ account, strategyId } = await portfolioAccount(t, portfolioId));
+  } else {
+    if (args.strategyId == null || args.onchainId == null) throw new Error(temporarily());
+    const r = await ensurePortfolio({ token: t, wallet, strategyId: args.strategyId, onchainId: args.onchainId, shown: args.shown ?? null, step });
+    const a = r.portfolio.smartAccounts[0]?.address as Address | undefined;
+    if (!a) throw new Error(L('The server returned no account for this portfolio.', '服务器没有返回这个组合的账户。'));
+    portfolioId = r.portfolio.id; account = a; strategyId = r.portfolio.strategyId; approved = r.approved;
+  }
+  const totalWei = parseUnits(args.total, 18);
+  if (totalWei <= 0n) throw new Error(L('Enter an amount.', '请输入金额。'));
+  const body = { totalRaw: totalWei.toString(), periods: args.periods, frequency: args.frequency, startAt: args.startAt };
+  const prepare = () => apiRequest<DcaPrepared>(`/portfolios/${portfolioId}/dca`, { method: 'POST', body, token: t });
+  const fundsMissing = (cause: unknown) => cause instanceof ApiError && cause.code === 'DCA_FUNDS_NOT_IN_ACCOUNT';
+  // 買入提速：授權狀態跟轉帳無關，先讀（基金同買入：還沒授權給 executor 的資產跟這一筆一起簽）。
+  const approvals = args.mixPortfolioId == null ? readApprovalState(t, portfolioId, account).catch(() => null) : Promise.resolve(null);
+  step(L('Checking', '正在检查'));
+  let p: DcaPrepared;
+  try { p = await prepare(); }
+  catch (cause) {
+    if (!fundsMissing(cause)) throw dcaError(cause);
+    step(L('Approve the USDT transfer in your wallet', '在钱包里确认 USDT 转账'));
+    const hash = await sendUsdtToMix({ wallet, token: t, account, amount: totalWei });
+    step(L('Waiting for the network', '等待链上确认'));
+    const receipt = await publicClientFor(wallet).waitForTransactionReceipt({ hash, confirmations: 2, timeout: 60_000 });
+    if (receipt.status !== 'success') throw new Error(L(`The transfer was rejected by the network (${hash}).`, `转账被链上拒绝（${hash}）。`));
+    // 後端讀的區塊可能還沒看到這筆：稍等再問幾次。
+    for (let i = 0; ; i++) {
+      try { p = await prepare(); break; } catch (again) { if (!fundsMissing(again) || i >= 5) throw dcaError(again); await sleep(2000); }
+    }
+  }
+  if (p.status !== 'ready' || !p.calls?.length) throw new Error(p.message && !isZh() ? p.message : temporarily());
+  const renewal = p.authorization === 'renewal_required' ? await getRenewalParams(t, portfolioId) : null;
+  const core: SudoCall[] = [...(renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []),
+    ...p.calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
+  const state = await approvals, executor = state?.executor ?? null;
+  const missing = executor && state ? state.missing.filter((a) => !approved.some((x) => x.toLowerCase() === a.toLowerCase())) : [];
+  const extra = executor ? missing.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n })) : [];
+  const together = core.length + extra.length <= APPROVALS_PER_USEROP;
+  step(L('Approve in your wallet to start', '在钱包里确认，开始定投'));
+  const r = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: together ? [...core, ...extra] : core });
+  if (!r.success) throw new Error(L('The transaction didn’t go through. Your USDT is in this portfolio’s account; try again.', '交易没成功，USDT 在这个组合的账户里，再试一次即可。'));
+  if (renewal) await postRenewalResult(t, portfolioId, { keyRef: renewal.keyRef, permissionId: renewal.permissionId, validUntil: renewal.validUntil, policySnapshot: renewal.policySnapshot }).catch(() => undefined);
+  if (!together && executor) await sendInBatches(missing, (batch) => sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: batch.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n })) })).catch(() => undefined);
+  step(L('Confirming', '正在确认'));
+  const done = await confirmDca(t, portfolioId, r.txHash as Hex);
+  return { portfolioId, planId: p.planId ?? null, totalUsdt: formatUnits(totalWei, 18), trancheUsdt: formatUnits(BigInt(p.trancheRaw ?? '0'), 18),
+    vaultName: p.vaultName ?? null, apyBps: p.apyBps ?? null, recorded: done !== null };
+}
+export const dcaPause = localized(async (portfolioId: number) => dcaApi<{ state: string }>(token(), `/portfolios/${portfolioId}/dca/pause`, { method: 'POST', body: {} }), '没暂停上，再试一次。');
+export const dcaResume = localized(async (portfolioId: number) => dcaApi<{ state: string }>(token(), `/portfolios/${portfolioId}/dca/resume`, { method: 'POST', body: {} }), '没继续上，再试一次。');
+/** 領回還沒買的部分（含利息）到錢包：帳戶 owner 簽一次。流動性不夠時丟一句「現在最多可領 X」。 */
+export const dcaWithdraw = localized(dcaWithdrawRaw, '没领回，再试一次。');
+async function dcaWithdrawRaw(args: { portfolioId: number; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t, wallet } = need();
+  step(L('Checking', '正在检查'));
+  const p = await dcaApi<{ status: string; amountRaw?: string; maxWithdrawRaw?: string; calls?: EarnCall[] }>(t, `/portfolios/${args.portfolioId}/dca/withdraw`, { method: 'POST', body: {} });
+  if (p.status === 'closed') return { amountUsdt: '0', closed: true };
+  if (p.status === 'limited') throw new Error(L(`You can take out up to ${usdtText(p.maxWithdrawRaw ?? '0')} USDT right now. Try again later.`, `现在最多只能领 ${usdtText(p.maxWithdrawRaw ?? '0')} USDT，稍后再试。`));
+  if (p.status !== 'ready' || !p.calls?.length) throw new Error(temporarily());
+  step(L('Approve in your wallet', '在钱包里确认'));
+  const hash = await sendStrategyCalls(t, wallet, args.portfolioId, p.calls);
+  step(L('Confirming', '正在确认'));
+  const done = await confirmDca(t, args.portfolioId, hash as Hex);
+  return { amountUsdt: formatUnits(BigInt(done?.returnedRaw ?? p.amountRaw ?? '0'), 18), closed: true };
+}
+
 export const chain = { id: CHAIN.id, usdt: USDT, explorer: CHAIN.explorerUrl };
 export { transferCalldata };
 
@@ -897,6 +1011,7 @@ export { transferCalldata };
   mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, deleteMix, chain,
   earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
+  dcaGet, dcaStart, dcaPause, dcaResume, dcaWithdraw,
   /** 頁面換語言後呼叫：重推一次快照，讓錯誤訊息換成新語言。 */
   relang: () => { if (mounted) emit(); },
 };
