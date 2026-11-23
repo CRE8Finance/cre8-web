@@ -723,7 +723,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=e21aeca3ac'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=757e548882'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -755,11 +755,13 @@ class Component extends DCLogic {
   // 交易／存取完成的當下先把數字改好（樂觀更新），不用等後端快照：組合多了／少了多少、現金、生息各記一筆。
   // 後端回來的那一項只要讀取時間（updatedAt）還早於這筆動作，就繼續疊上這筆；讀到動作之後的值就以後端為準。3 分鐘後一律丟掉。
   bump(list) {
-    const at = Date.now(); this.opt = (this.opt || []).filter(o => at - o.at < 180000).concat(list.map(o => ({ ...o, at })));
-    this.setState(x => this.withOpt({ pf: x.pf, pst: x.pst, seP: x.seP, cashWei: x.cashWei, earnAcct: x.earnAcct }, null));
+    const at = Date.now(), fresh = list.map(o => ({ ...o, at }));
+    this.opt = (this.opt || []).filter(o => at - o.at < 180000).concat(fresh);
+    // 畫面上的數字已含之前的變動：這次只疊新的這幾筆（不然連做兩次會重複加）。後端快照回來時才把還沒反映的全部疊上。
+    this.setState(x => this.withOpt({ pf: x.pf, pst: x.pst, seP: x.seP, cashWei: x.cashWei, earnAcct: x.earnAcct }, null, fresh));
   }
-  withOpt(st, d) {
-    const now = Date.now(), ops = (this.opt = (this.opt || []).filter(o => now - o.at < 180000));
+  withOpt(st, d, only) {
+    const now = Date.now(), all = (this.opt = (this.opt || []).filter(o => now - o.at < 180000)), ops = only || all;
     if (!ops.length) return st;
     const stale = (o, item) => !d || !item || !item.updatedAt || Date.parse(item.updatedAt) < o.at;
     const wei = n => BigInt(Math.round(n * 1e6)) * 10n ** 12n;
@@ -772,14 +774,16 @@ class Component extends DCLogic {
         if (!seP[o.pid]) seP[o.pid] = { status: 'none', positions: [] };
         const cur = pst[o.pid]; pst[o.pid] = { usd: Math.max(0, (cur && cur.usd != null ? cur.usd : 0) + o.d) };
       } else if (o.k === 'cash') {
+        if (d && !(d.cash && d.cash.value)) { keep.push(o); return; } // 快照沒有現金值：畫面沿用已疊好的數字
         if (!stale(o, d && d.cash)) return; keep.push(o);
         if (cashWei != null) { const v = BigInt(cashWei) + wei(o.d); cashWei = String(v > 0n ? v : 0n); }
       } else if (o.k === 'earn') {
+        if (d && !(d.earn && d.earn.value)) { keep.push(o); return; }
         if (!stale(o, d && d.earn)) return; keep.push(o);
         if (earnAcct && earnAcct.status === 'ok') { const ce = earnAcct.cashEarn, v = BigInt(ce.earningRaw || '0') + wei(o.d); earnAcct = { ...earnAcct, cashEarn: { ...ce, earningRaw: String(v > 0n ? v : 0n) } }; }
       }
     });
-    if (d) this.opt = keep;
+    if (d) this.opt = keep; else if (only) this.opt = all;
     return { ...st, pf, pst, seP, cashWei, earnAcct };
   }
   applyOverview(d) {
