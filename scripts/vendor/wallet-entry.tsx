@@ -945,11 +945,11 @@ function dcaError(cause: unknown): Error {
   if (cause instanceof ApiError) {
     const m: Record<string, string> = {
       DCA_PERIOD_TOO_SMALL: L('Each period needs at least 10 USDT.', '每期至少 10 USDT。'),
-      DCA_ALREADY_ACTIVE: L('This portfolio already has a recurring buy.', '这个组合已经开启 DCA 了。'),
+      DCA_ALREADY_ACTIVE: L('This portfolio already has DCA on.', '这个组合已经开启 DCA 了。'),
       INVALID_START: L('Pick a start date from today to a year ahead.', '开始日期要在今天到一年内。'),
       INVALID_PERIODS: L('Pick 2 to 365 periods.', '期数要在 2 到 365 之间。'),
       DCA_BUSY: L('This period is buying right now. Try again in a minute.', '这一期正在买入，稍等一分钟再试。'),
-      DCA_NOT_FOUND: L('No recurring buy here.', '这个组合没有开启 DCA。'),
+      DCA_NOT_FOUND: L('DCA isn’t on for this portfolio.', '这个组合没有开启 DCA。'),
       // 前端已經自動把總額轉進帳戶、重問過還是不夠：帳戶裡的現金有一部分還在等之前的買入。
       DCA_FUNDS_NOT_IN_ACCOUNT: L('Your USDT is in this portfolio’s account, but part of the account’s cash is still set aside for an earlier buy, so DCA can’t start yet. Try again in a few minutes.',
         'USDT 已经在这个组合账户里，但账户里有一部分钱还在等之前的买入，DCA 暂时开不了。几分钟后再试。'),
