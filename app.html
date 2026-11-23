@@ -354,6 +354,7 @@
 <div style="width:80px;height:80px;border-radius:50%;background:{{ doneBg }};display:flex;align-items:center;justify-content:center;transform:scale({{ doneSc }});transition:transform .5s cubic-bezier(.34,1.6,.5,1);box-shadow:0 16px 40px -12px {{ doneSh }}"><svg width="36" height="28" viewBox="0 0 46 36"><path d="{{ doneIcon }}" fill="none" stroke="#fff" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round" style="stroke-dasharray:60;stroke-dashoffset:{{ doneDash }};transition:stroke-dashoffset .42s cubic-bezier(.65,0,.35,1) .14s"></path></svg></div>
 <div style="font:500 22px/1.3 'Geist';letter-spacing:-.02em;margin-top:22px;text-align:center;text-wrap:balance">{{ doneTitle }}</div>
 <sc-if value="{{ doneNote }}" hint-placeholder-val="{{ false }}"><p style="margin:10px 2px 0;font:400 14px/1.5 'Geist';color:#6B7785;text-align:center;text-wrap:balance">{{ doneNote }}</p></sc-if>
+<sc-if value="{{ doneTx }}" hint-placeholder-val="{{ false }}"><a href="{{ doneTxUrl }}" target="_blank" rel="noopener" style="margin-top:12px;font:500 13px 'Geist';color:#2F6690;text-decoration:none">{{ doneTxLabel }}</a></sc-if>
 <sc-if value="{{ doneAsk }}" hint-placeholder-val="{{ false }}"><div style="font:400 15px 'Geist';color:#3C4651;margin-top:18px;text-align:center">{{ askLine }}</div><div style="display:flex;gap:10px;width:100%;margin-top:16px"><button onClick="{{ keepMix }}" style="flex:1;height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:600 16px 'Geist';cursor:pointer">{{ keepBtn }}</button><button onClick="{{ askDelGo }}" style="flex:1;height:52px;border:0;border-radius:999px;background:#D23F2E;color:#fff;font:600 16px 'Geist';cursor:pointer">{{ delBtn }}</button></div></sc-if>
 <sc-if value="{{ doneErr }}" hint-placeholder-val="{{ false }}"><button onClick="{{ retry }}" style="margin-top:28px;width:100%;height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer">{{ t.tryAgain }}</button></sc-if>
 </div>
@@ -760,7 +761,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=66e7597bf9'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=f4be99d6bf'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -1017,18 +1018,24 @@ class Component extends DCLogic {
   }
   step(text) { this.setState({ procText: String(text).toUpperCase() }); }
   // 成功：iOS 式打勾＋一句結果，自己收起（有一句要看的多留一下），點任何地方也會立刻收起，不用按按鈕。
+  // 這次動作的最後一筆交易（BscScan 連結用）。
+  withTx(result) { const W = window.CRE8W, l = W && W.txs ? W.txs() : []; return l.length && !result.error ? { ...result, tx: l[l.length - 1] } : result; }
   finish(result) {
+    result = this.withTx(result);
     const tok = this.doneTok = {};
     this.setState({ step: 'done', doneSc: .4, doneDash: 60, result }); this.later(() => this.setState({ doneSc: 1, doneDash: 0 }), 40); this.refresh();
-    this.later(() => this.doneTok === tok && this.closeDone(), this.doneNote({ ...this.state, result }) ? 2600 : 1400);
+    // 有交易連結時多停幾秒，讓用戶來得及點。
+    this.later(() => this.doneTok === tok && this.closeDone(), result.tx ? 4500 : this.doneNote({ ...this.state, result }) ? 2600 : 1400);
   }
   // 賣完 My mix（帳戶清空）：結果畫面問要不要刪掉組合，不自動收起。
   ask(result) {
+    result = this.withTx(result);
     this.doneTok = null;
     this.setState({ step: 'done', doneSc: .4, doneDash: 60, result }); this.later(() => this.setState({ doneSc: 1, doneDash: 0 }), 40); this.refresh();
   }
   // 刪除 My mix：有持倉先全部賣出、USDT 回錢包，再刪；美股收盤賣不完＝刪除中，開盤後賣完在「我的」領回即刪除（同一支）。
   async deleteMix(tgt) {
+    if (window.CRE8W && window.CRE8W.txReset) window.CRE8W.txReset();
     const W = window.CRE8W, t = tgt || this.state.target;
     this.retryFn = () => this.deleteMix(t);
     this.setState({ modal: true, target: t, side: 'del', step: 'proc', procOff: 264, procText: tr('DELETING', '正在删除') }); this.later(() => this.setState({ procOff: 70 }), 60);
@@ -1103,6 +1110,7 @@ class Component extends DCLogic {
     this.retryFn = () => this.confirm();
     // 處理中第一句：一句人話（之後由錢包程式的步驟接手）。
     const first = { 'dca-out': tr('Getting your USDT back', '正在帮你领回'), earn: tr('Putting your USDT to work', '正在帮你存进去'), 'earn-out': tr('Getting your USDT back', '正在帮你取出'), 'se-on': tr('Turning on the yield strategy', '正在开启加息策略'), 'se-off': tr('Settling the yield strategy', '正在结清加息策略'), sell: tr('Selling for you', '正在帮你卖出'), buy: tr('Buying for you', '正在帮你买入') }[s.side] || tr('Preparing', '准备中');
+    if (W && W.txReset) W.txReset();
     this.setState({ step: 'proc', procOff: 264, procText: first.toUpperCase() }); this.later(() => this.setState({ procOff: 70 }), 60);
     const onStep = x => this.step(x);
     try {
@@ -1488,6 +1496,7 @@ class Component extends DCLogic {
         : R0.amount ? tr('Order placed · ' + fmt(R0.amount) + ' USDT', '已下单 · ' + fmt(R0.amount) + ' USDT') : tr('Order placed', '已下单'),
       doneErr: !!R0.error, doneDash: s.doneDash || 0, retry: () => this.retryFn && this.retryFn(),
       doneNote: R0.error || this.doneNote(s),
+      doneTx: !!R0.tx, doneTxUrl: R0.tx ? ((window.CRE8W && window.CRE8W.chain && window.CRE8W.chain.explorer) || 'https://testnet.bscscan.com').replace(/\/+$/, '') + '/tx/' + R0.tx : '', doneTxLabel: tr('View on BscScan ↗', '在 BscScan 查看 ↗'),
       doneBg: R0.error ? '#D23F2E' : '#16854F', doneSh: R0.error ? 'rgba(210,63,46,.5)' : 'rgba(30,158,99,.6)',
       doneIcon: R0.error ? 'M23 6v14M23 29v1' : 'M4 18l12 12L42 4',
       profileName: s.pname || (w && w.profile && w.profile.name) || tr('You', '你'), pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
