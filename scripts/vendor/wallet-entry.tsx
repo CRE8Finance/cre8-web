@@ -510,6 +510,24 @@ type SudoCall = { to: Address; data: Hex; value: bigint };
  * 什麼都沒送，等幾秒用同一個請求再問（2026-11-23 實測第一次買入、賣出都撞到）。其他結果照原樣回。
  */
 const SCHEDULER_BUSY = /^\[(DEX_QUEUED|PORTFOLIO_LOCK_BUSY)\]/;
+/**
+ * 多檔股票的賣出一輪（等通道＋報價＋送出＋收據）可能超過前面代理的 30 秒，前端拿到 504，後端其實已經賣了
+ * （2026-11-23 Mag7 賣出 0xa980629f…）。這時看這一檔的交易紀錄：開始之後有新的一輪成交就照成交繼續（領回 USDT）。
+ */
+async function roundOrLanded(t: string, portfolioId: number, run: () => Promise<RedeemResult>): Promise<RedeemResult> {
+  const started = Date.now() - 5_000;
+  try { return await run(); }
+  catch (cause) {
+    if (!(cause instanceof ApiError) || cause.status !== 504) throw cause;
+    for (let i = 0; i < 12; i++) {
+      await sleep(5_000);
+      const rows = (await getPortfolioActivity(t, portfolioId).catch(() => ({ activity: [] }))).activity;
+      const landed = rows.find((a) => Date.parse(a.createdAt) >= started && a.state === 'confirmed');
+      if (landed) return { portfolioId, outcome: 'executed', reason: '', txHash: landed.txHash, steps: [], redeemedUsdE8: '0', remainingUsdE8: '0' };
+    }
+    throw cause;
+  }
+}
 // 後端讓使用者的那一輪優先等通道（backend#244），沒等到就很快再問一次，讓排程器在下一個投組前看到我們在等。
 async function retryBusyRound<T extends { outcome: string; reason: string }>(run: () => Promise<T>, delaysMs: readonly number[] = [1_000, 1_000, 2_000, 2_000, 3_000, 3_000]): Promise<T> {
   for (let i = 0; ; i++) {
@@ -553,7 +571,11 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
   }
   args.step(L('Placing your order', '正在下单'));
   try {
-    const round = await retryBusyRound(() => postRebalance(args.token, args.portfolioId));
+    const round = await retryBusyRound(() => postRebalance(args.token, args.portfolioId)).catch((cause) => {
+      // 下單那一輪超過代理的 30 秒：錢已進組合，後端或排程器會買完，當成排隊中。
+      if (cause instanceof ApiError && cause.status === 504) return { outcome: 'blocked', reason: '[DEX_QUEUED] upstream timeout', txHash: null } as Awaited<ReturnType<typeof postRebalance>>;
+      throw cause;
+    });
     if (round.outcome === 'executed') { noteTx(round.txHash); return { filled: true, note: null, txHash: round.txHash, earnSent }; }
     // 排程器還在處理別的基金（重問後仍在排隊）：錢已進組合，排程器幾分鐘內會自己買，不是「沒送出」。
     if (round.outcome === 'blocked' && SCHEDULER_BUSY.test(round.reason)) {
@@ -686,7 +708,7 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   if (target !== null) {
     step(L('Selling', '正在卖出'));
     try {
-      const first = () => retryBusyRound(() => (args.all ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)) as Promise<RedeemResult>);
+      const first = () => roundOrLanded(t, holding.id, () => retryBusyRound(() => (args.all ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)) as Promise<RedeemResult>));
       const run = await runSellBatches({ first, next: (rest) => continueRedeem(t, holding.id, rest), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
       if (afterSellRun(run) !== 'proceed' || run.status === 'stalled') note = tradeNote(explainTradeFailure({ outcome: run.lastOutcome, reason: run.lastReason }));
     } catch (cause) {
