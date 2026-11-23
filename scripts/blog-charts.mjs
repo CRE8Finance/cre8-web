@@ -19,9 +19,10 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const fmt = (n, d = 0) => n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 // 橫條圖：rows [{label:{en,zh}, value, highlight?}]，unit 'usdM' | 'pct' | 'usdt'
-function bars(c, lang) {
+function bars(c, lang, n) {
   const rows = c.rows;
-  const W = 720, rowH = 40, top = 8, labelW = 190, valW = 110;
+  // 窄版（手機）：標籤在條的上方一行，條佔滿寬，縮小後字仍好讀
+  const W = n ? 320 : 720, rowH = n ? 52 : 42, top = n ? 0 : 8, labelW = n ? 0 : 200, valW = n ? 84 : 110;
   const H = top + rows.length * rowH + 8;
   const max = Math.max(...rows.map((r) => r.value));
   const val = (v) => (c.unit === 'usdM' ? (v >= 1000 ? `$${+(v / 1000).toFixed(2)}B` : `$${fmt(v, 1)}M`) : c.unit === 'pct' ? `${+v.toFixed(2)}%` : `${fmt(v, 0)} U`);
@@ -29,16 +30,18 @@ function bars(c, lang) {
   const body = rows.map((r, i) => {
     const y = top + i * rowH;
     const w = Math.max(2, (r.value / max) * barW);
-    return `<text x="0" y="${y + 24}" font-size="14" fill="${INK}">${esc(r.label[lang] ?? r.label.en)}</text>`
-      + `<rect x="${labelW}" y="${y + 10}" width="${w.toFixed(1)}" height="20" rx="4" fill="${r.highlight ? GOLD : BLUE}"/>`
-      + `<text x="${labelW + w + 10}" y="${y + 25}" font-size="13" fill="${INK}" font-family="'Geist Mono',monospace">${val(r.value)}</text>`;
+    const by = n ? y + 26 : y + 10, bh = n ? 16 : 20;
+    return `<text x="0" y="${n ? y + 17 : y + 25}" font-size="15" fill="${INK}">${esc(r.label[lang] ?? r.label.en)}</text>`
+      + `<rect x="${labelW}" y="${by}" width="${w.toFixed(1)}" height="${bh}" rx="4" fill="${r.highlight ? GOLD : BLUE}"/>`
+      + `<text x="${labelW + w + 8}" y="${by + bh - 3}" font-size="14" fill="${INK}" font-family="'Geist Mono',monospace">${val(r.value)}</text>`;
   }).join('');
   return { W, H, body };
 }
 
 // 折線圖：series [{label:{en,zh}, points:[[x,y],...], color?}]；x 是日期字串或數字
-function lines(c, lang) {
-  const W = 720, legendH = c.series.length > 1 ? 28 : 0, H = 300 + legendH, L = 56, R = c.dots ? 40 : 16, T = 16 + legendH, B = 36;
+function lines(c, lang, n) {
+  const multi = c.series.length > 1;
+  const W = n ? 320 : 720, legendH = multi ? (n ? 22 * c.series.length + 4 : 30) : 0, H = (n ? 230 : 300) + legendH, L = n ? 62 : 64, R = c.dots ? (n ? 34 : 40) : (n ? 8 : 16), T = 16 + legendH, B = 36;
   const all = c.series.flatMap((s) => s.points);
   const xs = all.map((p) => (typeof p[0] === 'string' ? Date.parse(p[0]) : p[0]));
   const ys = all.map((p) => p[1]);
@@ -53,22 +56,22 @@ function lines(c, lang) {
   let grid = '';
   for (let v = y0; v <= y1 + step / 2; v += step) {
     grid += `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" stroke="${GRID}"/>`
-      + `<text x="${L - 8}" y="${(Y(v) + 4).toFixed(1)}" font-size="12" text-anchor="end" fill="${MUTED}" font-family="'Geist Mono',monospace">${c.yFormat === 'index' ? fmt(v, 0) : fmt(v, 0) + (c.ySuffix || '')}</text>`;
+      + `<text x="${L - 8}" y="${(Y(v) + 4).toFixed(1)}" font-size="13" text-anchor="end" fill="${MUTED}" font-family="'Geist Mono',monospace">${c.yFormat === 'index' ? fmt(v, 0) : fmt(v, 0) + (c.ySuffix || '')}</text>`;
   }
   const xl = c.xLabels || [];
   const xlab = xl.map(([x, text], i) => {
     const xv = typeof x === 'string' ? Date.parse(x) : x;
     const anchor = i === 0 ? 'start' : i === xl.length - 1 ? 'end' : 'middle';
-    return `<text x="${X(xv).toFixed(1)}" y="${H - 10}" font-size="12" text-anchor="${anchor}" fill="${MUTED}" font-family="'Geist Mono',monospace">${esc(typeof text === 'object' ? text[lang] : text)}</text>`;
+    return `<text x="${X(xv).toFixed(1)}" y="${H - 10}" font-size="13" text-anchor="${anchor}" fill="${MUTED}" font-family="'Geist Mono',monospace">${esc(typeof text === 'object' ? text[lang] : text)}</text>`;
   }).join('');
   const colors = [BLUE, GOLD, LIGHT];
   const paths = c.series.map((s, i) => {
     const d = s.points.map((p, j) => `${j ? 'L' : 'M'}${X(typeof p[0] === 'string' ? Date.parse(p[0]) : p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join('');
     const seen = new Set(c.series.slice(0, i).flatMap((o) => o.points.map((q) => q.join())));
-    const dots = c.dots ? s.points.map((p) => (seen.has(p.join()) ? '' : `<circle cx="${X(typeof p[0] === 'string' ? Date.parse(p[0]) : p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="4" fill="${s.color || colors[i]}"/><text x="${(X(typeof p[0] === 'string' ? Date.parse(p[0]) : p[0]) + 8).toFixed(1)}" y="${(Y(p[1]) - 8).toFixed(1)}" font-size="12" fill="${INK}" font-family="'Geist Mono',monospace">${fmt(p[1], 0)}</text>`)).join('') : '';
+    const dots = c.dots ? s.points.map((p) => (seen.has(p.join()) ? '' : `<circle cx="${X(typeof p[0] === 'string' ? Date.parse(p[0]) : p[0]).toFixed(1)}" cy="${Y(p[1]).toFixed(1)}" r="4" fill="${s.color || colors[i]}"/><text x="${(X(typeof p[0] === 'string' ? Date.parse(p[0]) : p[0]) + 8).toFixed(1)}" y="${(Y(p[1]) - 8).toFixed(1)}" font-size="13" fill="${INK}" font-family="'Geist Mono',monospace">${fmt(p[1], 0)}</text>`)).join('') : '';
     return `<path d="${d}" fill="none" stroke="${s.color || colors[i]}" stroke-width="2.25" stroke-linejoin="round"/>${dots}`;
   }).join('');
-  const legend = c.series.length > 1 ? c.series.map((s, i) => `<g transform="translate(${L + i * 200},4)"><rect width="12" height="12" rx="2" fill="${s.color || colors[i]}"/><text x="18" y="11" font-size="13" fill="${INK}">${esc(s.label[lang])}</text></g>`).join('') : '';
+  const legend = multi ? c.series.map((s, i) => `<g transform="translate(${n ? 0 : L + i * 220},${n ? 4 + i * 22 : 4})"><rect width="12" height="12" rx="2" fill="${s.color || colors[i]}"/><text x="18" y="11" font-size="14" fill="${INK}">${esc(s.label[lang])}</text></g>`).join('') : '';
   return { W, H, body: grid + xlab + paths + legend };
 }
 
@@ -81,10 +84,14 @@ export async function loadCharts() {
 }
 
 export function chartHtml(c, lang) {
-  const { W, H, body } = c.type === 'line' ? lines(c, lang) : bars(c, lang);
   const title = c.title[lang];
+  // 寬版給桌機、窄版給手機（CSS 依寬度切換），同一份資料
+  const svg = (n) => {
+    const { W, H, body } = c.type === 'line' ? lines(c, lang, n) : bars(c, lang, n);
+    return `<svg class="post-chart__${n ? 'narrow' : 'wide'}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg" font-family="Geist, 'PingFang SC', sans-serif">${body}</svg>`;
+  };
   return `<figure class="post-fig post-chart"><figcaption class="post-chart__title">${esc(title)}</figcaption>`
-    + `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(title)}" xmlns="http://www.w3.org/2000/svg" font-family="Geist, 'PingFang SC', sans-serif">${body}</svg>`
+    + svg(false) + svg(true)
     + `<figcaption class="post-chart__src">${esc(c.source[lang])}</figcaption></figure>`;
 }
 
