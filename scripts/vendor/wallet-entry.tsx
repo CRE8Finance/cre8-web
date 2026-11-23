@@ -780,14 +780,23 @@ async function createMixRaw(args: { input: MixInput; key: string; onStep?: Step 
   step(L('Approve in your wallet to start your basket', '在钱包里确认，启动组合'));
   return signMix({ wallet, token: t, payload, picks: args.input.assets, onStage: (s) => s === 'confirm' && step(L('Confirming', '正在确认')) });
 }
-/** 放錢進組合：錢包轉帳（amount）或測試網每日 1,000 免費 USDT。 */
+/**
+ * 放錢進組合：錢包轉帳（amount）或測試網每日 1,000 免費 USDT。
+ * `earnExtra`：買入確認卡打開了加息策略（跟基金一樣）。My mix 的入金是錢包直接轉帳、不經帳戶的 UserOp，所以錢到帳後
+ * 由帳戶 owner 再簽一次同意（`/strategy-earn/auto`，額度＝帳戶裡等著買的 USDT），成交後排程自動抵押、借款。
+ * 拿不到同意不擋入金，只回 earnExtra: 'unavailable'。
+ */
 export const fundMixBasket = localized(fundMixBasketRaw, '充值没完成，再试一次。');
-async function fundMixBasketRaw(args: { mixId: number; portfolioId: number; account: Address; pay: 'wallet' | 'faucet'; amount?: string; onStep?: Step }) {
+async function fundMixBasketRaw(args: { mixId: number; portfolioId: number; account: Address; pay: 'wallet' | 'faucet'; amount?: string; earnExtra?: boolean; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet } = need();
   step(args.pay === 'wallet' ? L('Approve the USDT transfer in your wallet', '在钱包里确认 USDT 转账') : L('Getting your test USDT', '正在领取测试 USDT'));
-  const r = await fundMix({ wallet, token: t, account: args.account, mixId: args.mixId, portfolioId: args.portfolioId, with: args.pay === 'wallet' ? { kind: 'wallet', amount: parseUnits(args.amount ?? '0', 18) } : { kind: 'test-usdt' } });
-  return r;
+  const amount = args.pay === 'wallet' ? parseUnits(args.amount ?? '0', 18) : 0n;
+  const r = await fundMix({ wallet, token: t, account: args.account, mixId: args.mixId, portfolioId: args.portfolioId, with: args.pay === 'wallet' ? { kind: 'wallet', amount } : { kind: 'test-usdt' } });
+  if (!args.earnExtra) return { ...r, earnExtra: null };
+  // 測試 USDT 每天 1,000 直接進組合帳戶。
+  try { await strategyAutoOn(t, wallet, args.portfolioId, step, args.pay === 'wallet' ? amount : parseUnits('1000', 18)); return { ...r, earnExtra: 'on' as const }; }
+  catch { return { ...r, earnExtra: 'unavailable' as const }; }
 }
 /** 改名、頻率（不用簽）或成分（要簽一次，立刻生效）。 */
 export const patchMix = localized(patchMixRaw, '没保存上，再试一次。');
@@ -818,7 +827,7 @@ function earnError(cause: unknown): Error {
     NOTHING_TO_WITHDRAW: L('Nothing to take out.', '没有可取出的金额。'),
     TX_FAILED: L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'),
     INSUFFICIENT_HOLDING: L('This portfolio doesn’t hold enough of it yet.', '组合里的持仓还不够。'),
-    MIX_NO_STRATEGY_EARN: L('Earn extra isn’t available for your own baskets.', '自建组合暂不支持加息。'),
+    MIX_EXITING: L('This basket is selling everything right now, so the yield strategy can’t be turned on.', '组合正在全部卖出，暂时不能开启加息策略。'),
   };
   return new Error(m[cause.code] ?? (cause.status === 503 || cause.status === 404 ? temporarily() : cause.status === 429 ? L('Too many tries. Wait a minute.', '试太多次了，等一分钟。') : L('That didn’t finish. Try again.', '没有完成，再试一次。')));
 }
@@ -1019,9 +1028,11 @@ async function strategyOpenRaw(args: { portfolioId: number; assets: string[]; on
  * 還沒成交（帳戶裡只有 USDT、還沒有股票）時開加息：跟買入確認畫面一樣先簽同意（`/strategy-earn/auto`，額度＝帳戶裡等著買的 USDT），
  * 成交後由排程自動抵押、借款。回 `{ opened: [], auto: true }`，畫面顯示「已開啟・成交後自動開始」，不再叫用戶成交後回來重開。
  */
-async function strategyAutoOn(t: string, wallet: RenewalWallet, portfolioId: number, step: Step) {
+async function strategyAutoOn(t: string, wallet: RenewalWallet, portfolioId: number, step: Step, atLeast = 0n) {
   const { account, strategyId } = await portfolioAccount(t, portfolioId);
-  const budget = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
+  // 剛轉進來的錢節點可能還沒讀到：至少用這次的金額（My mix 買入時）。
+  const read = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
+  const budget = read > atLeast ? read : atLeast;
   if (budget <= 0n) throw new Error(L('Buy into this portfolio first, then turn this on.', '先买入这个组合，再开启加息。'));
   const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${portfolioId}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: budget.toString() } });
   if (a.status !== 'ready' || !a.calls?.length) throw new Error(temporarily());

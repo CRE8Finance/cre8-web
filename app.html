@@ -768,7 +768,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=320a06ec22'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=f062698f42'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -896,10 +896,8 @@ class Component extends DCLogic {
     const names = this.holdingNames();
     const rows = [];
     await Promise.all(this.state.pf.map(p => W.activity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), state: a.state, usd: a.usdAfterE8 != null ? Number(a.usdAfterE8) / 1e8 : null }))).catch(() => {})));
-    // 加息策略的事件（backend#204 帳本）：減倉、收掉、領獎、開啟、賣出前還款。自建組合沒有（回錯誤就略過）。
-    // 自建組合（My mix）沒有加息：不問（後端回 409，只是雜訊）。
-    const smx = this.state.smx || [], isMix = p => p.personalMix || smx.some(m => m.portfolioId === p.id || m.strategyId === p.strategyId);
-    if (W.strategyActivity) await Promise.all(this.state.pf.filter(p => !isMix(p)).map(p => W.strategyActivity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), se: a.kind, asset: a.asset ? String(a.asset).replace(/B$/, '') : null, amount: a.amountRaw != null ? Number(a.amountRaw) / 1e18 : null }))).catch(() => {})));
+    // 加息策略的事件（backend#204 帳本）：減倉、收掉、領獎、開啟、賣出前還款。基金與自建組合都有（backend#246）；回錯誤就略過。
+    if (W.strategyActivity) await Promise.all(this.state.pf.map(p => W.strategyActivity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, name: names[p.id] || tr('Portfolio', '组合'), se: a.kind, asset: a.asset ? String(a.asset).replace(/B$/, '') : null, amount: a.amountRaw != null ? Number(a.amountRaw) / 1e18 : null }))).catch(() => {})));
     (this.state.smx || []).forEach(m => (m.events || []).forEach(e => rows.push({ at: e.at, name: m.name, kind: e.kind })));
     rows.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
     this.setState({ acts: rows.slice(0, 50) });
@@ -920,10 +918,11 @@ class Component extends DCLogic {
   }
   // 現金生息中的總額（USDT）；讀不到算 0（畫面另外顯示「暫時無法使用」）。
   earnTotal(s) { const a = s.earnAcct; return a && a.status === 'ok' && a.cashEarn && a.cashEarn.earningRaw != null ? Number(a.cashEarn.earningRaw) / 1e18 : 0; }
-  // 一檔基金的策略加息策略（%/年）＝Σ 權重 × 該資產的 extraApyBps（只算有開放市場的資產）。槓桿與自建組合沒有（回 null）。
+  // 一檔基金或自建組合的策略加息策略（%/年）＝Σ 權重 × 該資產的 extraApyBps（只算有開放市場的資產）。槓桿基金沒有（回 null）。
   // state：ok（≥0.3% 才顯示）／low（太低不顯示）／unavailable（市場暫停或讀不到）／loading。syms＝後端代號（NVDAB…），開啟時用。
-  seInfo(s, id) {
-    const f = FUNDS.find(x => x.id === id);
+  // picks：還沒建立的自建組合（買入確認卡）用選好的成分。
+  seInfo(s, id, picks) {
+    const f = FUNDS.find(x => x.id === id) || (picks ? { id, cat: 'mine', hold: picks } : this.mixesOf(s).map(mixFund).find(x => x.id === id));
     if (!f || f.cat === 'leveraged') return null;
     const D = s.det[id], hold = D && D.hold && D.hold.length ? D.hold : f.hold;
     if (s.seMk === 'unavailable') return { state: 'unavailable', rate: null, syms: [] };
@@ -963,7 +962,7 @@ class Component extends DCLogic {
     }
     // 策略加息策略：這一檔有開放市場的資產、各自的利率分項與安全線；持有且開著時用實際部位。
     const S = { registry: '0x973341a0ba6a725630f2a4f66d7dbba92fea4e00', executor: '0x16ab59a8bacb578c6437528ac0961e234e4b717b', vault: '0x2e915b874a5a544736f5afd97f3fa1dd45d417a9', venus: '0x93ab77260c8c62b26698bbb0ee8da3e175b9ad8d', lista: '0x993237ac050512f3749bfee2de759b6b86aea653' };
-    const f = FUNDS.find(x => x.id === dt.fundId), info = this.seInfo(s, dt.fundId), mk = s.seMk && s.seMk !== 'unavailable' ? s.seMk : {};
+    const f = FUNDS.find(x => x.id === dt.fundId) || (dt.picks ? { id: dt.fundId, hold: dt.picks } : this.mixesOf(s).map(mixFund).find(x => x.id === dt.fundId)), info = this.seInfo(s, dt.fundId, dt.picks), mk = s.seMk && s.seMk !== 'unavailable' ? s.seMk : {};
     const D = s.det[dt.fundId], hold = f ? (D && D.hold && D.hold.length ? D.hold : f.hold) : [];
     const elig = hold.filter(([t]) => mk[t]), h = this.holdingsOf(s).find(x => x.id === dt.fundId), on = h && h.seOn && h.seOn.length ? h.seOn : [];
     if (!f || !elig.length) return { title: tr('Details', '详情'), secs: [sec(tr('STATUS', '状态'), [], tr('The yield strategy can’t be read right now.', '暂时读不到加息策略数据。'))] };
@@ -1189,13 +1188,16 @@ class Component extends DCLogic {
       if (t.mix) {
         // My mix：第一次＝建立（簽一次），再放錢進去。後端記成投入後排程買入（美股開盤時段）。
         let mixId = t.mixId, portfolioId = t.portfolioId, account = t.account;
+        const mixSE = s.se ? this.seInfo(s, t.id, t.mix.picks) : null;
         if (!mixId) {
           ({ mixId, portfolioId, account } = await this.makeMix(s, t, onStep));
           if (portfolioId == null) return this.finish({ made: true, note: tr('Ready in about a minute. Then open it and tap Buy.', '大约一分钟后就绪，到时打开它点“买入”。') });
         }
-        const r = await W.fundMixBasket({ mixId, portfolioId, account, pay: s.payFaucet ? 'faucet' : 'wallet', amount: amt, onStep });
+        // 確認卡開了加息策略：錢到帳後再簽一次同意（My mix 入金不經帳戶 UserOp），成交後由系統自動開，跟基金一樣。
+        const r = await W.fundMixBasket({ mixId, portfolioId, account, pay: s.payFaucet ? 'faucet' : 'wallet', amount: amt, earnExtra: !!(mixSE && mixSE.rate != null), onStep });
         if (!s.payFaucet && portfolioId != null) { const n = parseFloat(amt) || 0; this.bump([{ k: 'pf', pid: portfolioId, d: n, name: t.name }, { k: 'cash', d: -n }]); }
-        return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: r.recorded ? null : tr('Your USDT arrived. We’ll schedule it to buy shortly.', 'USDT 已到账，稍后自动买入。') });
+        const mixSeNote = r.earnExtra === 'unavailable' ? tr('The yield strategy didn’t turn on this time. You can turn it on from the portfolio page.', '这次加息策略没开启，可以到组合页再开。') : null;
+        return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: [r.recorded ? null : tr('Your USDT arrived. We’ll schedule it to buy shortly.', 'USDT 已到账，稍后自动买入。'), mixSeNote].filter(Boolean).join(' ') || null });
       }
       const LV = s.live && s.live[t.id], D = s.det[t.id];
       if (!LV) throw new Error(tr('This portfolio isn’t available right now.', '这个组合暂时买不了。'));
@@ -1330,7 +1332,7 @@ class Component extends DCLogic {
     if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: tr('Rest of the basket', '其余资产'), logo: 'app/l-usdt.png' });
     hold.forEach((h, i, a) => h.sep = sepL(i, a));
     // 波動與最大回撤由模型淨值算（navStats）；載入中顯示 —。EXTRA YIELD 待接後端的現金生息 APY（還沒有端點，先保留原本的字）。
-    const NS = D && D.stats, mineStat = false, fSE = f.kind === 'MINE' ? null : this.seInfo(s0, f.id);
+    const NS = D && D.stats, mineStat = false, fSE = this.seInfo(s0, f.id);
     const stats = [[tr('APY', '年化收益'), pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], [tr('EXTRA YIELD', '加息策略'), fSE && fSE.rate != null ? '+' + fSE.rate.toFixed(1) + '%' : '—', '#A8791F'], [tr('VOLATILITY', '波动率'), mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], [tr('MAX DRAWDOWN', '最大回撤'), mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], [tr('HOLDINGS', '资产数'), String(f.n), '#0B0F14'], [tr('REBALANCED', '调仓'), f.freqLabel || FREQ_LABEL()[D && D.rebal != null ? D.rebal : 2], '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
@@ -1381,7 +1383,7 @@ class Component extends DCLogic {
     const tLive = s.live && s.live[tgt.id], minBuy = eIn ? 1 : tLive ? tLive.min : 50, faucet = s.payFaucet && s.side === 'buy';
     const R0 = s.result || {}, isMixBuild = !!(tgt.mix && !tgt.mixId);
     // 買入確認卡的加息策略：後端 extraApyBps 依權重算成 %，再換成「每年多賺約 X USDT」（依這次投入金額）。
-    const tSE = s.side === 'buy' && !tgt.mix ? this.seInfo(s0, tgt.id) : null, seRate = tSE && tSE.rate != null ? tSE.rate : null, seOff = !!(tSE && tSE.state === 'unavailable');
+    const tSE = s.side === 'buy' ? this.seInfo(s0, tgt.id, tgt.mix && tgt.mix.picks) : null, seRate = tSE && tSE.rate != null ? tSE.rate : null, seOff = !!(tSE && tSE.state === 'unavailable');
     const amt = parseFloat(s.amount) || 0;
     // 定投（金額＝總額）：每期＝總額 ÷ 期數，每期至少 10 USDT；這一檔已經在定投就不能再開一個。
     const dcaAvail = s.side === 'buy' && !faucet && !!(tgt.mix || tLive), dcaOn = dcaAvail && !!s.dca;
@@ -1596,7 +1598,7 @@ class Component extends DCLogic {
       dtLabel: tr('Details', '详情'),
       showCashDt: (eIn || eOut) && (s.step === 'amount' || s.step === 'review'),
       cashDt: () => { const a = s0.earnAcct, pv = a && a.status === 'ok' && a.cashEarn.positions[0]; this.setState({ dtOpen: true, dt: { kind: 'cash', vaultId: tgt.vaultId || (pv ? pv.vaultId : null) } }); },
-      seDt: () => this.setState({ dtOpen: true, dt: { kind: 'se', fundId: tgt.id } }),
+      seDt: () => this.setState({ dtOpen: true, dt: { kind: 'se', fundId: tgt.id, picks: tgt.mix && tgt.mix.picks } }),
       fundSeDt: () => this.setState({ dtOpen: true, dt: { kind: 'se', fundId: f.id } }),
       seToggle: () => seRate != null && this.setState({ se: !s.se }), seBg: s.se && seRate != null ? '#16854F' : seRate != null ? '#C3CAD1' : '#EDF0F3', seJust: s.se && seRate != null ? 'flex-end' : 'flex-start',
       // 基金頁一行：開著＝「開啟中 · ~x% · 已賺 y USDT」，可以關；關著＝每年多賺約多少，可以開。
