@@ -47,6 +47,22 @@
 - [3x Semiconductors](https://cre8.finance/portfolios/soxl): SOXL 100%. Model APY +4.6% (backtest as of 2026-11-22).
 - [3x Nasdaq](https://cre8.finance/portfolios/tqqq): TQQQ 100%. Model APY +3.5% (backtest as of 2026-11-22).
 
+## Guides
+- [What Is CRE8? Buy US Stock Baskets With USDT on BNB Chain](https://cre8.finance/blog/what-is-cre8): CRE8 is a BNB Chain app for buying baskets of tokenized US stocks and crypto with USDT, held in your own smart account, with yield strategies for bStock.
+- [How to Buy US Stocks With USDT: 5 Ways Compared](https://cre8.finance/blog/buy-us-stocks-with-usdt): Five ways to buy US stocks with USDT: exchange stock tokens, on-chain tokens, real shares on crypto platforms, overseas brokers and CRE8, compared.
+- [What Is bStock? Binance's Tokenized US Stocks Explained](https://cre8.finance/blog/what-is-bstock): bStock is Binance's tokenized US stock on BNB Chain, backed 1:1 by shares. How it works, where to buy it, and how it differs from owning real shares.
+- [bStock vs xStocks vs Ondo: Tokenized Stocks Compared](https://cre8.finance/blog/bstock-vs-xstocks-vs-ondo): Compare tokenized stock issuers bStock, xStocks, Ondo, Robinhood and Dinari: custody, holder rights, chains, self-custody, trading hours and size.
+- [Buy Tokenized Stocks on BNB Chain and Hold Them Yourself](https://cre8.finance/blog/buy-tokenized-stocks-on-bnb-chain): Can you keep tokenized US stocks in your own wallet? Three ways to buy stock tokens on BNB Chain, how to avoid fake tokens, and how CRE8's smart account works.
+- [Binance bStock vs CRE8: What's the Difference?](https://cre8.finance/blog/binance-bstock-vs-cre8): Binance lets you buy bStock with USDT. CRE8 buys a whole basket in one payment, keeps it in your own account and adds a yield strategy. A side-by-side look.
+- [Buy a Basket of US Stocks With USDT: Mag7 and AI Chips](https://cre8.finance/blog/buy-us-stock-basket-with-usdt): How to buy a basket of US stocks with USDT in one payment, how the Mag7 and AI Chips portfolios are weighted, and how rebalancing keeps them on target.
+- [How to Copy Nancy Pelosi's Stock Portfolio With Crypto](https://cre8.finance/blog/copy-pelosi-portfolio-with-crypto): Where Pelosi's stock disclosures come from, how late they are, and how to buy the Pelosi Portfolio with USDT. Holdings, weights and a model backtest.
+- [How to DCA Into US Stocks With USDT](https://cre8.finance/blog/dca-us-stocks-with-usdt): Dollar-cost average into US stocks with USDT: Binance recurring buys, broker plans, and CRE8's DCA, where the cash waiting to be invested earns yield.
+- [Earn Yield on Idle USDT and bStock: How It Works](https://cre8.finance/blog/earn-yield-on-usdt-and-bstock): Three ways to earn on idle USDT, how to make bStock earn more by borrowing against it, and the liquidation risks. Includes how CRE8's yield strategy works.
+- [How to Buy Your First Portfolio on CRE8, Step by Step](https://cre8.finance/blog/how-to-buy-on-cre8): A step-by-step guide to CRE8 on testnet: join the waitlist, sign in, claim test USDT, pick a portfolio, buy once or DCA, then sell and withdraw.
+- [CRE8 Portfolios Explained: People, Themes and Leveraged](https://cre8.finance/blog/cre8-portfolios-explained): All 21 CRE8 portfolios by type: people (Pelosi, Trump, Duan Yongping, Musk), themes like AI Chips and Mag7, and 3x leveraged. Holdings and risks.
+- [Build Your Own Stock Portfolio With USDT, Auto-Rebalanced](https://cre8.finance/blog/build-your-own-portfolio): Pick up to 10 stocks and crypto assets, set the weights, and let CRE8 rebalance daily, weekly, monthly or quarterly. How it works, with an example.
+- [Is CRE8 Safe? Custody, Permissions and Risks](https://cre8.finance/blog/is-cre8-safe): Where your assets sit on CRE8, who can move them, what protects the yield strategy, and the risks that remain: smart contracts, the bStock issuer, prices.
+
 ## Links
 - Website: https://cre8.finance/
 - Waitlist: https://cre8.finance/waitlist

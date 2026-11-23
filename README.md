@@ -43,6 +43,8 @@ node --test scripts/test-worker.mjs # worker routing
 
 Each portfolio page has its own share image (`assets/og/<key>.jpg`, `<key>-zh.jpg`), made by `node scripts/build-og.mjs` (macOS with Chrome). It shows the name, category, tickers and cover, no returns, so re-run it only when a portfolio is added or its holdings or cover change, then run `build-pages.mjs` again.
 
+Blog posts live in `content/blog/<slug>.<en|zh>.md` (written and reviewed in the seo-aeo-geo repo, then copied here). `scripts/blog.mjs` turns them into `/blog/<slug>` and `/zh/blog/<slug>`, adds BlogPosting schema, and lists them in the sitemap and llms.txt. To add a post, add its slug to `BLOG_ORDER` in `scripts/blog.mjs`; both languages are required.
+
 Copy for the pages lives in the script (English fund descriptions follow cre8-app `src/lib/fund-copy.ts`). Edit the script, not the generated files.
 
 The 简体 home page (`zh/index.html`) and waitlist (`zh/waitlist/index.html`) aren't written separately: the script reads `index.html` and `waitlist.html`, applies the translation tables in `scripts/zh-home.json` and `scripts/zh-waitlist.json`, and writes the result, so layout, images, animation and template stay identical. If an English string in a table no longer appears on the English page, or English text is left untranslated, the build stops and names it. After changing copy on `index.html` or `waitlist.html`, update the table and re-run the script.

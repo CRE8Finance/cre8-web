@@ -1,0 +1,63 @@
+{
+ "type": "bar",
+ "unit": "pct",
+ "title": {
+  "en": "AI Chips: target weights",
+  "zh": "AI 芯片：目标权重"
+ },
+ "source": {
+  "en": "Source: CRE8 portfolio data, as of 2026-11-22.",
+  "zh": "来源：CRE8 组合数据，截至 2026-11-22。"
+ },
+ "rows": [
+  {
+   "label": {
+    "en": "NVDA · NVIDIA",
+    "zh": "NVDA · 英伟达"
+   },
+   "value": 21.25
+  },
+  {
+   "label": {
+    "en": "TSM · TSMC",
+    "zh": "TSM · 台积电"
+   },
+   "value": 21.25
+  },
+  {
+   "label": {
+    "en": "INTC · Intel",
+    "zh": "INTC · 英特尔"
+   },
+   "value": 21.25
+  },
+  {
+   "label": {
+    "en": "SKHY · SK hynix",
+    "zh": "SKHY · SK 海力士"
+   },
+   "value": 21.25
+  },
+  {
+   "label": {
+    "en": "AVGO · Broadcom",
+    "zh": "AVGO · 博通"
+   },
+   "value": 5
+  },
+  {
+   "label": {
+    "en": "MRVL · Marvell",
+    "zh": "MRVL · 迈威尔"
+   },
+   "value": 5
+  },
+  {
+   "label": {
+    "en": "PENG · Penguin Solutions",
+    "zh": "PENG · Penguin Solutions"
+   },
+   "value": 5
+  }
+ ]
+}

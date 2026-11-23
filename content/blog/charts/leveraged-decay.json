@@ -1,0 +1,78 @@
+{
+ "type": "line",
+ "dots": true,
+ "yFormat": "index",
+ "title": {
+  "en": "Up 10%, then down 10%: index vs. 3x daily-reset product",
+  "zh": "先涨 10% 再跌 10%：指数 vs. 每日重置的 3 倍产品"
+ },
+ "source": {
+  "en": "Arithmetic example, not market data. Index: 100 × 1.10 × 0.90 = 99. 3x: 100 × 1.30 × 0.70 = 91.",
+  "zh": "算术示例，不是行情数据。指数：100 × 1.10 × 0.90 = 99；3 倍：100 × 1.30 × 0.70 = 91。"
+ },
+ "xLabels": [
+  [
+   0,
+   {
+    "en": "Start",
+    "zh": "开始"
+   }
+  ],
+  [
+   1,
+   {
+    "en": "Day 1",
+    "zh": "第 1 天"
+   }
+  ],
+  [
+   2,
+   {
+    "en": "Day 2",
+    "zh": "第 2 天"
+   }
+  ]
+ ],
+ "series": [
+  {
+   "label": {
+    "en": "Index",
+    "zh": "指数"
+   },
+   "points": [
+    [
+     0,
+     100
+    ],
+    [
+     1,
+     110
+    ],
+    [
+     2,
+     99
+    ]
+   ]
+  },
+  {
+   "label": {
+    "en": "3x product",
+    "zh": "3 倍产品"
+   },
+   "points": [
+    [
+     0,
+     100
+    ],
+    [
+     1,
+     130
+    ],
+    [
+     2,
+     91
+    ]
+   ]
+  }
+ ]
+}

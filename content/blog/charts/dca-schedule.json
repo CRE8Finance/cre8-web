@@ -1,0 +1,144 @@
+{
+ "type": "line",
+ "dots": false,
+ "yFormat": "usdt",
+ "ySuffix": " U",
+ "yMin": 0,
+ "title": {
+  "en": "1,000 USDT DCA in 10 weekly buys: cash waiting vs. invested",
+  "zh": "1,000 USDT 分 10 周定投：等着买的钱 vs. 已买入"
+ },
+ "source": {
+  "en": "Arithmetic example from this article: 100 USDT per week. Cash waiting sits in a USDT vault until its turn.",
+  "zh": "本文示例的算术：每周买 100 USDT。等着买的钱在轮到之前放在 USDT 金库里。"
+ },
+ "xLabels": [
+  [
+   0,
+   {
+    "en": "Start",
+    "zh": "开始"
+   }
+  ],
+  [
+   5,
+   {
+    "en": "Week 5",
+    "zh": "第 5 周"
+   }
+  ],
+  [
+   10,
+   {
+    "en": "Week 10",
+    "zh": "第 10 周"
+   }
+  ]
+ ],
+ "series": [
+  {
+   "label": {
+    "en": "Cash waiting",
+    "zh": "等着买的钱"
+   },
+   "points": [
+    [
+     0,
+     1000
+    ],
+    [
+     1,
+     900
+    ],
+    [
+     2,
+     800
+    ],
+    [
+     3,
+     700
+    ],
+    [
+     4,
+     600
+    ],
+    [
+     5,
+     500
+    ],
+    [
+     6,
+     400
+    ],
+    [
+     7,
+     300
+    ],
+    [
+     8,
+     200
+    ],
+    [
+     9,
+     100
+    ],
+    [
+     10,
+     0
+    ]
+   ]
+  },
+  {
+   "label": {
+    "en": "Invested",
+    "zh": "已买入"
+   },
+   "points": [
+    [
+     0,
+     0
+    ],
+    [
+     1,
+     100
+    ],
+    [
+     2,
+     200
+    ],
+    [
+     3,
+     300
+    ],
+    [
+     4,
+     400
+    ],
+    [
+     5,
+     500
+    ],
+    [
+     6,
+     600
+    ],
+    [
+     7,
+     700
+    ],
+    [
+     8,
+     800
+    ],
+    [
+     9,
+     900
+    ],
+    [
+     10,
+     1000
+    ]
+   ]
+  }
+ ]
+}

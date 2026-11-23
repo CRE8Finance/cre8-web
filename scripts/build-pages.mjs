@@ -19,6 +19,7 @@
  */
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
+import { loadPosts } from './blog.mjs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -154,13 +155,13 @@ const ld = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).re
 // ---------------------------------------------------------------- 共用介面字串
 const T = {
   en: {
-    lang: 'en', htmlLang: 'en', locale: 'en_US', home: 'Home', portfolios: 'Portfolios', how: 'How it works', compare: 'Compare', faq: 'Questions',
+    lang: 'en', htmlLang: 'en', locale: 'en_US', home: 'Home', portfolios: 'Portfolios', how: 'How it works', compare: 'Compare', blog: 'Blog', faq: 'Questions',
     openApp: 'Join waitlist', other: '中文', otherLabel: '简体中文', openTestnet: 'Open the testnet', apyLabel: 'Model APY', min: 'USDT minimum',
     kinds: { person: 'People', theme: 'Theme', leveraged: 'Leveraged' },
     groups: { person: 'People portfolios', theme: 'Theme portfolios', leveraged: 'Leveraged portfolios' },
   },
   zh: {
-    lang: 'zh', htmlLang: 'zh-Hans', locale: 'zh_CN', home: '首页', portfolios: '组合', how: '使用指南', compare: '横向对比', faq: '常见问题',
+    lang: 'zh', htmlLang: 'zh-Hans', locale: 'zh_CN', home: '首页', portfolios: '组合', how: '使用指南', compare: '横向对比', blog: '文章', faq: '常见问题',
     openApp: '加入等候名单', other: 'EN', otherLabel: 'English', openTestnet: '进入测试网', apyLabel: '模型年化', min: 'USDT 起投',
     kinds: { person: '人物', theme: '主题', leveraged: '杠杆' },
     groups: { person: '人物组合', theme: '主题组合', leveraged: '杠杆组合' },
@@ -218,7 +219,7 @@ function siteHead(lang, path) {
   const other = lang === 'zh' ? enPath(path) : zhPath(path);
   return `<header class="site-head"><div class="site-head__bar">
 <a class="site-head__logo" href="${P(lang, '/')}"><img src="/assets/cre8-logo-dark.svg" alt="CRE8" width="107" height="20"></a>
-<nav aria-label="${lang === 'zh' ? '主导航' : 'Main'}"><a href="${P(lang, '/portfolios')}"${cur('/portfolios')}>${t.portfolios}</a><a href="${P(lang, '/how-it-works')}"${cur('/how-it-works')}>${t.how}</a><a href="${P(lang, '/compare')}"${cur('/compare')}>${t.compare}</a></nav>
+<nav aria-label="${lang === 'zh' ? '主导航' : 'Main'}"><a href="${P(lang, '/portfolios')}"${cur('/portfolios')}>${t.portfolios}</a><a href="${P(lang, '/how-it-works')}"${cur('/how-it-works')}>${t.how}</a><a href="${P(lang, '/compare')}"${cur('/compare')}>${t.compare}</a><a href="${P(lang, '/blog')}"${cur('/blog')}>${t.blog}</a></nav>
 <div class="site-head__right"><a class="site-head__lang" href="${other}" hreflang="${lang === 'zh' ? 'en' : 'zh-Hans'}" lang="${lang === 'zh' ? 'en' : 'zh-Hans'}">${t.other}</a><a class="btn btn--gold btn--sm" href="${WL(lang)}">${t.openApp} <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div>
 </div></header>`;
 }
@@ -649,6 +650,72 @@ ${ctaBand(lang)}
 ` + siteFoot(lang, funds);
 }
 
+// ---------------------------------------------------------------- Blog（文章在 content/blog，scripts/blog.mjs 轉成 HTML）
+const clip = (s, n) => (s.length <= n ? s : s.slice(0, n - 1).replace(/[\s,，、。；;:：]+\S*$/, '') + '…');
+const postDate = (iso, lang) => (lang === 'zh' ? `${+iso.slice(0, 4)} 年 ${+iso.slice(5, 7)} 月 ${+iso.slice(8, 10)} 日` : date(iso, 'en'));
+// 封面：scripts/build-covers.mjs 產生（背景＋標題，1200×630）；還沒有封面的文章用全站分享圖、列表不放圖。
+const coverOf = (slug, lang) => {
+  const rel = `/assets/blog/covers/${slug}.${lang}.jpg`;
+  return existsSync(join(ROOT, rel)) ? rel : null;
+};
+
+function blogIndexPage(posts, funds, lang) {
+  const t = T[lang];
+  const zh = lang === 'zh';
+  const path = '/blog';
+  const c = crumbs(lang, [[t.home, '/'], [t.blog, path]]);
+  const title = zh ? '用 USDT 买美股：指南与对比文章 | CRE8' : 'Guides to buying US stocks with USDT | CRE8';
+  const description = zh
+    ? '用 USDT 买美股有哪几种方法、bStock 是什么、代币化美股怎么选、怎么定投和生息。CRE8 整理的指南与对比。'
+    : 'How to buy US stocks with USDT, what bStock is, how tokenized stocks compare, and how DCA and yield work. Guides and comparisons from CRE8.';
+  const list = { '@context': 'https://schema.org', '@type': 'Blog', name: zh ? 'CRE8 文章' : 'CRE8 Blog', url: abs(P(lang, path)), inLanguage: t.htmlLang, publisher: ORG,
+    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p[lang].title, url: abs(P(lang, '/blog/' + p.slug)), datePublished: p[lang].meta.published, dateModified: p[lang].meta.updated })) };
+  return head({ lang, path, title, description, schema: [list, c.schema] }) + `
+<main class="wrap">
+${c.html}
+<h1>${zh ? '文章' : 'Blog'}</h1>
+<section class="section post-list">
+${posts.map((p) => { const cv = coverOf(p.slug, lang); return `<a class="post-row${cv ? ' post-row--cover' : ''}" href="${P(lang, '/blog/' + p.slug)}">${cv ? `<img src="${cv}" alt="" width="1200" height="630" loading="lazy" decoding="async">` : ''}<div><h2>${esc(p[lang].title)}</h2><p>${esc(p[lang].meta.description || clip(p[lang].lede, zh ? 90 : 200))}</p><span class="muted small">${postDate(p[lang].meta.updated, lang)}</span></div></a>`; }).join('\n')}
+</section>
+${ctaBand(lang)}
+</main>
+` + siteFoot(lang, funds);
+}
+
+function blogPostPage(post, posts, funds, lang) {
+  const t = T[lang];
+  const zh = lang === 'zh';
+  const a = post[lang];
+  const path = '/blog/' + post.slug;
+  const c = crumbs(lang, [[t.home, '/'], [t.blog, '/blog'], [a.title, path]]);
+  const description = a.meta.description || clip(a.lede, zh ? 110 : 160);
+  const seo = a.meta.seo_title || a.title;
+  const docTitle = [...seo].length <= (zh ? 24 : 52) ? `${seo} | CRE8` : seo;
+  const article = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: seo, description, inLanguage: t.htmlLang, url: abs(P(lang, path)),
+    mainEntityOfPage: abs(P(lang, path)), datePublished: a.meta.published, dateModified: a.meta.updated, author: ORG, publisher: ORG, image: SITE + (coverOf(post.slug, lang) || '/assets/og.jpg') };
+  const cover = coverOf(post.slug, lang);
+  const more = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const updated = a.meta.updated !== a.meta.published ? (zh ? ` · 更新于 ${postDate(a.meta.updated, lang)}` : ` · Updated ${postDate(a.meta.updated, lang)}`) : '';
+  return head({ lang, path, title: docTitle, description, schema: [article, c.schema], ...(cover ? { image: cover } : {}) }) + `
+<main class="wrap">
+${c.html}
+<article class="post">
+<h1>${esc(a.title)}</h1>
+<p class="post-meta muted small">${zh ? '作者' : 'By'} CRE8 · <time datetime="${a.meta.published}">${postDate(a.meta.published, lang)}</time>${updated}</p>
+${cover ? `<img class="post-cover" src="${cover}" alt="${esc(a.title)}" width="1200" height="630" fetchpriority="high">` : ''}
+<div class="prose">
+${a.html}
+</div>
+</article>
+<section class="section post-list">
+<h2>${zh ? '继续阅读' : 'Keep reading'}</h2>
+${more.map((p) => `<a class="post-row" href="${P(lang, '/blog/' + p.slug)}"><h3>${esc(p[lang].title)}</h3></a>`).join('\n')}
+</section>
+${ctaBand(lang)}
+</main>
+` + siteFoot(lang, funds);
+}
+
 // ---------------------------------------------------------------- 簡體首頁
 const topLists = (funds) => {
   const top = (pred) => funds.filter((f) => pred(f) && f.apy !== null && f.apy > 0).sort((a, b) => b.apy - a.apy).slice(0, 4);
@@ -829,7 +896,7 @@ ${urls.join('\n')}
 `;
 }
 
-function llms(funds) {
+function llms(funds, posts) {
   const g = (cat) => funds.filter((f) => f.category === cat).map((f) => `- [${f.meta.en.name}](${abs('/portfolios/' + f.key)}): ${f.holdings.map((h) => `${h.ticker} ${wt(h.weight)}`).join(', ')}. Model APY ${pct(f.apy)} (backtest as of ${f.asOf}).`).join('\n');
   return `# CRE8
 
@@ -862,6 +929,9 @@ ${g('theme')}
 ## Leveraged portfolios (high risk; daily-reset 3x ETFs)
 ${g('leveraged')}
 
+## Guides
+${posts.map((p) => `- [${p.en.meta.seo_title || p.en.title}](${abs('/blog/' + p.slug)}): ${p.en.meta.description || clip(p.en.lede, 220)}`).join('\n')}
+
 ## Links
 - Website: ${SITE}/
 - Waitlist: ${WAITLIST}
@@ -878,9 +948,11 @@ async function out(rel, content) {
 }
 
 const funds = await loadFunds();
+const posts = await loadPosts(ROOT);
+await rm(join(ROOT, 'blog'), { recursive: true, force: true });
 await rm(join(ROOT, 'portfolios'), { recursive: true, force: true });
 await rm(join(ROOT, 'zh'), { recursive: true, force: true });
-const paths = ['/', '/portfolios', '/how-it-works', '/compare', ...funds.map((f) => '/portfolios/' + f.key)];
+const paths = ['/', '/portfolios', '/how-it-works', '/compare', ...funds.map((f) => '/portfolios/' + f.key), '/blog', ...posts.map((p) => '/blog/' + p.slug)];
 for (const lang of ['en', 'zh']) {
   const base = lang === 'zh' ? 'zh/' : '';
   const page = (html) => (lang === 'zh' ? withZhSerif(html) : html);
@@ -888,6 +960,8 @@ for (const lang of ['en', 'zh']) {
   for (const f of funds) await out(`${base}portfolios/${f.key}/index.html`, page(fundPage(f, funds, lang)));
   await out(base + 'how-it-works/index.html', page(howPage(funds, lang)));
   await out(base + 'compare/index.html', page(comparePage(funds, lang)));
+  await out(base + 'blog/index.html', page(blogIndexPage(posts, funds, lang)));
+  for (const p of posts) await out(`${base}blog/${p.slug}/index.html`, page(blogPostPage(p, posts, funds, lang)));
 }
 const indexFile = join(ROOT, 'index.html');
 const home = updateHome(await readFile(indexFile, 'utf8'), funds);
@@ -895,7 +969,7 @@ await writeFile(indexFile, home);
 await out('zh/index.html', await zhHome(home, funds));
 await out('zh/waitlist/index.html', await zhWaitlist());
 await out('sitemap.xml', sitemap(paths));
-await out('llms.txt', llms(funds));
+await out('llms.txt', llms(funds, posts));
 // 分享圖要用的資料（名稱、分類、代號、封面），給 scripts/build-og.mjs。
 await out('scripts/og-data.json', JSON.stringify(funds.map((f) => ({ key: f.key, img: f.meta.img, en: { name: f.meta.en.name, kind: T.en.kinds[f.category] }, zh: { name: f.meta.zh.name, kind: T.zh.kinds[f.category] }, tickers: f.holdings.map((h) => h.ticker) })), null, 1) + '\n');
 console.log(`OK：${funds.length} 檔基金（asOf ${funds[0]?.asOf}），${paths.length * 2} 個網址寫進 sitemap。`);

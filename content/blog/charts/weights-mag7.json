@@ -1,0 +1,63 @@
+{
+ "type": "bar",
+ "unit": "pct",
+ "title": {
+  "en": "Mag7: target weights",
+  "zh": "美股七巨头：目标权重"
+ },
+ "source": {
+  "en": "Source: CRE8 portfolio data, as of 2026-11-22.",
+  "zh": "来源：CRE8 组合数据，截至 2026-11-22。"
+ },
+ "rows": [
+  {
+   "label": {
+    "en": "AAPL · Apple",
+    "zh": "AAPL · 苹果"
+   },
+   "value": 14.29
+  },
+  {
+   "label": {
+    "en": "MSFT · Microsoft",
+    "zh": "MSFT · 微软"
+   },
+   "value": 14.28
+  },
+  {
+   "label": {
+    "en": "GOOGL · Alphabet",
+    "zh": "GOOGL · 谷歌"
+   },
+   "value": 14.29
+  },
+  {
+   "label": {
+    "en": "AMZN · Amazon",
+    "zh": "AMZN · 亚马逊"
+   },
+   "value": 14.29
+  },
+  {
+   "label": {
+    "en": "NVDA · NVIDIA",
+    "zh": "NVDA · 英伟达"
+   },
+   "value": 14.28
+  },
+  {
+   "label": {
+    "en": "META · Meta",
+    "zh": "META · Meta"
+   },
+   "value": 14.29
+  },
+  {
+   "label": {
+    "en": "TSLA · Tesla",
+    "zh": "TSLA · 特斯拉"
+   },
+   "value": 14.28
+  }
+ ]
+}

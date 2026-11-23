@@ -1,0 +1,56 @@
+{
+ "type": "bar",
+ "unit": "pct",
+ "title": {
+  "en": "Pelosi Portfolio: target weights",
+  "zh": "佩洛西持仓：目标权重"
+ },
+ "source": {
+  "en": "Source: CRE8 portfolio data, as of 2026-11-22.",
+  "zh": "来源：CRE8 组合数据，截至 2026-11-22。"
+ },
+ "rows": [
+  {
+   "label": {
+    "en": "NVDA · NVIDIA",
+    "zh": "NVDA · 英伟达"
+   },
+   "value": 19
+  },
+  {
+   "label": {
+    "en": "GOOGL · Alphabet",
+    "zh": "GOOGL · 谷歌"
+   },
+   "value": 19
+  },
+  {
+   "label": {
+    "en": "MSFT · Microsoft",
+    "zh": "MSFT · 微软"
+   },
+   "value": 19
+  },
+  {
+   "label": {
+    "en": "AMZN · Amazon",
+    "zh": "AMZN · 亚马逊"
+   },
+   "value": 19
+  },
+  {
+   "label": {
+    "en": "INTC · Intel",
+    "zh": "INTC · 英特尔"
+   },
+   "value": 19
+  },
+  {
+   "label": {
+    "en": "AVGO · Broadcom",
+    "zh": "AVGO · 博通"
+   },
+   "value": 5
+  }
+ ]
+}
