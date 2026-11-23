@@ -14,37 +14,37 @@
 - Stocks are held as bStock, Binance's tokenized US stocks on BNB Chain. Stock tokens trade only during US market hours; orders placed while the market is closed wait for the next open.
 - Rebalancing: monthly, plus whenever an asset drifts more than 5 points from its target weight.
 - Fees: none on testnet (CRE8 pays gas). Mainnet fees will be announced before launch.
-- Earn: idle USDT can go into allowlisted USDT vaults (Lista, Venus, Aave) at market rates and be withdrawn any time. When buying a portfolio, users can opt in to extra yield that uses the portfolio's shares; if prices fall fast the system sells a little automatically. Cash and each portfolio's money are always kept separate. Testnet rates are simulated.
+- Earn: idle USDT can go into allowlisted USDT vaults (Lista, Venus, Aave) at market rates and be withdrawn any time. When buying a portfolio, users can opt in to a yield strategy that uses the portfolio's shares; if prices fall to the safety line the system repays part of the loan automatically, without selling the shares. Cash and each portfolio's money are always kept separate. Testnet rates are simulated.
 - Model APY is a backtest of current weights on historical prices, not a track record.
 - Status: testnet only, no real money. No mainnet date yet.
 - Availability: anyone outside the US, where local rules allow.
 
 ## People portfolios
-- [Pelosi Portfolio](https://cre8.finance/portfolios/pelosi): NVDA 19%, GOOGL 19%, MSFT 19%, AMZN 19%, INTC 19%, AVGO 5%. Model APY +24.3% (backtest as of 2026-11-21).
-- [Trump Holdings](https://cre8.finance/portfolios/trump): NVDA 12.5%, AAPL 12.5%, MSFT 12.5%, AMZN 12.5%, META 12.5%, TSLA 12.5%, GOOGL 12.5%, NFLX 12.5%. Model APY +8.9% (backtest as of 2026-11-21).
-- [Duan Yongping](https://cre8.finance/portfolios/duan): AAPL 25%, PDD 25%, NVDA 25%, TSLA 25%. Model APY +6.1% (backtest as of 2026-11-21).
-- [Musk Basket](https://cre8.finance/portfolios/musk): TSLA 31.66%, SPCX 31.67%, BTC 31.67%, DOGE 5%. Model APY −11.3% (backtest as of 2026-11-21).
+- [Pelosi Portfolio](https://cre8.finance/portfolios/pelosi): NVDA 19%, GOOGL 19%, MSFT 19%, AMZN 19%, INTC 19%, AVGO 5%. Model APY +24.8% (backtest as of 2026-11-22).
+- [Trump Holdings](https://cre8.finance/portfolios/trump): NVDA 12.5%, AAPL 12.5%, MSFT 12.5%, AMZN 12.5%, META 12.5%, TSLA 12.5%, GOOGL 12.5%, NFLX 12.5%. Model APY +9.0% (backtest as of 2026-11-22).
+- [Duan Yongping](https://cre8.finance/portfolios/duan): AAPL 25%, PDD 25%, NVDA 25%, TSLA 25%. Model APY +6.4% (backtest as of 2026-11-22).
+- [Musk Basket](https://cre8.finance/portfolios/musk): TSLA 31.66%, SPCX 31.67%, BTC 31.67%, DOGE 5%. Model APY −12.1% (backtest as of 2026-11-22).
 
 ## Theme portfolios
-- [AI Memory](https://cre8.finance/portfolios/ai-memory): SKHY 33.33%, MU 33.34%, SNDK 33.33%. Model APY +231.8% (backtest as of 2026-11-21).
-- [Korea Semis](https://cre8.finance/portfolios/korea-semiconductors): SKHY 50%, EWY 50%. Model APY +113.5% (backtest as of 2026-11-21).
-- [AI Chips](https://cre8.finance/portfolios/ai-chips): NVDA 21.25%, TSM 21.25%, INTC 21.25%, SKHY 21.25%, AVGO 5%, MRVL 5%, PENG 5%. Model APY +61.6% (backtest as of 2026-11-21).
-- [BNB Ecosystem](https://cre8.finance/portfolios/bnb): BNB 50%, BNC 50%. Model APY +17.4% (backtest as of 2026-11-21).
-- [AI Model Makers](https://cre8.finance/portfolios/ai-models): ANT 16.67%, AMZN 16.67%, GOOGL 16.67%, MSFT 16.66%, SPCX 16.66%, META 16.67%. Model APY +14.2% (backtest as of 2026-11-21).
-- [Mag7](https://cre8.finance/portfolios/mag7): AAPL 14.29%, MSFT 14.28%, GOOGL 14.29%, AMZN 14.29%, NVDA 14.28%, META 14.29%, TSLA 14.28%. Model APY +13.0% (backtest as of 2026-11-21).
-- [US Market](https://cre8.finance/portfolios/us-market): QQQ 50%, SPY 50%. Model APY +9.8% (backtest as of 2026-11-21).
-- [Everyday Brands](https://cre8.finance/portfolios/everyday): AAPL 15.84%, AMZN 15.84%, NFLX 15.83%, GOOGL 15.83%, META 15.83%, MSFT 15.83%, RDDT 5%. Model APY +9.3% (backtest as of 2026-11-21).
-- [Gold + Bitcoin](https://cre8.finance/portfolios/gold-bitcoin): XAUt 50%, BTC 50%. Model APY −2.8% (backtest as of 2026-11-21).
-- [China Tech](https://cre8.finance/portfolios/china): BABA 50%, PDD 50%. Model APY −4.0% (backtest as of 2026-11-21).
-- [Crypto Infrastructure](https://cre8.finance/portfolios/crypto-infrastructure): CRCL 33.33%, COIN 33.34%, HOOD 33.33%. Model APY −14.3% (backtest as of 2026-11-21).
-- [Crypto Treasuries](https://cre8.finance/portfolios/crypto-treasuries): MSTR 31.66%, BMNR 31.67%, BNC 31.67%, CYPH 5%. Model APY −17.2% (backtest as of 2026-11-21).
-- [New Giants](https://cre8.finance/portfolios/new-giants): SPCX 50%, ANT 50%. Model APY −25.3% (backtest as of 2026-11-21).
-- [Meme Stocks](https://cre8.finance/portfolios/meme): GME 45%, DOGE 45%, AMC 5%, DJT 5%. Model APY −32.8% (backtest as of 2026-11-21).
-- [Bitcoin Plus](https://cre8.finance/portfolios/bitcoin-plus): BTC 33.34%, MSTR 33.33%, COIN 33.33%. Model APY −37.7% (backtest as of 2026-11-21).
+- [AI Memory](https://cre8.finance/portfolios/ai-memory): SKHY 33.33%, MU 33.34%, SNDK 33.33%. Model APY +228.2% (backtest as of 2026-11-22).
+- [Korea Semis](https://cre8.finance/portfolios/korea-semiconductors): SKHY 50%, EWY 50%. Model APY +111.0% (backtest as of 2026-11-22).
+- [AI Chips](https://cre8.finance/portfolios/ai-chips): NVDA 21.25%, TSM 21.25%, INTC 21.25%, SKHY 21.25%, AVGO 5%, MRVL 5%, PENG 5%. Model APY +61.4% (backtest as of 2026-11-22).
+- [BNB Ecosystem](https://cre8.finance/portfolios/bnb): BNB 50%, BNC 50%. Model APY +17.4% (backtest as of 2026-11-22).
+- [AI Model Makers](https://cre8.finance/portfolios/ai-models): ANT 16.67%, AMZN 16.67%, GOOGL 16.67%, MSFT 16.66%, SPCX 16.66%, META 16.67%. Model APY +14.5% (backtest as of 2026-11-22).
+- [Mag7](https://cre8.finance/portfolios/mag7): AAPL 14.29%, MSFT 14.28%, GOOGL 14.29%, AMZN 14.29%, NVDA 14.28%, META 14.29%, TSLA 14.28%. Model APY +13.1% (backtest as of 2026-11-22).
+- [US Market](https://cre8.finance/portfolios/us-market): QQQ 50%, SPY 50%. Model APY +9.6% (backtest as of 2026-11-22).
+- [Everyday Brands](https://cre8.finance/portfolios/everyday): AAPL 15.84%, AMZN 15.84%, NFLX 15.83%, GOOGL 15.83%, META 15.83%, MSFT 15.83%, RDDT 5%. Model APY +9.6% (backtest as of 2026-11-22).
+- [China Tech](https://cre8.finance/portfolios/china): BABA 50%, PDD 50%. Model APY −2.4% (backtest as of 2026-11-22).
+- [Gold + Bitcoin](https://cre8.finance/portfolios/gold-bitcoin): XAUt 50%, BTC 50%. Model APY −3.0% (backtest as of 2026-11-22).
+- [Crypto Infrastructure](https://cre8.finance/portfolios/crypto-infrastructure): CRCL 33.33%, COIN 33.34%, HOOD 33.33%. Model APY −15.9% (backtest as of 2026-11-22).
+- [Crypto Treasuries](https://cre8.finance/portfolios/crypto-treasuries): MSTR 31.66%, BMNR 31.67%, BNC 31.67%, CYPH 5%. Model APY −18.4% (backtest as of 2026-11-22).
+- [New Giants](https://cre8.finance/portfolios/new-giants): SPCX 50%, ANT 50%. Model APY −24.3% (backtest as of 2026-11-22).
+- [Meme Stocks](https://cre8.finance/portfolios/meme): GME 45%, DOGE 45%, AMC 5%, DJT 5%. Model APY −33.9% (backtest as of 2026-11-22).
+- [Bitcoin Plus](https://cre8.finance/portfolios/bitcoin-plus): BTC 33.34%, MSTR 33.33%, COIN 33.33%. Model APY −38.5% (backtest as of 2026-11-22).
 
 ## Leveraged portfolios (high risk; daily-reset 3x ETFs)
-- [3x Semiconductors](https://cre8.finance/portfolios/soxl): SOXL 100%. Model APY +4.6% (backtest as of 2026-11-21).
-- [3x Nasdaq](https://cre8.finance/portfolios/tqqq): TQQQ 100%. Model APY +3.7% (backtest as of 2026-11-21).
+- [3x Semiconductors](https://cre8.finance/portfolios/soxl): SOXL 100%. Model APY +4.6% (backtest as of 2026-11-22).
+- [3x Nasdaq](https://cre8.finance/portfolios/tqqq): TQQQ 100%. Model APY +3.5% (backtest as of 2026-11-22).
 
 ## Links
 - Website: https://cre8.finance/

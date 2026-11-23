@@ -323,7 +323,7 @@ function riskText(f, lang) {
     items.push(zh
       ? `<strong>高风险。</strong>这个组合持有 3 倍杠杆 ETF 代币。杠杆每天重置，拉长到几周、几个月，结果可能和“指数涨跌的 3 倍”差很远，震荡行情里亏损会越滚越大。模型里它近 90 天的收益是 ${pct(f.rets.d90)}。只适合能承受亏掉大部分本金的人。`
       : `<strong>High risk.</strong> This portfolio holds a 3x leveraged ETF token. The leverage resets every day, so over weeks and months the result can be far from three times the index, and losses compound in choppy markets. In the model it returned ${pct(f.rets.d90)} over the last 90 days. Only put in money you can afford to lose most of.`);
-    items.push(zh ? '杠杆组合只能一次性买入，不支持分批买入，也不提供加息。' : 'Leveraged portfolios are bought in one go, with no gradual buying and no extra yield.');
+    items.push(zh ? '杠杆组合只能一次性买入，不支持分批买入，也不提供加息策略。' : 'Leveraged portfolios are bought in one go, with no gradual buying and no yield strategy.');
   }
   items.push(zh
     ? `价格有涨有跌，你可能亏钱。这个组合只有 ${f.holdings.length} 个资产，集中度高${crypto ? '；其中含加密资产，波动通常比股票大得多' : ''}。`
@@ -450,7 +450,7 @@ function faqs(lang) {
     ['安全吗？', '目前 CRE8 上的一切都不涉及真钱。你的组合放在你自己的 BNB Chain 智能账户里，CRE8 的自动化只能在账户内交易，资产要转出必须你本人签名。上主网前，合约会经过第三方审计。'],
     ['股票由谁托管？', '你自己。股票以代币形式放在只有你能控制的链上账户里，不和任何人的资产混在一起。'],
     ['怎么提现？', '把组合部分或全部卖回 USDT，再提到任意 BNB Chain 地址就行。股票代币要在美股开盘时才能卖。'],
-    ['闲置 USDT 怎么生息？', '点 Earn，把闲置 USDT 存进白名单里的 USDT 金库（Lista、Venus、Aave），按市场利率计息，随存随取。买组合时还可以打开“加息”，用组合里的股票多赚一点；价格急跌时系统会自动卖出一小部分，保证安全。你的现金和组合资金始终分开。'],
+    ['闲置 USDT 怎么生息？', '点 Earn，把闲置 USDT 存进白名单里的 USDT 金库（Lista、Venus、Aave），按市场利率计息，随存随取。买组合时还可以打开“加息策略”，用组合里的股票多赚一点；价格跌到安全线时系统会自动还款，保证安全。你的现金和组合资金始终分开。'],
     ['和在交易所买美股代币有什么区别？', `在交易所只能一只一只买，股票放在交易所账户里。CRE8 一笔钱买齐一整篮，自动调仓回目标比例，资产放在你自己的链上账户，闲置的 USDT 还能生息。详见<a href="${cmp}">对比</a>。`],
     ['美股休市时能买卖吗？', '股票代币只在美股交易时段成交。休市期间下的买单或卖单会在账户里排队，下次开盘时成交。'],
     ['最低投多少？', '每笔 50 USDT 起投。'],
@@ -462,7 +462,7 @@ function faqs(lang) {
     ['Is CRE8 safe?', 'Nothing on CRE8 involves real money yet. Your portfolio sits in your own smart account on BNB Chain. CRE8’s automation can only trade inside it, and moving money out takes your signature. The contracts get an external audit before mainnet.'],
     ['Who holds my shares?', 'You do. They sit as tokens in an on-chain account only you control, never pooled with anyone else’s.'],
     ['How do I cash out?', 'Sell some or all of a portfolio back to USDT, then withdraw the USDT to any BNB Chain address. Stock tokens sell while the US market is open.'],
-    ['How does idle USDT earn?', 'Press Earn to put idle USDT in an allowlisted USDT vault (Lista, Venus or Aave) at the market rate, and withdraw it whenever you like. When you buy a portfolio you can also turn on extra yield, which uses its shares to earn a bit more and automatically sells a little if prices fall fast. Your cash and your portfolios are always kept separate.'],
+    ['How does idle USDT earn?', 'Press Earn to put idle USDT in an allowlisted USDT vault (Lista, Venus or Aave) at the market rate, and withdraw it whenever you like. When you buy a portfolio you can also turn on the yield strategy, which uses its shares to earn a bit more and repays automatically if prices fall to the safety line. Your cash and your portfolios are always kept separate.'],
     ['How is this different from buying stock tokens on an exchange?', `On an exchange you buy one stock at a time and it sits in your exchange account. CRE8 buys a whole basket in one payment, rebalances it to its target weights, keeps it in an account you own on-chain, and lets idle USDT earn. See the <a href="${cmp}">comparison</a>.`],
     ['What happens when the US market is closed?', 'Stock tokens only trade during US market hours. A buy or sell placed while the market is closed waits in your account and goes through at the next open.'],
     ['What’s the minimum?', '50 USDT per purchase.'],
@@ -514,10 +514,10 @@ function howPage(funds, lang) {
 
 <h2 style="margin-top:56px">闲置 USDT 怎么生息</h2>
 <p>账户里的 USDT 可以放着不动，也可以点 <strong>Earn</strong>，存进 CRE8 白名单里的 USDT 金库（Lista、Venus、Aave）。每个金库都会显示年化，随市场利率浮动，CRE8 不承诺收益率。随存随取，利息一起到账。你不点，CRE8 不会动你的现金。</p>
-<h3>组合加息</h3>
-<p>买组合时可以顺手打开“加息”。它默认关闭，要你自己开。打开后，CRE8 会用这个组合里的股票再多赚一点：把股票存进借贷市场做抵押，按保守比例借出一小笔 USDT，再存进 USDT 金库。价格急跌时，系统会自动卖出一小部分保证安全，事后在活动记录里告诉你卖了多少。随时可以关，股票会留在组合里。</p>
-<p>CRE8 只借市场允许额度的一小部分，风险很低，但不是零。杠杆组合不提供加息。</p>
-<p>你的现金和每个组合的资金永远分开：组合加息用到的 USDT 只属于这个组合，不算你的现金，也不会和别的组合混在一起。</p>
+<h3>组合加息策略</h3>
+<p>买组合时可以顺手打开“加息策略”。它默认关闭，要你自己开。打开后，CRE8 会用这个组合里的股票再多赚一点：把股票存进借贷市场做抵押，按保守比例借出一小笔 USDT，再存进 USDT 金库。价格跌到安全线时，系统会自动用金库里的 USDT 还掉一部分借款，股票不会被卖，事后在活动记录里告诉你还了多少。随时可以关，股票会留在组合里。</p>
+<p>CRE8 只借市场允许额度的一小部分，风险很低，但不是零。杠杆组合不提供加息策略。</p>
+<p>你的现金和每个组合的资金永远分开：组合加息策略用到的 USDT 只属于这个组合，不算你的现金，也不会和别的组合混在一起。</p>
 <p>测试网上的金库和利率都是模拟的，数字仅供参考。</p>
 
 <h2 style="margin-top:56px">目前是测试网</h2>
@@ -558,9 +558,9 @@ function howPage(funds, lang) {
 
 <h2 style="margin-top:56px">Earning on idle USDT</h2>
 <p>Cash in your account can just sit there, or you can press <strong>Earn</strong> to put it in one of CRE8’s allowlisted USDT vaults (Lista, Venus, Aave). Each vault shows its APY, which follows market rates; CRE8 doesn’t promise a rate. Withdraw any amount, interest included, whenever you like. CRE8 never moves your cash unless you ask it to.</p>
-<h3>Extra yield on a portfolio</h3>
-<p>When you buy a portfolio you can also turn on extra yield. It stays off unless you switch it on. CRE8 then uses the portfolio’s shares to earn a bit more: it deposits them in a lending market, takes out a small, conservative amount of USDT against them and puts that in a USDT vault. If prices fall fast, the system automatically sells a little to stay safe, and your activity log tells you afterwards what was sold. You can switch it off at any time and the shares stay in the portfolio.</p>
-<p>CRE8 takes out only a small part of what the market would allow, which keeps the risk low but can’t remove it entirely. Leveraged portfolios don’t offer extra yield.</p>
+<h3>Yield strategy on a portfolio</h3>
+<p>When you buy a portfolio you can also turn on the yield strategy. It stays off unless you switch it on. CRE8 then uses the portfolio’s shares to earn a bit more: it deposits them in a lending market, takes out a small, conservative amount of USDT against them and puts that in a USDT vault. If prices fall to the safety line, the system automatically repays part of the loan from the vault, without selling your shares, and your activity log tells you afterwards how much was repaid. You can switch it off at any time and the shares stay in the portfolio.</p>
+<p>CRE8 takes out only a small part of what the market would allow, which keeps the risk low but can’t remove it entirely. Leveraged portfolios don’t offer the yield strategy.</p>
 <p>Your cash and each portfolio’s money are always kept apart. USDT a portfolio uses to earn extra belongs to that portfolio only: it never counts as your cash and never mixes with another portfolio.</p>
 <p>On testnet the vaults and rates are simulated, so treat the numbers as illustrations.</p>
 
@@ -832,7 +832,7 @@ function llms(funds) {
 - Stocks are held as bStock, Binance's tokenized US stocks on BNB Chain. Stock tokens trade only during US market hours; orders placed while the market is closed wait for the next open.
 - Rebalancing: monthly, plus whenever an asset drifts more than 5 points from its target weight.
 - Fees: none on testnet (CRE8 pays gas). Mainnet fees will be announced before launch.
-- Earn: idle USDT can go into allowlisted USDT vaults (Lista, Venus, Aave) at market rates and be withdrawn any time. When buying a portfolio, users can opt in to extra yield that uses the portfolio's shares; if prices fall fast the system sells a little automatically. Cash and each portfolio's money are always kept separate. Testnet rates are simulated.
+- Earn: idle USDT can go into allowlisted USDT vaults (Lista, Venus, Aave) at market rates and be withdrawn any time. When buying a portfolio, users can opt in to a yield strategy that uses the portfolio's shares; if prices fall to the safety line the system repays part of the loan automatically, without selling the shares. Cash and each portfolio's money are always kept separate. Testnet rates are simulated.
 - Model APY is a backtest of current weights on historical prices, not a track record.
 - Status: testnet only, no real money. No mainnet date yet.
 - Availability: anyone outside the US, where local rules allow.

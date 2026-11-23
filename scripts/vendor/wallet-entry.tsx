@@ -21,11 +21,13 @@ import {
   getPortfolioActivity,
   getPortfolioStatus,
   getPortfolios,
+  getRenewalParams,
   postBuyFunding,
   postFaucetUsdt,
   postFundingLot,
   postGasFaucet,
   postRebalance,
+  postRenewalResult,
   postWaitlistJoin,
   postWaitlistRedeem,
   prepareEnrollment,
@@ -38,7 +40,7 @@ import { assertShownVersion, waitForAccountCode, waitForPreparation } from './li
 import { firstEnrollCalls } from './lib/atp-contracts';
 import { ensureOwnerGas } from './lib/testnet-wallet-buy';
 import { retryWhileBusy } from './lib/portfolio-busy';
-import { sendInBatches } from './lib/approval-batches';
+import { APPROVALS_PER_USEROP, sendInBatches } from './lib/approval-batches';
 import { faucetFailure, faucetSuccess, needsDailyFaucet } from './lib/faucet';
 import { MAX_SELL_BATCHES, afterSellRun, runSellBatches, SellBatchError } from './lib/sell-batches';
 import { cashUsdOf, sellTargetUsd, totalUsdOf } from './lib/withdraw-plan';
@@ -381,10 +383,14 @@ async function ensurePortfolio(args: { token: string; wallet: RenewalWallet; str
 const apiPrepare = (t: string, strategyId: number) => prepareEnrollment(t, strategyId);
 
 /** 投入後：沒授權過的資產一次 approve 給 executor（owner 簽），然後請後端跑一輪配置。美股收盤時不會成交，排程會在開盤後買。 */
-async function allocate(args: { token: string; wallet: RenewalWallet; account: Address; strategyId: number; portfolioId: number; step: Step }) {
+type SudoCall = { to: Address; data: Hex; value: bigint };
+async function allocate(args: { token: string; wallet: RenewalWallet; account: Address; strategyId: number; portfolioId: number; step: Step; extra?: SudoCall[] }) {
   const fresh = await getPortfolioStatus(args.token, args.portfolioId).catch(() => null);
   const executor = fresh?.executorAddress as Address | null | undefined;
   const universe = fresh?.drift?.assets ?? [];
+  // 策略加息的同意 calls（`extra`）接在授權後面，同一個 UserOp 一起簽；超過代付上限（32 個 call）才分開送。
+  let extra = args.extra ?? [], earnSent = false;
+  const send = (calls: SudoCall[]) => sendSudoCalls({ wallet: args.wallet, token: args.token, accountAddress: args.account, strategyId: args.strategyId, calls });
   if (executor && universe.length > 0) {
     const missing = (await Promise.all(universe.map(async (row) => {
       const allowance = await readOnlyClient().readContract({ address: row.asset as Address, abi: erc20Abi, functionName: 'allowance', args: [args.account, executor] }).catch(() => 0n);
@@ -392,20 +398,30 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
     }))).filter((row) => row !== null);
     if (missing.length > 0) {
       args.step(L('Approve in your wallet so we can buy the assets', '在钱包里授权，才能买入资产'));
-      await sendInBatches(missing, (batch) => sendSudoCalls({
-        wallet: args.wallet, token: args.token, accountAddress: args.account, strategyId: args.strategyId,
-        calls: batch.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n })),
-      }));
+      const approvals = missing.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n }));
+      let together = false;
+      if (extra.length > 0 && approvals.length + extra.length <= APPROVALS_PER_USEROP) {
+        // 合在一起失敗（例如加息那段被拒）時，不讓買入卡住：退回只送授權，加息這次不開。
+        try { together = (await send([...approvals, ...extra])).success; } catch { together = false; }
+        if (together) { earnSent = true; extra = []; } else extra = [];
+      }
+      if (!together) {
+        await sendInBatches(missing, (batch) => send(batch.map((row) => ({ to: row!.asset as Address, data: approveCalldata(executor), value: 0n }))));
+      }
     }
+  }
+  if (extra.length > 0) {
+    args.step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
+    try { earnSent = (await send(extra)).success; } catch { earnSent = false; }
   }
   args.step(L('Placing your order', '正在下单'));
   try {
     const round = await postRebalance(args.token, args.portfolioId);
-    if (round.outcome === 'executed') return { filled: true, note: null, txHash: round.txHash };
+    if (round.outcome === 'executed') return { filled: true, note: null, txHash: round.txHash, earnSent };
     const f = explainTradeFailure(round);
-    return { filled: false, note: f.kind === 'nothing-to-do' ? null : tradeNote(f), txHash: null };
+    return { filled: false, note: f.kind === 'nothing-to-do' ? null : tradeNote(f), txHash: null, earnSent };
   } catch (cause) {
-    return { filled: false, note: isZh() ? zhMessage((cause as Error).message, '下单没成功，资金已在你的组合账户里，稍后会自动买入。') : (cause as Error).message, txHash: null };
+    return { filled: false, note: isZh() ? zhMessage((cause as Error).message, '下单没成功，资金已在你的组合账户里，稍后会自动买入。') : (cause as Error).message, txHash: null, earnSent };
   }
 }
 
@@ -414,7 +430,7 @@ async function allocate(args: { token: string; wallet: RenewalWallet; account: A
  * 回 `{ filled }`：true＝這一輪就成交；false＝錢已進帳戶、等排程成交（美股開盤時段）。`pending`＝測試 USDT 還在路上。
  */
 export const buy = localized(buyRaw, '买入没完成，再试一次。');
-async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { version: number; configHash: string } | null; amount?: string; pay: 'wallet' | 'faucet'; onStep?: Step }) {
+async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { version: number; configHash: string } | null; amount?: string; pay: 'wallet' | 'faucet'; earnExtra?: boolean; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet, owner } = need();
   const busy = { onBusy: () => step(L('Setting up your account', '正在开通账户')) };
@@ -460,8 +476,25 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
       amountWei = BigInt(body.amountWei ?? parseUnits('1000', 18));
     }
   }
-  const result = await allocate({ token: t, wallet, account, strategyId: portfolio.strategyId, portfolioId: portfolio.id, step });
-  return { ...result, pending: false, portfolioId: portfolio.id, amountUsdt: formatUnits(amountWei, 18) };
+  // 確認卡打開了加息（backend#204）：拿這次投入的同意 calls，接在買入的 UserOp 後一起簽；session key 還沒有加息權限就連 renewal 一起裝。
+  // 美股還沒成交也沒關係：同意之後由排程在成交後自動抵押、借款。拿不到 calls 不擋買入，只回 earnExtra: 'unavailable'。
+  let extra: SudoCall[] = [], renewal: Awaited<ReturnType<typeof getRenewalParams>> | null = null, earnExtra: 'on' | 'unavailable' | null = null;
+  if (args.earnExtra) {
+    try {
+      const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${portfolio.id}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: amountWei.toString() } });
+      if (a.status === 'ready' && a.calls?.length) {
+        if (a.authorization === 'renewal_required') renewal = await getRenewalParams(t, portfolio.id);
+        extra = [...(renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []), ...a.calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
+      } else earnExtra = 'unavailable';
+    } catch { earnExtra = 'unavailable'; }
+  }
+  const result = await allocate({ token: t, wallet, account, strategyId: portfolio.strategyId, portfolioId: portfolio.id, step, extra });
+  if (extra.length > 0 && !result.earnSent) earnExtra = 'unavailable';
+  if (result.earnSent) {
+    earnExtra = 'on';
+    if (renewal) await postRenewalResult(t, portfolio.id, { keyRef: renewal.keyRef, permissionId: renewal.permissionId, validUntil: renewal.validUntil, policySnapshot: renewal.policySnapshot }).catch(() => undefined);
+  }
+  return { ...result, pending: false, portfolioId: portfolio.id, amountUsdt: formatUnits(amountWei, 18), earnExtra };
 }
 
 // ---- 賣 --------------------------------------------------------------------------------------
@@ -548,6 +581,191 @@ async function patchMixRaw(args: { id: number; patch: Partial<MixInput>; onStep?
   return { signed: true, mix: null };
 }
 
+// ---- Earn（docs/EARN_UX.zh-TW.md）---------------------------------------------------------------
+// 三種錢分開：現金生息（A）在 owner 錢包自己存進白名單 vault（EOA 交易，後端只給 calldata、事後確認記帳）；
+// 策略加息（B）在每一檔投組自己的帳戶裡（Kernel UserOp），借出來的 USDT 只在那個帳戶裡，從不到錢包。
+type EarnCall = { to: Address; data: Hex; value: string; gas?: string };
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const temporarily = () => L('Temporarily unavailable. Try again later.', '暂时无法使用，稍后再试。');
+const usdtText = (raw: string) => Number(formatUnits(BigInt(raw), 18)).toLocaleString('en-US', { maximumFractionDigits: 2 });
+/** 後端的錯誤碼 → 一句白話（後端訊息是繁中，畫面要英文／簡中）。 */
+function earnError(cause: unknown): Error {
+  if (!(cause instanceof ApiError)) return cause instanceof Error ? cause : new Error(String(cause));
+  const m: Record<string, string> = {
+    INSUFFICIENT_BALANCE: L('Not enough USDT in your wallet.', '钱包里的 USDT 不够。'),
+    AMOUNT_TOO_SMALL: L('The minimum is 1 USDT.', '最少 1 USDT。'),
+    AMOUNT_EXCEEDS_BALANCE: L('That’s more than you have earning.', '超过了生息中的金额。'),
+    NOTHING_TO_WITHDRAW: L('Nothing to take out.', '没有可取出的金额。'),
+    TX_FAILED: L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'),
+    INSUFFICIENT_HOLDING: L('This portfolio doesn’t hold enough of it yet.', '组合里的持仓还不够。'),
+    MIX_NO_STRATEGY_EARN: L('Earn extra isn’t available for your own baskets.', '自建组合暂不支持加息。'),
+  };
+  return new Error(m[cause.code] ?? (cause.status === 503 || cause.status === 404 ? temporarily() : cause.status === 429 ? L('Too many tries. Wait a minute.', '试太多次了，等一分钟。') : L('That didn’t finish. Try again.', '没有完成，再试一次。')));
+}
+async function earnApi<T>(path: string, init: { method?: 'GET' | 'POST'; body?: unknown } = {}): Promise<T> {
+  try { return await apiRequest<T>(path, { ...init, token: token() }); } catch (cause) { throw earnError(cause); }
+}
+
+/** 現金生息：錢包可用 USDT 與各 vault 部位（`GET /me/earn`）。讀不到回 `status: 'unavailable'`（不是錯誤）。 */
+export const earn = () => earnApi<unknown>('/me/earn');
+
+/** owner 錢包依序送出後端給的 calls（approve → deposit／withdraw），每筆等上鏈；回最後一筆的 hash。 */
+async function sendOwnerCalls(wallet: RenewalWallet, owner: Address, t: string, calls: EarnCall[], step: Step): Promise<Hex> {
+  await assertRpcChain();
+  if (wallet.kind !== 'injected') throw new Error('wallet');
+  const reader = publicClientFor(wallet);
+  step(L('Getting the network fee', '正在准备 gas'));
+  await ensureOwnerGas({
+    readBalance: () => reader.getBalance({ address: owner }),
+    requestGas: () => postGasFaucet(t),
+    waitForTx: async (h) => { await reader.waitForTransactionReceipt({ hash: h as Hex, confirmations: 1, timeout: 30_000 }); },
+  });
+  const client = createWalletClient({ account: wallet.address, chain: appChain, transport: custom(wallet.provider as never) });
+  let last: Hex | null = null;
+  for (const [i, c] of calls.entries()) {
+    step(calls.length > 1 ? L(`Approve in your wallet (${i + 1} of ${calls.length})`, `在钱包里确认（${i + 1}/${calls.length}）`) : L('Approve in your wallet', '在钱包里确认'));
+    const hash = await client.sendTransaction({ to: c.to, data: c.data, value: BigInt(c.value || '0'), ...(c.gas ? { gas: BigInt(c.gas) } : {}), chain: appChain });
+    step(L('Waiting for the network', '等待链上确认'));
+    const receipt = await reader.waitForTransactionReceipt({ hash, confirmations: 1, timeout: 60_000 });
+    if (receipt.status !== 'success') throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
+    last = hash;
+  }
+  if (last === null) throw new Error(temporarily());
+  return last;
+}
+/** 記帳（`POST /me/earn/confirm`，冪等）：鏈上還沒定案回 pending，等一下再問。記不上不影響錢，只是收益統計晚一點。 */
+async function confirmEarn(txHash: Hex): Promise<boolean> {
+  for (let i = 0; i < 12; i++) {
+    const r = await earnApi<{ status: string }>('/me/earn/confirm', { method: 'POST', body: { txHash } }).catch(() => ({ status: 'pending' }));
+    if (r.status === 'confirmed') return true;
+    await sleep(2500);
+  }
+  return false;
+}
+type EarnPrepared = { status: 'ready' | 'limited' | 'unavailable'; amountRaw?: string; calls?: EarnCall[]; message?: string | null; maxDepositRaw?: string; maxWithdrawRaw?: string; partial?: { amountRaw: string; calls: EarnCall[] } };
+
+/** 存入一個白名單 vault（金額是 USDT 字串）。一次確認：沒授權過會多一筆 approve。 */
+export const earnDeposit = localized(earnDepositRaw, '存入没完成，再试一次。');
+async function earnDepositRaw(args: { vaultId: string; amount: string; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t, wallet, owner } = need();
+  step(L('Checking the vault', '正在检查'));
+  const p = await earnApi<EarnPrepared>('/me/earn/deposit', { method: 'POST', body: { vaultId: args.vaultId, amountRaw: parseUnits(args.amount, 18).toString() } });
+  if (p.status === 'limited') throw new Error(L(`This vault can take up to ${usdtText(p.maxDepositRaw ?? '0')} USDT right now.`, `这个 vault 现在最多还能存 ${usdtText(p.maxDepositRaw ?? '0')} USDT。`));
+  if (p.status !== 'ready' || !p.calls?.length) throw new Error(temporarily());
+  const hash = await sendOwnerCalls(wallet, owner, t, p.calls, step);
+  step(L('Confirming', '正在确认'));
+  const recorded = await confirmEarn(hash);
+  return { amountUsdt: formatUnits(BigInt(p.amountRaw ?? '0'), 18), txHash: hash, recorded };
+}
+
+/**
+ * 領回到錢包（含利息）：`amount` 是 USDT 字串或 'max'。有好幾個 vault 部位時從大的開始領；
+ * vault 當下流動性不夠時丟一句「現在最多可領 X」，不報錯碼（max 則先領能領的部分）。
+ */
+export const earnWithdraw = localized(earnWithdrawRaw, '取出没完成，再试一次。');
+async function earnWithdrawRaw(args: { amount: string | 'max'; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t, wallet, owner } = need();
+  step(L('Checking your balance', '正在检查余额'));
+  const acct = await earnApi<{ status: string; cashEarn: { positions: { vaultId: string; valueRaw: string | null; maxWithdrawRaw: string | null }[] } }>('/me/earn');
+  if (acct.status !== 'ok') throw new Error(temporarily());
+  const positions = acct.cashEarn.positions.filter((p) => p.valueRaw !== null && BigInt(p.valueRaw) > 0n).sort((a, b) => (BigInt(b.valueRaw!) > BigInt(a.valueRaw!) ? 1 : -1));
+  if (positions.length === 0) throw new Error(L('Nothing to take out.', '没有可取出的金额。'));
+  const all = args.amount === 'max';
+  let left = all ? 0n : parseUnits(args.amount, 18);
+  const plans: { vaultId: string; amountRaw: string | 'max' }[] = [];
+  for (const p of positions) {
+    if (all) { plans.push({ vaultId: p.vaultId, amountRaw: 'max' }); continue; }
+    if (left <= 0n) break;
+    const value = BigInt(p.valueRaw!), take = left < value ? left : value;
+    plans.push({ vaultId: p.vaultId, amountRaw: take === value ? 'max' : take.toString() });
+    left -= take;
+  }
+  if (!all && left > 0n) throw new Error(L('That’s more than you have earning.', '超过了生息中的金额。'));
+  let got = 0n, note: string | null = null;
+  for (const plan of plans) {
+    const p = await earnApi<EarnPrepared>('/me/earn/withdraw', { method: 'POST', body: { vaultId: plan.vaultId, amountRaw: plan.amountRaw } });
+    let calls = p.status === 'ready' ? p.calls : undefined, amountRaw = p.amountRaw;
+    if (p.status === 'limited') {
+      const max = usdtText(p.maxWithdrawRaw ?? '0');
+      if (!p.partial) throw new Error(L(`You can take out up to ${max} USDT right now.`, `现在最多可取 ${max} USDT。`));
+      calls = p.partial.calls; amountRaw = p.partial.amountRaw;
+      note = L(`Only ${max} USDT could come out right now. Try the rest later.`, `现在只能取 ${max} USDT，其余稍后再取。`);
+    }
+    if (!calls?.length) throw new Error(temporarily());
+    const hash = await sendOwnerCalls(wallet, owner, t, calls, step);
+    step(L('Confirming', '正在确认'));
+    await confirmEarn(hash);
+    got += BigInt(amountRaw ?? '0');
+  }
+  return { amountUsdt: formatUnits(got, 18), note };
+}
+
+type StrategyPosition = { asset: string; status: 'on' | 'off' | 'unavailable' };
+/** 策略加息：這一檔的部位（`GET /portfolios/:id/strategy-earn`）；淨值＝抵押＋vault－負債，跟現金分開。 */
+export const strategyEarn = (portfolioId: number) => earnApi<unknown>(`/portfolios/${portfolioId}/strategy-earn`);
+
+/** 加息的活動紀錄（`GET /portfolios/:id/strategy-earn/activity`，新到舊）：減倉、收掉、領獎、開啟、還款。 */
+export const strategyActivity = (portfolioId: number) => earnApi<unknown>(`/portfolios/${portfolioId}/strategy-earn/activity`);
+
+/** 一檔投組的帳戶：`GET /portfolios` 找出 Kernel 帳戶與策略 id（簽 UserOp 用）。 */
+async function portfolioAccount(t: string, portfolioId: number) {
+  const holding = (await getPortfolios(t)).find((p) => p.id === portfolioId);
+  const account = holding?.smartAccounts[0]?.address as Address | undefined;
+  if (!holding || !account) throw new Error(L('Portfolio not found.', '找不到这个组合。'));
+  return { account, strategyId: holding.strategyId };
+}
+async function sendStrategyCalls(t: string, wallet: RenewalWallet, portfolioId: number, calls: EarnCall[]) {
+  const { account, strategyId } = await portfolioAccount(t, portfolioId);
+  const receipt = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') })) });
+  if (!receipt.success) throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
+  return receipt.txHash;
+}
+
+/**
+ * 開啟加息：這一檔帳戶裡持有的、有開放市場的資產（`assets`，後端代號如 NVDAB），全部數量拿去開；
+ * 後端每個資產回一組 calls，合成一筆 UserOp（owner 確認一次）。還沒成交、帳戶裡沒有那些資產時回 `{ opened: [] }`。
+ */
+export const strategyOpen = localized(strategyOpenRaw, '加息没开启，再试一次。');
+async function strategyOpenRaw(args: { portfolioId: number; assets: string[]; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t, wallet } = need();
+  step(L('Checking your portfolio', '正在检查持仓'));
+  const st = await getPortfolioStatus(t, args.portfolioId);
+  const held = (st.holdings ?? []).filter((h) => args.assets.includes(h.symbol) && BigInt(h.amountWei) > 0n);
+  if (held.length === 0) return { opened: [] as string[] };
+  const calls: EarnCall[] = [], opened: string[] = [];
+  for (const h of held) {
+    const r = await earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/open`, { method: 'POST', body: { asset: h.symbol, collateralRaw: h.amountWei } });
+    if (r.status === 'ready' && r.calls?.length) { calls.push(...r.calls); opened.push(h.symbol); }
+  }
+  if (calls.length === 0) throw new Error(temporarily());
+  step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
+  await sendStrategyCalls(t, wallet, args.portfolioId, calls);
+  return { opened };
+}
+
+/** 關閉加息（關掉、或賣出前）：每個開著的資產先還款再取回抵押，合成一筆 UserOp。沒有開著的就什麼都不送。 */
+export const strategyClose = localized(strategyCloseRaw, '加息没结清，再试一次。');
+async function strategyCloseRaw(args: { portfolioId: number; onStep?: Step }) {
+  const step = args.onStep ?? (() => {});
+  const { token: t, wallet } = need();
+  const pos = await earnApi<{ status: string; positions: StrategyPosition[] }>(`/portfolios/${args.portfolioId}/strategy-earn`);
+  if (pos.status !== 'ok') throw new Error(temporarily());
+  const on = pos.positions.filter((p) => p.status === 'on');
+  if (on.length === 0) return { closed: [] as string[] };
+  const calls: EarnCall[] = [];
+  for (const p of on) {
+    const r = await earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/close`, { method: 'POST', body: { asset: p.asset } });
+    if (r.status !== 'ready' || !r.calls?.length) throw new Error(temporarily());
+    calls.push(...r.calls);
+  }
+  step(L('Approve in your wallet to settle Earn extra', '在钱包里确认，结清加息'));
+  await sendStrategyCalls(t, wallet, args.portfolioId, calls);
+  return { closed: on.map((p) => p.asset) };
+}
+
 export const chain = { id: CHAIN.id, usdt: USDT, explorer: CHAIN.explorerUrl };
 export { transferCalldata };
 
@@ -555,6 +773,7 @@ export { transferCalldata };
 (window as unknown as { CRE8W: unknown }).CRE8W = {
   mount, subscribe, get, setInvite, waitlistMe, joinWaitlist, waitlistTasks, completeWaitlistTask, redeemInvite, signInWith, sendEmailCode, submitEmailCode, signInWallet, retry, logout, link, exportWallet,
   portfolios, status, activity, walletUsdt, buy, sell, mixes, mix, createMix, fundMixBasket, patchMix, chain,
+  earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
   /** 頁面換語言後呼叫：重推一次快照，讓錯誤訊息換成新語言。 */
   relang: () => { if (mounted) emit(); },
 };
