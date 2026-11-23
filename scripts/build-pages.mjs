@@ -337,8 +337,8 @@ function riskText(f, lang) {
     : `Prices go down as well as up, and you can lose money. This portfolio holds only ${f.holdings.length} asset${f.holdings.length > 1 ? 's' : ''}, so it’s concentrated${crypto ? ', and the crypto in it can swing far more than stocks' : ''}.`);
   if (f.category === 'person' && f.key !== 'musk') items.push(zh ? '申报有延迟，组合反映的是已经公开的持仓，不是对方此刻手里的仓位。' : 'Filings are delayed, so the portfolio reflects what has been disclosed, not what is held today.');
   items.push(zh
-    ? '股票以 bStock 代币形式持有：背后是发行方（币安关联公司）托管的正股，发行方每天公布储备证明，也有权冻结代币。这和在券商名下持股不是一回事。'
-    : 'Stocks are held as bStock tokens, backed by shares held by the issuer, a Binance affiliate, which publishes a daily proof of reserves and can freeze tokens. That isn’t the same as owning the shares at a broker.');
+    ? '股票以 bStock 代币形式持有：由币安关联公司 BTech Holdings 发行，每枚由托管的正股 1:1 支撑，发行方每天公布抵押证明。币安官方写明 bStock 不是股票，这和在券商名下持股不是一回事。'
+    : 'Stocks are held as bStock tokens, issued by BTech Holdings, a Binance affiliate. Each token is backed 1:1 by shares held with a custodian, and the issuer publishes a daily proof of collateral. Binance states that bStocks are not shares, so this isn’t the same as owning the shares at a broker.');
   items.push(zh ? '股票代币只在美股交易时段成交。部分资产的链上池子较浅，大额买卖会有滑点。' : 'Stock tokens only trade while the US market is open. Some on-chain markets are thin, so large orders move the price.');
   return items;
 }
@@ -513,7 +513,7 @@ function howPage(funds, lang) {
 
 <h2 style="margin-top:56px">资产谁来托管</h2>
 <p>你自己。每个用户在 BNB Chain 上都有自己的智能账户，资产以代币形式放在里面，不和别人的资产混在一起，用区块浏览器就能查到。CRE8 的自动化只能在你的账户里交易，资产要转出账户必须你本人签名。</p>
-<p>美股以 bStock 形式持有。bStock 是币安在 BNB Chain 上发行的美股代币，背后是发行方（币安关联公司）托管的正股，发行方每天公布储备证明，也有权冻结代币。持有 bStock 和在券商名下持股不同：没有投票权，分红和拆股体现在代币余额上，不发现金。</p>
+<p>美股以 bStock 形式持有。bStock 是币安关联公司 BTech Holdings 在 BNB Chain 上发行的美股代币，每枚由托管的正股 1:1 支撑，发行方每天公布抵押证明。持有 bStock 和在券商名下持股不同：<a href="https://www.binance.com/en/learn/bstocks">币安官方写明</a> bStock 不是股票，分红先扣 30% 美国预扣税，再折成更多代币，不发现金。</p>
 
 <h2 style="margin-top:56px">费用</h2>
 <ul>
@@ -557,7 +557,7 @@ function howPage(funds, lang) {
 
 <h2 style="margin-top:56px">Who holds the assets</h2>
 <p>You do. Every user has their own smart account on BNB Chain, and the tokens sit there, never pooled with anyone else’s, where any block explorer can show them. CRE8’s automation can only run trades inside your account. Moving anything out of it takes your signature.</p>
-<p>US stocks are held as bStock, Binance’s tokenized US stocks on BNB Chain. Each bStock is backed by shares held by the issuer, a Binance affiliate, which publishes a daily proof of reserves and can freeze tokens. Holding bStock isn’t the same as owning shares at a broker: there are no voting rights, and dividends and splits show up in the token balance rather than as cash.</p>
+<p>US stocks are held as bStock, tokenized US stocks on BNB Chain issued by BTech Holdings, a Binance affiliate. Each bStock is backed 1:1 by shares held with a custodian, and the issuer publishes a daily proof of collateral. Holding bStock isn’t the same as owning shares at a broker: <a href="https://www.binance.com/en/learn/bstocks">Binance states</a> that bStocks are not shares, and dividends are paid as extra tokens after a 30% US withholding tax rather than as cash.</p>
 
 <h2 style="margin-top:56px">Fees</h2>
 <ul>
