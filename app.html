@@ -148,6 +148,7 @@
 <sc-for list="{{ g.toks }}" as="k" hint-placeholder-count="3"><a href="{{ k.href }}" target="_blank" rel="noopener" aria-label="{{ k.aria }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;width:{{ seWhere.logo }}px;color:#3C4651;text-decoration:none">
 <span style="height:14px;font:400 {{ seWhere.fs }}px/14px 'Geist';letter-spacing:-.01em;white-space:nowrap;color:{{ k.rc }};{{ k.rsk }}">{{ k.rate }}<span style="font-size:{{ seWhere.fsp }}px;margin-left:1px;color:#8A929B">{{ k.pct }}</span></span>
 <span role="img" style="width:{{ seWhere.logo }}px;height:{{ seWhere.logo }}px;border-radius:50%;background:#EDF0F3 url({{ k.logo }}) center/cover no-repeat;box-shadow:0 0 0 1px rgba(11,15,20,.06);opacity:{{ k.op }};filter:{{ k.flt }}"></span>
+<sc-if value="{{ k.lim }}" hint-placeholder-val="{{ false }}"><span style="margin-top:-2px;font:400 8px/10px 'Geist';letter-spacing:.02em;color:#A8791F;white-space:nowrap">{{ k.lim }}</span></sc-if>
 </a></sc-for>
 </div>
 <div style="margin-top:10px;height:5px;border:1px solid #E1E4E8;border-top:0;border-radius:0 0 3px 3px"></div>
@@ -477,9 +478,9 @@ const EARN_OK = new Set(['AAPL', 'AMZN', 'ANT', 'AVGO', 'BABA', 'BMNR', 'BNC', '
 // GET /strategy-earn/markets → { 代號: 市場 }。鏈上符號：結尾 B 去掉，WBNB→BNB、XAUt→XAUT。整份回應存在這台裝置（cre8.seMk），下次先畫上次的。
 const seKey = a => a === 'WBNB' ? 'BNB' : a === 'XAUt' ? 'XAUT' : String(a).replace(/B$/, '');
 // 顯示用的利率一律是 BSC 主網真實利率（後端 mainnetRates／每個市場的 mainnet，同一條公式、比例＝目標 LTV）；測試網部位仍按鏈上模擬利率計息。
-// 沒有 mainnet 欄位（舊快取、後端讀不到）時退回鏈上的模擬值。mk.__venue＝主網規則會選的存款協議（USDT 存款年化最高的那家）。
+// 沒有 mainnet 欄位（舊快取、後端讀不到）時退回鏈上的模擬值。limited＝該資產的 Lista 市場可借不到 5 萬美元，圖上 logo 下寫「额度有限」。mk.__venue＝主網規則會選的存款協議（USDT 存款年化最高的那家）。
 const seMkFrom = d => { const mk = {}; ((d && d.markets) || []).forEach(m => { const x = m.mainnet || null, b = x ? { vaultBps: x.vaultBps, vaultIncentiveBps: x.vaultIncentiveBps, borrowBps: x.borrowBps, borrowIncentiveBps: x.borrowIncentiveBps, ratioBps: x.ratioBps, carryBps: x.carryBps, collateralBps: x.collateralBps, collateralIncentiveBps: x.collateralIncentiveBps } : m.breakdown, bps = x ? x.extraApyBps : m.extraApyBps, reason = x && !x.open ? x.reason : m.reason;
-  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: m.protocol, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, c: m.contracts || null, at: m.updatedAt }; });
+  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: m.protocol, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), c: m.contracts || null, at: m.updatedAt }; });
   Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false }); return mk; };
 // ---- 語言（英文／簡體中文）---------------------------------------------------------------------------------
 // ?lang=zh|en 優先（記到 localStorage cre8.lang，並從網址拿掉，之後切換才不會被網址蓋回去）→ localStorage → 瀏覽器語言 zh 開頭 → 英文。
@@ -1060,7 +1061,7 @@ class Component extends DCLogic {
         const cost = b ? Math.min(b.borrowBps, b.borrowBps - b.borrowIncentiveBps) : null;
         return { logo: LOGO(t), href: c ? scan(c.collateralMarket) : null, aria: t + ' · ' + (PROTO[p] || [p])[0],
           rate: sk ? ' ' : paused ? tr('Paused', '暂停') : M + (cost / 100).toFixed(2), pct: sk || paused ? '' : '%', rc: paused ? '#8A929B' : '#3C4651',
-          rsk: sk ? SKEL + 'width:28px;height:10px;margin-top:2px' : '', op: paused ? .35 : 1, flt: paused ? 'grayscale(1)' : 'none' };
+          rsk: sk ? SKEL + 'width:28px;height:10px;margin-top:2px' : '', op: paused ? .35 : 1, flt: paused ? 'grayscale(1)' : 'none', lim: !sk && !paused && m && m.limited ? tr('Limited', '额度有限') : '' };
       }) });
       x += by[p].length * (logo + gap) - gap;
     });
