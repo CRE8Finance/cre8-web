@@ -476,7 +476,11 @@ const LOGO = t => 'app/l-' + t.toLowerCase() + '.png';
 const EARN_OK = new Set(['AAPL', 'AMZN', 'ANT', 'AVGO', 'BABA', 'BMNR', 'BNC', 'BTC', 'COIN', 'CRCL', 'EWY', 'GME', 'GOOGL', 'HOOD', 'INTC', 'META', 'MSFT', 'MSTR', 'MU', 'NFLX', 'NVDA', 'PDD', 'QQQ', 'SKHY', 'SNDK', 'SPCX', 'SPY', 'TSLA', 'TSM', 'BNB', 'XAUT']);
 // GET /strategy-earn/markets → { 代號: 市場 }。鏈上符號：結尾 B 去掉，WBNB→BNB、XAUt→XAUT。整份回應存在這台裝置（cre8.seMk），下次先畫上次的。
 const seKey = a => a === 'WBNB' ? 'BNB' : a === 'XAUt' ? 'XAUT' : String(a).replace(/B$/, '');
-const seMkFrom = d => { const mk = {}; ((d && d.markets) || []).forEach(m => { mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && typeof m.extraApyBps === 'number' && m.extraApyBps > 0, bps: typeof m.extraApyBps === 'number' ? m.extraApyBps : null, protocol: m.protocol, b: m.breakdown, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason: m.reason, c: m.contracts || null, at: m.updatedAt }; }); return mk; };
+// 顯示用的利率一律是 BSC 主網真實利率（後端 mainnetRates／每個市場的 mainnet，同一條公式、比例＝目標 LTV）；測試網部位仍按鏈上模擬利率計息。
+// 沒有 mainnet 欄位（舊快取、後端讀不到）時退回鏈上的模擬值。mk.__venue＝主網規則會選的存款協議（USDT 存款年化最高的那家）。
+const seMkFrom = d => { const mk = {}; ((d && d.markets) || []).forEach(m => { const x = m.mainnet || null, b = x ? { vaultBps: x.vaultBps, vaultIncentiveBps: x.vaultIncentiveBps, borrowBps: x.borrowBps, borrowIncentiveBps: x.borrowIncentiveBps, ratioBps: x.ratioBps, carryBps: x.carryBps, collateralBps: x.collateralBps, collateralIncentiveBps: x.collateralIncentiveBps } : m.breakdown, bps = x ? x.extraApyBps : m.extraApyBps, reason = x && !x.open ? x.reason : m.reason;
+  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: m.protocol, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, c: m.contracts || null, at: m.updatedAt }; });
+  Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false }); return mk; };
 // ---- 語言（英文／簡體中文）---------------------------------------------------------------------------------
 // ?lang=zh|en 優先（記到 localStorage cre8.lang，並從網址拿掉，之後切換才不會被網址蓋回去）→ localStorage → 瀏覽器語言 zh 開頭 → 英文。
 // 右上「中文／EN」即時切換，不重新整理。tr(英, 中) 取目前語言的字；模板的固定字在 STR，renderVals 以 t 傳出。
@@ -1036,11 +1040,11 @@ class Component extends DCLogic {
     if (!n || s.seMk === 'unavailable') return { show: false, groups: [], dots: [] };
     const mk = s.seMk || {}, sk = !s.seMk, scan = a => 'https://testnet.bscscan.com/address/' + a, M = '−';
     const PROTO = { lista: ['LISTA', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
-    // 金庫 logo／名稱＝主網規則會挑的那家：借出的 USDT 進 Lista／Venus／Aave 裡 USDT 年化最高的，跟現金生息自動挑同一套
-    // （GET /earn/vaults 的 bestRate，loadEarnPublic 已在讀、裝置上有快取，這裡不多打請求）。測試網錢實際在策略金庫 MockEarnVault，
-    // 所以年化與 BscScan 仍用策略金庫的；主網上線時地址與年化也要改成選中那家的。讀不到 /earn/vaults 時用 CRE8 mark、不寫名稱。
+    // 金庫 logo／名稱／年化＝主網規則會挑的那家：借出的 USDT 進 Lista／Venus／Aave 裡 USDT 存款年化最高的（跟現金生息自動挑同一套規則），
+    // 用後端 mainnetRates 的主網真實值；沒有時退回 /earn/vaults 的 bestRate（測試網）。測試網錢實際在策略金庫 MockEarnVault，
+    // 所以 BscScan 連結仍是策略金庫；主網上線時地址也改成選中那家的。都讀不到時用 CRE8 mark、不寫名稱。
     const VENUE = { venus: ['Venus', 'app/l-venus.png'], lista: ['Lista', 'app/l-lista.png'], aave_v3: ['Aave', 'app/l-aave.png'] };
-    const best = Array.isArray(s.vaults) ? s.vaults.find(v => v.bestRate) : null, venue = best ? VENUE[best.protocol] || null : null;
+    const best = Array.isArray(s.vaults) ? s.vaults.find(v => v.bestRate) : null, venue = mk.__venue ? VENUE[mk.__venue === 'aave' ? 'aave_v3' : mk.__venue] || null : best ? VENUE[best.protocol] || null : null;
     const logo = n <= 7 ? 28 : n <= 9 ? 24 : 22, gap = n <= 7 ? 9 : n <= 9 ? 8 : 6, GG = 22, fs = n <= 7 ? 10.5 : n <= 9 ? 9.5 : 9, fsp = n <= 7 ? 8 : 7;
     const by = {}; elig.forEach(([t]) => { const p = mk[t] ? mk[t].protocol : 'lista'; (by[p] = by[p] || []).push(t); });
     const order = Object.keys(by).sort((a, b) => (a === 'lista' ? 0 : 1) - (b === 'lista' ? 0 : 1));
@@ -1404,7 +1408,9 @@ class Component extends DCLogic {
     hold.forEach((h, i, a) => h.sep = sepL(i, a));
     // 波動與最大回撤由模型淨值算（navStats）；載入中顯示 —。EXTRA YIELD 待接後端的現金生息 APY（還沒有端點，先保留原本的字）。
     const NS = D && D.stats, mineStat = false, fSE = this.seInfo(s0, f.id);
-    const stats = [[tr('APY', '年化收益'), pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], [tr('EXTRA YIELD', '加息策略'), fSE && fSE.rate != null ? '+' + fSE.rate.toFixed(1) + '%' : '—', '#A8791F'], [tr('VOLATILITY', '波动率'), mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], [tr('MAX DRAWDOWN', '最大回撤'), mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], [tr('HOLDINGS', '资产数'), String(f.n), '#0B0F14'], [tr('REBALANCED', '调仓'), f.freqLabel || FREQ_LABEL()[D && D.rebal != null ? D.rebal : 2], '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
+    // 頂部「加息策略」與示意圖最底的淨加息同一個字串：主網真實利率下可能低於 0.3%，照實顯示（不再藏成 —）。
+    const fSEText = fSE && fSE.raw != null ? (fSE.raw >= 0 ? '+' : '−') + Math.abs(fSE.raw).toFixed(fSE.raw < 0.95 && fSE.raw > -0.95 ? 2 : 1) + '%' : '—';
+    const stats = [[tr('APY', '年化收益'), pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], [tr('EXTRA YIELD', '加息策略'), fSEText, '#A8791F'], [tr('VOLATILITY', '波动率'), mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], [tr('MAX DRAWDOWN', '最大回撤'), mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], [tr('HOLDINGS', '资产数'), String(f.n), '#0B0F14'], [tr('REBALANCED', '调仓'), f.freqLabel || FREQ_LABEL()[D && D.rebal != null ? D.rebal : 2], '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
@@ -1497,7 +1503,7 @@ class Component extends DCLogic {
       people: people.map(card), themes: themes.map(card),
       themeTitle: fcat ? FIL[s.filter][0] : tr('Themes', '主题'), themeCount: tr(themes.length + ' PORTFOLIOS', themes.length + ' 个组合'),
       closeFund: () => s.fund ? this.back({ fund: null }) : this.back(bs > 0 ? { bstep: bs - 1 } : { fund: s.editing, editing: null }),
-      curEarn: hold.some(h => h.earn), seWhere: this.seWhere(s0, f.hold, fSE && fSE.rate != null ? '+' + fSE.rate.toFixed(1) + '%' : '—'), cur: { ...f, kind: f.kind === 'PEOPLE' ? tr('FOLLOW · PEOPLE', '人物') : f.kind === 'MINE' ? tr('YOUR BASKET', '自建组合') : f.cat === 'leveraged' ? tr('THEME', '杠杆') : tr('THEME', '主题'), count: tr(f.n + ' ASSETS', f.n + ' 个资产'), hold, stats },
+      curEarn: hold.some(h => h.earn), seWhere: this.seWhere(s0, f.hold, fSEText), cur: { ...f, kind: f.kind === 'PEOPLE' ? tr('FOLLOW · PEOPLE', '人物') : f.kind === 'MINE' ? tr('YOUR BASKET', '自建组合') : f.cat === 'leveraged' ? tr('THEME', '杠杆') : tr('THEME', '主题'), count: tr(f.n + ' ASSETS', f.n + ' 个资产'), hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => tr(r[0], r[5])), s.range, i => this.setState({ range: i, fh: null })),
       posLabel: own ? tr('YOUR POSITION', '我的持仓') : tr('MINIMUM', '起投'), posVal: own ? (own.val == null ? '—' : '$' + fmt(own.val)) : (LV ? LV.min : 50) + ' USDT',
