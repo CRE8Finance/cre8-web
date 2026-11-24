@@ -149,8 +149,6 @@
 <span style="height:14px;font:400 {{ seWhere.fs }}px/14px 'Geist';letter-spacing:-.01em;white-space:nowrap;color:{{ k.rc }};{{ k.rsk }}">{{ k.rate }}<span style="font-size:{{ seWhere.fsp }}px;margin-left:1px;color:#8A929B">{{ k.pct }}</span></span>
 <span style="margin-top:-6px;height:20px;display:{{ seWhere.incD }};text-align:center;font:500 8px/10px 'Geist';letter-spacing:-.01em;color:#A8791F;white-space:nowrap">{{ k.inc }}<br>{{ k.incT }}</span>
 <span role="img" style="width:{{ seWhere.logo }}px;height:{{ seWhere.logo }}px;border-radius:50%;background:#EDF0F3 url({{ k.logo }}) center/cover no-repeat;box-shadow:0 0 0 1px rgba(11,15,20,.06);opacity:{{ k.op }};filter:{{ k.flt }}"></span>
-<sc-if value="{{ k.loan }}" hint-placeholder-val="{{ false }}"><span style="margin-top:-2px;font:500 8px/10px 'Geist Mono';letter-spacing:.04em;color:#8A929B;white-space:nowrap">{{ k.loan }}</span></sc-if>
-<span style="margin-top:-5px;height:10px;font:400 7.5px/10px 'Geist';letter-spacing:.02em;color:#B8955A;white-space:nowrap;display:{{ seWhere.limD }}">{{ k.lim }}</span>
 </a></sc-for>
 </div>
 <div style="margin-top:10px;height:5px;border:1px solid #E1E4E8;border-top:0;border-radius:0 0 3px 3px"></div>
@@ -1084,7 +1082,7 @@ class Component extends DCLogic {
         fs: 42, fsp: 22, sk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', apyK: tr('APY', '年化'), bl: '0', padL: 0, padR: 0 }];
     const lk = Object.keys(loans).sort((a, b) => ['USDT', 'USDC', 'USD1', 'U'].indexOf(a) - ['USDT', 'USDC', 'USD1', 'U'].indexOf(b));
     return { show: true, title: tr('Extra Yield', '加息策略'), groups, logo, gap, fs, fsp, w: Math.round(w), vb: '0 0 ' + Math.round(w) + ' 84', dOn: dOn || 'M0 0', dOff: dOff || 'M0 0', dots,
-      stream: tr('Borrowed ', '借出 ') + (lk.length ? lk.join(' · ') : 'USDT'), vLabel: tr('VAULT', '金库'), vaultsV, incD: incAny ? 'block' : 'none', netNote: incAny && netText !== '—' ? tr('incl. $LISTA rewards', '含 $LISTA 奖励') : '', limD: groups.some(g => g.toks.some(k => k.lim !== '\u00a0')) ? 'block' : 'none', vCols: 'repeat(' + nv + ',minmax(0,1fr))',
+      stream: tr('Borrowed', '借出'), vLabel: tr('VAULT', '金库'), vaultsV, incD: incAny ? 'block' : 'none', netNote: incAny && netText !== '—' ? tr('incl. $LISTA rewards', '含 $LISTA 奖励') : '', limD: groups.some(g => g.toks.some(k => k.lim !== '\u00a0')) ? 'block' : 'none', vCols: 'repeat(' + nv + ',minmax(0,1fr))',
       vAddr: vault ? sh(vault.addr) : '\u00a0', vHref: vault ? scan(vault.addr) : null, netK: tr('NET EXTRA YIELD', '净加息'), net: netText };
   }
   holdingNames() { const out = {}; this.holdingsOf(this.state).forEach(h => { out[h.pid] = h.name; }); return out; }
