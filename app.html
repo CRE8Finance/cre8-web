@@ -151,8 +151,8 @@
 <span role="img" style="width:{{ seWhere.logo }}px;height:{{ seWhere.logo }}px;border-radius:50%;background:#EDF0F3 url({{ k.logo }}) center/cover no-repeat;box-shadow:0 0 0 1px rgba(11,15,20,.06);opacity:{{ k.op }};filter:{{ k.flt }}"></span>
 </a></sc-for>
 </div>
-<div style="margin-top:10px;height:5px;border:1px solid #E1E4E8;border-top:0;border-radius:0 0 3px 3px"></div>
-<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:6px;white-space:nowrap"><sc-if value="{{ g.logo }}" hint-placeholder-val="{{ true }}"><img src="{{ g.logo }}" alt="" style="width:12px;height:12px;border-radius:50%"></sc-if><span style="font:500 9.5px 'Geist Mono';letter-spacing:.18em;color:#8A929B">{{ g.name }}</span></div>
+<div style="margin-top:10px;height:5px;border:1px solid #E1E4E8;border-top:0;border-radius:0 0 3px 3px;visibility:{{ g.vis }}"></div>
+<div style="display:flex;justify-content:center;align-items:center;gap:5px;margin-top:6px;white-space:nowrap;visibility:{{ g.vis }}"><sc-if value="{{ g.logo }}" hint-placeholder-val="{{ true }}"><img src="{{ g.logo }}" alt="" style="width:12px;height:12px;border-radius:50%"></sc-if><span style="font:500 9.5px 'Geist Mono';letter-spacing:.18em;color:#8A929B">{{ g.name }}</span></div>
 </div></sc-for>
 </div>
 <div style="position:relative;width:{{ seWhere.w }}px;height:84px;margin:0 auto">
@@ -161,15 +161,15 @@
 </div>
 <div style="display:flex;justify-content:center;align-items:center;margin-top:6px"><span style="font:400 11px 'Geist';letter-spacing:.08em;color:#8A929B">{{ seWhere.stream }}</span></div>
 <div style="width:1px;height:18px;margin:6px auto 0;background:linear-gradient(#E6E2D8,#A8791F)"></div>
-<a href="{{ seWhere.vHref }}" target="_blank" rel="noopener" style="display:block;padding:18px 18px 16px;border:1px solid #E6E2D8;border-radius:14px;background:linear-gradient(#FFFFFF,#FCFAF6);color:#0B0F14;text-decoration:none">
-<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.vLabel }}</span><span style="white-space:nowrap;font:400 10.5px 'Geist Mono';letter-spacing:.02em;color:#7E8790">{{ seWhere.vAddr }} <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="vertical-align:-1px"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
+<div style="padding:18px 18px 16px;border:1px solid #E6E2D8;border-radius:14px;background:linear-gradient(#FFFFFF,#FCFAF6);color:#0B0F14;text-decoration:none">
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.vLabel }}</span></div>
 <div style="display:grid;grid-template-columns:{{ seWhere.vCols }};margin-top:14px">
-<sc-for list="{{ seWhere.vaultsV }}" as="v" hint-placeholder-count="1"><div style="min-width:0;padding:0 {{ v.padR }}px 0 {{ v.padL }}px;border-left:{{ v.bl }}">
+<sc-for list="{{ seWhere.vaultsV }}" as="v" hint-placeholder-count="1"><a href="{{ v.href }}" target="_blank" rel="noopener" style="display:block;min-width:0;padding:0 {{ v.padR }}px 0 {{ v.padL }}px;border-left:{{ v.bl }};color:#0B0F14;text-decoration:none">
 <div style="display:flex;align-items:center;gap:6px;white-space:nowrap"><img src="{{ v.logo }}" alt="" style="width:14px;height:14px;border-radius:{{ v.r }}"><span style="font:500 9.5px 'Geist Mono';letter-spacing:.08em;color:#6B7785;overflow:hidden;text-overflow:ellipsis">{{ v.name }}</span></div>
 <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font:300 {{ v.fs }}px/1 'Geist';letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap;{{ v.sk }}">{{ v.apy }}<span style="font-size:{{ v.fsp }}px">{{ v.pct }}</span></span><sc-if value="{{ v.apyK }}" hint-placeholder-val="{{ false }}"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ v.apyK }}</span></sc-if></div>
-</div></sc-for>
+</a></sc-for>
 </div>
-</a>
+</div>
 <div style="height:1px;background:#ECEEF0;margin-top:22px"></div>
 <div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:14px"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.netK }}</span><span style="display:inline-flex;align-items:baseline;gap:8px"><sc-if value="{{ seWhere.netNote }}" hint-placeholder-val="{{ false }}"><span style="font:400 10px 'Geist';letter-spacing:.02em;color:#B8955A;white-space:nowrap">{{ seWhere.netNote }}</span></sc-if><span style="font:300 26px 'Geist';letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#A8791F">{{ seWhere.net }}</span></span></div>
 </div>
@@ -486,7 +486,7 @@ const seKey = a => a === 'WBNB' ? 'BNB' : a === 'XAUt' ? 'XAUT' : String(a).repl
 // 沒有 mainnet 欄位（舊快取、後端讀不到）時退回鏈上的模擬值。limited＝該資產的 Lista 市場可借不到 5 萬美元，圖上 logo 下寫「额度有限」。mk.__venue＝主網規則會選的存款協議（USDT 存款年化最高的那家）。
 // 有 mainnetRates 時一律用主網路線（場所、穩定幣、比例都是後端每 10 分鐘重新挑的）；該資產主網沒有可借的市場＝沒有路線，顯示暫停、不退回測試網的數字。
 const seMkFrom = d => { const mk = {}, mn = !!(d && d.mainnetRates); ((d && d.markets) || []).forEach(m => { const x = m.mainnet || null, none = mn && !x, b = none ? null : x ? { vaultBps: x.vaultBps, vaultIncentiveBps: x.vaultIncentiveBps, borrowBps: x.borrowBps, borrowIncentiveBps: x.borrowIncentiveBps, ratioBps: x.ratioBps, carryBps: x.carryBps, collateralBps: x.collateralBps, collateralIncentiveBps: x.collateralIncentiveBps } : m.breakdown, bps = none ? 0 : x ? x.extraApyBps : m.extraApyBps, reason = none ? 'no_market' : x && !x.open ? x.reason : m.reason;
-  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps } : null, c: m.contracts || null, at: m.updatedAt }; });
+  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, c: m.contracts || null, at: m.updatedAt }; });
   Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false }); return mk; };
 // ---- 語言（英文／簡體中文）---------------------------------------------------------------------------------
 // ?lang=zh|en 優先（記到 localStorage cre8.lang，並從網址拿掉，之後切換才不會被網址蓋回去）→ localStorage → 瀏覽器語言 zh 開頭 → 英文。
@@ -1045,7 +1045,7 @@ class Component extends DCLogic {
   seWhere(s, hold, netText) {
     const elig = hold.filter(([t]) => EARN_OK.has(t)), n = elig.length;
     if (!n || s.seMk === 'unavailable') return { show: false, groups: [], dots: [] };
-    const mk = s.seMk || {}, sk = !s.seMk, scan = a => 'https://testnet.bscscan.com/address/' + a, M = '−';
+    const mk = s.seMk || {}, sk = !s.seMk, MAIN = 'https://bscscan.com/address/', MOOLAH_56 = '0x8f73b65b4caaf64fba2af91cc5d4a2a1318e5d8c', scan = a => 'https://testnet.bscscan.com/address/' + a, M = '−';
     const PROTO = { lista: ['LISTA', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
     // 每個資產借哪種穩定幣、存進哪個金庫＝後端 mainnetRates 的路線（借 X 存 X，挑利差最高的；主網真實利率）。金庫卡每個不同的金庫一欄。
     // 測試網錢實際在策略金庫 MockEarnVault，所以 BscScan 連結仍是策略金庫；主網上線時改成各路線的金庫地址。沒有路線資料時用 CRE8 mark。
@@ -1057,7 +1057,7 @@ class Component extends DCLogic {
     const w = order.reduce((a, p, i) => a + by[p].length * (logo + gap) - gap + (i ? GG : 0), 0), cx = w / 2;
     order.forEach((p, gi) => {
       if (gi) x += GG;
-      groups.push({ name: p === 'none' ? '' : (PROTO[p] || [p.toUpperCase()])[0], logo: p === 'none' ? '' : (PROTO[p] || [0, 'app/l-usdt.png'])[1], toks: by[p].map((t, i) => {
+      groups.push({ vis: p === 'none' ? 'hidden' : 'visible', name: p === 'none' ? '' : (PROTO[p] || [p.toUpperCase()])[0], logo: p === 'none' ? '' : (PROTO[p] || [0, 'app/l-usdt.png'])[1], toks: by[p].map((t, i) => {
         const m = mk[t], b = m && m.b, c = m && m.c, px = x + i * (logo + gap) + logo / 2, paused = !sk && (!b || (m.reason && m.reason !== 'data_unavailable'));
         if (c && !vault) vault = { addr: c.vault, apy: b ? b.vaultBps + b.vaultIncentiveBps : null };
         if (!sk && m && m.vault) { const key = m.vault.venue + ':' + m.vault.token, g = vg[key] || (vg[key] = { ...m.vault, n: 0, on: 0 }); g.n++; if (!paused) { g.on++; if (m.loan) loans[m.loan] = 1; } }
@@ -1066,7 +1066,8 @@ class Component extends DCLogic {
         // 上方顯示基礎借款成本；借款激勵（Lista＝$LISTA、Venus＝$XVS，發到這個組合自己的帳戶）另外用金色小字。淨加息照算激勵。
         const cost = b ? b.borrowBps : null, inc = !sk && !paused && b && b.borrowIncentiveBps > 0 ? b.borrowIncentiveBps : 0;
         if (inc) incAny = 1;
-        return { logo: LOGO(t), href: c ? scan(c.collateralMarket) : null, aria: t + ' · ' + (PROTO[p] || [p])[0],
+        // 連結一律指向主網：Lista 走 Moolah 合約，Venus 走該穩定幣的 vToken（mainnet.marketId）。
+        return { logo: LOGO(t), href: m && m.mn ? (m.mn.venue === 'venus' ? MAIN + m.mn.marketId : MAIN + MOOLAH_56) : null, aria: t + ' · ' + (PROTO[p] || [p])[0],
           rate: sk ? '\u00a0' : paused ? tr('Paused', '暂停') : (cost > 0 ? M : '+') + (Math.abs(cost) / 100).toFixed(2), inc: inc ? '+' + (inc / 100).toFixed(2) + '%' : '\u00a0', incT: inc ? (p === 'venus' ? '$XVS' : '$LISTA') : '\u00a0', pct: sk || paused ? '' : '%', rc: paused ? '#8A929B' : '#3C4651',
           rsk: sk ? SKEL + 'width:28px;height:10px;margin-top:2px' : '', op: paused ? .35 : 1, flt: paused ? 'grayscale(1)' : 'none', lim: !sk && !paused && m && m.limited ? tr('Limited', '额度有限') : '\u00a0', loan: !sk && !paused && m && m.loan ? m.loan : '' };
       }) });
@@ -1078,9 +1079,9 @@ class Component extends DCLogic {
     const nv = vl.length || 1, vfs = nv === 1 ? 42 : nv === 2 ? 30 : 22, vfsp = nv === 1 ? 22 : nv === 2 ? 16 : 12;
     const vaultsV = vl.length ? vl.map((v, i) => ({ logo: (VENUE[v.venue] || [0, 'assets/cre8-mark-512.png'])[1], r: VENUE[v.venue] ? '50%' : '4px',
         name: nv === 1 ? ((VENUE[v.venue] || [v.venue])[0] + ' ' + v.token).toUpperCase() : v.token, apy: '+' + (v.apy / 100).toFixed(2), pct: '%', fs: vfs, fsp: vfsp, sk: '',
-        apyK: nv === 1 ? tr('APY', '年化') : '', bl: i ? '1px solid #ECE7DC' : '0', padL: i ? 14 : 0, padR: i < vl.length - 1 ? 10 : 0 }))
+        apyK: nv === 1 ? tr('APY', '年化') : '', bl: i ? '1px solid #ECE7DC' : '0', padL: i ? 14 : 0, padR: i < vl.length - 1 ? 10 : 0, href: v.address ? MAIN + v.address : null }))
       : [{ logo: 'assets/cre8-mark-512.png', r: '4px', name: '', apy: vault && vault.apy != null ? '+' + (vault.apy / 100).toFixed(2) : '\u00a0', pct: vault && vault.apy != null ? '%' : '',
-        fs: 42, fsp: 22, sk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', apyK: tr('APY', '年化'), bl: '0', padL: 0, padR: 0 }];
+        fs: 42, fsp: 22, sk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', apyK: tr('APY', '年化'), bl: '0', padL: 0, padR: 0, href: null }];
     const lk = Object.keys(loans).sort((a, b) => ['USDT', 'USDC', 'USD1', 'U'].indexOf(a) - ['USDT', 'USDC', 'USD1', 'U'].indexOf(b));
     return { show: true, title: tr('Extra Yield', '加息策略'), groups, logo, gap, fs, fsp, w: Math.round(w), vb: '0 0 ' + Math.round(w) + ' 84', dOn: dOn || 'M0 0', dOff: dOff || 'M0 0', dots,
       stream: tr('Borrowed', '借出'), vLabel: tr('VAULT', '金库'), vaultsV, incD: incAny ? 'block' : 'none', netNote: incAny && netText !== '—' ? tr('incl. $LISTA rewards', '含 $LISTA 奖励') : '', limD: groups.some(g => g.toks.some(k => k.lim !== '\u00a0')) ? 'block' : 'none', vCols: 'repeat(' + nv + ',minmax(0,1fr))',
