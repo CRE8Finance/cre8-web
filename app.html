@@ -964,6 +964,19 @@ class Component extends DCLogic {
   // 一檔基金或自建組合的策略加息策略（%/年）＝Σ 權重 × 該資產的 extraApyBps（只算有開放市場的資產）。槓桿基金沒有（回 null）。
   // state：ok（≥0.3% 才顯示）／low（太低不顯示）／unavailable（市場暫停或讀不到）／loading。syms＝後端代號（NVDAB…），開啟時用。
   // picks：還沒建立的自建組合（買入確認卡）用選好的成分。
+  // 已持有的組合：示意圖與頂部「加息策略」用這個組合實際所在的路線（後端 position.route，source＝onchain：路由 v2 的鏈上部位）。
+  // 沒有鏈上路線（測試網 v1 部位的 route 是 simulated，或還沒開）就用目前最佳路線，跟買入前一樣。版面與文字不變。
+  seMkActual(s, positions) {
+    const base = s.seMk; if (!base || base === 'unavailable') return base;
+    const act = {};
+    (positions || []).forEach(p => { const r = p && p.route, k = p && p.asset ? seKey(p.asset) : null, m = k && base[k];
+      if (!m || !r || r.source !== 'onchain' || p.status !== 'on' || !r.vault) return;
+      act[k] = { ...m, open: true, bps: typeof p.extraApyBps === 'number' ? p.extraApyBps : m.bps, protocol: r.venue, loan: r.loan, limited: false, reason: null,
+        b: { ...(m.b || {}), borrowBps: r.borrowBps, borrowIncentiveBps: r.borrowIncentiveBps || 0, vaultBps: r.vault.apyBps, vaultIncentiveBps: 0 },
+        vault: { venue: r.vault.venue, token: r.vault.token, apy: r.vault.apyBps, address: r.vault.address }, mn: { venue: r.venue, marketId: r.marketId } }; });
+    if (!Object.keys(act).length) return base;
+    const mk = { ...base, ...act }; Object.defineProperty(mk, '__venue', { value: base.__venue, enumerable: false }); return mk;
+  }
   seInfo(s, id, picks) {
     const f = FUNDS.find(x => x.id === id) || (picks ? { id, cat: 'mine', hold: picks } : this.mixesOf(s).map(mixFund).find(x => x.id === id));
     if (!f || f.cat === 'leveraged') return null;
@@ -1423,11 +1436,13 @@ class Component extends DCLogic {
     if (f.n > f.hold.length) hold.push({ t: '+' + (f.n - f.hold.length), w: 100 - shown, bar: 100 - shown, name: tr('Rest of the basket', '其余资产'), logo: 'app/l-usdt.png' });
     hold.forEach((h, i, a) => h.sep = sepL(i, a));
     // 波動與最大回撤由模型淨值算（navStats）；載入中顯示 —。EXTRA YIELD 待接後端的現金生息 APY（還沒有端點，先保留原本的字）。
-    const NS = D && D.stats, mineStat = false, fSE = this.seInfo(s0, f.id);
+    const heldRow = s.holdings.find(h => h.id === f.id || (f.portfolioId && h.pid === f.portfolioId)), heldSe = heldRow && s0.seP ? s0.seP[heldRow.pid] : null;
+    const sSE = heldSe && heldSe.positions ? { ...s0, seMk: this.seMkActual(s0, heldSe.positions) } : s0;
+    const NS = D && D.stats, mineStat = false, fSE = this.seInfo(sSE, f.id);
     // 頂部「加息策略」與示意圖最底的淨加息同一個字串：主網真實利率下可能低於 0.3%，照實顯示（不再藏成 —）。
     const fSEText = fSE && fSE.raw != null ? (fSE.raw >= 0 ? '+' : '−') + Math.abs(fSE.raw).toFixed(fSE.raw < 0.95 && fSE.raw > -0.95 ? 2 : 1) + '%' : '—';
     const stats = [[tr('APY', '年化收益'), pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], [tr('EXTRA YIELD', '加息策略'), fSEText, '#A8791F'], [tr('VOLATILITY', '波动率'), mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], [tr('MAX DRAWDOWN', '最大回撤'), mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], [tr('HOLDINGS', '资产数'), String(f.n), '#0B0F14'], [tr('REBALANCED', '调仓'), f.freqLabel || FREQ_LABEL()[D && D.rebal != null ? D.rebal : 2], '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
-    const seW = this.seWhere(s0, f.hold, fSEText); if (seW.netNote && stats[1]) stats[1].note = seW.netNote;
+    const seW = this.seWhere(sSE, f.hold, fSEText); if (seW.netNote && stats[1]) stats[1].note = seW.netNote;
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
@@ -1720,7 +1735,7 @@ class Component extends DCLogic {
         const zhKind = { mix_enrolled: '组合已启动', mix_allocation_changed: '比例已修改', mix_rebalanced: '已调仓', mix_exit_triggered: '开始卖出', mix_exit_stuck: '卖出卡住了', mix_cover: '封面已更新' }[a.kind] || '组合有更新';
         // 加息策略事件：一句人話（不出現抵押、借款比例等術語）。
         if (a.se) { const T = a.asset || tr('your shares', '持仓'), n = a.amount != null ? fmt(a.amount) : '';
-          const SE = { open: [tr('Yield strategy turned on', '加息策略已开启'), ''], deleverage: [tr(T + ' fell, so we repaid ' + n + ' USDT to stay safe', T + ' 下跌，已自动还款 ' + n + ' USDT 保安全'), ''], unwind: [tr('The yield strategy wasn’t worth it, so we settled it', '加息策略暂时不划算，已自动结清'), ''], repay: [tr('Settled the yield strategy before selling', '卖出前已先结清加息策略'), ''], close: [tr('Yield strategy turned off · shares back', '加息策略已关闭，股票已回到组合'), ''], claim: [tr('Yield strategy rewards received', '收到加息策略奖励'), '+' + n + ' USDT'] }[a.se] || [tr('Yield strategy updated', '加息策略有更新'), ''];
+          const SE = { open: [tr('Yield strategy turned on', '加息策略已开启'), ''], deleverage: [tr(T + ' fell, so we repaid ' + n + ' USDT to stay safe', T + ' 下跌，已自动还款 ' + n + ' USDT 保安全'), ''], unwind: [tr('The yield strategy wasn’t worth it, so we settled it', '加息策略暂时不划算，已自动结清'), ''], repay: [tr('Settled the yield strategy before selling', '卖出前已先结清加息策略'), ''], close: [tr('Yield strategy turned off · shares back', '加息策略已关闭，股票已回到组合'), ''], claim: [tr('Yield strategy rewards received', '收到加息策略奖励'), '+' + n + ' USDT'], migrate: [tr('Moved to a better rate', '换到更好的利率'), ''], switch_vault: [tr('Moved to a better rate', '换到更好的利率'), ''], reduce: [tr('Settled part of the yield strategy', '加息策略已还掉一部分'), ''] }[a.se] || [tr('Yield strategy updated', '加息策略有更新'), ''];
           return ['%', a.name, when + ' · ' + SE[0], SE[1], a.se === 'deleverage' ? '#A8791F' : '#16854F', a.se === 'claim' ? '#16854F' : '#0B0F14']; }
         if (LANG === 'zh') return a.kind ? ['r', a.name, when + ' · ' + zhKind, '', '#2F6690', '#0B0F14'] : [ok ? 'r' : '·', a.name, when + ' · ' + zhState, a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14'];
         return a.kind ? ['r', a.name, when + ' · ' + String(a.kind).replace(/_/g, ' '), '', '#2F6690', '#0B0F14'] : [ok ? 'r' : '·', a.name + (ok ? ' traded' : ''), when + ' · ' + String(a.state).replace(/_/g, ' '), a.usd != null ? '$' + fmt(a.usd) : '', ok ? '#16854F' : '#6B7785', '#0B0F14']; }).map(([g, t, d, v, fg, vc], i, a) => ({ g, gr: g === 'r', gt: g !== 'r', t, d, v, fg, vc, sep: sepL(i, a) })),
