@@ -999,6 +999,21 @@ async function sendStrategyCalls(t: string, wallet: RenewalWallet, portfolioId: 
   void recordStrategyTx(t, portfolioId, receipt.txHash);
   return receipt.txHash;
 }
+/**
+ * 後端把一個動作切成幾批（`batches`，每批一筆 owner UserOp，放得進單筆 gas 上限）：照順序一筆一筆送，每筆都記進活動紀錄。
+ * 沒有 `batches` 的舊回應就當成一批。中途失敗就停（前面幾批已經生效）；用戶再按一次時畫面會重新讀狀態，只處理剩下的。
+ * 回傳最後一筆的交易雜湊。
+ */
+async function sendStrategyBatches(t: string, wallet: RenewalWallet, portfolioId: number, r: { calls?: EarnCall[]; batches?: EarnCall[][] }): Promise<string> {
+  const batches = (r.batches?.length ? r.batches : [r.calls ?? []]).filter((b) => b.length > 0);
+  let last = '';
+  for (const [i, batch] of batches.entries()) {
+    // 下一批的讀值要看得到上一批（節點可能落後幾秒）。
+    if (i > 0) await sleep(3_000);
+    last = await sendStrategyCalls(t, wallet, portfolioId, batch);
+  }
+  return last;
+}
 /** 加息活動紀錄（backend#255）：owner 自己簽的開啟／關閉也從收據記進帳本。背景做、失敗不影響（下次重送同一筆也不會重複記）。 */
 async function recordStrategyTx(t: string, portfolioId: number, txHash: string): Promise<void> {
   for (let i = 0; i < 6; i++) {
@@ -1059,14 +1074,19 @@ async function strategyAutoOn(t: string, wallet: RenewalWallet, portfolioId: num
   const read = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
   const budget = read > atLeast ? read : atLeast;
   if (budget <= 0n) throw new Error(L('Buy into this portfolio first, then turn this on.', '先买入这个组合，再开启加息。'));
-  const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${portfolioId}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: budget.toString() } });
+  const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[]; batches?: EarnCall[][] }>(`/portfolios/${portfolioId}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: budget.toString() } });
   if (a.status !== 'ready' || !a.calls?.length) throw new Error(temporarily());
   const renewal = a.authorization === 'renewal_required' ? await getRenewalParams(t, portfolioId) : null;
-  const calls = [...(renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []), ...a.calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
+  // 同意通常一批；後端切成多批時，續期跟第一批同一筆，其餘依序送（一次點擊）。
+  const batches = (a.batches?.length ? a.batches : [a.calls]).filter((b) => b.length > 0);
   step(L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
-  const receipt = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls });
-  if (!receipt.success) throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
-  if (renewal) await recordRenewal(t, portfolioId, renewal);
+  for (const [i, batch] of batches.entries()) {
+    if (i > 0) await sleep(3_000);
+    const calls = [...(i === 0 && renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []), ...batch.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
+    const receipt = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls });
+    if (!receipt.success) throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
+    if (i === 0 && renewal) await recordRenewal(t, portfolioId, renewal);
+  }
   return { opened: [] as string[], auto: true };
 }
 
@@ -1080,11 +1100,11 @@ async function strategyCloseRaw(args: { portfolioId: number; onStep?: Step }) {
   const on = pos.positions.filter((p) => p.status === 'on');
   if (on.length === 0) return { closed: [] as string[] };
   // 一次問全部（backend#252）：Venus 整個帳戶只有一筆借款，要一起規劃還款，一檔一檔各問會讓第一檔想還全部而失敗。
-  const r = await earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/close`, { method: 'POST', body: { assets: on.map((p) => p.asset) } });
+  const r = await earnApi<{ status: string; calls?: EarnCall[]; batches?: EarnCall[][] }>(`/portfolios/${args.portfolioId}/strategy-earn/close`, { method: 'POST', body: { assets: on.map((p) => p.asset) } });
   if (r.status !== 'ready' || !r.calls?.length) throw new Error(temporarily());
-  const calls: EarnCall[] = r.calls;
   step(L('Approve in your wallet to settle Earn extra', '在钱包里确认，结清加息'));
-  await sendStrategyCalls(t, wallet, args.portfolioId, calls);
+  // 資產多的組合後端會切成幾批（每批 3 個市場以內、各自收尾）：一次點擊、依序送完。
+  await sendStrategyBatches(t, wallet, args.portfolioId, r);
   return { closed: on.map((p) => p.asset) };
 }
 
