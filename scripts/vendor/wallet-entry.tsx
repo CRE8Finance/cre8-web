@@ -528,6 +528,20 @@ async function roundOrLanded(t: string, portfolioId: number, run: () => Promise<
     throw cause;
   }
 }
+/**
+ * 開著加息策略時賣出：那一輪先替被抵押的股票還款、取回（backend#204 [STRATEGY_EARN_UNWINDING]，已上鏈），股票下一輪才賣。
+ * 2026-11-24 live：第一次按賣出畫面寫「没送出」，其實還款取回已完成，要再按一次。這裡在同一次點擊裡接著再跑那一輪（最多 3 次），
+ * 畫面顯示「正在结清加息策略，然后卖出」，直到真的賣出或遇到別的原因。
+ */
+const UNWOUND = /^\[STRATEGY_EARN_UNWINDING\] 賣出前已還款取回/;
+async function sellAfterUnwind(run: () => Promise<RedeemResult>, step: Step): Promise<RedeemResult> {
+  for (let i = 0; ; i++) {
+    const r = await run();
+    if (r.outcome !== 'blocked' || !UNWOUND.test(r.reason) || i >= 3) return r;
+    step(L('Settling the yield strategy, then selling', '正在结清加息策略，然后卖出'));
+    await sleep(3_000);
+  }
+}
 // 後端讓使用者的那一輪優先等通道（backend#244），沒等到就很快再問一次，讓排程器在下一個投組前看到我們在等。
 async function retryBusyRound<T extends { outcome: string; reason: string }>(run: () => Promise<T>, delaysMs: readonly number[] = [1_000, 1_000, 2_000, 2_000, 3_000, 3_000]): Promise<T> {
   for (let i = 0; ; i++) {
@@ -708,7 +722,7 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   if (target !== null) {
     step(L('Selling', '正在卖出'));
     try {
-      const first = () => roundOrLanded(t, holding.id, () => retryBusyRound(() => (args.all ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)) as Promise<RedeemResult>));
+      const first = () => sellAfterUnwind(() => roundOrLanded(t, holding.id, () => retryBusyRound(() => (args.all ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)) as Promise<RedeemResult>)), step);
       const run = await runSellBatches({ first, next: (rest) => continueRedeem(t, holding.id, rest), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
       if (afterSellRun(run) !== 'proceed' || run.status === 'stalled') note = tradeNote(explainTradeFailure({ outcome: run.lastOutcome, reason: run.lastReason }));
     } catch (cause) {
@@ -982,7 +996,18 @@ async function sendStrategyCalls(t: string, wallet: RenewalWallet, portfolioId: 
   const { account, strategyId } = await portfolioAccount(t, portfolioId);
   const receipt = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') })) });
   if (!receipt.success) throw new Error(L('The transaction didn’t go through. Nothing was moved.', '交易没成功，资金没动。'));
+  void recordStrategyTx(t, portfolioId, receipt.txHash);
   return receipt.txHash;
+}
+/** 加息活動紀錄（backend#255）：owner 自己簽的開啟／關閉也從收據記進帳本。背景做、失敗不影響（下次重送同一筆也不會重複記）。 */
+async function recordStrategyTx(t: string, portfolioId: number, txHash: string): Promise<void> {
+  for (let i = 0; i < 6; i++) {
+    try {
+      const r = await apiRequest<{ status: string }>(`/portfolios/${portfolioId}/strategy-earn/confirm`, { method: 'POST', token: t, body: { txHash } });
+      if (r.status !== 'pending') return;
+    } catch { return; }
+    await sleep(2_000);
+  }
 }
 
 /**
