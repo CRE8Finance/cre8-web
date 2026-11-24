@@ -161,7 +161,7 @@
 <div style="display:flex;justify-content:center;align-items:center;gap:6px;margin-top:6px"><img src="app/l-usdt.png" alt="" style="width:14px;height:14px;border-radius:50%"><span style="font:400 11px 'Geist';letter-spacing:.08em;color:#8A929B">{{ seWhere.stream }}</span></div>
 <div style="width:1px;height:18px;margin:6px auto 0;background:linear-gradient(#E6E2D8,#A8791F)"></div>
 <a href="{{ seWhere.vHref }}" target="_blank" rel="noopener" style="display:block;padding:20px 20px 18px;border:1px solid #E6E2D8;border-radius:14px;background:linear-gradient(#FFFFFF,#FCFAF6);color:#0B0F14;text-decoration:none">
-<div style="display:flex;justify-content:space-between;align-items:center"><span style="display:inline-flex;align-items:center;gap:7px"><img src="{{ seWhere.vLogo }}" alt="" style="width:16px;height:16px;border-radius:4px"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.vLabel }}</span></span><span style="white-space:nowrap;font:400 10.5px 'Geist Mono';letter-spacing:.02em;color:#7E8790">{{ seWhere.vAddr }} <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="vertical-align:-1px"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span style="display:inline-flex;align-items:center;gap:7px"><img src="{{ seWhere.vLogo }}" alt="" style="width:16px;height:16px;border-radius:{{ seWhere.vLogoR }}"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.vLabel }}</span></span><span style="white-space:nowrap;font:400 10.5px 'Geist Mono';letter-spacing:.02em;color:#7E8790">{{ seWhere.vAddr }} <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="vertical-align:-1px"><path d="M7 17L17 7M9 7h8v8"/></svg></span></div>
 <div style="display:flex;align-items:baseline;gap:8px;margin-top:12px"><span style="font:300 42px/1 'Geist';letter-spacing:-.03em;font-variant-numeric:tabular-nums;{{ seWhere.vSk }}">{{ seWhere.vApy }}<span style="font-size:22px">{{ seWhere.vPct }}</span></span><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.apyK }}</span></div>
 </a>
 <div style="height:1px;background:#ECEEF0;margin-top:22px"></div>
@@ -1036,8 +1036,11 @@ class Component extends DCLogic {
     if (!n || s.seMk === 'unavailable') return { show: false, groups: [], dots: [] };
     const mk = s.seMk || {}, sk = !s.seMk, scan = a => 'https://testnet.bscscan.com/address/' + a, M = '−';
     const PROTO = { lista: ['LISTA', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
-    // 金庫 logo 依地址：測試網是我們自己的 MockEarnVault（CRE8）；主網導到 Lista／Venus／Aave 時在這裡加。
-    const VAULTS = { '0x2e915b874a5a544736f5afd97f3fa1dd45d417a9': { logo: 'assets/cre8-mark-512.png' } };
+    // 金庫 logo／名稱＝主網規則會挑的那家：借出的 USDT 進 Lista／Venus／Aave 裡 USDT 年化最高的，跟現金生息自動挑同一套
+    // （GET /earn/vaults 的 bestRate，loadEarnPublic 已在讀、裝置上有快取，這裡不多打請求）。測試網錢實際在策略金庫 MockEarnVault，
+    // 所以年化與 BscScan 仍用策略金庫的；主網上線時地址與年化也要改成選中那家的。讀不到 /earn/vaults 時用 CRE8 mark、不寫名稱。
+    const VENUE = { venus: ['Venus', 'app/l-venus.png'], lista: ['Lista', 'app/l-lista.png'], aave_v3: ['Aave', 'app/l-aave.png'] };
+    const best = Array.isArray(s.vaults) ? s.vaults.find(v => v.bestRate) : null, venue = best ? VENUE[best.protocol] || null : null;
     const logo = n <= 7 ? 28 : n <= 9 ? 24 : 22, gap = n <= 7 ? 9 : n <= 9 ? 8 : 6, GG = 22, fs = n <= 7 ? 10.5 : n <= 9 ? 9.5 : 9, fsp = n <= 7 ? 8 : 7;
     const by = {}; elig.forEach(([t]) => { const p = mk[t] ? mk[t].protocol : 'lista'; (by[p] = by[p] || []).push(t); });
     const order = Object.keys(by).sort((a, b) => (a === 'lista' ? 0 : 1) - (b === 'lista' ? 0 : 1));
@@ -1057,9 +1060,9 @@ class Component extends DCLogic {
       }) });
       x += by[p].length * (logo + gap) - gap;
     });
-    const sh = a => a.slice(0, 6) + '…' + a.slice(-4), V = vault && VAULTS[vault.addr] || { logo: 'assets/cre8-mark-512.png' };
+    const sh = a => a.slice(0, 6) + '…' + a.slice(-4);
     return { show: true, title: tr('Extra Yield', '加息策略'), groups, logo, gap, fs, fsp, w: Math.round(w), vb: '0 0 ' + Math.round(w) + ' 84', dOn: dOn || 'M0 0', dOff: dOff || 'M0 0', dots,
-      stream: tr('Borrowed USDT', '借出 USDT'), vLabel: tr('VAULT', '金库'), vLogo: V.logo, apyK: tr('APY', '年化'),
+      stream: tr('Borrowed USDT', '借出 USDT'), vLabel: tr('VAULT', '金库') + (venue ? ' · ' + venue[0] : ''), vLogo: venue ? venue[1] : 'assets/cre8-mark-512.png', vLogoR: venue ? '50%' : '4px', apyK: tr('APY', '年化'),
       vApy: vault && vault.apy != null ? '+' + (vault.apy / 100).toFixed(2) : ' ', vPct: vault && vault.apy != null ? '%' : '',
       vSk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', vAddr: vault ? sh(vault.addr) : ' ',
       vHref: vault ? scan(vault.addr) : null, netK: tr('NET EXTRA YIELD', '净加息'), net: netText };
