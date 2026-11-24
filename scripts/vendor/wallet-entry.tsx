@@ -1045,7 +1045,7 @@ async function strategyAutoOn(t: string, wallet: RenewalWallet, portfolioId: num
   return { opened: [] as string[], auto: true };
 }
 
-/** 關閉加息（關掉、或賣出前）：每個開著的資產先還款再取回抵押，合成一筆 UserOp。沒有開著的就什麼都不送。 */
+/** 關閉加息（關掉、或賣出前）：開著的資產一次交給後端規劃（先還款再取回抵押），合成一筆 UserOp。沒有開著的就什麼都不送。 */
 export const strategyClose = localized(strategyCloseRaw, '加息没结清，再试一次。');
 async function strategyCloseRaw(args: { portfolioId: number; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
@@ -1054,12 +1054,10 @@ async function strategyCloseRaw(args: { portfolioId: number; onStep?: Step }) {
   if (pos.status !== 'ok') throw new Error(temporarily());
   const on = pos.positions.filter((p) => p.status === 'on');
   if (on.length === 0) return { closed: [] as string[] };
-  const calls: EarnCall[] = [];
-  for (const p of on) {
-    const r = await earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/close`, { method: 'POST', body: { asset: p.asset } });
-    if (r.status !== 'ready' || !r.calls?.length) throw new Error(temporarily());
-    calls.push(...r.calls);
-  }
+  // 一次問全部（backend#252）：Venus 整個帳戶只有一筆借款，要一起規劃還款，一檔一檔各問會讓第一檔想還全部而失敗。
+  const r = await earnApi<{ status: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/close`, { method: 'POST', body: { assets: on.map((p) => p.asset) } });
+  if (r.status !== 'ready' || !r.calls?.length) throw new Error(temporarily());
+  const calls: EarnCall[] = r.calls;
   step(L('Approve in your wallet to settle Earn extra', '在钱包里确认，结清加息'));
   await sendStrategyCalls(t, wallet, args.portfolioId, calls);
   return { closed: on.map((p) => p.asset) };
