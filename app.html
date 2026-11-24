@@ -147,6 +147,7 @@
 <div style="display:flex;gap:{{ seWhere.gap }}px">
 <sc-for list="{{ g.toks }}" as="k" hint-placeholder-count="3"><a href="{{ k.href }}" target="_blank" rel="noopener" aria-label="{{ k.aria }}" style="display:flex;flex-direction:column;align-items:center;gap:7px;width:{{ seWhere.logo }}px;color:#3C4651;text-decoration:none">
 <span style="height:14px;font:400 {{ seWhere.fs }}px/14px 'Geist';letter-spacing:-.01em;white-space:nowrap;color:{{ k.rc }};{{ k.rsk }}">{{ k.rate }}<span style="font-size:{{ seWhere.fsp }}px;margin-left:1px;color:#8A929B">{{ k.pct }}</span></span>
+<span style="margin-top:-6px;height:20px;display:{{ seWhere.incD }};text-align:center;font:500 8px/10px 'Geist';letter-spacing:-.01em;color:#A8791F;white-space:nowrap">{{ k.inc }}<br>{{ k.incT }}</span>
 <span role="img" style="width:{{ seWhere.logo }}px;height:{{ seWhere.logo }}px;border-radius:50%;background:#EDF0F3 url({{ k.logo }}) center/cover no-repeat;box-shadow:0 0 0 1px rgba(11,15,20,.06);opacity:{{ k.op }};filter:{{ k.flt }}"></span>
 <sc-if value="{{ k.loan }}" hint-placeholder-val="{{ false }}"><span style="margin-top:-2px;font:500 8px/10px 'Geist Mono';letter-spacing:.04em;color:#8A929B;white-space:nowrap">{{ k.loan }}</span></sc-if>
 <span style="margin-top:-5px;height:10px;font:400 7.5px/10px 'Geist';letter-spacing:.02em;color:#B8955A;white-space:nowrap;display:{{ seWhere.limD }}">{{ k.lim }}</span>
@@ -172,7 +173,7 @@
 </div>
 </a>
 <div style="height:1px;background:#ECEEF0;margin-top:22px"></div>
-<div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:14px"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.netK }}</span><span style="font:300 26px 'Geist';letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#A8791F">{{ seWhere.net }}</span></div>
+<div style="display:flex;justify-content:space-between;align-items:baseline;padding-top:14px"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ seWhere.netK }}</span><span style="display:inline-flex;align-items:baseline;gap:8px"><sc-if value="{{ seWhere.netNote }}" hint-placeholder-val="{{ false }}"><span style="font:400 10px 'Geist';letter-spacing:.02em;color:#B8955A;white-space:nowrap">{{ seWhere.netNote }}</span></sc-if><span style="font:300 26px 'Geist';letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#A8791F">{{ seWhere.net }}</span></span></div>
 </div>
 </sc-if>
 <sc-if value="{{ isMix }}" hint-placeholder-val="{{ false }}"><button onClick="{{ openDelMix }}" style="margin:28px 16px 0;border:0;background:transparent;font:400 15px 'Geist';color:#D23F2E;cursor:pointer;padding:0">{{ delMixLabel }}</button></sc-if>
@@ -180,7 +181,7 @@
 </div>
 <div style="flex:1 1 340px;min-width:0;max-width:{{ L.sideMax }};position:{{ L.sidePos }};top:86px;padding-top:{{ L.sideTop }}px">
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;margin:{{ L.statsM }};background:#E6E9ED;border:1px solid #E6E9ED;border-radius:18px;overflow:hidden">
-<sc-for list="{{ cur.stats }}" as="st" hint-placeholder-count="6"><div style="background:#FFFFFF;padding:14px 14px 13px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ st.k }}</div><div style="font:400 19px 'Geist';letter-spacing:-.02em;margin-top:6px;color:{{ st.c }}">{{ st.v }}</div></div></sc-for>
+<sc-for list="{{ cur.stats }}" as="st" hint-placeholder-count="6"><div style="background:#FFFFFF;padding:14px 14px 13px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ st.k }}</div><div style="font:400 19px 'Geist';letter-spacing:-.02em;margin-top:6px;color:{{ st.c }}">{{ st.v }}<sc-if value="{{ st.note }}" hint-placeholder-val="{{ false }}"><span style="margin-left:6px;font:400 9.5px 'Geist';letter-spacing:.02em;color:#B8955A;white-space:nowrap;vertical-align:2px">{{ st.note }}</span></sc-if></div></div></sc-for>
 </div>
 
 <sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ t.earnExtra }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div><button onClick="{{ fundSeDt }}" style="margin-top:6px;border:0;background:transparent;font:500 13px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ dtLabel }}</button></div><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="{{ t.earnExtra }}" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seFundCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
@@ -1053,7 +1054,7 @@ class Component extends DCLogic {
     const logo = n <= 7 ? 28 : n <= 9 ? 24 : 22, gap = n <= 7 ? 9 : n <= 9 ? 8 : 6, GG = 22, fs = n <= 7 ? 10.5 : n <= 9 ? 9.5 : 9, fsp = n <= 7 ? 8 : 7;
     const by = {}; elig.forEach(([t]) => { const p = mk[t] ? mk[t].protocol : 'lista'; (by[p] = by[p] || []).push(t); });
     const order = Object.keys(by).sort((a, b) => (a === 'lista' ? 0 : 1) - (b === 'lista' ? 0 : 1));
-    let x = 0, ai = 0, vault = null, dOn = '', dOff = ''; const dots = [], groups = [], vg = {}, loans = {};
+    let x = 0, ai = 0, vault = null, dOn = '', dOff = ''; const dots = [], groups = [], vg = {}, loans = {}; let incAny = 0;
     const w = order.reduce((a, p, i) => a + by[p].length * (logo + gap) - gap + (i ? GG : 0), 0), cx = w / 2;
     order.forEach((p, gi) => {
       if (gi) x += GG;
@@ -1063,9 +1064,11 @@ class Component extends DCLogic {
         if (!sk && m && m.vault) { const key = m.vault.venue + ':' + m.vault.token, g = vg[key] || (vg[key] = { ...m.vault, n: 0, on: 0 }); g.n++; if (!paused) { g.on++; if (m.loan) loans[m.loan] = 1; } }
         const d = 'M' + px.toFixed(1) + ' 0C' + px.toFixed(1) + ' 50 ' + cx.toFixed(1) + ' 30 ' + cx.toFixed(1) + ' 84';
         if (paused) dOff += d; else { if (ai++ % 2 === 0) dots.push({ d, dur: (5.5 + dots.length * .4).toFixed(2), delay: (dots.length * 1.9).toFixed(1) }); dOn += d; }
-        const cost = b ? Math.min(b.borrowBps, b.borrowBps - b.borrowIncentiveBps) : null;
+        // 上方顯示基礎借款成本；借款激勵（Lista＝$LISTA、Venus＝$XVS，發到這個組合自己的帳戶）另外用金色小字。淨加息照算激勵。
+        const cost = b ? b.borrowBps : null, inc = !sk && !paused && b && b.borrowIncentiveBps > 0 ? b.borrowIncentiveBps : 0;
+        if (inc) incAny = 1;
         return { logo: LOGO(t), href: c ? scan(c.collateralMarket) : null, aria: t + ' · ' + (PROTO[p] || [p])[0],
-          rate: sk ? ' ' : paused ? tr('Paused', '暂停') : (cost > 0 ? M : '+') + (Math.abs(cost) / 100).toFixed(2), pct: sk || paused ? '' : '%', rc: paused ? '#8A929B' : '#3C4651',
+          rate: sk ? '\u00a0' : paused ? tr('Paused', '暂停') : (cost > 0 ? M : '+') + (Math.abs(cost) / 100).toFixed(2), inc: inc ? '+' + (inc / 100).toFixed(2) + '%' : '\u00a0', incT: inc ? (p === 'venus' ? '$XVS' : '$LISTA') : '\u00a0', pct: sk || paused ? '' : '%', rc: paused ? '#8A929B' : '#3C4651',
           rsk: sk ? SKEL + 'width:28px;height:10px;margin-top:2px' : '', op: paused ? .35 : 1, flt: paused ? 'grayscale(1)' : 'none', lim: !sk && !paused && m && m.limited ? tr('Limited', '额度有限') : '\u00a0', loan: !sk && !paused && m && m.loan ? m.loan : '' };
       }) });
       x += by[p].length * (logo + gap) - gap;
@@ -1081,7 +1084,7 @@ class Component extends DCLogic {
         fs: 42, fsp: 22, sk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', apyK: tr('APY', '年化'), bl: '0', padL: 0, padR: 0 }];
     const lk = Object.keys(loans).sort((a, b) => ['USDT', 'USDC', 'USD1', 'U'].indexOf(a) - ['USDT', 'USDC', 'USD1', 'U'].indexOf(b));
     return { show: true, title: tr('Extra Yield', '加息策略'), groups, logo, gap, fs, fsp, w: Math.round(w), vb: '0 0 ' + Math.round(w) + ' 84', dOn: dOn || 'M0 0', dOff: dOff || 'M0 0', dots,
-      stream: tr('Borrowed ', '借出 ') + (lk.length ? lk.join(' · ') : 'USDT'), vLabel: tr('VAULT', '金库'), vaultsV, limD: groups.some(g => g.toks.some(k => k.lim !== '\u00a0')) ? 'block' : 'none', vCols: 'repeat(' + nv + ',minmax(0,1fr))',
+      stream: tr('Borrowed ', '借出 ') + (lk.length ? lk.join(' · ') : 'USDT'), vLabel: tr('VAULT', '金库'), vaultsV, incD: incAny ? 'block' : 'none', netNote: incAny && netText !== '—' ? tr('incl. $LISTA rewards', '含 $LISTA 奖励') : '', limD: groups.some(g => g.toks.some(k => k.lim !== '\u00a0')) ? 'block' : 'none', vCols: 'repeat(' + nv + ',minmax(0,1fr))',
       vAddr: vault ? sh(vault.addr) : '\u00a0', vHref: vault ? scan(vault.addr) : null, netK: tr('NET EXTRA YIELD', '净加息'), net: netText };
   }
   holdingNames() { const out = {}; this.holdingsOf(this.state).forEach(h => { out[h.pid] = h.name; }); return out; }
@@ -1424,6 +1427,7 @@ class Component extends DCLogic {
     // 頂部「加息策略」與示意圖最底的淨加息同一個字串：主網真實利率下可能低於 0.3%，照實顯示（不再藏成 —）。
     const fSEText = fSE && fSE.raw != null ? (fSE.raw >= 0 ? '+' : '−') + Math.abs(fSE.raw).toFixed(fSE.raw < 0.95 && fSE.raw > -0.95 ? 2 : 1) + '%' : '—';
     const stats = [[tr('APY', '年化收益'), pct(f.ret), f.ret >= 0 ? '#16854F' : '#D23F2E'], [tr('EXTRA YIELD', '加息策略'), fSEText, '#A8791F'], [tr('VOLATILITY', '波动率'), mineStat ? (11 + Math.abs(f.ret) * .28).toFixed(1) + '%' : NS ? NS.vol.toFixed(1) + '%' : '—', '#0B0F14'], [tr('MAX DRAWDOWN', '最大回撤'), mineStat ? '−' + (6 + Math.abs(f.ret) * .24).toFixed(1) + '%' : NS ? '−' + Math.abs(NS.mdd).toFixed(1) + '%' : '—', '#0B0F14'], [tr('HOLDINGS', '资产数'), String(f.n), '#0B0F14'], [tr('REBALANCED', '调仓'), f.freqLabel || FREQ_LABEL()[D && D.rebal != null ? D.rebal : 2], '#0B0F14']].map(([k, v, c]) => ({ k, v, c }));
+    const seW = this.seWhere(s0, f.hold, fSEText); if (seW.netNote && stats[1]) stats[1].note = seW.netNote;
     const pills = (items, cur, pick) => items.map((label, i) => ({ label, pick: () => pick(i), bg: i === cur ? '#0B0F14' : 'transparent', fg: i === cur ? '#fff' : '#5E6A76' }));
     const total = s.picks.reduce((a, t) => a + (s.weights[t] || 0), 0);
     const mixReady = s.picks.length > 0 && total === 100;
@@ -1516,7 +1520,7 @@ class Component extends DCLogic {
       people: people.map(card), themes: themes.map(card),
       themeTitle: fcat ? FIL[s.filter][0] : tr('Themes', '主题'), themeCount: tr(themes.length + ' PORTFOLIOS', themes.length + ' 个组合'),
       closeFund: () => s.fund ? this.back({ fund: null }) : this.back(bs > 0 ? { bstep: bs - 1 } : { fund: s.editing, editing: null }),
-      curEarn: hold.some(h => h.earn), seWhere: this.seWhere(s0, f.hold, fSEText), cur: { ...f, kind: f.kind === 'PEOPLE' ? tr('FOLLOW · PEOPLE', '人物') : f.kind === 'MINE' ? tr('YOUR BASKET', '自建组合') : f.cat === 'leveraged' ? tr('THEME', '杠杆') : tr('THEME', '主题'), count: tr(f.n + ' ASSETS', f.n + ' 个资产'), hold, stats },
+      curEarn: hold.some(h => h.earn), seWhere: seW, cur: { ...f, kind: f.kind === 'PEOPLE' ? tr('FOLLOW · PEOPLE', '人物') : f.kind === 'MINE' ? tr('YOUR BASKET', '自建组合') : f.cat === 'leveraged' ? tr('THEME', '杠杆') : tr('THEME', '主题'), count: tr(f.n + ' ASSETS', f.n + ' 个资产'), hold, stats },
       fv: { big: fch.v.pctBig, chg: fch.v.when, col: '#6B7785', when: '' }, fc: fch.c, fScrub: this.scrub('fh', fch.n), fLeave: () => this.setState({ fh: null }),
       ranges: pills(RANGES.map(r => tr(r[0], r[5])), s.range, i => this.setState({ range: i, fh: null })),
       posLabel: own ? tr('YOUR POSITION', '我的持仓') : tr('MINIMUM', '起投'), posVal: own ? (own.val == null ? '—' : '$' + fmt(own.val)) : (LV ? LV.min : 50) + ' USDT',
