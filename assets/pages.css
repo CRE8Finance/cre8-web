@@ -187,5 +187,7 @@ table.post-table{min-width:560px}
 @media (max-width:640px){.post-row--cover{grid-template-columns:minmax(0,1fr);gap:14px}}
 .post-chart{padding:20px 20px 16px;border-radius:16px;background:#fff;box-shadow:0 0 0 1px rgba(11,15,20,.08)}
 .post-chart svg{display:block;width:100%;height:auto;margin-top:12px}
+.post-chart__narrow{display:none!important}
+@media (max-width:560px){.post-chart{padding:16px 14px 14px}.post-chart__wide{display:none!important}.post-chart__narrow{display:block!important}}
 .post-chart__title{font-size:15px;font-weight:500;color:#0B0F14}
 .post-chart__src{margin-top:10px;font-size:12px;line-height:1.5;color:#6B7785}

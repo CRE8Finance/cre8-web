@@ -27,7 +27,7 @@ async function title(slug, lang) {
 function card(bg, t, lang) {
   const zh = lang === 'zh';
   const n = [...t].length;
-  const size = zh ? (n > 22 ? 50 : 58) : n > 60 ? 46 : 54;
+  const size = zh ? (n > 22 ? 66 : 76) : n > 60 ? 60 : 68;
   return `<!DOCTYPE html><html lang="${zh ? 'zh-Hans' : 'en'}"><head><meta charset="utf-8">
 <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@300,400&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500&family=Noto+Sans+SC:wght@300;400&display=swap">
@@ -35,11 +35,11 @@ function card(bg, t, lang) {
 *{box-sizing:border-box;margin:0}
 html,body{width:1200px;height:630px;overflow:hidden}
 body{position:relative;background:#0B0F14 url('${bg}') center/cover no-repeat;font-family:'Geist','Noto Sans SC','PingFang SC',sans-serif}
-.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(243,245,247,.94) 0%,rgba(243,245,247,.86) 40%,rgba(243,245,247,.35) 62%,rgba(243,245,247,0) 78%)}
-.t{position:absolute;left:64px;top:56px;bottom:56px;width:600px;display:flex;flex-direction:column}
-.logo{height:24px;align-self:flex-start}
-h1{margin-top:auto;font-family:'Switzer','Noto Sans SC','PingFang SC',sans-serif;font-weight:300;font-size:${size}px;line-height:1.12;letter-spacing:${zh ? '0' : '-.03em'};color:#0B0F14;text-wrap:balance}
-.k{margin-top:22px;font-size:18px;letter-spacing:.12em;text-transform:uppercase;color:#4A5B6A}
+.shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(243,245,247,.95) 0%,rgba(243,245,247,.88) 50%,rgba(243,245,247,.4) 70%,rgba(243,245,247,0) 84%)}
+.t{position:absolute;left:64px;top:56px;bottom:56px;width:720px;display:flex;flex-direction:column}
+.logo{height:34px;align-self:flex-start}
+h1{margin-top:auto;font-family:'Switzer','Noto Sans SC','PingFang SC',sans-serif;font-weight:300;font-size:${size}px;line-height:1.1;letter-spacing:${zh ? '0' : '-.03em'};color:#0B0F14;text-wrap:balance}
+.k{margin-top:24px;font-size:24px;letter-spacing:.12em;text-transform:uppercase;color:#4A5B6A}
 </style></head><body><div class="shade"></div>
 <div class="t"><img class="logo" src="${url('assets/cre8-logo-dark.svg')}" alt=""><h1>${esc(t)}</h1><div class="k">${zh ? 'CRE8 文章' : 'CRE8 Blog'}</div></div>
 </body></html>`;
