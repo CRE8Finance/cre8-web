@@ -132,6 +132,27 @@
   ]
  },
  {
+  "key": "mag7",
+  "img": "p-mag7",
+  "en": {
+   "name": "Mag7",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "美股七巨头",
+   "kind": "主题"
+  },
+  "tickers": [
+   "AAPL",
+   "MSFT",
+   "GOOGL",
+   "AMZN",
+   "NVDA",
+   "META",
+   "TSLA"
+  ]
+ },
+ {
   "key": "bnb",
   "img": "p-bnb",
   "en": {
@@ -165,27 +186,6 @@
    "MSFT",
    "SPCX",
    "META"
-  ]
- },
- {
-  "key": "mag7",
-  "img": "p-mag7",
-  "en": {
-   "name": "Mag7",
-   "kind": "Theme"
-  },
-  "zh": {
-   "name": "美股七巨头",
-   "kind": "主题"
-  },
-  "tickers": [
-   "AAPL",
-   "MSFT",
-   "GOOGL",
-   "AMZN",
-   "NVDA",
-   "META",
-   "TSLA"
   ]
  },
  {
