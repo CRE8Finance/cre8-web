@@ -798,7 +798,7 @@ async function zhHome(enHtml, funds) {
   // 首頁用相對路徑；/zh 底下要改成從根目錄起算。
   html = html.replace(/(src|href)="(assets|app)\//g, '$1="/$2/').replace(/url\((assets|app)\//g, 'url(/$1/').replace(/"\.\/(support|image-slot)\.js"/g, '"/$1.js"').replace(/":"assets\/vendor\//g, '":"/assets/vendor/');
   // 連到中文版對應頁；語言切換改成 EN → 英文首頁。
-  html = html.replace(/href="\/(portfolios|how-it-works|compare)/g, 'href="/zh/$1');
+  html = html.replace(/href="\/(portfolios|how-it-works|compare|blog)/g, 'href="/zh/$1');
   html = mustReplace(html, `href="${WAITLIST}"`, `href="${WAITLIST_ZH}"`, name);
   html = mustReplace(html, 'href="/zh" lang="zh-Hans" hreflang="zh-Hans" aria-label="简体中文"', 'href="/" lang="en" hreflang="en" aria-label="English"', name);
   html = mustReplace(html, '>中文</a>', '>EN</a>', name);
