@@ -24,6 +24,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
+// schema.org 日期要帶時區（Google Rich Results 會提醒）；文章只有日期，用台北時間當天 00:00。
+const isoDay = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d) ? d + "T00:00:00+08:00" : d);
 const API = (process.env.CRE8_API || 'https://website-production-d8e9f7cc.up.railway.app').replace(/\/$/, '');
 const SITE = 'https://cre8.finance';
 const APP = 'https://tst.cre8.finance/';
@@ -607,7 +609,7 @@ function comparePage(funds, lang) {
   const description = zh
     ? '想用 USDT 买美股，有哪几种方式？交易所、自己买链上美股代币、开美股券商账户和 CRE8，各适合什么人。'
     : 'Ways to buy US stocks with USDT, compared: an exchange, buying stock tokens yourself, a US brokerage account, and CRE8. Who each one suits.';
-  const page = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: abs(P(lang, path)), inLanguage: t.htmlLang, dateModified: BUILT, isPartOf: { '@type': 'WebSite', name: 'CRE8', url: SITE + '/' } };
+  const page = { '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: abs(P(lang, path)), inLanguage: t.htmlLang, dateModified: isoDay(BUILT), isPartOf: { '@type': 'WebSite', name: 'CRE8', url: SITE + '/' } };
   const cols = zh ? ['CRE8', '交易所', '自己买链上代币', '美股券商'] : ['CRE8', 'Exchange', 'Stock tokens, DIY', 'US broker'];
   const rows = zh ? [
     ['一次买一篮', '可以，21 个组合，也能自己配', '一只一只买', '一只一只买', '一只一只买'],
@@ -669,7 +671,7 @@ function blogIndexPage(posts, funds, lang) {
     ? '用 USDT 买美股有哪几种方法、bStock 是什么、代币化美股怎么选、怎么定投和生息。CRE8 整理的指南与对比。'
     : 'How to buy US stocks with USDT, what bStock is, how tokenized stocks compare, and how DCA and yield work. Guides and comparisons from CRE8.';
   const list = { '@context': 'https://schema.org', '@type': 'Blog', name: zh ? 'CRE8 文章' : 'CRE8 Blog', url: abs(P(lang, path)), inLanguage: t.htmlLang, publisher: ORG,
-    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p[lang].title, url: abs(P(lang, '/blog/' + p.slug)), datePublished: p[lang].meta.published, dateModified: p[lang].meta.updated })) };
+    blogPost: posts.map((p) => ({ '@type': 'BlogPosting', headline: p[lang].title, url: abs(P(lang, '/blog/' + p.slug)), datePublished: isoDay(p[lang].meta.published), dateModified: isoDay(p[lang].meta.updated) })) };
   return head({ lang, path, title, description, schema: [list, c.schema] }) + `
 <main class="wrap">
 ${c.html}
@@ -692,7 +694,7 @@ function blogPostPage(post, posts, funds, lang) {
   const seo = a.meta.seo_title || a.title;
   const docTitle = [...seo].length <= (zh ? 24 : 52) ? `${seo} | CRE8` : seo;
   const article = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: seo, description, inLanguage: t.htmlLang, url: abs(P(lang, path)),
-    mainEntityOfPage: abs(P(lang, path)), datePublished: a.meta.published, dateModified: a.meta.updated, author: ORG, publisher: ORG, image: SITE + (coverOf(post.slug, lang) || '/assets/og.jpg') };
+    mainEntityOfPage: abs(P(lang, path)), datePublished: isoDay(a.meta.published), dateModified: isoDay(a.meta.updated), author: ORG, publisher: ORG, image: SITE + (coverOf(post.slug, lang) || '/assets/og.jpg') };
   const cover = coverOf(post.slug, lang);
   const more = posts.filter((p) => p.slug !== post.slug).slice(0, 3);
   const updated = a.meta.updated !== a.meta.published ? (zh ? ` · 更新于 ${postDate(a.meta.updated, lang)}` : ` · Updated ${postDate(a.meta.updated, lang)}`) : '';
