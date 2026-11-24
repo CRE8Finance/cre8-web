@@ -167,6 +167,7 @@
 <sc-for list="{{ seWhere.vaultsV }}" as="v" hint-placeholder-count="1"><a href="{{ v.href }}" target="_blank" rel="noopener" style="display:block;min-width:0;padding:0 {{ v.padR }}px 0 {{ v.padL }}px;border-left:{{ v.bl }};color:#0B0F14;text-decoration:none">
 <div style="display:flex;align-items:center;gap:6px;white-space:nowrap"><img src="{{ v.logo }}" alt="" style="width:14px;height:14px;border-radius:{{ v.r }}"><span style="font:500 9.5px 'Geist Mono';letter-spacing:.08em;color:#6B7785;overflow:hidden;text-overflow:ellipsis">{{ v.name }}</span></div>
 <div style="display:flex;align-items:baseline;gap:6px;margin-top:8px"><span style="font:300 {{ v.fs }}px/1 'Geist';letter-spacing:-.03em;font-variant-numeric:tabular-nums;white-space:nowrap;{{ v.sk }}">{{ v.apy }}<span style="font-size:{{ v.fsp }}px">{{ v.pct }}</span></span><sc-if value="{{ v.apyK }}" hint-placeholder-val="{{ false }}"><span style="font:400 11px 'Geist';letter-spacing:.14em;color:#8A929B">{{ v.apyK }}</span></sc-if></div>
+<span style="display:{{ v.incD }};margin-top:5px;height:12px;font:500 9.5px/12px 'Geist';letter-spacing:-.01em;color:#A8791F;white-space:nowrap">{{ v.inc }}</span>
 </a></sc-for>
 </div>
 </div>
@@ -487,7 +488,9 @@ const seKey = a => a === 'WBNB' ? 'BNB' : a === 'XAUt' ? 'XAUT' : String(a).repl
 // 有 mainnetRates 時一律用主網路線（場所、穩定幣、比例都是後端每 10 分鐘重新挑的）；該資產主網沒有可借的市場＝沒有路線，顯示暫停、不退回測試網的數字。
 const seMkFrom = d => { const mk = {}, mn = !!(d && d.mainnetRates); ((d && d.markets) || []).forEach(m => { const x = m.mainnet || null, none = mn && !x, b = none ? null : x ? { vaultBps: x.vaultBps, vaultIncentiveBps: x.vaultIncentiveBps, borrowBps: x.borrowBps, borrowIncentiveBps: x.borrowIncentiveBps, ratioBps: x.ratioBps, carryBps: x.carryBps, collateralBps: x.collateralBps, collateralIncentiveBps: x.collateralIncentiveBps } : m.breakdown, bps = none ? 0 : x ? x.extraApyBps : m.extraApyBps, reason = none ? 'no_market' : x && !x.open ? x.reason : m.reason;
   mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, c: m.contracts || null, at: m.updatedAt }; });
-  Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false }); return mk; };
+  Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false });
+  // 每種穩定幣最佳金庫的基礎年化／激勵（mainnetRates.vaults），金庫卡分開顯示。
+  Object.defineProperty(mk, '__vaults', { value: d && d.mainnetRates && d.mainnetRates.vaults || {}, enumerable: false }); return mk; };
 // ---- 語言（英文／簡體中文）---------------------------------------------------------------------------------
 // ?lang=zh|en 優先（記到 localStorage cre8.lang，並從網址拿掉，之後切換才不會被網址蓋回去）→ localStorage → 瀏覽器語言 zh 開頭 → 英文。
 // 右上「中文／EN」即時切換，不重新整理。tr(英, 中) 取目前語言的字；模板的固定字在 STR，renderVals 以 t 傳出。
@@ -975,7 +978,7 @@ class Component extends DCLogic {
         b: { ...(m.b || {}), borrowBps: r.borrowBps, borrowIncentiveBps: r.borrowIncentiveBps || 0, vaultBps: r.vault.apyBps, vaultIncentiveBps: 0 },
         vault: { venue: r.vault.venue, token: r.vault.token, apy: r.vault.apyBps, address: r.vault.address }, mn: { venue: r.venue, marketId: r.marketId } }; });
     if (!Object.keys(act).length) return base;
-    const mk = { ...base, ...act }; Object.defineProperty(mk, '__venue', { value: base.__venue, enumerable: false }); return mk;
+    const mk = { ...base, ...act }; Object.defineProperty(mk, '__venue', { value: base.__venue, enumerable: false }); Object.defineProperty(mk, '__vaults', { value: base.__vaults || {}, enumerable: false }); return mk;
   }
   seInfo(s, id, picks) {
     const f = FUNDS.find(x => x.id === id) || (picks ? { id, cat: 'mine', hold: picks } : this.mixesOf(s).map(mixFund).find(x => x.id === id));
@@ -1090,14 +1093,18 @@ class Component extends DCLogic {
     // 金庫：有在借的路線用到的金庫（全部暫停時列出全部），用到的資產多的在前。
     let vl = Object.values(vg); if (vl.some(v => v.on)) vl = vl.filter(v => v.on); vl.sort((a, b) => b.on - a.on || b.n - a.n || b.apy - a.apy);
     const nv = vl.length || 1, vfs = nv === 1 ? 42 : nv === 2 ? 30 : 22, vfsp = nv === 1 ? 22 : nv === 2 ? 16 : 12;
+    // 金庫欄：大字＝基礎年化；有激勵時下方金色小字「+x% $LISTA」（Lista＝$LISTA、Venus＝$XVS）。淨加息照算激勵。
+    const vb = v => { const x = (mk.__vaults || {})[v.token]; return x && x.venue === v.venue && typeof x.baseBps === 'number' ? { base: x.baseBps, inc: x.incentiveBps || 0 } : { base: v.apy, inc: 0 }; };
+    const INC_T = { lista: '$LISTA', venus: '$XVS', aave: '$AAVE' }, vInc = vl.some(v => vb(v).inc > 0);
     const vaultsV = vl.length ? vl.map((v, i) => ({ logo: (VENUE[v.venue] || [0, 'assets/cre8-mark-512.png'])[1], r: VENUE[v.venue] ? '50%' : '4px',
-        name: nv === 1 ? ((VENUE[v.venue] || [v.venue])[0] + ' ' + v.token).toUpperCase() : v.token, apy: '+' + (v.apy / 100).toFixed(2), pct: '%', fs: vfs, fsp: vfsp, sk: '',
+        name: nv === 1 ? ((VENUE[v.venue] || [v.venue])[0] + ' ' + v.token).toUpperCase() : v.token, apy: '+' + (vb(v).base / 100).toFixed(2), pct: '%', fs: vfs, fsp: vfsp, sk: '',
+        inc: vb(v).inc > 0 ? '+' + (vb(v).inc / 100).toFixed(2) + '% ' + (INC_T[v.venue] || '') : '\u00a0', incD: vInc ? 'block' : 'none',
         apyK: nv === 1 ? tr('APY', '年化') : '', bl: i ? '1px solid #ECE7DC' : '0', padL: i ? 14 : 0, padR: i < vl.length - 1 ? 10 : 0, href: v.address ? MAIN + v.address : null }))
       : [{ logo: 'assets/cre8-mark-512.png', r: '4px', name: '', apy: vault && vault.apy != null ? '+' + (vault.apy / 100).toFixed(2) : '\u00a0', pct: vault && vault.apy != null ? '%' : '',
-        fs: 42, fsp: 22, sk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', apyK: tr('APY', '年化'), bl: '0', padL: 0, padR: 0, href: null }];
+        fs: 42, fsp: 22, sk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', apyK: tr('APY', '年化'), bl: '0', padL: 0, padR: 0, href: null, inc: '\u00a0', incD: 'none' }];
     const lk = Object.keys(loans).sort((a, b) => ['USDT', 'USDC', 'USD1', 'U'].indexOf(a) - ['USDT', 'USDC', 'USD1', 'U'].indexOf(b));
     return { show: true, title: tr('Extra Yield', '加息策略'), groups, logo, gap, fs, fsp, w: Math.round(w), vb: '0 0 ' + Math.round(w) + ' 84', dOn: dOn || 'M0 0', dOff: dOff || 'M0 0', dots,
-      stream: tr('Borrowed', '借出'), vLabel: tr('VAULT', '金库'), vaultsV, incD: incAny ? 'block' : 'none', netNote: incAny && netText !== '—' ? tr('incl. $LISTA rewards', '含 $LISTA 奖励') : '', limD: groups.some(g => g.toks.some(k => k.lim !== '\u00a0')) ? 'block' : 'none', vCols: 'repeat(' + nv + ',minmax(0,1fr))',
+      stream: tr('Borrowed', '借出'), vLabel: tr('VAULT', '金库'), vaultsV, incD: incAny ? 'block' : 'none', netNote: (incAny || vInc) && netText !== '—' ? tr('incl. $LISTA rewards', '含 $LISTA 奖励') : '', limD: groups.some(g => g.toks.some(k => k.lim !== '\u00a0')) ? 'block' : 'none', vCols: 'repeat(' + nv + ',minmax(0,1fr))',
       vAddr: vault ? sh(vault.addr) : '\u00a0', vHref: vault ? scan(vault.addr) : null, netK: tr('NET EXTRA YIELD', '净加息'), net: netText };
   }
   holdingNames() { const out = {}; this.holdingsOf(this.state).forEach(h => { out[h.pid] = h.name; }); return out; }
