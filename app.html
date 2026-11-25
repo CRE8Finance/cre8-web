@@ -814,7 +814,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=92d7cd60b5'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=63a4798738'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -969,6 +969,7 @@ class Component extends DCLogic {
   // picks：還沒建立的自建組合（買入確認卡）用選好的成分。
   // 已持有的組合：示意圖與頂部「加息策略」用這個組合實際所在的路線（後端 position.route，source＝onchain：路由 v2 的鏈上部位）。
   // 沒有鏈上路線（測試網 v1 部位的 route 是 simulated，或還沒開）就用目前最佳路線，跟買入前一樣。版面與文字不變。
+  // onchain：這條路線的地址（Venus 的 vToken、金庫）是部位所在那條鏈的，BscScan 連結要指到那條鏈（現在是測試網），不是主網。
   seMkActual(s, positions) {
     const base = s.seMk; if (!base || base === 'unavailable') return base;
     const act = {};
@@ -976,7 +977,7 @@ class Component extends DCLogic {
       if (!m || !r || r.source !== 'onchain' || p.status !== 'on' || !r.vault) return;
       act[k] = { ...m, open: true, bps: typeof p.extraApyBps === 'number' ? p.extraApyBps : m.bps, protocol: r.venue, loan: r.loan, limited: false, reason: null,
         b: { ...(m.b || {}), borrowBps: r.borrowBps, borrowIncentiveBps: r.borrowIncentiveBps || 0, vaultBps: r.vault.apyBps, vaultIncentiveBps: 0 },
-        vault: { venue: r.vault.venue, token: r.vault.token, apy: r.vault.apyBps, address: r.vault.address }, mn: { venue: r.venue, marketId: r.marketId } }; });
+        vault: { venue: r.vault.venue, token: r.vault.token, apy: r.vault.apyBps, address: r.vault.address, onchain: true }, mn: { venue: r.venue, marketId: r.marketId, onchain: true } }; });
     if (!Object.keys(act).length) return base;
     const mk = { ...base, ...act }; Object.defineProperty(mk, '__venue', { value: base.__venue, enumerable: false }); Object.defineProperty(mk, '__vaults', { value: base.__vaults || {}, enumerable: false }); return mk;
   }
@@ -1083,7 +1084,7 @@ class Component extends DCLogic {
         const cost = b ? b.borrowBps : null, inc = !sk && !paused && b && b.borrowIncentiveBps > 0 ? b.borrowIncentiveBps : 0;
         if (inc) incAny = 1;
         // 連結一律指向主網：Lista 走 Moolah 合約，Venus 走該穩定幣的 vToken（mainnet.marketId）。
-        return { logo: LOGO(t), href: m && m.mn ? (m.mn.venue === 'venus' ? MAIN + m.mn.marketId : MAIN + MOOLAH_56) : null, aria: t + ' · ' + (PROTO[p] || [p])[0],
+        return { logo: LOGO(t), href: m && m.mn ? (m.mn.venue === 'venus' ? (m.mn.onchain ? scan(m.mn.marketId) : MAIN + m.mn.marketId) : MAIN + MOOLAH_56) : null, aria: t + ' · ' + (PROTO[p] || [p])[0],
           rate: sk ? '\u00a0' : paused ? tr('Paused', '暂停') : (cost > 0 ? M : '+') + (Math.abs(cost) / 100).toFixed(2), inc: inc ? '+' + (inc / 100).toFixed(2) + '%' : '\u00a0', incT: inc ? (p === 'venus' ? '$XVS' : '$LISTA') : '\u00a0', pct: sk || paused ? '' : '%', rc: paused ? '#8A929B' : '#3C4651',
           rsk: sk ? SKEL + 'width:28px;height:10px;margin-top:2px' : '', op: paused ? .35 : 1, flt: paused ? 'grayscale(1)' : 'none', lim: !sk && !paused && m && m.limited ? tr('Limited', '额度有限') : '\u00a0', loan: !sk && !paused && m && m.loan ? m.loan : '' };
       }) });
@@ -1099,7 +1100,7 @@ class Component extends DCLogic {
     const vaultsV = vl.length ? vl.map((v, i) => ({ logo: (VENUE[v.venue] || [0, 'assets/cre8-mark-512.png'])[1], r: VENUE[v.venue] ? '50%' : '4px',
         name: nv === 1 ? ((VENUE[v.venue] || [v.venue])[0] + ' ' + v.token).toUpperCase() : v.token, apy: '+' + (vb(v).base / 100).toFixed(2), pct: '%', fs: vfs, fsp: vfsp, sk: '',
         inc: vb(v).inc > 0 ? '+' + (vb(v).inc / 100).toFixed(2) + '% ' + (INC_T[v.venue] || '') : '\u00a0', incD: vInc ? 'block' : 'none',
-        apyK: nv === 1 ? tr('APY', '年化') : '', bl: i ? '1px solid #ECE7DC' : '0', padL: i ? 14 : 0, padR: i < vl.length - 1 ? 10 : 0, href: v.address ? MAIN + v.address : null }))
+        apyK: nv === 1 ? tr('APY', '年化') : '', bl: i ? '1px solid #ECE7DC' : '0', padL: i ? 14 : 0, padR: i < vl.length - 1 ? 10 : 0, href: v.address ? (v.onchain ? scan(v.address) : MAIN + v.address) : null }))
       : [{ logo: 'assets/cre8-mark-512.png', r: '4px', name: '', apy: vault && vault.apy != null ? '+' + (vault.apy / 100).toFixed(2) : '\u00a0', pct: vault && vault.apy != null ? '%' : '',
         fs: 42, fsp: 22, sk: vault && vault.apy != null ? '' : SKEL + 'width:120px;height:40px', apyK: tr('APY', '年化'), bl: '0', padL: 0, padR: 0, href: null, inc: '\u00a0', incD: 'none' }];
     const lk = Object.keys(loans).sort((a, b) => ['USDT', 'USDC', 'USD1', 'U'].indexOf(a) - ['USDT', 'USDC', 'USD1', 'U'].indexOf(b));
