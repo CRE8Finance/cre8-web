@@ -37,6 +37,8 @@ try {
   await $`git -C ${appDir} archive ${commit} src .env.production package.json | tar -x -C ${work}`;
   symlinkSync(nodeModules, join(work, 'node_modules'), 'dir');
   copyFileSync(join(root, 'scripts/vendor/wallet-entry.tsx'), join(work, 'src/__cre8web_wallet.tsx'));
+  // wallet-entry 自己的純邏輯模組（node 直接測：scripts/test-sell-all.mjs），放在它旁邊。
+  copyFileSync(join(root, 'scripts/vendor/web-sell-all.ts'), join(work, 'src/web-sell-all.ts'));
 
   // 套件版本要跟這個 commit 的 package.json 一致（@zerodev 與後端必須相同，否則 AA24）。
   const pkg = JSON.parse(readFileSync(join(work, 'package.json'), 'utf8'));

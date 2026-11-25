@@ -824,7 +824,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=50bdbca816'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=23089cd8ea'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -1432,7 +1432,8 @@ class Component extends DCLogic {
       if (s.side === 'sell') {
         const h = this.holdingsOf(s).find(x => x.id === t.id);
         if (!h) throw new Error(tr('You don’t hold this portfolio.', '你没有持有这个组合。'));
-        const all = (parseFloat(amt) || 0) >= Math.floor((h.val || 0) * 100) / 100;
+        // 可賣的＝這一檔的價值扣掉定投還沒買的部分（那筆在 vault，是定投自己的，全部賣出不動它，要用「領回剩餘」）。
+        const all = (parseFloat(amt) || 0) >= Math.floor(Math.max(0, (h.val || 0) - (h.dcaRem || 0)) * 100) / 100;
         // 開著加息策略也直接賣：後端會先還款、取回股票再賣（backend#204），剩下的部位維持加息策略。
         const r = await W.sell({ portfolioId: h.pid, usd: parseFloat(amt) || 0, all, onStep });
         const n = Number(r.sentUsdt) || 0;
@@ -1661,7 +1662,9 @@ class Component extends DCLogic {
     const sell = s.side === 'sell', eIn = s.side === 'earn', eOut = s.side === 'earn-out', wd = s.side === 'withdraw', out = sell || eOut || wd, earnTot = this.earnTotal(s0);
     // 提現（錢包 USDT → 外部地址）：上限＝錢包現金；收款地址要是 0x 開頭 40 碼、不能是自己。
     const wdTo = String(s.wdTo || '').trim(), wdOk = /^0x[0-9a-fA-F]{40}$/.test(wdTo) && !!signedIn && wdTo.toLowerCase() !== String(w.address || '').toLowerCase();
-    const posH = s.holdings.find(h => h.id === tgt.id), posMax = wd ? Math.floor(s.cash * 100) / 100 : eOut ? Math.floor(earnTot * 100) / 100 : posH && posH.val ? Math.floor(posH.val * 100) / 100 : 0;
+    const posH = s.holdings.find(h => h.id === tgt.id), posMax = wd ? Math.floor(s.cash * 100) / 100 : eOut ? Math.floor(earnTot * 100) / 100 : posH && posH.val ? Math.floor(Math.max(0, posH.val - (posH.dcaRem || 0)) * 100) / 100 : 0;
+    // 賣出的上限不含定投還沒買的部分（在 vault，全部賣出不動它）：確認頁的「預計到賬」才會跟實際拿到的一致；它仍算在這一檔賣出後剩下的價值裡。
+    const posLeft = posH && posH.val ? Math.floor(posH.val * 100) / 100 : 0;
     const tLive = s.live && s.live[tgt.id], minBuy = eIn ? 1 : tLive ? tLive.min : 50, faucet = s.payFaucet && s.side === 'buy';
     const R0 = s.result || {}, isMixBuild = !!(tgt.mix && !tgt.mixId);
     // 買入確認卡的加息策略：後端 extraApyBps 依權重算成 %，再換成「每年多賺約 X USDT」（依這次投入金額）。
@@ -1674,7 +1677,7 @@ class Component extends DCLogic {
     const dcaWhen = dcaStartMs <= today.getTime() ? tr('Today', '今天') : fmtDay(new Date(dcaStartMs));
     const dcaFq = DCA_FQ_LABEL()[s.dcaFreq];
     // 部分賣出的上限＝持倉－進行中買入預留的 USDT；全部賣出（＝持倉）照常可以。
-    const sellRes = sell && posH && s.sellRes ? s.sellRes[posH.pid] || 0 : 0, partMax = sellRes > 0 ? Math.max(0, Math.floor((posH.val - sellRes) * 100) / 100) : posMax;
+    const sellRes = sell && posH && s.sellRes ? s.sellRes[posH.pid] || 0 : 0, partMax = sellRes > 0 ? Math.max(0, Math.floor((posH.val - (posH.dcaRem || 0) - sellRes) * 100) / 100) : posMax;
     const partGap = sell && amt > partMax && amt < posMax;
     // 部分賣出最低 10 USDT（比照買入）；全部賣出（＝持倉）不受限。低於時按鈕停用、字寫最低金額（同買入的呈現），不另外加說明。
     const sellLow = sell && amt > 0 && amt < SELL_MIN && amt < posMax;
@@ -1803,7 +1806,7 @@ class Component extends DCLogic {
       wdOn: wd, wdAddr: s.wdTo || '', wdPh: tr('Address on BNB Chain (0x…)', 'BNB Chain 收款地址（0x…）'), wdBd: wd && wdTo && !wdOk ? '#C2410C' : '#E6E9ED', onWdAddr: e => this.setState({ wdTo: e.target.value }),
       amtBtn, toReview: () => amtOk && (eIn || eOut ? this.confirm() : this.setState({ step: 'review' })),
       reviewRows: (dcaOn ? (() => { const best = (Array.isArray(s0.vaults) ? s0.vaults : []).filter(v => v.depositOpen && v.apyBps != null).sort((a, b) => b.apyBps - a.apyBps)[0];
-        return [[tr('Total', '总额'), fmt(amt) + ' USDT'], [tr('Each time', '每期'), fmt(dcaPerT) + ' USDT'], [tr('How often', '频率'), dcaFq + tr(' · ' + s.dcaN + ' times', ' · 共 ' + s.dcaN + ' 期')], [tr('Starts', '开始'), dcaWhen]].concat(best ? [[tr('Not bought yet earns', '还没买的部分'), '~' + (best.apyBps / 100).toFixed(1) + tr('% a year', '% 生息')]] : []); })() : eIn ? [[tr('Per year', '每年约'), '+' + fmt(amt * (tgt.apy || 0) / 100) + ' USDT'], [tr('Rate', '年化'), '~' + (tgt.apy || 0).toFixed(1) + '%']] : wd ? [[tr('To', '收款地址'), wdTo.slice(0, 6) + '…' + wdTo.slice(-4)], [tr('Network', '网络'), tr('BNB Chain testnet', 'BNB Chain 测试网')]] : eOut ? [[tr('To', '到账'), tr('Your wallet', '你的钱包')], [tr('Still earning', '继续生息'), fmt(Math.max(0, posMax - amt)) + ' USDT']] : sell ? [[tr('You get about', '预计到账'), fmt(amt) + ' USDT'], [tr('Paid to', '到账'), tr('Your wallet', '你的钱包')], [tr('Left in portfolio', '组合剩余'), '$' + fmt(Math.max(0, posMax - amt))]] : faucet ? [[tr('You pay', '支付'), tr('Free test USDT', '免费测试 USDT')], [tr('Amount', '金额'), tgt.mixId || isMixBuild ? tr('1,000 a day', '每天 1,000') : tr('10,000 first buy · then 1,000 a day', '首次 10,000 · 之后每天 1,000')], [tr('Held in', '存放在'), tr('Your account', '你的账户')]] : [[tr('You pay', '支付'), fmt(amt) + ' USDT'], [tr('Held in', '存放在'), tr('Your account', '你的账户')], [tr('Cash left', '剩余现金'), fmt(s.cash - amt) + ' USDT']]).concat(s.side === 'buy' && !dcaOn && tLive && tLive.apy != null ? [[tr('APY', '年化收益'), tLive.apy >= 0 ? '~' + pct(tLive.apy).replace('+', '') : pct(tLive.apy)]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
+        return [[tr('Total', '总额'), fmt(amt) + ' USDT'], [tr('Each time', '每期'), fmt(dcaPerT) + ' USDT'], [tr('How often', '频率'), dcaFq + tr(' · ' + s.dcaN + ' times', ' · 共 ' + s.dcaN + ' 期')], [tr('Starts', '开始'), dcaWhen]].concat(best ? [[tr('Not bought yet earns', '还没买的部分'), '~' + (best.apyBps / 100).toFixed(1) + tr('% a year', '% 生息')]] : []); })() : eIn ? [[tr('Per year', '每年约'), '+' + fmt(amt * (tgt.apy || 0) / 100) + ' USDT'], [tr('Rate', '年化'), '~' + (tgt.apy || 0).toFixed(1) + '%']] : wd ? [[tr('To', '收款地址'), wdTo.slice(0, 6) + '…' + wdTo.slice(-4)], [tr('Network', '网络'), tr('BNB Chain testnet', 'BNB Chain 测试网')]] : eOut ? [[tr('To', '到账'), tr('Your wallet', '你的钱包')], [tr('Still earning', '继续生息'), fmt(Math.max(0, posMax - amt)) + ' USDT']] : sell ? [[tr('You get about', '预计到账'), fmt(amt) + ' USDT'], [tr('Paid to', '到账'), tr('Your wallet', '你的钱包')], [tr('Left in portfolio', '组合剩余'), '$' + fmt(Math.max(0, posLeft - amt))]] : faucet ? [[tr('You pay', '支付'), tr('Free test USDT', '免费测试 USDT')], [tr('Amount', '金额'), tgt.mixId || isMixBuild ? tr('1,000 a day', '每天 1,000') : tr('10,000 first buy · then 1,000 a day', '首次 10,000 · 之后每天 1,000')], [tr('Held in', '存放在'), tr('Your account', '你的账户')]] : [[tr('You pay', '支付'), fmt(amt) + ' USDT'], [tr('Held in', '存放在'), tr('Your account', '你的账户')], [tr('Cash left', '剩余现金'), fmt(s.cash - amt) + ' USDT']]).concat(s.side === 'buy' && !dcaOn && tLive && tLive.apy != null ? [[tr('APY', '年化收益'), tLive.apy >= 0 ? '~' + pct(tLive.apy).replace('+', '') : pct(tLive.apy)]] : []).map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' })),
       confirm: () => this.confirm(), procOff: s.procOff, doneSc: s.doneSc, procText: s.procText || tr('PREPARING', '准备中'),
       // 結果：成交＝You own it；錢已進帳戶但還沒成交＝Order placed（美股開盤後成交）；失敗＝紅色。
       // 結果一句話：成功＝做了什麼＋金額；失敗＝沒完成。

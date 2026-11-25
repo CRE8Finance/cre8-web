@@ -44,6 +44,7 @@ import { retryWhileBusy } from './lib/portfolio-busy';
 import { APPROVALS_PER_USEROP, sendInBatches } from './lib/approval-batches';
 import { faucetFailure, faucetSuccess, needsDailyFaucet } from './lib/faucet';
 import { MAX_SELL_BATCHES, afterSellRun, runSellBatches, SellBatchError } from './lib/sell-batches';
+import { SCHEDULER_BUSY, UNWOUND, freshCash, runSellAll, type CloseRound } from './web-sell-all';
 import { cashUsdOf, sellTargetUsd, totalUsdOf } from './lib/withdraw-plan';
 import { withdrawAmountWei } from './lib/format';
 import { explainTradeFailure } from './lib/trade-failure';
@@ -508,7 +509,6 @@ type SudoCall = { to: Address; data: Hex; value: bigint };
  * 這一輪被擋只是因為排程器正在處理別的基金（共用市場 [DEX_QUEUED]）或這一檔（[PORTFOLIO_LOCK_BUSY]）：
  * 什麼都沒送，等幾秒用同一個請求再問（2026-11-23 實測第一次買入、賣出都撞到）。其他結果照原樣回。
  */
-const SCHEDULER_BUSY = /^\[(DEX_QUEUED|PORTFOLIO_LOCK_BUSY)\]/;
 /**
  * 多檔股票的賣出一輪（等通道＋報價＋送出＋收據）可能超過前面代理的 30 秒，前端拿到 504，後端其實已經賣了
  * （2026-11-23 Mag7 賣出 0xa980629f…）。這時看這一檔的交易紀錄：開始之後有新的一輪成交就照成交繼續（領回 USDT）。
@@ -549,7 +549,6 @@ function redeemRound(t: string, portfolioId: number, body: { usd: number } | { s
  * 2026-11-24 live：第一次按賣出畫面寫「没送出」，其實還款取回已完成，要再按一次。這裡在同一次點擊裡接著再跑那一輪（最多 3 次），
  * 畫面顯示「正在结清加息策略，然后卖出」，直到真的賣出或遇到別的原因。
  */
-const UNWOUND = /^\[STRATEGY_EARN_UNWINDING\] 賣出前已還款取回/;
 async function sellAfterUnwind(run: () => Promise<RedeemResult>, step: Step): Promise<RedeemResult> {
   for (let i = 0; ; i++) {
     const r = await run();
@@ -704,13 +703,16 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
 export const sell = localized(sellRaw, '卖出没完成，再试一次。');
 /**
  * 這一檔帳戶現在能領回錢包的 USDT（backend#238 `/portfolios/:id/execution` 的 cash.withdrawableRaw）：
- * 進行中的買入預留的現金不能領（領走會讓組合卡住）。讀不到回 null（照舊用帳戶餘額，代付那邊仍會擋）。
+ * 進行中的買入預留的現金不能領（領走會讓組合卡住）；開著加息的全部賣出還沒做完時，補差額要用的 USDT 也不能領（backend sell-all-hold）。
+ * `observed`／`block`：後端讀到的帳戶 USDT 與它所在的區塊（賣出剛落地時可能還是舊的，見 web-sell-all.ts `freshCash`）。
+ * 讀不到回 null（照舊用帳戶餘額，代付那邊仍會擋）。
  */
-async function freeCash(t: string, portfolioId: number): Promise<{ free: bigint; reserved: bigint } | null> {
+async function freeCash(t: string, portfolioId: number): Promise<{ free: bigint; reserved: bigint; observed: bigint | null; block: bigint | null } | null> {
   try {
-    const e = await apiRequest<{ cash?: { withdrawableRaw?: unknown; reservedRaw?: unknown } }>(`/portfolios/${portfolioId}/execution`, { token: t });
+    const e = await apiRequest<{ cash?: { withdrawableRaw?: unknown; reservedRaw?: unknown; amountRaw?: unknown; blockNumber?: unknown } }>(`/portfolios/${portfolioId}/execution`, { token: t });
     const f = e.cash?.withdrawableRaw, r = e.cash?.reservedRaw;
-    return typeof f === 'string' && /^\d+$/.test(f) && typeof r === 'string' && /^\d+$/.test(r) ? { free: BigInt(f), reserved: BigInt(r) } : null;
+    const uint = (v: unknown): bigint | null => (typeof v === 'string' && /^\d+$/.test(v) ? BigInt(v) : null);
+    return typeof f === 'string' && /^\d+$/.test(f) && typeof r === 'string' && /^\d+$/.test(r) ? { free: BigInt(f), reserved: BigInt(r), observed: uint(e.cash?.amountRaw), block: uint(e.cash?.blockNumber) } : null;
   } catch { return null; }
 }
 /** 給賣出畫面：預留給進行中買入的 USDT（不能部分領出；全部賣出時後端會先取消那筆買入）。 */
@@ -770,11 +772,27 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   const target = short === null ? null : Math.min(Math.max(short, MIN_SELL_USD), Math.floor(total * 1e6) / 1e6);
   let soldTx: string | null = null;
   let soldAny = false;
-  if (args.all || target !== null) {
+  if (args.all) {
+    // 全部賣出：一直呼叫 `/close` 到後端說真的賣完（沒有抵押、沒有負債、沒有可賣的）才領回（web-sell-all.ts）。
+    step(L('Selling', '正在卖出'));
+    const run = await runSellAll({
+      close: () => retryBusyRound(() => roundOrLanded(t, holding.id, () => closePosition(t, holding.id), 'next')) as Promise<CloseRound>,
+      now: () => Date.now(), sleep,
+      onUnwind: () => step(L('Settling the yield strategy, then selling', '正在结清加息策略，然后卖出')),
+      onBatch: (batch) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)),
+    });
+    soldAny = run.sold > 0; soldTx = run.soldTx;
+    if (run.status !== 'done') {
+      const f = explainTradeFailure({ outcome: run.lastOutcome, reason: run.lastReason });
+      // 還沒賣完、後端記著會自己做完：這次不領回（領走會讓剩下的抵押品結不了），照「卖出没完成」收尾；之後再按一次全部賣出就領回。
+      if (run.status === 'unfinished') return { sentUsdt: '0', note: run.lastOutcome !== 'executed' && f.recognized ? tradeNote(f) : L('That didn’t finish. Try again.', '卖出没完成，再试一次。'), txHash: null };
+      note = tradeNote(f);
+    }
+  } else if (target !== null) {
     step(L('Selling', '正在卖出'));
     const sold = async (r: Promise<RedeemResult>) => { const x = await r; if (x.outcome === 'executed') { soldAny = true; if (x.txHash) soldTx = x.txHash; } return x; };
     try {
-      const first = () => sellAfterUnwind(() => retryBusyRound(() => sold(target === null ? roundOrLanded(t, holding.id, () => closePosition(t, holding.id), 'next') : redeemRound(t, holding.id, { usd: target }))), step);
+      const first = () => sellAfterUnwind(() => retryBusyRound(() => sold(redeemRound(t, holding.id, { usd: target }))), step);
       const run = await runSellBatches({ first, next: (rest) => sold(redeemRound(t, holding.id, { sellUsdE8: rest.toString() })), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
       if (afterSellRun(run) !== 'proceed' || run.status === 'stalled') note = tradeNote(explainTradeFailure({ outcome: run.lastOutcome, reason: run.lastReason }));
     } catch (cause) {
@@ -782,8 +800,15 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
       note = tradeNote(explainTradeFailure({ outcome: cause.outcome, reason: cause.message }));
     }
   }
-  const balance = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
-  const cash1 = await freeCash(t, holding.id);
+  // 領回前讀到賣出之後的那一份：後端（或這裡）的節點慢一兩個區塊時，餘額還不含剛賣出的所得，照它領只會領到零頭
+  //（2026-11-26 portfolio 39）。看後端回的區塊不早於賣出那筆交易的區塊；查不到那筆的區塊就看它的餘額不比這裡讀到的少。
+  const landed: string | null = soldTx;
+  const soldBlock = landed === null ? null : await readOnlyClient().getTransactionReceipt({ hash: landed as Hex }).then((r) => r.blockNumber).catch(() => null);
+  const seen = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
+  const cash1 = await freshCash({ read: () => freeCash(t, holding.id), sleep,
+    fresh: (c) => (soldBlock !== null ? c.block !== null && c.block >= soldBlock : !soldAny || c.observed === null || c.observed >= seen) });
+  // 後端那一份比較新（這裡的節點慢）：餘額用它的。
+  const balance = cash1 !== null && cash1.observed !== null && cash1.observed > seen ? cash1.observed : seen;
   const cap = cash1 === null || cash1.free >= balance ? balance : cash1.free;
   const value = withdrawAmountWei(args.all ? formatUnits(cap, 18) : wanted.toFixed(8), cap, 18);
   // 只有真的少領（全部賣出卻有預留、或部分領回不到要的金額）才說原因。
