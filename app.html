@@ -1031,8 +1031,10 @@ class Component extends DCLogic {
     const info = this.seInfo(sA, dt.fundId, dt.picks), mk = sA.seMk && sA.seMk !== 'unavailable' ? sA.seMk : {};
     const D = s.det[dt.fundId], hold = f ? (D && D.hold && D.hold.length ? D.hold : f.hold) : [];
     const elig = hold.filter(([t]) => mk[t]), U = v2 ? '' : ' USDT', eU = v2 ? 'money' : 'USDT', zU = v2 ? '钱' : ' USDT ';
-    if (!f || !elig.length) return { title: tr('Details', '详情'), secs: [sec(tr('STATUS', '状态'), [], tr('The yield strategy can’t be read right now.', '暂时读不到加息策略数据。'))] };
-    const names = elig.map(([t]) => NAMES[t] || t).join(tr(', ', '、')), protos = [...new Set(elig.map(([t]) => P[mk[t].protocol] || mk[t].protocol))];
+    // 協議名單：主網沒有路線的資產 protocol 是 'none'（seMkFrom），不印進名單；濾完一個協議都沒有就當作讀不到。
+    const protos = [...new Set(elig.map(([t]) => mk[t].protocol).filter(p => p && p !== 'none').map(p => P[p] || p))];
+    if (!f || !elig.length || !protos.length) return { title: tr('Details', '详情'), secs: [sec(tr('STATUS', '状态'), [], tr('The yield strategy can’t be read right now.', '暂时读不到加息策略数据。'))] };
+    const names = elig.map(([t]) => NAMES[t] || t).join(tr(', ', '、'));
     const usd = n => '$' + fmt(n), u18 = x => Number(x || 0) / 1e18;
     const where = [];
     elig.forEach(([t, w]) => { const m = mk[t], p = on.find(x => x.asset === m.sym);
