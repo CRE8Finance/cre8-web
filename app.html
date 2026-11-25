@@ -183,7 +183,7 @@
 <sc-for list="{{ cur.stats }}" as="st" hint-placeholder-count="6"><div style="background:#FFFFFF;padding:14px 14px 13px;min-width:0"><div style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ st.k }}</div><div style="font:400 19px 'Geist';letter-spacing:-.02em;margin-top:6px;color:{{ st.c }}">{{ st.v }}<sc-if value="{{ st.note }}" hint-placeholder-val="{{ false }}"><span style="margin-left:6px;font:400 9.5px 'Geist';letter-spacing:.02em;color:#B8955A;white-space:nowrap;vertical-align:2px">{{ st.note }}</span></sc-if></div></div></sc-for>
 </div>
 
-<sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ t.earnExtra }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div><button onClick="{{ fundSeDt }}" style="margin-top:6px;border:0;background:transparent;font:500 13px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ dtLabel }}</button></div><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="{{ t.earnExtra }}" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seFundCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
+<sc-if value="{{ seRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ t.earnExtra }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ seLine }}</div><sc-if value="{{ seDtShow }}" hint-placeholder-val="{{ true }}"><button onClick="{{ fundSeDt }}" style="margin-top:6px;border:0;background:transparent;font:500 13px 'Geist';color:#2F6690;cursor:pointer;padding:0">{{ dtLabel }}</button></sc-if></div><button onClick="{{ seFundToggle }}" role="switch" aria-checked="{{ seFundOn }}" aria-label="{{ t.earnExtra }}" style="flex:none;width:46px;height:28px;border:0;border-radius:999px;padding:3px;cursor:{{ seFundCur }};background:{{ seFundBg }};display:flex;justify-content:{{ seFundJust }};transition:background .2s"><span style="width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(11,15,20,.2)"></span></button></div></sc-if>
 <sc-if value="{{ dcaRow }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:14px 16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;align-items:center;gap:12px"><div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ dcaRowTitle }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:3px">{{ dcaRowLine }}</div></div><button onClick="{{ dcaManage }}" style="flex:none;height:32px;padding:0 14px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;font:500 14px 'Geist';color:#0B0F14;cursor:pointer">{{ dcaManageLabel }}</button></div></sc-if>
 <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}"><div style="margin:12px 16px 0;padding:16px;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;display:flex;flex-direction:column;gap:10px">
 <sc-if value="{{ hasPos }}" hint-placeholder-val="{{ false }}"><div style="display:flex;justify-content:space-between;align-items:baseline;padding:0 2px 4px"><span style="font:500 10px 'Geist Mono';letter-spacing:.08em;color:#6B7785">{{ posLabel }}</span><span style="font:400 18px 'Geist';letter-spacing:-.02em">{{ posVal }}</span></div></sc-if>
@@ -485,9 +485,10 @@ const EARN_OK = new Set(['AAPL', 'AMZN', 'ANT', 'AVGO', 'BABA', 'BMNR', 'BNC', '
 const seKey = a => a === 'WBNB' ? 'BNB' : a === 'XAUt' ? 'XAUT' : String(a).replace(/B$/, '');
 // 顯示用的利率一律是 BSC 主網真實利率（後端 mainnetRates／每個市場的 mainnet，同一條公式、比例＝目標 LTV）；測試網部位仍按鏈上模擬利率計息。
 // 沒有 mainnet 欄位（舊快取、後端讀不到）時退回鏈上的模擬值。limited＝該資產的 Lista 市場可借不到 5 萬美元，圖上 logo 下寫「额度有限」。mk.__venue＝主網規則會選的存款協議（USDT 存款年化最高的那家）。
-// 有 mainnetRates 時一律用主網路線（場所、穩定幣、比例都是後端每 10 分鐘重新挑的）；該資產主網沒有可借的市場＝沒有路線，顯示暫停、不退回測試網的數字。
+// 有 mainnetRates 時一律用主網路線（場所、穩定幣、比例都是後端每 10 分鐘重新挑的）；該資產主網沒有可借的市場＝沒有路線（protocol＝'none'），顯示暫停、不退回測試網的數字。
+// tp＝測試網市場本身的協議：只給詳情抽屜用——v1 部位實際就在那個市場，主網沒有路線時部位那一列照實寫它。
 const seMkFrom = d => { const mk = {}, mn = !!(d && d.mainnetRates); ((d && d.markets) || []).forEach(m => { const x = m.mainnet || null, none = mn && !x, b = none ? null : x ? { vaultBps: x.vaultBps, vaultIncentiveBps: x.vaultIncentiveBps, borrowBps: x.borrowBps, borrowIncentiveBps: x.borrowIncentiveBps, ratioBps: x.ratioBps, carryBps: x.carryBps, collateralBps: x.collateralBps, collateralIncentiveBps: x.collateralIncentiveBps } : m.breakdown, bps = none ? 0 : x ? x.extraApyBps : m.extraApyBps, reason = none ? 'no_market' : x && !x.open ? x.reason : m.reason;
-  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, c: m.contracts || null, at: m.updatedAt }; });
+  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, tp: m.protocol || null, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, c: m.contracts || null, at: m.updatedAt }; });
   Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false });
   // 每種穩定幣最佳金庫的基礎年化／激勵（mainnetRates.vaults），金庫卡分開顯示。
   Object.defineProperty(mk, '__vaults', { value: d && d.mainnetRates && d.mainnetRates.vaults || {}, enumerable: false }); return mk; };
@@ -1030,20 +1031,26 @@ class Component extends DCLogic {
     const v2 = !!(seSt && seSt.version === 2) || on.some(p => p.route && p.route.source === 'onchain'), sA = v2 ? { ...s, seMk: this.seMkActual(s, on) } : s;
     const info = this.seInfo(sA, dt.fundId, dt.picks), mk = sA.seMk && sA.seMk !== 'unavailable' ? sA.seMk : {};
     const D = s.det[dt.fundId], hold = f ? (D && D.hold && D.hold.length ? D.hold : f.hold) : [];
-    const elig = hold.filter(([t]) => mk[t]), U = v2 ? '' : ' USDT', eU = v2 ? 'money' : 'USDT', zU = v2 ? '钱' : ' USDT ';
-    // 協議名單：主網沒有路線的資產 protocol 是 'none'（seMkFrom），不印進名單；濾完一個協議都沒有就當作讀不到。
-    const protos = [...new Set(elig.map(([t]) => mk[t].protocol).filter(p => p && p !== 'none').map(p => P[p] || p))];
-    if (!f || !elig.length || !protos.length) return { title: tr('Details', '详情'), secs: [sec(tr('STATUS', '状态'), [], tr('The yield strategy can’t be read right now.', '暂时读不到加息策略数据。'))] };
+    const inMk = hold.filter(([t]) => mk[t]), U = v2 ? '' : ' USDT', eU = v2 ? 'money' : 'USDT', zU = v2 ? '钱' : ' USDT ';
+    if (!f || !inMk.length) return { title: tr('Details', '详情'), secs: [sec(tr('STATUS', '状态'), [], tr('The yield strategy can’t be read right now.', '暂时读不到加息策略数据。'))] };
+    // 抽屜只講真的有借款路線的資產。已有部位的一律照實列：v2 用部位的 route（上面 seMkActual 已換進 mk），v1 用主網路線、主網沒有路線時用部位實際所在的測試網市場（tp）。
+    // 沒有部位的看市場資料的主網路線；protocol 是 'none'／空值＝沒有路線，不列（列、資產名單、「只有 X 參與」、安全線都跟著這份名單）。
+    // 一個都沒有＝這檔沒有可講的：回空的（同 !dt），基金頁那張卡的詳情入口也不顯示（seDtShow）；不是「讀不到」。
+    const posOf = t => on.find(x => x.asset === mk[t].sym);
+    const venueOf = t => { const m = mk[t], p = posOf(t); return m.protocol && m.protocol !== 'none' ? m.protocol : p ? (p.route && p.route.venue) || m.tp || null : null; };
+    const elig = inMk.filter(([t]) => posOf(t) || venueOf(t));
+    if (!elig.length) return { title: '', secs: [] };
+    const protos = [...new Set(elig.map(([t]) => venueOf(t)).filter(Boolean).map(p => P[p] || p))];
     const names = elig.map(([t]) => NAMES[t] || t).join(tr(', ', '、'));
     const usd = n => '$' + fmt(n), u18 = x => Number(x || 0) / 1e18;
     const where = [];
-    elig.forEach(([t, w]) => { const m = mk[t], p = on.find(x => x.asset === m.sym);
-      where.push(row(t + ' · ' + w + '%', P[m.protocol] || m.protocol, p ? tr('Collateral ' + usd(u18(p.collateralValueUsd)) + ' · borrowed ' + fmt(u18(p.debtRaw)) + U + ' · in vault ' + fmt(u18(p.vaultAssetsRaw)) + U, '抵押 ' + usd(u18(p.collateralValueUsd)) + ' · 借了 ' + fmt(u18(p.debtRaw)) + U + ' · 存在金库 ' + fmt(u18(p.vaultAssetsRaw)) + U) : tr('Used as collateral', '作为抵押（collateral）'))); });
+    elig.forEach(([t, w]) => { const p = posOf(t), vn = venueOf(t);
+      where.push(row(t + ' · ' + w + '%', P[vn] || vn || '—', p ? tr('Collateral ' + usd(u18(p.collateralValueUsd)) + ' · borrowed ' + fmt(u18(p.debtRaw)) + U + ' · in vault ' + fmt(u18(p.vaultAssetsRaw)) + U, '抵押 ' + usd(u18(p.collateralValueUsd)) + ' · 借了 ' + fmt(u18(p.debtRaw)) + U + ' · 存在金库 ' + fmt(u18(p.vaultAssetsRaw)) + U) : tr('Used as collateral', '作为抵押（collateral）'))); });
     const vaultE = tr('Where the borrowed ' + eU + ' is deposited', '借来的' + zU + '存在这个金库'), v2Vaults = [...new Set(elig.map(([t]) => mk[t].vault && mk[t].vault.onchain ? mk[t].vault.address : null).filter(Boolean))];
     const contracts = (v2 ? v2Vaults.map(a => link(tr('Strategy vault', '策略金库'), a, vaultE)) : [link(tr('Strategy vault', '策略金库'), S.vault, vaultE), link(tr('Executor', '执行合约'), S.executor, tr('Only moves money inside this portfolio’s account', '只在这个组合的账户里搬钱')), link(tr('Registry', '登记合约'), S.registry)])
       .concat(protos.includes('Venus') ? [link('Venus', S.venus, tr('Lending market', '借贷市场'))] : []).concat(protos.includes('Lista') ? [link('Lista', S.lista, tr('Lending market', '借贷市场'))] : []);
     const secs = [sec(tr('WHERE YOUR MONEY GOES', '钱放在哪'), where.concat(contracts),
-      tr('Your ' + names + ' shares in this portfolio are posted as collateral on ' + protos.join(' / ') + '. ' + (v2 ? '' : 'We borrow a small amount of USDT against them and deposit it in the CRE8 strategy vault. ') + 'Everything stays in this portfolio’s own account — borrowed ' + eU + ' never reaches your wallet or cash.', '组合里的' + names + '被存进 ' + protos.join(' / ') + ' 作抵押' + (v2 ? '。' : '，我们用它借少量 USDT，存进 CRE8 策略金库（vault）。') + '全部留在这个组合自己的账户里，借来的' + zU + '不会进你的钱包或现金。'))];
+      !protos.length ? null : tr('Your ' + names + ' shares in this portfolio are posted as collateral on ' + protos.join(' / ') + '. ' + (v2 ? '' : 'We borrow a small amount of USDT against them and deposit it in the CRE8 strategy vault. ') + 'Everything stays in this portfolio’s own account — borrowed ' + eU + ' never reaches your wallet or cash.', '组合里的' + names + '被存进 ' + protos.join(' / ') + ' 作抵押' + (v2 ? '。' : '，我们用它借少量 USDT，存进 CRE8 策略金库（vault）。') + '全部留在这个组合自己的账户里，借来的' + zU + '不会进你的钱包或现金。'))];
     elig.forEach(([t, w]) => { const m = mk[t], b = m.b; if (!b) return;
       secs.push(sec(tr('HOW ' + t + ' EARNS', t + ' 收益怎么来'), [
         row(tr('Vault interest', '金库利息'), bp(b.vaultBps + b.vaultIncentiveBps, true), tr('What the vault pays on the borrowed ' + eU + ' (incl. ' + bp(b.vaultIncentiveBps) + ' rewards).', '金库给借来的' + zU + '付的利息（含 ' + bp(b.vaultIncentiveBps) + ' 激励）。')),
@@ -1071,6 +1078,8 @@ class Component extends DCLogic {
   seWhere(s, hold, netText) {
     const elig = hold.filter(([t]) => EARN_OK.has(t)), n = elig.length;
     if (!n || s.seMk === 'unavailable') return { show: false, groups: [], dots: [] };
+    // 市場資料讀到了，但這檔可加息的資產一個借款路線都沒有（protocol 全是 'none'）：跟沒有可加息資產的基金一樣，不顯示這一區。
+    if (s.seMk && !elig.some(([t]) => s.seMk[t] && s.seMk[t].protocol && s.seMk[t].protocol !== 'none')) return { show: false, groups: [], dots: [] };
     const mk = s.seMk || {}, sk = !s.seMk, MAIN = 'https://bscscan.com/address/', MOOLAH_56 = '0x8f73b65b4caaf64fba2af91cc5d4a2a1318e5d8c', scan = a => 'https://testnet.bscscan.com/address/' + a, M = '−';
     const PROTO = { lista: ['LISTA', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
     // 每個資產借哪種穩定幣、存進哪個金庫＝後端 mainnetRates 的路線（借 X 存 X，挑利差最高的；主網真實利率）。金庫卡每個不同的金庫一欄。
@@ -1744,7 +1753,7 @@ class Component extends DCLogic {
         // 開關先打開確認視窗（一句話＋一顆按鈕），按了才真的開／關（使用者 2026-11-23：直接執行太突然）。
         const run = (side, syms) => this.setState({ modal: true, side, step: 'se', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (fSE ? fSE.syms : []), seRate: fSE && fSE.rate, seEarned: earned } });
         return {
-          seRow: show,
+          seRow: show, seDtShow: show && this.details(s0, { kind: 'se', fundId: f.id }).secs.length > 0,
           seLine: armed ? tr('Starts when your order fills', '成交后自动开始') : on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : fSE && fSE.rate != null ? tr('+' + fSE.rate.toFixed(1) + '% a year', '年化 +' + fSE.rate.toFixed(1) + '%') : tr('Temporarily unavailable', '暂时无法使用'),
           seFundOn: on || armed, seFundBg: on || armed ? '#16854F' : can ? '#C3CAD1' : '#EDF0F3', seFundJust: on || armed ? 'flex-end' : 'flex-start', seFundCur: can ? 'pointer' : 'default',
           seFundToggle: () => can && run(on ? 'se-off' : 'se-on'),
