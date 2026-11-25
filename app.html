@@ -583,7 +583,7 @@ const FREQ_LABEL = () => tr(['Daily', 'Weekly', 'Monthly', 'Quarterly'], ['每�
 // 定投（backend docs/dca.zh-TW.md）：頻率與 API 值、每期最低 10 USDT、期數 2–365。
 const DCA_FQ = ['daily', 'weekly', 'biweekly', 'monthly'];
 const DCA_FQ_LABEL = () => tr(['Daily', 'Weekly', 'Every 2 weeks', 'Monthly'], ['每天', '每周', '每两周', '每月']);
-const DCA_MIN = 10;
+const DCA_MIN = 10, SELL_MIN = 10;
 const MIX_FREQ_TEXT = ['every day', 'every week', 'every month', 'every quarter'];
 const mixFund = m => { const d = new Date(m.start); return { ...F(m.id, 'MINE', 'mine', m.name, m.cover || 'app/cover-cre8.png', m.ret, m.picks.length, m.picks, tr('Your own basket. We rebalance it back to these weights ' + MIX_FREQ_TEXT[m.freq] + ', starting ' + fmtDay(d, true) + '.', '你的自建组合。从' + fmtDay(d, true) + '起，' + FREQ_LABEL()[m.freq] + '调回这个比例。')), freqLabel: FREQ_LABEL()[m.freq] }; };
 const CRYPTO = new Set(['BTC', 'ETH', 'BNB', 'SOL', 'XRP', 'DOGE', 'ADA', 'TRX', 'TON', 'LINK', 'AVAX', 'DOT', 'LTC', 'BCH', 'NEAR', 'UNI', 'AAVE', 'ATOM', 'FIL', 'CAKE', 'SHIB', 'PEPE', 'ZEC']);
@@ -814,7 +814,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=97805aadc7'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=50bdbca816'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -1291,7 +1291,10 @@ class Component extends DCLogic {
         const all = (parseFloat(amt) || 0) >= Math.floor((h.val || 0) * 100) / 100;
         // 開著加息策略也直接賣：後端會先還款、取回股票再賣（backend#204），剩下的部位維持加息策略。
         const r = await W.sell({ portfolioId: h.pid, usd: parseFloat(amt) || 0, all, onStep });
-        const n = Number(r.sentUsdt) || 0; if (n > 0) this.bump([{ k: 'pf', pid: h.pid, d: -n }, { k: 'cash', d: n }]);
+        const n = Number(r.sentUsdt) || 0;
+        // 一筆都沒賣、也沒領回：顯示「賣出沒完成」＋原因，不顯示「已賣出 0.00」。
+        if (!(n > 0) && r.note) throw new Error(r.note);
+        if (n > 0) this.bump([{ k: 'pf', pid: h.pid, d: -n }, { k: 'cash', d: n }]);
         if (r.emptied && h.mixId != null && !h.del) {
           this.setState(x => ({ target: { ...x.target, mixId: h.mixId, portfolioId: h.pid } }));
           return this.ask({ sold: true, sent: Number(r.sentUsdt), askDel: true });
@@ -1518,8 +1521,10 @@ class Component extends DCLogic {
     // 部分賣出的上限＝持倉－進行中買入預留的 USDT；全部賣出（＝持倉）照常可以。
     const sellRes = sell && posH && s.sellRes ? s.sellRes[posH.pid] || 0 : 0, partMax = sellRes > 0 ? Math.max(0, Math.floor((posH.val - sellRes) * 100) / 100) : posMax;
     const partGap = sell && amt > partMax && amt < posMax;
-    const amtOk = dcaOn ? amt > 0 && dcaPer >= DCA_MIN && amt <= s.cash && !dcaHas : out ? amt > 0 && amt <= posMax && !partGap && (!wd || wdOk) : amt >= minBuy && amt <= s.cash;
-    const amtBtn = wd && amt > 0 && amt <= posMax && !wdOk ? { ...off, label: wdTo ? tr('Check the address', '请检查地址') : tr('Enter an address', '输入收款地址') } : dcaOn && dcaHas ? { ...off, label: tr('Already buying on a schedule', 'DCA 进行中') } : amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : dcaOn ? (dcaPer < DCA_MIN ? { ...off, label: tr('At least ' + DCA_MIN + ' USDT each time', '每期至少 ' + DCA_MIN + ' USDT') } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: tr('Review', '下一步') }) : out ? (amt > posMax ? { ...off, label: eOut ? tr('More than you have earning', '超过生息中的金额') : tr('More than you hold', '超过持仓') } : partGap ? { ...off, label: tr('Up to ' + fmt(partMax) + ' now, or sell all', '现在最多 ' + fmt(partMax) + '，或全部卖出') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: eOut ? tr('Take out', '取出') : tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起' + (eIn ? '存' : '投')) } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: eIn ? tr('Earn', '存入') : tr('Review', '下一步') };
+    // 部分賣出最低 10 USDT（比照買入）；全部賣出（＝持倉）不受限。低於時按鈕停用，不另外加說明。
+    const sellLow = sell && amt > 0 && amt < SELL_MIN && amt < posMax;
+    const amtOk = dcaOn ? amt > 0 && dcaPer >= DCA_MIN && amt <= s.cash && !dcaHas : out ? amt > 0 && amt <= posMax && !partGap && !sellLow && (!wd || wdOk) : amt >= minBuy && amt <= s.cash;
+    const amtBtn = wd && amt > 0 && amt <= posMax && !wdOk ? { ...off, label: wdTo ? tr('Check the address', '请检查地址') : tr('Enter an address', '输入收款地址') } : dcaOn && dcaHas ? { ...off, label: tr('Already buying on a schedule', 'DCA 进行中') } : amt === 0 ? { ...off, label: tr('Enter an amount', '输入金额') } : dcaOn ? (dcaPer < DCA_MIN ? { ...off, label: tr('At least ' + DCA_MIN + ' USDT each time', '每期至少 ' + DCA_MIN + ' USDT') } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: tr('Review', '下一步') }) : out ? (amt > posMax ? { ...off, label: eOut ? tr('More than you have earning', '超过生息中的金额') : tr('More than you hold', '超过持仓') } : partGap ? { ...off, label: tr('Up to ' + fmt(partMax) + ' now, or sell all', '现在最多 ' + fmt(partMax) + '，或全部卖出') } : sellLow ? { ...off, label: tr('Review', '下一步') } : { ...cta, bg: '#0B0F14', fg: '#fff', sh: 'none', label: eOut ? tr('Take out', '取出') : tr('Review', '下一步') }) : amt < minBuy ? { ...off, label: tr('Minimum ' + minBuy + ' USDT', minBuy + ' USDT 起' + (eIn ? '存' : '投')) } : amt > s.cash ? { ...off, label: tr('Not enough USDT', 'USDT 余额不足') } : { ...cta, label: eIn ? tr('Earn', '存入') : tr('Review', '下一步') };
     // 總資產＝各投組淨值（已扣策略加息策略的負債）＋錢包現金＋現金生息；三者在下面各自一列，不合併。
     const invested = s.holdings.reduce((a, h) => a + (h.val || 0), 0), totalVal = invested + s.cash + earnTot;
     // 總資產的歷史走勢後端還沒有端點：先畫平線、變化顯示 —（待接）。

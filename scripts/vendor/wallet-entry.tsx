@@ -17,7 +17,6 @@ import {
   apiRequest,
   closePosition,
   confirmEnrollment,
-  continueRedeem,
   getPortfolioActivity,
   getPortfolioStatus,
   getPortfolios,
@@ -32,7 +31,6 @@ import {
   postWaitlistJoin,
   postWaitlistRedeem,
   prepareEnrollment,
-  redeemPortfolio,
 } from './lib/api';
 import type { PortfolioStatus, RedeemResult, StrategyDetail } from './lib/api';
 import { SponsorshipError, retryMixBusy } from './lib/paymaster';
@@ -515,19 +513,36 @@ const SCHEDULER_BUSY = /^\[(DEX_QUEUED|PORTFOLIO_LOCK_BUSY)\]/;
  * 多檔股票的賣出一輪（等通道＋報價＋送出＋收據）可能超過前面代理的 30 秒，前端拿到 504，後端其實已經賣了
  * （2026-11-23 Mag7 賣出 0xa980629f…）。這時看這一檔的交易紀錄：開始之後有新的一輪成交就照成交繼續（領回 USDT）。
  */
-async function roundOrLanded(t: string, portfolioId: number, run: () => Promise<RedeemResult>): Promise<RedeemResult> {
+/**
+ * 504 之後光看交易紀錄不夠：開著加息時那一輪是「還款取回」（不產生交易紀錄），等不到成交就報錯，賣出沒接著做
+ *（2026-11-25 portfolio 33 全部賣出，`/close` 跑了 28.5 秒）。所以沒看到成交就把同一個請求再送一次：
+ * - `/close`（`again: 'next'`）：全部賣出重送不會多賣。上一輪還在跑會回 [PORTFOLIO_LOCK_BUSY]，繼續等；跑完了這一次就是下一輪。
+ * - `/redeem`（`again: 'same'`）：`run` 每次都帶同一把 Idempotency-Key，後端只跑一次、回同一個結果（還在跑就等它），不會重複賣。
+ */
+async function roundOrLanded(t: string, portfolioId: number, run: () => Promise<RedeemResult>, again: 'next' | 'same'): Promise<RedeemResult> {
   const started = Date.now() - 5_000;
   try { return await run(); }
   catch (cause) {
     if (!(cause instanceof ApiError) || cause.status !== 504) throw cause;
-    for (let i = 0; i < 12; i++) {
+    while (Date.now() - started < 150_000) {
       await sleep(5_000);
       const rows = (await getPortfolioActivity(t, portfolioId).catch(() => ({ activity: [] }))).activity;
       const landed = rows.find((a) => Date.parse(a.createdAt) >= started && a.state === 'confirmed');
       if (landed) return { portfolioId, outcome: 'executed', reason: '', txHash: landed.txHash, steps: [], redeemedUsdE8: '0', remainingUsdE8: '0' };
+      try {
+        const r = await run();
+        if (again === 'same' || r.outcome !== 'blocked' || !SCHEDULER_BUSY.test(r.reason)) return r;
+      } catch (retry) {
+        if (!(retry instanceof ApiError) || retry.status !== 504) throw retry;
+      }
     }
     throw cause;
   }
+}
+/** 部分賣出的一次請求：帶一把 Idempotency-Key，504 後重送同一把（見 roundOrLanded）。每呼叫一次 `redeemRound` 是一把新的 key。 */
+function redeemRound(t: string, portfolioId: number, body: { usd: number } | { sellUsdE8: string }): Promise<RedeemResult> {
+  const key = `sell-${portfolioId}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
+  return roundOrLanded(t, portfolioId, () => apiRequest<RedeemResult>(`/portfolios/${portfolioId}/redeem`, { method: 'POST', token: t, body, headers: { 'Idempotency-Key': key } }), 'same');
 }
 /**
  * 開著加息策略時賣出：那一輪先替被抵押的股票還款、取回（backend#204 [STRATEGY_EARN_UNWINDING]，已上鏈），股票下一輪才賣。
@@ -730,6 +745,8 @@ async function soldOut(t: string, portfolioId: number, soldTx: string | null): P
   } catch { /* 讀不到：不算賣完 */ }
   return false;
 }
+/** 部分賣出的最低金額（USDT），比照買入的每筆 10 USDT（後端 `MIN_SELL_USD_E8`，低於它回 400 BELOW_MIN_SELL）。 */
+const MIN_SELL_USD = 10;
 async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet, owner } = need();
@@ -748,14 +765,17 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   const cashUsd = cashUsdOf(latest.holdings ?? [], 'USDT');
   // 全部賣出一律請後端清倉（`/close`），不看總值夠不夠：開著加息時股票抵押著、總值只剩現金，以前就只領現金沒賣
   //（2026-11-25 0xd1aa718f…）。後端沒東西可賣會回 noop，不送交易。
-  const target = args.all ? null : sellTargetUsd(wanted, cash0 === null ? cashUsd : Math.min(cashUsd, Number(formatUnits(cash0.free, 18))));
+  const short = args.all ? null : sellTargetUsd(wanted, cash0 === null ? cashUsd : Math.min(cashUsd, Number(formatUnits(cash0.free, 18))));
+  // 後端的部分賣出最低 10 USDT（比照買入）：差額不到 10 也賣 10，多出來的留在組合現金裡，下次賣出先用；不超過組合現值。
+  const target = short === null ? null : Math.min(Math.max(short, MIN_SELL_USD), Math.floor(total * 1e6) / 1e6);
   let soldTx: string | null = null;
+  let soldAny = false;
   if (args.all || target !== null) {
     step(L('Selling', '正在卖出'));
-    const sold = async (r: Promise<RedeemResult>) => { const x = await r; if (x.outcome === 'executed' && x.txHash) soldTx = x.txHash; return x; };
+    const sold = async (r: Promise<RedeemResult>) => { const x = await r; if (x.outcome === 'executed') { soldAny = true; if (x.txHash) soldTx = x.txHash; } return x; };
     try {
-      const first = () => sellAfterUnwind(() => roundOrLanded(t, holding.id, () => retryBusyRound(() => sold(target === null ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)))), step);
-      const run = await runSellBatches({ first, next: (rest) => sold(continueRedeem(t, holding.id, rest)), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
+      const first = () => sellAfterUnwind(() => retryBusyRound(() => sold(target === null ? roundOrLanded(t, holding.id, () => closePosition(t, holding.id), 'next') : redeemRound(t, holding.id, { usd: target }))), step);
+      const run = await runSellBatches({ first, next: (rest) => sold(redeemRound(t, holding.id, { sellUsdE8: rest.toString() })), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
       if (afterSellRun(run) !== 'proceed' || run.status === 'stalled') note = tradeNote(explainTradeFailure({ outcome: run.lastOutcome, reason: run.lastReason }));
     } catch (cause) {
       if (!(cause instanceof SellBatchError)) throw cause;
@@ -771,7 +791,9 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
     const held = usdtText((balance - cap).toString());
     note = L(`${held} USDT is set aside for a buy that is still in progress, so it stays in this portfolio for now.`, `有 ${held} USDT 留给还在进行的买入，暂时留在组合里。`);
   }
-  if (value === 0n) return { sentUsdt: '0', note: note ?? L('Nothing could be sold right now.', '现在没有能卖出的部分。'), txHash: null };
+  // 部分賣出要賣卻一筆都沒成交：不送「領回」那筆交易（2026-11-25：要賣 20，結果沒賣，卻簽了一筆領回 0.00088 USDT 的零頭）。
+  // 帳戶裡本來就有夠的自由現金（target === null）或全部賣出照舊領回。
+  if (value === 0n || (target !== null && !soldAny)) return { sentUsdt: '0', note: note ?? L('Nothing could be sold right now.', '现在没有能卖出的部分。'), txHash: null };
   step(L('Approve in your wallet to receive your USDT', '在钱包里确认，领回 USDT'));
   const receipt = await sendWithdraw({ wallet, token: t, accountAddress: account, strategyId: holding.strategyId, asset: USDT, recipient: owner, amountWei: value });
   if (!receipt.success) throw new Error(L(`The transfer landed but reverted (${receipt.txHash}).`, `转账上链后被回滚（${receipt.txHash}）。`));
