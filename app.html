@@ -814,7 +814,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=a44014aff2'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=97805aadc7'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -1021,23 +1021,30 @@ class Component extends DCLogic {
       ] };
     }
     // 策略加息策略：這一檔有開放市場的資產、各自的利率分項與安全線；持有且開著時用實際部位。
+    // 路由 v2 的組合（後端狀態 version 2，或部位的 route.source＝onchain）：場所、利率、金庫地址用部位實際所在的路線（seMkActual，同基金頁）；
+    // 借的不一定是 USDT，所以不寫幣名；v2 的 registry／executor 後端沒有回傳，不顯示（下面 S 的 registry／executor／vault 是 v1 的，v2 不能用；
+    // Venus comptroller、Lista Moolah 兩個場所 v1、v2 共用）。v1 的組合照舊。
     const S = { registry: '0x973341a0ba6a725630f2a4f66d7dbba92fea4e00', executor: '0x16ab59a8bacb578c6437528ac0961e234e4b717b', vault: '0x2e915b874a5a544736f5afd97f3fa1dd45d417a9', venus: '0x93ab77260c8c62b26698bbb0ee8da3e175b9ad8d', lista: '0x993237ac050512f3749bfee2de759b6b86aea653' };
-    const f = FUNDS.find(x => x.id === dt.fundId) || (dt.picks ? { id: dt.fundId, hold: dt.picks } : this.mixesOf(s).map(mixFund).find(x => x.id === dt.fundId)), info = this.seInfo(s, dt.fundId, dt.picks), mk = s.seMk && s.seMk !== 'unavailable' ? s.seMk : {};
+    const f = FUNDS.find(x => x.id === dt.fundId) || (dt.picks ? { id: dt.fundId, hold: dt.picks } : this.mixesOf(s).map(mixFund).find(x => x.id === dt.fundId));
+    const h = this.holdingsOf(s).find(x => x.id === dt.fundId), on = h && h.seOn && h.seOn.length ? h.seOn : [], seSt = h && s.seP ? s.seP[h.pid] : null;
+    const v2 = !!(seSt && seSt.version === 2) || on.some(p => p.route && p.route.source === 'onchain'), sA = v2 ? { ...s, seMk: this.seMkActual(s, on) } : s;
+    const info = this.seInfo(sA, dt.fundId, dt.picks), mk = sA.seMk && sA.seMk !== 'unavailable' ? sA.seMk : {};
     const D = s.det[dt.fundId], hold = f ? (D && D.hold && D.hold.length ? D.hold : f.hold) : [];
-    const elig = hold.filter(([t]) => mk[t]), h = this.holdingsOf(s).find(x => x.id === dt.fundId), on = h && h.seOn && h.seOn.length ? h.seOn : [];
+    const elig = hold.filter(([t]) => mk[t]), U = v2 ? '' : ' USDT', eU = v2 ? 'money' : 'USDT', zU = v2 ? '钱' : ' USDT ';
     if (!f || !elig.length) return { title: tr('Details', '详情'), secs: [sec(tr('STATUS', '状态'), [], tr('The yield strategy can’t be read right now.', '暂时读不到加息策略数据。'))] };
     const names = elig.map(([t]) => NAMES[t] || t).join(tr(', ', '、')), protos = [...new Set(elig.map(([t]) => P[mk[t].protocol] || mk[t].protocol))];
     const usd = n => '$' + fmt(n), u18 = x => Number(x || 0) / 1e18;
     const where = [];
     elig.forEach(([t, w]) => { const m = mk[t], p = on.find(x => x.asset === m.sym);
-      where.push(row(t + ' · ' + w + '%', P[m.protocol] || m.protocol, p ? tr('Collateral ' + usd(u18(p.collateralValueUsd)) + ' · borrowed ' + fmt(u18(p.debtRaw)) + ' USDT · in vault ' + fmt(u18(p.vaultAssetsRaw)) + ' USDT', '抵押 ' + usd(u18(p.collateralValueUsd)) + ' · 借了 ' + fmt(u18(p.debtRaw)) + ' USDT · 存在金库 ' + fmt(u18(p.vaultAssetsRaw)) + ' USDT') : tr('Used as collateral', '作为抵押（collateral）'))); });
-    const contracts = [link(tr('Strategy vault', '策略金库'), S.vault, tr('Where the borrowed USDT is deposited', '借来的 USDT 存在这个金库')), link(tr('Executor', '执行合约'), S.executor, tr('Only moves money inside this portfolio’s account', '只在这个组合的账户里搬钱')), link(tr('Registry', '登记合约'), S.registry)]
+      where.push(row(t + ' · ' + w + '%', P[m.protocol] || m.protocol, p ? tr('Collateral ' + usd(u18(p.collateralValueUsd)) + ' · borrowed ' + fmt(u18(p.debtRaw)) + U + ' · in vault ' + fmt(u18(p.vaultAssetsRaw)) + U, '抵押 ' + usd(u18(p.collateralValueUsd)) + ' · 借了 ' + fmt(u18(p.debtRaw)) + U + ' · 存在金库 ' + fmt(u18(p.vaultAssetsRaw)) + U) : tr('Used as collateral', '作为抵押（collateral）'))); });
+    const vaultE = tr('Where the borrowed ' + eU + ' is deposited', '借来的' + zU + '存在这个金库'), v2Vaults = [...new Set(elig.map(([t]) => mk[t].vault && mk[t].vault.onchain ? mk[t].vault.address : null).filter(Boolean))];
+    const contracts = (v2 ? v2Vaults.map(a => link(tr('Strategy vault', '策略金库'), a, vaultE)) : [link(tr('Strategy vault', '策略金库'), S.vault, vaultE), link(tr('Executor', '执行合约'), S.executor, tr('Only moves money inside this portfolio’s account', '只在这个组合的账户里搬钱')), link(tr('Registry', '登记合约'), S.registry)])
       .concat(protos.includes('Venus') ? [link('Venus', S.venus, tr('Lending market', '借贷市场'))] : []).concat(protos.includes('Lista') ? [link('Lista', S.lista, tr('Lending market', '借贷市场'))] : []);
     const secs = [sec(tr('WHERE YOUR MONEY GOES', '钱放在哪'), where.concat(contracts),
-      tr('Your ' + names + ' shares in this portfolio are posted as collateral on ' + protos.join(' / ') + '. We borrow a small amount of USDT against them and deposit it in the CRE8 strategy vault. Everything stays in this portfolio’s own account — borrowed USDT never reaches your wallet or cash.', '组合里的' + names + '被存进 ' + protos.join(' / ') + ' 作抵押，我们用它借少量 USDT，存进 CRE8 策略金库（vault）。全部留在这个组合自己的账户里，借来的 USDT 不会进你的钱包或现金。'))];
+      tr('Your ' + names + ' shares in this portfolio are posted as collateral on ' + protos.join(' / ') + '. We borrow a small amount' + (v2 ? '' : ' of USDT') + ' against them and deposit it in the CRE8 strategy vault. Everything stays in this portfolio’s own account — borrowed ' + eU + ' never reaches your wallet or cash.', '组合里的' + names + '被存进 ' + protos.join(' / ') + ' 作抵押，我们用它借少量' + (v2 ? '的钱' : ' USDT') + '，存进 CRE8 策略金库（vault）。全部留在这个组合自己的账户里，借来的' + zU + '不会进你的钱包或现金。'))];
     elig.forEach(([t, w]) => { const m = mk[t], b = m.b; if (!b) return;
       secs.push(sec(tr('HOW ' + t + ' EARNS', t + ' 收益怎么来'), [
-        row(tr('Vault interest', '金库利息'), bp(b.vaultBps + b.vaultIncentiveBps, true), tr('What the vault pays on the borrowed USDT (incl. ' + bp(b.vaultIncentiveBps) + ' rewards).', '金库给借来的 USDT 付的利息（含 ' + bp(b.vaultIncentiveBps) + ' 激励）。')),
+        row(tr('Vault interest', '金库利息'), bp(b.vaultBps + b.vaultIncentiveBps, true), tr('What the vault pays on the borrowed ' + eU + ' (incl. ' + bp(b.vaultIncentiveBps) + ' rewards).', '金库给借来的' + zU + '付的利息（含 ' + bp(b.vaultIncentiveBps) + ' 激励）。')),
         row(tr('Borrow cost', '借款成本（Borrow APY）'), bp(-(b.borrowBps - b.borrowIncentiveBps), true), tr('Interest we pay to borrow' + (b.borrowIncentiveBps ? ', after ' + bp(b.borrowIncentiveBps) + ' borrow rewards' : '') + '.', '借钱要付的利息' + (b.borrowIncentiveBps ? '（已扣 ' + bp(b.borrowIncentiveBps) + ' 借款激励）' : '') + '。')),
         row(tr('Borrowed share', '借款比例（LTV）'), bp(b.ratioBps), tr('We only borrow this much of the stock’s value, so we earn the gap on that part.', '只借股票价值的这么多，利差只赚这部分。')),
         row(tr('Collateral rewards', '抵押激励（Collateral rewards）'), bp(b.collateralBps + b.collateralIncentiveBps, true), tr('What the protocol pays for posting the shares.', '协议给抵押股票的奖励。')),
@@ -1053,7 +1060,7 @@ class Component extends DCLogic {
         tr(t + ' would have to fall about ' + dropDel.toFixed(0) + '% before we reduce, and about ' + dropLiq.toFixed(0) + '% to reach liquidation. A low ratio and early reducing make liquidation very unlikely, but price-feed failures, protocol bugs or sudden gaps can’t be ruled out 100%.', t + ' 要跌约 ' + dropDel.toFixed(0) + '% 才会触发减仓，跌约 ' + dropLiq.toFixed(0) + '% 才碰到清算线。低借款比例＋提前减仓让被清算的机会很低，但喂价故障、协议漏洞或极端跳空无法 100% 排除。'),
         { bCur: Math.min(100, cur / liq * 100).toFixed(1), bDel: (del / liq * 100).toFixed(1), l0: tr('Now ', '当前 ') + bp(cur), l1: tr('Reduce ', '减仓 ') + bp(del), l2: tr('Liq. ', '清算 ') + bp(liq) }));
     });
-    secs.push(sec(tr('GETTING OUT', '怎么退出'), [], tr('Turn it off any time on the portfolio page: we take the USDT out of the vault, repay the loan and return your shares to the portfolio — you keep the shares. When you sell, we repay first, then sell. If the vault can’t cover the loan at that moment, the portfolio’s own USDT covers the rest; if that’s not enough, try again a little later — your shares stay safe as collateral meanwhile.', '随时可以在组合页关掉：从金库取出 USDT、还清借款、股票回到组合里，股票还是你的。卖出时会先还款再卖。如果那一刻金库不够还款，先用组合里的 USDT 补；还不够就稍后再试，期间股票仍在抵押中、不会丢。')));
+    secs.push(sec(tr('GETTING OUT', '怎么退出'), [], tr('Turn it off any time on the portfolio page: we take the ' + eU + ' out of the vault, repay the loan and return your shares to the portfolio — you keep the shares. When you sell, we repay first, then sell. If the vault can’t cover the loan at that moment, the portfolio’s own USDT covers the rest; if that’s not enough, try again a little later — your shares stay safe as collateral meanwhile.', '随时可以在组合页关掉：从金库取出' + (v2 ? '钱' : ' USDT') + '、还清借款、股票回到组合里，股票还是你的。卖出时会先还款再卖。如果那一刻金库不够还款，先用组合里的 USDT 补；还不够就稍后再试，期间股票仍在抵押中、不会丢。')));
     return { title: tr('Yield strategy · details', '加息策略详情'), secs };
   }
   // 基金頁／自建組合頁底部「加息策略」（設計 A，直向匯流）：帶星星的資產按協議分組（每組一個協議 logo＋名稱），每個 logo 上方是借款成本
