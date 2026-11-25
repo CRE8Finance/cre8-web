@@ -153,22 +153,6 @@
   ]
  },
  {
-  "key": "bnb",
-  "img": "p-bnb",
-  "en": {
-   "name": "BNB Ecosystem",
-   "kind": "Theme"
-  },
-  "zh": {
-   "name": "BNB 生态",
-   "kind": "主题"
-  },
-  "tickers": [
-   "BNB",
-   "BNC"
-  ]
- },
- {
   "key": "ai-models",
   "img": "p-aimodel",
   "en": {
@@ -186,6 +170,22 @@
    "MSFT",
    "SPCX",
    "META"
+  ]
+ },
+ {
+  "key": "bnb",
+  "img": "p-bnb",
+  "en": {
+   "name": "BNB Ecosystem",
+   "kind": "Theme"
+  },
+  "zh": {
+   "name": "BNB 生态",
+   "kind": "主题"
+  },
+  "tickers": [
+   "BNB",
+   "BNC"
   ]
  },
  {
@@ -344,21 +344,6 @@
   ]
  },
  {
-  "key": "soxl",
-  "img": "p-soxl",
-  "en": {
-   "name": "3x Semiconductors",
-   "kind": "Leveraged"
-  },
-  "zh": {
-   "name": "3 倍半导体",
-   "kind": "杠杆"
-  },
-  "tickers": [
-   "SOXL"
-  ]
- },
- {
   "key": "tqqq",
   "img": "p-tqqq",
   "en": {
@@ -371,6 +356,21 @@
   },
   "tickers": [
    "TQQQ"
+  ]
+ },
+ {
+  "key": "soxl",
+  "img": "p-soxl",
+  "en": {
+   "name": "3x Semiconductors",
+   "kind": "Leveraged"
+  },
+  "zh": {
+   "name": "3 倍半导体",
+   "kind": "杠杆"
+  },
+  "tickers": [
+   "SOXL"
   ]
  }
 ]

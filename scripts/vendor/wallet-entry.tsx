@@ -703,6 +703,33 @@ export async function withdrawable(portfolioId: number): Promise<{ freeUsdt: str
   const c = await freeCash(token(), portfolioId);
   return c === null ? null : { freeUsdt: formatUnits(c.free, 18), reservedUsdt: formatUnits(c.reserved, 18) };
 }
+/**
+ * 這一檔的總值（美元）：status 持倉表的加總，跟 `totalUsdE8` 取大的。
+ * 基金帳戶把股票抵押在加息策略時，`totalUsdE8` 不含那些股票（backend#280 上線前；2026-11-25 portfolio 15 持倉 59.60、total 0.03），
+ * 持倉表有，後端 `/redeem` 按比例賣也是用持倉加總。`totalUsdE8` 讀不到（null）時一樣用持倉加總，不當成 0。
+ */
+function portfolioUsdOf(st: PortfolioStatus): number {
+  const held = (st.holdings ?? []).reduce((sum, h) => { const v = Number(h.usdValueE8) / 1e8; return Number.isFinite(v) && v > 0 ? sum + v : sum; }, 0);
+  return Math.max(totalUsdOf(st.totalUsdE8), held);
+}
+/**
+ * 全部賣出後是不是真的賣完：看賣出後的 status，USDT 以外的持倉（抵押在加息策略的也在持倉表裡）合計不到一分錢、沒有價格的數量是 0 才算。
+ * status 有 10 秒快取：要讀到賣出那一筆所在區塊之後的那一份。讀不到、數字認不出來都不算賣完。
+ */
+async function soldOut(t: string, portfolioId: number, soldTx: string | null): Promise<boolean> {
+  try {
+    const from = soldTx === null ? 0n : (await readOnlyClient().getTransactionReceipt({ hash: soldTx as Hex })).blockNumber;
+    for (let i = 0; i < 6; i++) {
+      const st = await getPortfolioStatus(t, portfolioId);
+      if (BigInt(st.block) >= from) {
+        const left = st.holdings.filter((h) => h.symbol !== 'USDT').reduce((sum, h) => sum + BigInt(h.usdValueE8), 0n);
+        return left < 1_000_000n && (st.unpriced as { symbol?: string; amountWei?: string }[]).every((u) => u.symbol === 'USDT' || BigInt(u.amountWei ?? '1') === 0n);
+      }
+      await sleep(2_500);
+    }
+  } catch { /* 讀不到：不算賣完 */ }
+  return false;
+}
 async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet, owner } = need();
@@ -711,26 +738,29 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   const account = holding?.smartAccounts[0]?.address as Address | undefined;
   if (!holding || !account) throw new Error(L('Portfolio not found.', '找不到这个组合。'));
   step(L('Checking your portfolio', '正在检查持仓'));
-  let latest: PortfolioStatus = await getPortfolioStatus(t, holding.id);
+  const latest: PortfolioStatus = await getPortfolioStatus(t, holding.id);
   // 進行中的買入預留的現金不算可賣出／可領回（全部賣出時後端先取消那筆買入，預留就放出來）。
   const cash0 = args.all ? null : await freeCash(t, holding.id);
   const reservedUsd = cash0 === null ? 0 : Number(formatUnits(cash0.reserved, 18));
-  const ceiling = Math.max(0, totalUsdOf(latest.totalUsdE8) - reservedUsd);
-  const wanted = Math.min(args.all ? totalUsdOf(latest.totalUsdE8) : args.usd, args.all ? totalUsdOf(latest.totalUsdE8) : ceiling);
+  const total = portfolioUsdOf(latest);
+  const wanted = Math.min(args.usd, Math.max(0, total - reservedUsd)); // 部分賣出用；全部賣出不看金額
   let note: string | null = null;
   const cashUsd = cashUsdOf(latest.holdings ?? [], 'USDT');
-  const target = sellTargetUsd(wanted, cash0 === null ? cashUsd : Math.min(cashUsd, Number(formatUnits(cash0.free, 18))));
-  if (target !== null) {
+  // 全部賣出一律請後端清倉（`/close`），不看總值夠不夠：開著加息時股票抵押著、總值只剩現金，以前就只領現金沒賣
+  //（2026-11-25 0xd1aa718f…）。後端沒東西可賣會回 noop，不送交易。
+  const target = args.all ? null : sellTargetUsd(wanted, cash0 === null ? cashUsd : Math.min(cashUsd, Number(formatUnits(cash0.free, 18))));
+  let soldTx: string | null = null;
+  if (args.all || target !== null) {
     step(L('Selling', '正在卖出'));
+    const sold = async (r: Promise<RedeemResult>) => { const x = await r; if (x.outcome === 'executed' && x.txHash) soldTx = x.txHash; return x; };
     try {
-      const first = () => sellAfterUnwind(() => roundOrLanded(t, holding.id, () => retryBusyRound(() => (args.all ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)) as Promise<RedeemResult>)), step);
-      const run = await runSellBatches({ first, next: (rest) => continueRedeem(t, holding.id, rest), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
+      const first = () => sellAfterUnwind(() => roundOrLanded(t, holding.id, () => retryBusyRound(() => sold(target === null ? closePosition(t, holding.id) : redeemPortfolio(t, holding.id, target)))), step);
+      const run = await runSellBatches({ first, next: (rest) => sold(continueRedeem(t, holding.id, rest)), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
       if (afterSellRun(run) !== 'proceed' || run.status === 'stalled') note = tradeNote(explainTradeFailure({ outcome: run.lastOutcome, reason: run.lastReason }));
     } catch (cause) {
       if (!(cause instanceof SellBatchError)) throw cause;
       note = tradeNote(explainTradeFailure({ outcome: cause.outcome, reason: cause.message }));
     }
-    latest = await getPortfolioStatus(t, holding.id);
   }
   const balance = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
   const cash1 = await freeCash(t, holding.id);
@@ -745,8 +775,8 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   step(L('Approve in your wallet to receive your USDT', '在钱包里确认，领回 USDT'));
   const receipt = await sendWithdraw({ wallet, token: t, accountAddress: account, strategyId: holding.strategyId, asset: USDT, recipient: owner, amountWei: value });
   if (!receipt.success) throw new Error(L(`The transfer landed but reverted (${receipt.txHash}).`, `转账上链后被回滚（${receipt.txHash}）。`));
-  // emptied：全部賣完、USDT 全數領回（My mix 賣完後問要不要刪掉組合）。
-  return { sentUsdt: formatUnits(value, 18), note, txHash: receipt.txHash, emptied: !!args.all && note === null };
+  // emptied：全部賣完、USDT 全數領回（My mix 賣完後問要不要刪掉組合）。賣完與否看賣出後的持倉，不是看有沒有錯誤訊息。
+  return { sentUsdt: formatUnits(value, 18), note, txHash: receipt.txHash, emptied: !!args.all && note === null && await soldOut(t, holding.id, soldTx) };
 }
 
 // ---- My mix（自建籃子） ---------------------------------------------------------------------
