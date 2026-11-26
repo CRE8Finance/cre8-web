@@ -487,8 +487,9 @@ const seKey = a => a === 'WBNB' ? 'BNB' : a === 'XAUt' ? 'XAUT' : String(a).repl
 // 沒有 mainnet 欄位（舊快取、後端讀不到）時退回鏈上的模擬值。limited＝該資產的 Lista 市場可借不到 5 萬美元，圖上 logo 下寫「额度有限」。mk.__venue＝主網規則會選的存款協議（USDT 存款年化最高的那家）。
 // 有 mainnetRates 時一律用主網路線（場所、穩定幣、比例都是後端每 10 分鐘重新挑的）；該資產主網沒有可借的市場＝沒有路線（protocol＝'none'），顯示暫停、不退回測試網的數字。
 // tp＝測試網市場本身的協議：只給詳情抽屜用——v1 部位實際就在那個市場，主網沒有路線時部位那一列照實寫它。
+// min＝後端的 minValueUsd：這個資產在組合裡至少值多少美元加息才開得起來（低於它後端不開）。門檻只有後端知道，這裡不寫死。
 const seMkFrom = d => { const mk = {}, mn = !!(d && d.mainnetRates); ((d && d.markets) || []).forEach(m => { const x = m.mainnet || null, none = mn && !x, b = none ? null : x ? { vaultBps: x.vaultBps, vaultIncentiveBps: x.vaultIncentiveBps, borrowBps: x.borrowBps, borrowIncentiveBps: x.borrowIncentiveBps, ratioBps: x.ratioBps, carryBps: x.carryBps, collateralBps: x.collateralBps, collateralIncentiveBps: x.collateralIncentiveBps } : m.breakdown, bps = none ? 0 : x ? x.extraApyBps : m.extraApyBps, reason = none ? 'no_market' : x && !x.open ? x.reason : m.reason;
-  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, tp: m.protocol || null, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, c: m.contracts || null, at: m.updatedAt }; });
+  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, tp: m.protocol || null, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), min: typeof m.minValueUsd === 'number' ? m.minValueUsd : null, loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, c: m.contracts || null, at: m.updatedAt }; });
   Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false });
   // 每種穩定幣最佳金庫的基礎年化／激勵（mainnetRates.vaults），金庫卡分開顯示。
   Object.defineProperty(mk, '__vaults', { value: d && d.mainnetRates && d.mainnetRates.vaults || {}, enumerable: false }); return mk; };
@@ -824,7 +825,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=ff6af37290'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=7635bb56a6'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -913,7 +914,9 @@ class Component extends DCLogic {
       // 後端重啟或第一次讀還沒好（state pending、沒有數字）：沿用畫面上已有的數字（本機快取或上一次），不要退回「—」。
       // 這個數字已經含樂觀更新（held）：withOpt 不再疊一次（不然每 3 秒輪詢多加一次）。
       else if (prev[p.id] && prev[p.id].usd != null) { pst[p.id] = prev[p.id]; held[p.id] = true; }
-      seP[p.id] = p.strategyEarn || { status: 'none', positions: [] };
+      // 後端這一檔的加息還沒讀好（pending，strategyEarn 是 null）：沿用上一次已知的狀態，不要當成沒開——不然開著的開關會短暫顯示關，
+      // 用戶照畫面按開啟會收到 INSUFFICIENT_HOLDING（其實已經開著）。從來沒讀到過才當成沒有。
+      seP[p.id] = p.strategyEarn || (this.state.seP && this.state.seP[p.id]) || { status: 'none', positions: [] };
       // 剛開／關加息（setSe）：後端快照還是動作之前的樣子就沿用本地的，對上了（或 3 分鐘後）才丟掉。
       const so = this.seOpt && this.seOpt[p.id];
       // 後端這一檔還沒讀好（pending，strategyEarn 是 null）不算「對上了」：不然賣光後先來一份空的、再來一份賣出前的舊快照，開關又跳回開著。
@@ -1099,7 +1102,10 @@ class Component extends DCLogic {
     if (!Object.keys(act).length) return base;
     const mk = { ...base, ...act }; Object.defineProperty(mk, '__venue', { value: base.__venue, enumerable: false }); Object.defineProperty(mk, '__vaults', { value: base.__vaults || {}, enumerable: false }); return mk;
   }
-  seInfo(s, id, picks) {
+  // total＝這個組合會有的美元價值（這次買入＋已持有；null＝不看金額，介紹頁用）：每檔資產依權重分到的價值低於後端的 min 就開不起來，
+  // 不算進利率、開啟時也不送。一檔都開不了＝small：開關停用、不顯示利率，min＝組合至少要多少美元才有一檔開得起來。
+  seTotal(s, id, add) { const h = this.holdingsOf(s).find(x => x.id === id); return (Number(add) || 0) + (h && h.val ? h.val : 0); }
+  seInfo(s, id, picks, total) {
     const f = FUNDS.find(x => x.id === id) || (picks ? { id, cat: 'mine', hold: picks } : this.mixesOf(s).map(mixFund).find(x => x.id === id));
     if (!f || f.cat === 'leveraged') return null;
     const D = s.det[id], hold = D && D.hold && D.hold.length ? D.hold : f.hold;
@@ -1109,8 +1115,10 @@ class Component extends DCLogic {
     if (!elig.length) return null;
     const open = elig.filter(([t]) => s.seMk[t].open);
     if (!open.length) return { state: 'unavailable', rate: null, syms: [] };
-    const rate = open.reduce((a, [t, w]) => a + w / 100 * s.seMk[t].bps / 100, 0);
-    return { state: rate >= 0.3 ? 'ok' : 'low', rate: rate >= 0.3 ? rate : null, raw: rate, syms: open.map(([t]) => s.seMk[t].sym) };
+    const fit = total == null ? open : open.filter(([t, w]) => { const m = s.seMk[t].min; return m == null || total * w / 100 >= m; });
+    if (!fit.length) { const need = Math.min(...open.map(([t, w]) => w > 0 ? s.seMk[t].min * 100 / w : Infinity)); return { state: 'small', rate: null, raw: null, syms: [], min: isFinite(need) ? need : null }; }
+    const rate = fit.reduce((a, [t, w]) => a + w / 100 * s.seMk[t].bps / 100, 0);
+    return { state: rate >= 0.3 ? 'ok' : 'low', rate: rate >= 0.3 ? rate : null, raw: rate, syms: fit.map(([t]) => s.seMk[t].sym) };
   }
   // 詳情抽屜（給想看細節的人，不是必經步驟）：錢放在哪（附 BscScan）、收益怎麼來、安全、怎麼取回。術語只出現在這裡，每個配一句白話。
   // dt＝{ kind: 'cash', vaultId } 或 { kind: 'se', fundId, amount }。合約地址：後端 API 還沒回傳，先照 backend testnet-profile／strategy-earn-guard 抄（backend issue 待補欄位）。
@@ -1476,7 +1484,7 @@ class Component extends DCLogic {
       if (t.mix) {
         // My mix：第一次＝建立（簽一次），再放錢進去。後端記成投入後排程買入（美股開盤時段）。
         let mixId = t.mixId, portfolioId = t.portfolioId, account = t.account;
-        const mixSE = s.se ? this.seInfo(s, t.id, t.mix.picks) : null;
+        const mixSE = s.se ? this.seInfo(s, t.id, t.mix.picks, this.seTotal(s, t.id, s.payFaucet ? 1000 : amt)) : null;
         if (!mixId) {
           ({ mixId, portfolioId, account } = await this.makeMix(s, t, onStep));
           if (portfolioId == null) return this.finish({ made: true, note: tr('Ready in about a minute. Then open it and tap Buy.', '大约一分钟后就绪，到时打开它点“买入”。') });
@@ -1485,18 +1493,18 @@ class Component extends DCLogic {
         const r = await W.fundMixBasket({ mixId, portfolioId, account, pay: s.payFaucet ? 'faucet' : 'wallet', amount: amt, earnExtra: !!(mixSE && mixSE.rate != null), onStep });
         if (!s.payFaucet && portfolioId != null) { const n = parseFloat(amt) || 0; this.bump([{ k: 'pf', pid: portfolioId, d: n, name: t.name }, { k: 'cash', d: -n }]); }
         if (r.earnExtra === 'on' && portfolioId != null) this.setState(x => ({ seArmed: { ...(x.seArmed || {}), [portfolioId]: true } }));
-        const mixSeNote = r.earnExtra === 'unavailable' ? tr('The yield strategy didn’t turn on this time. You can turn it on from the portfolio page.', '这次加息策略没开启，可以到组合页再开。') : null;
+        const mixSeNote = r.earnExtra === 'too_small' ? tr('This amount is too small for the yield strategy.', '金额太小，开不了加息策略。') : r.earnExtra === 'unavailable' ? tr('The yield strategy didn’t turn on this time. You can turn it on from the portfolio page.', '这次加息策略没开启，可以到组合页再开。') : null;
         return this.finish({ filled: false, amount: s.payFaucet ? null : parseFloat(amt), note: [r.recorded ? null : tr('Your USDT arrived. We’ll schedule it to buy shortly.', 'USDT 已到账，稍后自动买入。'), mixSeNote].filter(Boolean).join(' ') || null });
       }
       const LV = s.live && s.live[t.id], D = s.det[t.id];
       if (!LV) throw new Error(tr('This portfolio isn’t available right now.', '这个组合暂时买不了。'));
       // 確認卡開了加息策略（backend#204）：同意的 calls 跟買入同一次簽名；美股還沒成交也一樣，成交後由系統自動開。
-      const se = s.se ? this.seInfo(s, t.id) : null;
+      const se = s.se ? this.seInfo(s, t.id, null, this.seTotal(s, t.id, s.payFaucet ? 1000 : amt)) : null;
       const r = await W.buy({ strategyId: LV.sid, onchainId: LV.onchainId, shown: D && D.version ? { version: D.version, configHash: D.configHash } : null, amount: amt, pay: s.payFaucet ? 'faucet' : 'wallet', earnExtra: !!(se && se.rate != null), onStep });
       if (!r.pending && r.portfolioId != null) { const n = Number(r.amountUsdt) || 0; this.bump([{ k: 'pf', pid: r.portfolioId, sid: LV.sid, d: n }].concat(s.payFaucet ? [] : [{ k: 'cash', d: -n }])); }
       // 買入時一起簽了加息的同意：基金頁的開關馬上是開著（成交後自動開始），不用等後端快照。
       if (r.earnExtra === 'on' && r.portfolioId != null) this.setState(x => ({ seArmed: { ...(x.seArmed || {}), [r.portfolioId]: true } }));
-      const seNote = r.earnExtra === 'unavailable' ? tr('The yield strategy didn’t turn on this time. You can turn it on from the portfolio page.', '这次加息策略没开启，可以到组合页再开。') : null;
+      const seNote = r.earnExtra === 'too_small' ? tr('This amount is too small for the yield strategy.', '金额太小，开不了加息策略。') : r.earnExtra === 'unavailable' ? tr('The yield strategy didn’t turn on this time. You can turn it on from the portfolio page.', '这次加息策略没开启，可以到组合页再开。') : null;
       this.finish({ filled: r.filled, pending: r.pending, amount: Number(r.amountUsdt), note: [r.note, seNote].filter(Boolean).join(' ') || null });
     } catch (e) { this.fail(e); }
   }
@@ -1689,8 +1697,10 @@ class Component extends DCLogic {
     const tLive = s.live && s.live[tgt.id], minBuy = eIn ? 1 : tLive ? tLive.min : 50, faucet = s.payFaucet && s.side === 'buy';
     const R0 = s.result || {}, isMixBuild = !!(tgt.mix && !tgt.mixId);
     // 買入確認卡的加息策略：後端 extraApyBps 依權重算成 %，再換成「每年多賺約 X USDT」（依這次投入金額）。
-    const tSE = s.side === 'buy' ? this.seInfo(s0, tgt.id, tgt.mix && tgt.mix.picks) : null, seRate = tSE && tSE.rate != null ? tSE.rate : null, seOff = !!(tSE && tSE.state === 'unavailable');
-    const amt = parseFloat(s.amount) || 0;
+    // 這次的金額（測試 USDT＝1,000）加上已持有的價值：不夠讓任何一檔開起來時（tSE.state＝small）開關停用、不顯示利率，只寫最低金額。
+    const amt = parseFloat(s.amount) || 0, seHeld = posH && posH.val ? posH.val : 0;
+    const tSE = s.side === 'buy' ? this.seInfo(s0, tgt.id, tgt.mix && tgt.mix.picks, (faucet ? 1000 : amt) + seHeld) : null, seRate = tSE && tSE.rate != null ? tSE.rate : null, seOff = !!(tSE && tSE.state === 'unavailable');
+    const seMinBuy = tSE && tSE.state === 'small' && tSE.min != null ? Math.ceil(tSE.min - seHeld) : null;
     // 定投（金額＝總額）：每期＝總額 ÷ 期數，每期至少 10 USDT；這一檔已經在定投就不能再開一個。
     const dcaAvail = s.side === 'buy' && !faucet && !!(tgt.mix || tLive), dcaOn = dcaAvail && !!s.dca;
     const dcaPer = amt / s.dcaN, dcaPerT = Math.floor(dcaPer * 100) / 100, dcaHas = !!(posH && posH.dca && (posH.dca.state === 'active' || posH.dca.state === 'paused'));
@@ -1903,9 +1913,9 @@ class Component extends DCLogic {
         };
       })(),
       // 買入確認卡：一句話＋開關＋「每年多賺約 X USDT」，預設關。% 只在點文字後才出現。槓桿與自建組合沒有；低於 0.3% 不顯示。
-      showSE: s.side === 'buy' && !!tSE && tSE.state === 'ok', seOn: !!(s.se && seRate != null), seCur: seRate != null ? 'pointer' : 'default',
+      showSE: s.side === 'buy' && !!tSE && (tSE.state === 'ok' || seMinBuy != null), seOn: !!(s.se && seRate != null), seCur: seRate != null ? 'pointer' : 'default',
       seTitle: seRate != null ? tr('Yield strategy +' + seRate.toFixed(1) + '%', '加息策略 +' + seRate.toFixed(1) + '%') : tr('Yield strategy', '加息策略'),
-      seSub: seRate != null ? tr('Your shares earn more. If prices drop to the safety line, we repay automatically.', '让持仓多赚一点，跌到安全线会自动还款。') : tr('Temporarily unavailable', '暂时无法使用'),
+      seSub: seRate != null ? tr('Your shares earn more. If prices drop to the safety line, we repay automatically.', '让持仓多赚一点，跌到安全线会自动还款。') : seMinBuy != null ? tr('Minimum ' + seMinBuy + ' USDT', seMinBuy + ' USDT 起') : tr('Temporarily unavailable', '暂时无法使用'),
       // 詳情入口（小字，不是必經）：現金生息的金額／確認頁、vault 列表、買入加息策略卡、基金頁加息策略列。
       ...(() => { const DT = this.details(s0, s0.dt); return { dtTitle: DT.title, dtSecs: DT.secs, dtO: s0.dtOpen ? 1 : 0, dtPE: s0.dtOpen ? 'auto' : 'none', dtY: s0.dtOpen ? 0 : 110, closeDt: () => this.setState({ dtOpen: false }) }; })(),
       dtLabel: tr('Details', '详情'),
@@ -1917,17 +1927,19 @@ class Component extends DCLogic {
       // 基金頁一行：開著＝「開啟中 · ~x% · 已賺 y USDT」，可以關；關著＝每年多賺約多少，可以開。
       ...(() => {
         const h = own, on = !!(h && h.seOn && h.seOn.length);
+        // 關著的開關看這一檔現在的價值（hSE）：開得起來的資產才算利率、才送去開；一檔都開不了（small）就停用、不顯示利率，只寫最低金額。
+        const hSE = h && !on && h.val != null ? this.seInfo(sSE, f.id, null, h.val) : fSE, hMin = hSE && hSE.state === 'small' && hSE.min != null ? Math.ceil(hSE.min) : null;
         // 還沒成交時已簽同意（armed）：後端回 autoOpen（重整也記得），或這次剛簽完。開關顯示開著、寫「成交后自动开始」，成交後排程自動開，之後就是真的 on。
         const armed = !on && !!(h && (h.seAuto || (s.seArmed && s.seArmed[h.pid])));
-        const show = !!h && !!fSE && (on || armed || fSE.state === 'ok');
+        const show = !!h && !!hSE && (on || armed || hSE.state === 'ok' || hMin != null);
         // 已賺（估）＝earnNetUsd（vault－負債，利差累積）＋待領激勵（USDT）；backend#209 給正式欄位後改讀。
         const earned = on ? Math.max(0, h.seOn.reduce((a, x) => a + (Number(x.earnNetUsd != null ? x.earnNetUsd : Number(x.vaultAssetsRaw || 0) - Number(x.debtRaw || 0)) + Number(x.pendingRewardsRaw || 0)) / 1e18, 0)) : 0;
-        const can = !armed && (on || !!(h && fSE && fSE.rate != null && !h.loading));
+        const can = !armed && (on || !!(h && hSE && hSE.rate != null && !h.loading));
         // 開關先打開確認視窗（一句話＋一顆按鈕），按了才真的開／關（使用者 2026-11-23：直接執行太突然）。
-        const run = (side, syms) => this.setState({ modal: true, side, step: 'se', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (fSE ? fSE.syms : []), seRate: fSE && fSE.rate, seEarned: earned } });
+        const run = (side, syms) => this.setState({ modal: true, side, step: 'se', amount: '', payFaucet: false, target: { id: f.id, name: f.name, cover: f.cover, pid: h.pid, syms: syms || (hSE ? hSE.syms : []), seRate: hSE && hSE.rate, seEarned: earned } });
         return {
           seRow: show, seDtShow: show && this.details(s0, { kind: 'se', fundId: f.id }).secs.length > 0,
-          seLine: armed ? tr('Starts when your order fills', '成交后自动开始') : on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : fSE && fSE.rate != null ? tr('+' + fSE.rate.toFixed(1) + '% a year', '年化 +' + fSE.rate.toFixed(1) + '%') : tr('Temporarily unavailable', '暂时无法使用'),
+          seLine: armed ? tr('Starts when your order fills', '成交后自动开始') : on ? tr('On · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · +' + fmt(earned) + ' USDT so far', '开启中 · +' + (fSE && fSE.raw != null ? fSE.raw.toFixed(1) : '—') + '% · 已赚 ' + fmt(earned) + ' USDT') : hSE && hSE.rate != null ? tr('+' + hSE.rate.toFixed(1) + '% a year', '年化 +' + hSE.rate.toFixed(1) + '%') : hMin != null ? tr('Minimum ' + hMin + ' USDT', hMin + ' USDT 起') : tr('Temporarily unavailable', '暂时无法使用'),
           seFundOn: on || armed, seFundBg: on || armed ? '#16854F' : can ? '#C3CAD1' : '#EDF0F3', seFundJust: on || armed ? 'flex-end' : 'flex-start', seFundCur: can ? 'pointer' : 'default',
           seFundToggle: () => can && run(on ? 'se-off' : 'se-on'),
         };

@@ -677,15 +677,16 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
     }
   }
   // 確認卡打開了加息（backend#204）：拿這次投入的同意 calls，接在買入的 UserOp 後一起簽；session key 還沒有加息權限就連 renewal 一起裝。
-  // 美股還沒成交也沒關係：同意之後由排程在成交後自動抵押、借款。拿不到 calls 不擋買入，只回 earnExtra: 'unavailable'。
-  let extra: SudoCall[] = [], renewal: Awaited<ReturnType<typeof getRenewalParams>> | null = null, earnExtra: 'on' | 'unavailable' | null = null;
+  // 美股還沒成交也沒關係：同意之後由排程在成交後自動抵押、借款。拿不到 calls 不擋買入，只回 earnExtra: 'unavailable'
+  // （金額太小＝後端回 too_small，回 'too_small'：畫面寫金額太小，不叫用戶之後再開）。
+  let extra: SudoCall[] = [], renewal: Awaited<ReturnType<typeof getRenewalParams>> | null = null, earnExtra: 'on' | 'unavailable' | 'too_small' | null = null;
   if (args.earnExtra) {
     try {
-      const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${portfolio.id}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: amountWei.toString() } });
+      const a = await earnApi<{ status: string; reason?: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${portfolio.id}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: amountWei.toString() } });
       if (a.status === 'ready' && a.calls?.length) {
         if (a.authorization === 'renewal_required') renewal = await getRenewalParams(t, portfolio.id);
         extra = [...(renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []), ...a.calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
-      } else earnExtra = 'unavailable';
+      } else earnExtra = a.reason === 'too_small' ? 'too_small' : 'unavailable';
     } catch { earnExtra = 'unavailable'; }
   }
   const result = await allocate({ token: t, wallet, account, strategyId: portfolio.strategyId, portfolioId: portfolio.id, step, extra, prefetched, approved });
@@ -897,7 +898,7 @@ async function fundMixBasketRaw(args: { mixId: number; portfolioId: number; acco
   if (!args.earnExtra) return { ...r, earnExtra: null };
   // 測試 USDT 每天 1,000 直接進組合帳戶。
   try { await strategyAutoOn(t, wallet, args.portfolioId, step, args.pay === 'wallet' ? amount : parseUnits('1000', 18)); return { ...r, earnExtra: 'on' as const }; }
-  catch { return { ...r, earnExtra: 'unavailable' as const }; }
+  catch (cause) { return { ...r, earnExtra: (cause as { code?: string } | null)?.code === 'TOO_SMALL' ? 'too_small' as const : 'unavailable' as const }; }
 }
 /** 改名、頻率（不用簽）或成分（要簽一次，立刻生效）。 */
 export const patchMix = localized(patchMixRaw, '没保存上，再试一次。');
@@ -917,6 +918,8 @@ async function patchMixRaw(args: { id: number; patch: Partial<MixInput>; onStep?
 type EarnCall = { to: Address; data: Hex; value: string; gas?: string };
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const temporarily = () => L('Temporarily unavailable. Try again later.', '暂时无法使用，稍后再试。');
+/** 後端回 `too_small`：金額不到加息開得起來的最低值（我們的下限，或借貸場所的最小借款額）。不是暫時性的，不叫用戶「稍後再試」。 */
+const tooSmall = () => Object.assign(new Error(L('This amount is too small for the yield strategy.', '金额太小，开不了加息策略。')), { code: 'TOO_SMALL' });
 const usdtText = (raw: string) => Number(formatUnits(BigInt(raw), 18)).toLocaleString('en-US', { maximumFractionDigits: 2 });
 /** 後端的錯誤碼 → 一句白話（後端訊息是繁中，畫面要英文／簡中）。 */
 function earnError(cause: unknown): Error {
@@ -1139,14 +1142,14 @@ async function strategyOpenRaw(args: { portfolioId: number; assets: string[]; on
   // Venus 的借款是整個帳戶共用（同一個 comptroller）：同一筆 UserOp 裡開第二檔時，後端算的 maxDebt 沒算到第一檔剛借的，
   // 合約回 DebtAboveConsent（2026-11-23 實測 TSLAB＋SPCXB）。所以一檔一筆、依序送，每次都讀上一筆之後的鏈上狀態。
   const opened: string[] = [];
-  let lastError: unknown = null;
+  let lastError: unknown = null, small = false;
   for (const [i, h] of held.entries()) {
-    const quote = () => earnApi<{ status: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/open`, { method: 'POST', body: { asset: h.symbol, collateralRaw: h.amountWei } });
+    const quote = () => earnApi<{ status: string; reason?: string; authorization?: string; calls?: EarnCall[] }>(`/portfolios/${args.portfolioId}/strategy-earn/open`, { method: 'POST', body: { asset: h.symbol, collateralRaw: h.amountWei } });
     step(held.length > 1 ? L(`Approve in your wallet to turn on Earn extra (${i + 1} of ${held.length})`, `在钱包里确认，开启加息（${i + 1}/${held.length}）`) : L('Approve in your wallet to turn on Earn extra', '在钱包里确认，开启加息'));
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         const r = await quote();
-        if (r.status !== 'ready' || !r.calls?.length) break;
+        if (r.status !== 'ready' || !r.calls?.length) { if (r.reason === 'too_small') small = true; break; }
         await sendStrategyCalls(t, wallet, args.portfolioId, r.calls, r.authorization);
         opened.push(h.symbol); lastError = null;
         break;
@@ -1159,7 +1162,7 @@ async function strategyOpenRaw(args: { portfolioId: number; assets: string[]; on
     }
     if (i < held.length - 1 && opened.includes(h.symbol)) await sleep(3_000);
   }
-  if (opened.length === 0) { if (lastError) throw lastError; throw new Error(temporarily()); }
+  if (opened.length === 0) { if (lastError) throw lastError; throw small ? tooSmall() : new Error(temporarily()); }
   return { opened };
 }
 
@@ -1173,8 +1176,8 @@ async function strategyAutoOn(t: string, wallet: RenewalWallet, portfolioId: num
   const read = await readOnlyClient().readContract({ address: USDT, abi: erc20Abi, functionName: 'balanceOf', args: [account] }).catch(() => 0n);
   const budget = read > atLeast ? read : atLeast;
   if (budget <= 0n) throw new Error(L('Buy into this portfolio first, then turn this on.', '先买入这个组合，再开启加息。'));
-  const a = await earnApi<{ status: string; authorization?: string; calls?: EarnCall[]; batches?: EarnCall[][] }>(`/portfolios/${portfolioId}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: budget.toString() } });
-  if (a.status !== 'ready' || !a.calls?.length) throw new Error(temporarily());
+  const a = await earnApi<{ status: string; reason?: string; authorization?: string; calls?: EarnCall[]; batches?: EarnCall[][] }>(`/portfolios/${portfolioId}/strategy-earn/auto`, { method: 'POST', body: { budgetRaw: budget.toString() } });
+  if (a.status !== 'ready' || !a.calls?.length) throw a.reason === 'too_small' ? tooSmall() : new Error(temporarily());
   const renewal = a.authorization === 'renewal_required' ? await getRenewalParams(t, portfolioId) : null;
   // 同意通常一批；後端切成多批時，續期跟第一批同一筆，其餘依序送（一次點擊）。
   const batches = (a.batches?.length ? a.batches : [a.calls]).filter((b) => b.length > 0);
