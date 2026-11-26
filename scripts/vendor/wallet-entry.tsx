@@ -490,6 +490,27 @@ function enrollApprovals(strategy: StrategyDetail | null, version: number, used:
   return out.slice(0, Math.max(0, APPROVALS_PER_USEROP - used));
 }
 
+/**
+ * 換了 executor（cre8-contracts#76，買入額度賣出回補）之後，舊帳戶的 session key 還指著舊的 executor，後端不再替它送任何交易
+ *（`GET /portfolios` 的 `sessionKey.renewalRequired`）。這個帳戶的 owner 下一次動作前先簽一次：續期（新 key 指新 executor）＋
+ * 後端算好的、對新 executor 還沒有的授權（`renewal-params` 的 `approvals`：USDT、這檔的資產、持有的資產與定投的 vault 份額）。
+ * 一筆放不下就先送續期＋放得下的授權，其餘分批。不需要時什麼都不做（一次 `GET /portfolios`）。
+ */
+type RenewalWithApprovals = Awaited<ReturnType<typeof getRenewalParams>> & { approvals?: { to: string; data: string }[] };
+async function renewForNewExecutor(args: { token: string; wallet: RenewalWallet; portfolioId: number; account: Address; strategyId: number }): Promise<boolean> {
+  const holding = (await getPortfolios(args.token)).find((p) => p.id === args.portfolioId);
+  if ((holding?.sessionKey as { renewalRequired?: unknown } | null | undefined)?.renewalRequired !== true) return false;
+  const r = await getRenewalParams(args.token, args.portfolioId) as RenewalWithApprovals;
+  const calls: SudoCall[] = [...r.initConfig.map((data) => ({ to: args.account, data: data as Hex, value: 0n })),
+    ...(r.approvals ?? []).map((a) => ({ to: a.to as Address, data: a.data as Hex, value: 0n }))];
+  const send = (batch: SudoCall[]) => sendSudoCalls({ wallet: args.wallet, token: args.token, accountAddress: args.account, strategyId: args.strategyId, calls: batch });
+  const first = await send(calls.slice(0, APPROVALS_PER_USEROP));
+  if (!first.success) throw new Error(L('That didn’t finish. Try again.', '没有完成，再试一次。'));
+  await recordRenewal(args.token, args.portfolioId, r);
+  for (let i = APPROVALS_PER_USEROP; i < calls.length; i += APPROVALS_PER_USEROP) await send(calls.slice(i, i + APPROVALS_PER_USEROP));
+  return true;
+}
+
 /** allocate 要的：executor、這檔的資產、還沒授權給 executor 的資產。讀不到狀態回 null。 */
 type ApprovalState = { executor: Address | null; universe: Address[]; missing: Address[] };
 async function readApprovalState(token: string, portfolioId: number, account: Address): Promise<ApprovalState | null> {
@@ -640,6 +661,11 @@ async function buyRaw(args: { strategyId: number; onchainId: number; shown?: { v
   const { portfolio, approved } = await ensurePortfolio({ token: t, wallet, strategyId: args.strategyId, onchainId: args.onchainId, shown: args.shown ?? null, step });
   const account = portfolio.smartAccounts[0]?.address as Address | undefined;
   if (!account) throw new Error(L('The server returned no account for this portfolio.', '服务器没有返回这个组合的账户。'));
+  // 舊 executor 的帳戶：入金前先續期＋授權新 executor（一次簽名），不然錢進了帳戶卻買不了。
+  if (portfolio.sessionKey && (portfolio.sessionKey as { renewalRequired?: unknown }).renewalRequired === true) {
+    step(L('Approve in your wallet so we can buy the assets', '在钱包里授权，才能买入资产'));
+    await renewForNewExecutor({ token: t, wallet, portfolioId: portfolio.id, account, strategyId: portfolio.strategyId });
+  }
   // 買入提速：授權狀態（投組狀態＋每個資產的 allowance）跟入金無關，入金的同時先讀。
   const prefetched = readApprovalState(t, portfolio.id, account).catch(() => null);
   let amountWei = 0n;
@@ -760,6 +786,8 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
   const account = holding?.smartAccounts[0]?.address as Address | undefined;
   if (!holding || !account) throw new Error(L('Portfolio not found.', '找不到这个组合。'));
   step(L('Checking your portfolio', '正在检查持仓'));
+  // 舊 executor 的帳戶：賣出也要先續期＋授權新 executor，後端才賣得了。
+  await renewForNewExecutor({ token: t, wallet, portfolioId: holding.id, account, strategyId: holding.strategyId });
   const latest: PortfolioStatus = await getPortfolioStatus(t, holding.id);
   // 進行中的買入預留的現金不算可賣出／可領回（全部賣出時後端先取消那筆買入，預留就放出來）。
   const cash0 = args.all ? null : await freeCash(t, holding.id);
@@ -890,6 +918,11 @@ export const fundMixBasket = localized(fundMixBasketRaw, '充值没完成，再�
 async function fundMixBasketRaw(args: { mixId: number; portfolioId: number; account: Address; pay: 'wallet' | 'faucet'; amount?: string; earnExtra?: boolean; onStep?: Step }) {
   const step = args.onStep ?? (() => {});
   const { token: t, wallet } = need();
+  const mixKey = await portfolioAccount(t, args.portfolioId).catch(() => null);
+  if (mixKey !== null) {
+    step(L('Approve in your wallet so we can buy the assets', '在钱包里授权，才能买入资产'));
+    await renewForNewExecutor({ token: t, wallet, portfolioId: args.portfolioId, account: args.account, strategyId: mixKey.strategyId });
+  }
   step(args.pay === 'wallet' ? L('Approve the USDT transfer in your wallet', '在钱包里确认 USDT 转账') : L('Getting your test USDT', '正在领取测试 USDT'));
   const amount = args.pay === 'wallet' ? parseUnits(args.amount ?? '0', 18) : 0n;
   // 錢包轉帳：轉帳那一筆的 hash 一起回傳（txHash），成功頁才有 BscScan 連結（cre8-app 的 `fundMix` 不回 hash，這裡照它的兩步自己做：
@@ -913,6 +946,12 @@ async function patchMixRaw(args: { id: number; patch: Partial<MixInput>; onStep?
   const result = await mixApi.patch(t, args.id, args.patch) as Record<string, unknown>;
   if (!('intentId' in result)) return { signed: false, mix: result };
   step(L('Approve in your wallet to apply the new weights', '在钱包里确认，应用新比例'));
+  // 舊 executor 的組合帳戶：先續期＋授權新 executor，新比例才買得了（改比例那一筆只授權新加入的資產）。
+  const mixPortfolioId = Number((await mixApi.get(t, args.id) as { portfolioId?: unknown }).portfolioId);
+  if (Number.isSafeInteger(mixPortfolioId) && mixPortfolioId > 0) {
+    const m = await portfolioAccount(t, mixPortfolioId).catch(() => null);
+    if (m !== null) await renewForNewExecutor({ token: t, wallet, portfolioId: mixPortfolioId, account: m.account, strategyId: m.strategyId });
+  }
   await signMix({ wallet, token: t, payload: result, picks: args.patch.assets, onStage: (s) => s === 'confirm' && step(L('Confirming', '正在确认')) });
   return { signed: true, mix: null };
 }
@@ -1325,12 +1364,16 @@ async function dcaStartRaw(args: { strategyId?: number; onchainId?: number; show
     }
   }
   if (p.status !== 'ready' || !p.calls?.length) throw new Error(p.message && !isZh() ? p.message : temporarily());
-  const renewal = p.authorization === 'renewal_required' ? await getRenewalParams(t, portfolioId) : null;
+  const renewal = p.authorization === 'renewal_required' ? await getRenewalParams(t, portfolioId) as RenewalWithApprovals : null;
+  // 續期時連同後端算好的、對 executor 還沒有的授權（換 executor 後的舊帳戶：USDT、資產、vault 份額）一起簽。
+  const renewalApprovals = (renewal?.approvals ?? []).filter((a) => !p.calls!.some((c) => c.to.toLowerCase() === a.to.toLowerCase() && c.data.toLowerCase() === a.data.toLowerCase()));
   const core: SudoCall[] = [...(renewal ? renewal.initConfig.map((data) => ({ to: account, data: data as Hex, value: 0n })) : []),
+    ...renewalApprovals.map((a) => ({ to: a.to as Address, data: a.data as Hex, value: 0n })),
     ...p.calls.map((c) => ({ to: c.to, data: c.data, value: BigInt(c.value || '0') }))];
   const state = await approvals, executor = state?.executor ?? null;
   const missing = executor && state ? state.missing.filter((a) => !approved.some((x) => x.toLowerCase() === a.toLowerCase())) : [];
-  const extra = executor ? missing.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n })) : [];
+  const extra = executor ? missing.filter((asset) => !renewalApprovals.some((a) => a.to.toLowerCase() === asset.toLowerCase()))
+    .map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n })) : [];
   const together = core.length + extra.length <= APPROVALS_PER_USEROP;
   step(L('Approve in your wallet to start', '在钱包里确认，开始 DCA'));
   const r = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: together ? [...core, ...extra] : core });
