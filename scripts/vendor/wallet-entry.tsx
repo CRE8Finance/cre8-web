@@ -1276,6 +1276,8 @@ function dcaError(cause: unknown): Error {
       // 前端已經自動把總額轉進帳戶、重問過還是不夠：帳戶裡的現金有一部分還在等之前的買入。
       DCA_FUNDS_NOT_IN_ACCOUNT: L('Your USDT is in this portfolio’s account, but part of the account’s cash is still set aside for an earlier buy, so DCA can’t start yet. Try again in a few minutes.',
         'USDT 已经在这个组合账户里，但账户里有一部分钱还在等之前的买入，DCA 暂时开不了。几分钟后再试。'),
+      DCA_CASH_RECONCILING: L('Your USDT is in this portfolio’s account, but part of the account’s cash is still set aside for an earlier buy, so DCA can’t start yet. Try again in a few minutes.',
+        'USDT 已经在这个组合账户里，但账户里有一部分钱还在等之前的买入，DCA 暂时开不了。几分钟后再试。'),
       DCA_DEPOSIT_MISMATCH: L('The amount that went into the vault doesn’t match your DCA total. Your USDT is in this portfolio’s account; contact us.',
         '存进 vault 的金额和 DCA 总额对不上。USDT 在这个组合账户里，请联系我们。'),
       NO_DCA_DEPOSIT: L('That transaction didn’t put USDT into the DCA vault. Try again.', '这笔交易没有把 USDT 存进 DCA 的 vault，再试一次。'),
@@ -1346,22 +1348,43 @@ async function dcaStartRaw(args: { strategyId?: number; onchainId?: number; show
   const body = { totalRaw: totalWei.toString(), periods: args.periods, frequency: args.frequency, startAt: args.startAt };
   const prepare = () => apiRequest<DcaPrepared>(`/portfolios/${portfolioId}/dca`, { method: 'POST', body, token: t });
   const fundsMissing = (cause: unknown) => cause instanceof ApiError && cause.code === 'DCA_FUNDS_NOT_IN_ACCOUNT';
+  // 剛賣出／領回後，後端的現金帳還沒對上（backend DCA_CASH_RECONCILING，約一分鐘）：等它，不轉帳。
+  const reconciling = (cause: unknown) => cause instanceof ApiError && cause.code === 'DCA_CASH_RECONCILING';
+  // 這一檔已經為定投轉過總額（30 分鐘內、同金額）就不再轉第二次（2026-11-26：賣光後立刻開定投，重試又轉了一次 40 USDT）。
+  const sentKey = `cre8.dca.sent.${portfolioId}`;
+  const sentBefore = (() => { try { const v = JSON.parse(localStorage.getItem(sentKey) ?? 'null') as { total?: string; at?: number } | null;
+    return v !== null && v.total === totalWei.toString() && typeof v.at === 'number' && Date.now() - v.at < 30 * 60_000; } catch { return false; } })();
+  const rememberSent = () => { try { localStorage.setItem(sentKey, JSON.stringify({ total: totalWei.toString(), at: Date.now() })); } catch { /* best effort */ } };
+  const forgetSent = () => { try { localStorage.removeItem(sentKey); } catch { /* best effort */ } };
+  /** 重問到後端準備好，最多 `ms`：對帳中一律等；`fundsToo` 時「錢還沒到」也等（錢已經轉了）。時間到就照最後一個錯誤回報。 */
+  const prepareWhenReady = async (ms: number, fundsToo: boolean): Promise<DcaPrepared> => {
+    const until = Date.now() + ms;
+    for (;;) {
+      try { return await prepare(); }
+      catch (cause) {
+        if (!(reconciling(cause) || (fundsToo && fundsMissing(cause))) || Date.now() >= until) throw cause;
+        await sleep(3000);
+      }
+    }
+  };
   // 買入提速：授權狀態跟轉帳無關，先讀（基金同買入：還沒授權給 executor 的資產跟這一筆一起簽）。
   const approvals = args.mixPortfolioId == null ? readApprovalState(t, portfolioId, account).catch(() => null) : Promise.resolve(null);
   step(L('Checking', '正在检查'));
   let p: DcaPrepared;
-  try { p = await prepare(); }
+  // 賣光後現金帳約要一到兩分鐘才對上（2026-11-26 實測 80 秒以上）：對上之前不轉帳。對上後才轉，轉完馬上問，
+  // 不讓排程先把這筆當成新的買入資金（那樣定投永遠看不到它）。
+  try { p = await prepareWhenReady(180_000, sentBefore); }
   catch (cause) {
-    if (!fundsMissing(cause)) throw dcaError(cause);
+    // 只有後端說「錢不在帳戶裡」、而且這次定投還沒轉過，才轉帳；還在對帳（等了兩分鐘還沒好）就請用戶稍後再試。
+    if (!fundsMissing(cause) || sentBefore) throw dcaError(cause);
     step(L('Approve the USDT transfer in your wallet', '在钱包里确认 USDT 转账'));
     const hash = await sendUsdtToMix({ wallet, token: t, account, amount: totalWei });
+    rememberSent();
     step(L('Waiting for the network', '等待链上确认'));
     const receipt = await publicClientFor(wallet).waitForTransactionReceipt({ hash, confirmations: 2, timeout: 60_000 });
-    if (receipt.status !== 'success') throw new Error(L(`The transfer was rejected by the network (${hash}).`, `转账被链上拒绝（${hash}）。`));
-    // 後端讀的區塊可能還沒看到這筆：稍等再問幾次。
-    for (let i = 0; ; i++) {
-      try { p = await prepare(); break; } catch (again) { if (!fundsMissing(again) || i >= 5) throw dcaError(again); await sleep(2000); }
-    }
+    if (receipt.status !== 'success') { forgetSent(); throw new Error(L(`The transfer was rejected by the network (${hash}).`, `转账被链上拒绝（${hash}）。`)); }
+    // 後端讀的區塊或現金帳可能還沒看到這筆：等它（不再轉帳）。
+    try { p = await prepareWhenReady(30_000, true); } catch (again) { throw dcaError(again); }
   }
   if (p.status !== 'ready' || !p.calls?.length) throw new Error(p.message && !isZh() ? p.message : temporarily());
   const renewal = p.authorization === 'renewal_required' ? await getRenewalParams(t, portfolioId) as RenewalWithApprovals : null;
@@ -1378,6 +1401,7 @@ async function dcaStartRaw(args: { strategyId?: number; onchainId?: number; show
   step(L('Approve in your wallet to start', '在钱包里确认，开始 DCA'));
   const r = await sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: together ? [...core, ...extra] : core });
   if (!r.success) throw new Error(L('The transaction didn’t go through. Your USDT is in this portfolio’s account; try again.', '交易没成功，USDT 在这个组合的账户里，再试一次即可。'));
+  forgetSent();
   if (renewal) await recordRenewal(t, portfolioId, renewal);
   if (!together && executor) await sendInBatches(missing, (batch) => sendSudoCalls({ wallet, token: t, accountAddress: account, strategyId, calls: batch.map((asset) => ({ to: asset, data: approveCalldata(executor), value: 0n })) })).catch(() => undefined);
   step(L('Confirming', '正在确认'));
