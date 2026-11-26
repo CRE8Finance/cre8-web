@@ -40,6 +40,13 @@ export type SellAllRun = {
 
 /** 這一輪只做了還款取回（已上鏈），資產下一輪才賣：接著呼叫。 */
 export const UNWOUND = /^\[STRATEGY_EARN_UNWINDING\] 賣出前已還款取回/;
+/**
+ * 部分賣出的一輪：後端已經替抵押著的部分還款、取回（已上鏈），但賣出本身還沒成交（2026-11-26 測試網 portfolio 55：
+ * 還款取回落地後，賣出那筆的代付逾時，畫面卻寫「没有交易，资金没动」）。後端用 `earnFreed: true` 標出來；
+ * 舊的後端只在原因裡寫「賣出前已還款取回」。這種結果不能說「沒有發出交易、資金沒動」。
+ */
+export const earnFreedNoSale = (r: { outcome: string; reason: string; earnFreed?: boolean }): boolean =>
+  r.outcome !== 'executed' && (r.earnFreed === true || UNWOUND.test(r.reason));
 /** 排程器正在處理別的基金或這一檔：什麼都沒送，等一下再問。 */
 export const SCHEDULER_BUSY = /^\[(DEX_QUEUED|PORTFOLIO_LOCK_BUSY)\]/;
 

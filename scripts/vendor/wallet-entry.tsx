@@ -44,7 +44,7 @@ import { retryWhileBusy } from './lib/portfolio-busy';
 import { APPROVALS_PER_USEROP, sendInBatches } from './lib/approval-batches';
 import { faucetFailure, faucetSuccess, needsDailyFaucet } from './lib/faucet';
 import { MAX_SELL_BATCHES, afterSellRun, runSellBatches, SellBatchError } from './lib/sell-batches';
-import { SCHEDULER_BUSY, UNWOUND, freshCash, runSellAll, type CloseRound } from './web-sell-all';
+import { SCHEDULER_BUSY, UNWOUND, earnFreedNoSale, freshCash, runSellAll, type CloseRound } from './web-sell-all';
 import { cashUsdOf, sellTargetUsd, totalUsdOf } from './lib/withdraw-plan';
 import { withdrawAmountWei } from './lib/format';
 import { explainTradeFailure } from './lib/trade-failure';
@@ -793,7 +793,9 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
     }
   } else if (target !== null) {
     step(L('Selling', '正在卖出'));
-    const sold = async (r: Promise<RedeemResult>) => { const x = await r; if (x.outcome === 'executed') { soldAny = true; if (x.txHash) soldTx = x.txHash; } return x; };
+    // 這次點擊裡，後端有沒有做過「還款取回了、賣出還沒成交」的一輪（見 web-sell-all.ts earnFreedNoSale）。
+    let freed = false;
+    const sold = async (r: Promise<RedeemResult>) => { const x = await r; if (x.outcome === 'executed') { soldAny = true; if (x.txHash) soldTx = x.txHash; } if (earnFreedNoSale(x as RedeemResult & { earnFreed?: boolean })) freed = true; return x; };
     try {
       const first = () => sellAfterUnwind(() => retryBusyRound(() => sold(redeemRound(t, holding.id, { usd: target }))), step);
       const run = await runSellBatches({ first, next: (rest) => sold(redeemRound(t, holding.id, { sellUsdE8: rest.toString() })), maxBatches: MAX_SELL_BATCHES, onContinue: ({ batch }) => step(L(`Selling (batch ${batch})`, `正在卖出（第 ${batch} 批）`)) });
@@ -802,6 +804,9 @@ async function sellRaw(args: { portfolioId: number; usd: number; all?: boolean; 
       if (!(cause instanceof SellBatchError)) throw cause;
       note = tradeNote(explainTradeFailure({ outcome: cause.outcome, reason: cause.message }));
     }
+    // 一筆都沒賣成，但加息部位已經動過（還款取回上鏈了）：不能照被擋的原因寫「没有交易，资金没动」，照「卖出没完成」收尾。
+    // 再按一次會直接賣掉已取回的部分；不按的話排程器幾分鐘後把它們放回加息。
+    if (note !== null && !soldAny && freed) note = L('That didn’t finish. Try again.', '卖出没完成，再试一次。');
   }
   // 領回前讀到賣出之後的那一份：後端（或這裡）的節點慢一兩個區塊時，餘額還不含剛賣出的所得，照它領只會領到零頭
   //（2026-11-26 portfolio 39）。看後端回的區塊不早於賣出那筆交易的區塊；查不到那筆的區塊就看它的餘額不比這裡讀到的少。

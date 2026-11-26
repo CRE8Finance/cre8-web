@@ -5,7 +5,7 @@
  *   node scripts/test-sell-all.mjs        （Node 23.6 以上：直接載入 .ts）
  */
 import assert from 'node:assert/strict';
-import { runSellAll, freshCash, SELL_ALL_MAX_MS, SELL_ALL_PAUSE_MS } from './vendor/web-sell-all.ts';
+import { runSellAll, freshCash, earnFreedNoSale, SELL_ALL_MAX_MS, SELL_ALL_PAUSE_MS } from './vendor/web-sell-all.ts';
 
 const UNWOUND = '[STRATEGY_EARN_UNWINDING] 賣出前已還款取回：BTCB short of USD1: repay 19273906820428080538, take back 1436520336693309 of 1465837156930186; the sale pays the rest tx=0x4889；下一輪再賣';
 const round = (outcome, reason, extra = {}) => ({ outcome, reason, txHash: null, ...extra });
@@ -164,6 +164,21 @@ test('領回前的可領金額：後端還停在賣出之前的區塊就重讀�
   const seq = [null, { block: 105n, free: 7n }]; let k = 0;
   assert.equal((await freshCash({ read: async () => seq[k++], fresh: (c) => c.block >= 105n, sleep: async () => {} })).free, 7n);
   assert.equal(await freshCash({ read: async () => null, fresh: () => true, sleep: async () => {}, tries: 3 }), null);
+});
+
+test('部分賣出：還款取回上鏈了、賣出沒成交的一輪認得出來（portfolio 55），不會被當成「沒有發出交易」', async () => {
+  // 新後端：回應帶 earnFreed；原因開頭是還款取回、後面括號裡才是賣出沒成交的原因（含會被說成「资金没动」的代碼）。
+  const stranded = round('blocked', '[STRATEGY_EARN_UNWINDING] 賣出前已還款取回：COINB repay 4000573772342472832 of 9801405742239058437 USDT, take back 4 of 10; the position stays open tx=0x3991；下一輪再賣（這次賣出還沒成交：Send failed (nothing landed): [STRATEGY_EXECUTION_UNAVAILABLE] 無法確認執行結果）', { earnFreed: true });
+  assert.equal(earnFreedNoSale(stranded), true);
+  // 送出了但結果未知：原因是「送出結果未知」，靠 earnFreed 認。
+  assert.equal(earnFreedNoSale(round('blocked', '送出結果未知，保留在途，下一輪先對帳，不重送：receipt timeout', { earnFreed: true })), true);
+  // 舊後端（沒有 earnFreed）：只有原因裡的「賣出前已還款取回」。
+  assert.equal(earnFreedNoSale(round('blocked', UNWOUND)), true);
+  // 成交的一輪、跟加息無關的失敗、只是「需要先還款取回但沒送出」：都不是。
+  assert.equal(earnFreedNoSale(round('executed', 'Landed on-chain: tx 0xd860', { earnFreed: true })), false);
+  assert.equal(earnFreedNoSale(round('failed', 'Send failed (nothing landed): [STRATEGY_EXECUTION_UNAVAILABLE] 無法確認執行結果')), false);
+  assert.equal(earnFreedNoSale(round('blocked', '[STRATEGY_EARN_UNWINDING] 賣出前需先還款取回：DOGE（沒有策略加息 session 權限，等 owner 續期，未送出）')), false);
+  assert.equal(earnFreedNoSale(round('blocked', '[MARKET_CLOSED] 股票休市，等待交易時段')), false);
 });
 
 let failed = 0;
