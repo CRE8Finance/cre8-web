@@ -1242,6 +1242,14 @@ async function dcaApi<T>(t: string, path: string, init: { method?: 'GET' | 'POST
 }
 /** 定投狀態（`GET /portfolios/:id/dca`）：plan、還沒買的部分、已賺、下一期、生息利率（offer）。 */
 export const dcaGet = (portfolioId: number) => dcaApi<unknown>(token(), `/portfolios/${portfolioId}/dca`);
+/**
+ * 全部投組的定投狀態，一次讀完（`GET /me/dca`，backend#314）：`portfolios[<portfolioId>]` 跟 `dcaGet` 回的一樣。
+ * 後端還沒有這支（404）時回 null，畫面退回逐檔讀。
+ */
+export async function dcaList(): Promise<{ owner: string; portfolios: Record<string, unknown>; updatedAt: string | null } | null> {
+  try { return await apiRequest<{ owner: string; portfolios: Record<string, unknown>; updatedAt: string | null }>('/me/dca', { token: token() }); }
+  catch (cause) { if (cause instanceof ApiError && cause.status === 404) return null; throw dcaError(cause); }
+}
 /** 新的 session 權限已上鏈：記到後端（定投每期、加息都要用這把 key）。My mix 正在處理別的交易時回 409 MIX_BUSY，等一下再記。 */
 async function recordRenewal(t: string, portfolioId: number, r: Awaited<ReturnType<typeof getRenewalParams>>): Promise<void> {
   await retryMixBusy(() => postRenewalResult(t, portfolioId, { keyRef: r.keyRef, permissionId: r.permissionId, validUntil: r.validUntil, policySnapshot: r.policySnapshot }),
@@ -1346,7 +1354,7 @@ export { transferCalldata };
   txReset, txs,
   withdrawUsdt,
   earn, earnDeposit, earnWithdraw, strategyEarn, strategyOpen, strategyClose, strategyActivity,
-  dcaGet, dcaStart, dcaPause, dcaResume, dcaWithdraw,
+  dcaGet, dcaList, dcaStart, dcaPause, dcaResume, dcaWithdraw,
   /** 頁面換語言後呼叫：重推一次快照，讓錯誤訊息換成新語言。 */
   relang: () => { if (mounted) emit(); },
 };
