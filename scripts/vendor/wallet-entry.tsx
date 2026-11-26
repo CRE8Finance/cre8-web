@@ -50,7 +50,7 @@ import { withdrawAmountWei } from './lib/format';
 import { explainTradeFailure } from './lib/trade-failure';
 import { isWaitlistPending, signalWaitlistApproved } from './lib/waitlist-signal';
 import { normalizeInviteCode, parseWaitlist } from './lib/waitlist';
-import { freshCreationPayload, fundMix, readWalletUsdt, signMix } from './features/mix/mix-chain';
+import { freshCreationPayload, fundMix, readWalletUsdt, recordMixFunding, signMix } from './features/mix/mix-chain';
 import { closeRequest, sendWithRenewal } from './lib/strategy-earn';
 import { createElement } from 'react';
 import { createWalletClient, custom, encodeFunctionData, erc20Abi, formatUnits, isAddress, parseUnits } from 'viem';
@@ -58,10 +58,12 @@ import type { Address, Hex } from 'viem';
 
 type Step = (text: string) => void;
 // 這次動作送出的交易（給結果畫面放 BscScan 連結）：app.html 動作開始前 txReset()，結束後 txs() 拿最後一筆。
+// MAIN_TX＝這次動作主要的那一筆（自建組合買入＝USDT 轉進組合那筆）：之後還有別的交易（加息的同意）也一樣排最後。
 const TXS: string[] = [];
+let MAIN_TX: string | null = null;
 const noteTx = (h: unknown): void => { if (typeof h === 'string' && /^0x[0-9a-fA-F]{64}$/.test(h)) TXS.push(h); };
-export const txReset = (): void => { TXS.length = 0; };
-export const txs = (): string[] => [...TXS];
+export const txReset = (): void => { TXS.length = 0; MAIN_TX = null; };
+export const txs = (): string[] => (MAIN_TX === null ? [...TXS] : [...TXS.filter((h) => h !== MAIN_TX), MAIN_TX]);
 const sendSudoCalls = async (...a: Parameters<typeof kernelSendSudoCalls>) => { const r = await kernelSendSudoCalls(...a); noteTx(r.txHash); return r; };
 const sendWithdraw = async (...a: Parameters<typeof kernelSendWithdraw>) => { const r = await kernelSendWithdraw(...a); noteTx(r.txHash); return r; };
 const sendUsdtToMix = async (...a: Parameters<typeof mixSendUsdt>) => { const h = await mixSendUsdt(...a); noteTx(h); return h; };
@@ -884,7 +886,14 @@ async function fundMixBasketRaw(args: { mixId: number; portfolioId: number; acco
   const { token: t, wallet } = need();
   step(args.pay === 'wallet' ? L('Approve the USDT transfer in your wallet', '在钱包里确认 USDT 转账') : L('Getting your test USDT', '正在领取测试 USDT'));
   const amount = args.pay === 'wallet' ? parseUnits(args.amount ?? '0', 18) : 0n;
-  const r = await fundMix({ wallet, token: t, account: args.account, mixId: args.mixId, portfolioId: args.portfolioId, with: args.pay === 'wallet' ? { kind: 'wallet', amount } : { kind: 'test-usdt' } });
+  // 錢包轉帳：轉帳那一筆的 hash 一起回傳（txHash），成功頁才有 BscScan 連結（cre8-app 的 `fundMix` 不回 hash，這裡照它的兩步自己做：
+  // 轉帳 → 記成入金）。測試 USDT 是後端發的，沒有使用者送出的交易（txHash: null）。
+  let r: { recorded: boolean; txHash: string | null };
+  if (args.pay === 'wallet') {
+    const txHash = await sendUsdtToMix({ wallet, token: t, account: args.account, amount });
+    MAIN_TX = txHash;
+    r = { recorded: await recordMixFunding({ token: t, mixId: args.mixId, portfolioId: args.portfolioId, source: { kind: 'wallet_transfer', txHash } }), txHash };
+  } else r = { ...(await fundMix({ wallet, token: t, account: args.account, mixId: args.mixId, portfolioId: args.portfolioId, with: { kind: 'test-usdt' } })), txHash: null };
   if (!args.earnExtra) return { ...r, earnExtra: null };
   // 測試 USDT 每天 1,000 直接進組合帳戶。
   try { await strategyAutoOn(t, wallet, args.portfolioId, step, args.pay === 'wallet' ? amount : parseUnits('1000', 18)); return { ...r, earnExtra: 'on' as const }; }

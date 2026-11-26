@@ -316,11 +316,11 @@
 <div style="margin:12px 16px 0;border-radius:18px;background:#FFFFFF;border:1px solid #E6E9ED;overflow:hidden">
 <sc-if value="{{ actNote }}" hint-placeholder-val="{{ false }}"><div style="padding:16px 14px;font:400 14px 'Geist';color:#6B7785">{{ actNote }}</div></sc-if>
 <sc-for list="{{ activity }}" as="a" hint-placeholder-count="5">
-<div style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:{{ a.sep }}">
+<a href="{{ a.href }}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:{{ a.sep }};color:inherit;text-decoration:none">
 <span style="width:36px;height:36px;flex:none;border-radius:50%;background:#EDF0F3;color:{{ a.fg }};display:flex;align-items:center;justify-content:center;font:500 15px 'Geist Mono'"><sc-if value="{{ a.gr }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 11-2.34-5.66M20 4v5h-5"/></svg></sc-if><sc-if value="{{ a.gt }}" hint-placeholder-val="{{ false }}">{{ a.g }}</sc-if></span>
 <div style="flex:1;min-width:0"><div style="font:500 15px 'Geist'">{{ a.t }}</div><div style="font:400 12px 'Geist';color:#6B7785;margin-top:2px">{{ a.d }}</div></div>
 <span style="font:500 13px 'Geist Mono';color:{{ a.vc }};white-space:nowrap">{{ a.v }}</span>
-</div>
+</a>
 </sc-for>
 </div>
 </sc-if>
@@ -824,7 +824,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=91542d2738'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=ff6af37290'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -1032,15 +1032,16 @@ class Component extends DCLogic {
   // 交易回合：後端回種類（type）與前後快照的現金（cashBeforeE8／cashAfterE8）。現金變少＝買入、變多＝賣出，差額就是成交額。
   // 沒有這些欄位（沒有快照、失敗的回合）時只寫狀態、不寫金額——前後總值（usd*E8）在買賣前後幾乎不變，不是成交額。
   // 每列只記投組 id，名稱在畫面上才對（換語言跟著換；賣完、刪掉的組合也有名字）。
+  // tx＝這一列的交易（後端的 txHash）：有的話整列可以點去區塊鏈瀏覽器（txUrl，跟成功頁同一個網址）。合成一列的用留下來那一筆的，它沒有才用被合掉的。
   async loadActivity() {
     const W = window.CRE8W; if (!W || !this.state.pf) return;
-    const rows = [], near = (a, b) => Math.abs(Date.parse(a) - Date.parse(b)) <= 120000;
+    const rows = [], near = (a, b) => Math.abs(Date.parse(a) - Date.parse(b)) <= 120000, tx = h => typeof h === 'string' && /^0x[0-9a-fA-F]{64}$/.test(h) ? h : null;
     await Promise.all(this.state.pf.map(p => W.activity(p.id).then(r => (r.activity || []).forEach(a => {
       const c0 = a.cashBeforeE8 != null ? Number(a.cashBeforeE8) : null, c1 = a.cashAfterE8 != null ? Number(a.cashAfterE8) : null;
-      rows.push({ at: a.createdAt, pid: p.id, op: a.type === 'withdraw' ? 'out' : 'trade', state: a.state, flow: c0 != null && c1 != null && isFinite(c0) && isFinite(c1) ? (c1 - c0) / 1e8 : null });
+      rows.push({ at: a.createdAt, pid: p.id, tx: tx(a.txHash), op: a.type === 'withdraw' ? 'out' : 'trade', state: a.state, flow: c0 != null && c1 != null && isFinite(c0) && isFinite(c1) ? (c1 - c0) / 1e8 : null });
     })).catch(() => {})));
     // 加息策略的事件（backend#204 帳本）：減倉、收掉、領獎、開啟、賣出前還款。基金與自建組合都有（backend#246）；回錯誤就略過。
-    if (W.strategyActivity) await Promise.all(this.state.pf.map(p => W.strategyActivity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, pid: p.id, se: a.kind === 'switch_vault' ? 'migrate' : a.kind, asset: a.asset ? String(a.asset).replace(/B$/, '') : null, amount: a.amountRaw != null ? Number(a.amountRaw) / 1e18 : null }))).catch(() => {})));
+    if (W.strategyActivity) await Promise.all(this.state.pf.map(p => W.strategyActivity(p.id).then(r => (r.activity || []).forEach(a => rows.push({ at: a.createdAt, pid: p.id, tx: tx(a.txHash), se: a.kind === 'switch_vault' ? 'migrate' : a.kind, asset: a.asset ? String(a.asset).replace(/B$/, '') : null, amount: a.amountRaw != null ? Number(a.amountRaw) / 1e18 : null }))).catch(() => {})));
     (this.state.smx || []).forEach(m => (m.events || []).forEach(e => rows.push({ at: e.at, pid: m.portfolioId != null ? m.portfolioId : null, mixName: m.name, kind: e.kind })));
     rows.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
     // 同一件事只列一次（同一個投組、兩分鐘內）：
@@ -1051,7 +1052,7 @@ class Component extends DCLogic {
     rows.forEach(r => {
       if (r.kind === 'mix_rebalanced' && rows.some(x => x.op === 'trade' && x.pid === r.pid && near(x.at, r.at))) return;
       const dup = out.find(x => x.pid === r.pid && near(x.at, r.at) && ((r.op === 'out' && x.op === 'out') || (r.se && x.se === r.se && (r.se !== 'deleverage' || x.asset === r.asset)) || (r.kind && x.kind === r.kind && x.mixName === r.mixName)));
-      if (dup) { if (r.se === 'claim' && r.amount != null) dup.amount = (dup.amount || 0) + r.amount; return; }
+      if (dup) { if (r.se === 'claim' && r.amount != null) dup.amount = (dup.amount || 0) + r.amount; if (!dup.tx && r.tx) dup.tx = r.tx; return; }
       out.push({ ...r });
     });
     this.setState({ acts: out.slice(0, 50) });
@@ -1296,6 +1297,8 @@ class Component extends DCLogic {
   }
   step(text) { this.setState({ procText: String(text).toUpperCase() }); }
   // 成功：iOS 式打勾＋一句結果，自己收起（有一句要看的多留一下），點任何地方也會立刻收起，不用按按鈕。
+  // 交易 → 區塊鏈瀏覽器的網址（成功頁與記錄頁共用；測試網是測試網的 BscScan，來自 wallet bundle 的鏈設定）。
+  txUrl(h) { return ((window.CRE8W && window.CRE8W.chain && window.CRE8W.chain.explorer) || 'https://testnet.bscscan.com').replace(/\/+$/, '') + '/tx/' + h; }
   // 這次動作的最後一筆交易（BscScan 連結用）。
   withTx(result) { const W = window.CRE8W, l = W && W.txs ? W.txs() : []; return l.length && !result.error ? { ...result, tx: l[l.length - 1] } : result; }
   finish(result) {
@@ -1806,7 +1809,9 @@ class Component extends DCLogic {
         const fq = pl => DCA_FQ_LABEL()[Math.max(0, DCA_FQ.indexOf(pl.frequency))];
         const line = pl => fq(pl) + ' ' + fmt(u(pl.trancheRaw)) + tr(' USDT · ' + pl.periodsDone + '/' + pl.periods + ' bought', ' USDT · 已投 ' + pl.periodsDone + '/' + pl.periods + ' 期');
         const show = !!p && (p.state !== 'completed' || (h.dcaRem || 0) >= 0.01);
-        const next = pl => pl.state === 'paused' ? tr('Paused', '已暂停') : pl.state === 'completed' || pl.periodsDone >= pl.periods ? tr('All bought', '已全部买入') : pl.waitingForMarket ? tr('At market open', '等美股开盘') : pl.nextRunAt ? (dayStart(Date.parse(pl.nextRunAt)) <= today.getTime() ? tr('Today', '今天') : fmtDay(new Date(pl.nextRunAt))) : '—';
+        // 到期了還沒買的原因（後端 plan.waitingReason）：休市（market_closed）有現成的字；組合暫停／賣出中（portfolio_paused）、要重新授權
+        // （authorization_required）還沒有對應的字，照舊寫日期。舊版後端沒有這個欄位時看 waitingForMarket。
+        const next = pl => pl.state === 'paused' ? tr('Paused', '已暂停') : pl.state === 'completed' || pl.periodsDone >= pl.periods ? tr('All bought', '已全部买入') : (pl.waitingReason !== undefined ? pl.waitingReason === 'market_closed' : pl.waitingForMarket) ? tr('At market open', '等美股开盘') : pl.nextRunAt ? (dayStart(Date.parse(pl.nextRunAt)) <= today.getTime() ? tr('Today', '今天') : fmtDay(new Date(pl.nextRunAt))) : '—';
         const rows = pl => [[tr('Each time', '每期'), fmt(u(pl.trancheRaw)) + ' USDT · ' + fq(pl)], [tr('Bought', '已投'), tr(pl.periodsDone + ' of ' + pl.periods, pl.periodsDone + '/' + pl.periods + ' 期')], [tr('Next', '下一期'), next(pl)]].map(([k, v], i, a) => ({ k, v, sep: i < a.length - 1 ? '1px solid #E6E9ED' : '0' }));
         return {
           dcaRow: show, dcaRowTitle: !p ? '' : p.state === 'paused' ? tr('DCA paused', 'DCA 已暂停') : p.state === 'completed' ? tr('DCA done', 'DCA 已完成') : tr('DCA on', 'DCA 进行中'),
@@ -1842,7 +1847,7 @@ class Component extends DCLogic {
         : R0.amount ? tr('Order placed · ' + fmt(R0.amount) + ' USDT', '已下单 · ' + fmt(R0.amount) + ' USDT') : tr('Order placed', '已下单'),
       doneErr: !!R0.error, doneDash: s.doneDash || 0, retry: () => this.retryFn && this.retryFn(),
       doneNote: R0.error || this.doneNote(s),
-      doneTx: !!R0.tx, doneTxUrl: R0.tx ? ((window.CRE8W && window.CRE8W.chain && window.CRE8W.chain.explorer) || 'https://testnet.bscscan.com').replace(/\/+$/, '') + '/tx/' + R0.tx : '', doneTxLabel: tr('View on BscScan', '在 BscScan 查看'),
+      doneTx: !!R0.tx, doneTxUrl: R0.tx ? this.txUrl(R0.tx) : '', doneTxLabel: tr('View on BscScan', '在 BscScan 查看'),
       doneBg: R0.error ? '#D23F2E' : '#16854F', doneSh: R0.error ? 'rgba(210,63,46,.5)' : 'rgba(30,158,99,.6)',
       doneIcon: R0.error ? 'M23 6v14M23 29v1' : 'M4 18l12 12L42 4',
       profileName: s.pname || (w && w.profile && w.profile.name) || tr('You', '你'), pnameLen: s.pname.length, onPname: e => this.setState({ pname: e.target.value.slice(0, 24) }),
@@ -1932,18 +1937,18 @@ class Component extends DCLogic {
         // 加息策略事件：一句人話（不出現抵押、借款比例等術語）。
         if (a.se) { const T = a.asset || tr('your shares', '持仓'), n = a.amount != null ? fmt(a.amount) : '';
           const SE = { open: [tr('Yield strategy turned on', '加息策略已开启'), ''], deleverage: [tr(T + ' fell, so we repaid ' + n + ' USDT to stay safe', T + ' 下跌，已自动还款 ' + n + ' USDT 保安全'), ''], unwind: [tr('The yield strategy wasn’t worth it, so we settled it', '加息策略暂时不划算，已自动结清'), ''], repay: [tr('Settled the yield strategy before selling', '卖出前已先结清加息策略'), ''], close: [tr('Yield strategy turned off · shares back', '加息策略已关闭，股票已回到组合'), ''], claim: [tr('Yield strategy rewards received', '收到加息策略奖励'), '+' + n + ' USDT'], migrate: [tr('Moved to a better rate', '换到更好的利率'), ''], reduce: [tr('Settled part of the yield strategy', '加息策略已还掉一部分'), ''] }[a.se] || [tr('Yield strategy updated', '加息策略有更新'), ''];
-          return ['%', name, when + ' · ' + SE[0], SE[1], a.se === 'deleverage' ? '#A8791F' : '#16854F', a.se === 'claim' ? '#16854F' : '#0B0F14']; }
+          return ['%', name, when + ' · ' + SE[0], SE[1], a.se === 'deleverage' ? '#A8791F' : '#16854F', a.se === 'claim' ? '#16854F' : '#0B0F14', a.tx]; }
         // My mix 的事件（後端 mix_*）：認得的寫成一句話，認不出來的寫「組合有更新」（兩種語言都不出現後端原文）。
         if (a.kind) { const K = { mix_enrolled: tr('Basket created', '组合已启动'), mix_allocation_changed: tr('Weights changed', '比例已修改'), mix_rebalanced: tr('Rebalanced', '已调仓'), mix_exit_triggered: tr('Selling started', '开始卖出'), mix_exit_stuck: tr('Sale is stuck', '卖出卡住了'), mix_cover: tr('Cover updated', '封面已更新') }[a.kind] || tr('Basket updated', '组合有更新');
-          return ['r', name, when + ' · ' + K, '', '#2F6690', '#0B0F14']; }
+          return ['r', name, when + ' · ' + K, '', '#2F6690', '#0B0F14', a.tx]; }
         // USDT 從組合回到錢包（賣出後的領回）。後端沒有回這筆的金額，不寫數字。
-        if (a.op === 'out') return ['$', name, when + ' · ' + tr('USDT back in your wallet', 'USDT 已到钱包'), '', '#16854F', '#0B0F14'];
+        if (a.op === 'out') return ['$', name, when + ' · ' + tr('USDT back in your wallet', 'USDT 已到钱包'), '', '#16854F', '#0B0F14', a.tx];
         // 交易回合：成交的看現金差——變少是買入、變多是賣出、幾乎沒變（不到 1 USDT）是調倉；金額＝現金差。沒有現金資料時只寫已成交。
         const ok = a.state === 'executed' || a.state === 'confirmed' || a.state === 'succeeded';
         if (ok) { const f = a.flow, side = f == null ? tr('Traded', '已成交') : f <= -1 ? tr('Bought', '已买入') : f >= 1 ? tr('Sold', '已卖出') : tr('Rebalanced', '已调仓');
-          return ['r', name, when + ' · ' + side, f != null && Math.abs(f) >= 1 ? '$' + fmt(Math.abs(f)) : '', '#16854F', '#0B0F14']; }
+          return ['r', name, when + ' · ' + side, f != null && Math.abs(f) >= 1 ? '$' + fmt(Math.abs(f)) : '', '#16854F', '#0B0F14', a.tx]; }
         const ST = { pending: tr('Processing', '处理中'), submitted: tr('Submitted', '已提交'), failed: tr('Failed', '失败'), reverted: tr('Reverted on chain', '链上回滚'), noop: tr('No trade needed', '无需交易'), unknown: tr('Result pending', '结果待确认'), cancelled: tr('Cancelled', '已取消') }[a.state] || tr('Status update', '状态更新');
-        return ['·', name, when + ' · ' + ST, '', '#6B7785', '#0B0F14']; }).map(([g, t, d, v, fg, vc], i, a) => ({ g, gr: g === 'r', gt: g !== 'r', t, d, v, fg, vc, sep: sepL(i, a) })); })(),
+        return ['·', name, when + ' · ' + ST, '', '#6B7785', '#0B0F14', a.tx]; }).map(([g, t, d, v, fg, vc, tx], i, a) => ({ g, gr: g === 'r', gt: g !== 'r', t, d, v, fg, vc, href: tx ? this.txUrl(tx) : undefined, sep: sepL(i, a) })); })(),
       actNote: s0.acts === null ? tr('Loading…', '加载中…') : s0.acts.length === 0 ? tr('No activity yet.', '还没有记录。') : null,
       openAcct: () => this.setState({ acct: true }), closeAcct: () => this.back({ acct: false }),
       acctO: s.acct ? 1 : 0, acctPE: s.acct ? 'auto' : 'none', acctY: s.acct ? 0 : 110,
