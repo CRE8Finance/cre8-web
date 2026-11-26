@@ -43,10 +43,12 @@
 <h1 style="margin:0;font:500 34px/1.2 'Geist';letter-spacing:-.03em;white-space:pre-line">{{ gTitle }}</h1>
 <div style="display:flex;flex-direction:column;gap:10px;margin-top:32px">
 <sc-if value="{{ siBusy }}" hint-placeholder-val="{{ false }}"><div style="height:52px;display:flex;align-items:center;justify-content:center" aria-label="{{ t.loading }}"><svg width="28" height="28" viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" fill="none" stroke="#E6E9ED" stroke-width="10"></circle><circle cx="48" cy="48" r="40" fill="none" stroke="#2F6690" stroke-width="10" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="180"><animateTransform attributeName="transform" type="rotate" from="0 48 48" to="360 48 48" dur="1s" repeatCount="indefinite"></animateTransform></circle></svg></div></sc-if>
-<sc-if value="{{ gStart }}" hint-placeholder-val="{{ true }}"><a href="https://cre8.finance/waitlist" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7);display:flex;align-items:center;justify-content:center">{{ t.joinWaitlist }}</a><button onClick="{{ gToSignIn }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.signIn }}</button></sc-if>
+<sc-if value="{{ gStart }}" hint-placeholder-val="{{ true }}"><sc-if value="{{ gJoin }}" hint-placeholder-val="{{ false }}"><a href="https://cre8.finance/waitlist" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7);display:flex;align-items:center;justify-content:center">{{ t.joinWaitlist }}</a><button onClick="{{ gToSignIn }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.signIn }}</button></sc-if><sc-if value="{{ gSignInOnly }}" hint-placeholder-val="{{ true }}"><button onClick="{{ gToSignIn }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ t.signIn }}</button></sc-if></sc-if>
+<sc-if value="{{ gVp }}" hint-placeholder-val="{{ true }}"><label style="display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;margin-top:6px"><input value="{{ vpCode }}" onInput="{{ onVp }}" onKeyDown="{{ vpKey }}" maxlength="16" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="{{ vpPh }}" aria-label="{{ vpPh }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 16px 'Geist Mono';letter-spacing:.08em;color:#0B0F14;padding:0"><button onClick="{{ vpGo }}" style="height:44px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ vpBtn }}</button></label><sc-if value="{{ vpErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ vpErr }}</p></sc-if></sc-if>
 <sc-if value="{{ gMethods }}" hint-placeholder-val="{{ false }}"><button onClick="{{ gX }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.contX }}</button><button onClick="{{ signInGoogle }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.contGoogle }}</button><button onClick="{{ showEmail }}" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer">{{ t.contEmail }}</button>
 <sc-if value="{{ siEmail }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input type="{{ emailType }}" inputmode="{{ emailMode }}" value="{{ emailVal }}" onInput="{{ onEmail }}" placeholder="{{ emailPh }}" autocomplete="off" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:400 16px 'Geist';color:#0B0F14;padding:0"><button onClick="{{ emailGo }}" style="height:44px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ emailBtn }}</button></label></sc-if></sc-if>
-<sc-if value="{{ gCode }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;padding:0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" onKeyDown="{{ inviteKey }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="{{ t.inviteCode }}" aria-label="{{ t.inviteCode }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 18px 'Geist Mono';letter-spacing:.1em;color:#0B0F14;padding:0"></label><sc-if value="{{ codeErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ codeErr }}</p></sc-if><button onClick="{{ gCodeGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ codeBtn }}</button><a href="https://cre8.finance/waitlist" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center">{{ t.joinWaitlist }}</a></sc-if>
+<sc-if value="{{ gCodeOld }}" hint-placeholder-val="{{ false }}"><label style="display:flex;align-items:center;padding:0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED"><input value="{{ invite }}" onInput="{{ onInvite }}" onKeyDown="{{ inviteKey }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="{{ t.inviteCode }}" aria-label="{{ t.inviteCode }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 18px 'Geist Mono';letter-spacing:.1em;color:#0B0F14;padding:0"></label><sc-if value="{{ codeErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ codeErr }}</p></sc-if><button onClick="{{ gCodeGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ codeBtn }}</button><a href="https://cre8.finance/waitlist" style="height:52px;border:1px solid #D6DCE2;border-radius:999px;background:#FFFFFF;color:#0B0F14;font:500 16px 'Geist';cursor:pointer;display:flex;align-items:center;justify-content:center">{{ t.joinWaitlist }}</a></sc-if>
+<sc-if value="{{ gCodeNew }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ gLinkX }}" hint-placeholder-val="{{ false }}"><button onClick="{{ linkXGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ t.linkX }}</button></sc-if><sc-if value="{{ gLinkG }}" hint-placeholder-val="{{ true }}"><button onClick="{{ linkGGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ t.linkGoogle }}</button></sc-if><sc-if value="{{ gLinkErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ gLinkErr }}</p></sc-if><label style="display:flex;align-items:center;gap:12px;padding:0 6px 0 16px;height:56px;border-radius:16px;background:#FFFFFF;box-shadow:0 0 0 1px #E6E9ED;margin-top:6px"><input value="{{ invite }}" onInput="{{ onInvite }}" onKeyDown="{{ inviteKey }}" maxlength="10" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="{{ t.inviteCode }}" aria-label="{{ t.inviteCode }}" style="flex:1;min-width:0;border:0;outline:0;background:transparent;font:500 16px 'Geist Mono';letter-spacing:.08em;color:#0B0F14;padding:0"><button onClick="{{ gCodeGo }}" style="height:44px;padding:0 16px;border:0;border-radius:999px;background:#0B0F14;color:#fff;font:500 14px 'Geist';cursor:pointer">{{ codeBtn }}</button></label><sc-if value="{{ codeErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:0 2px;font:400 14px/1.5 'Geist';color:#D23F2E">{{ codeErr }}</p></sc-if></sc-if>
 <sc-if value="{{ siErr }}" hint-placeholder-val="{{ false }}"><p role="alert" style="margin:4px 2px 0;font:400 14px/1.5 'Geist';color:#D23F2E">{{ siErr }}</p></sc-if>
 <sc-if value="{{ siRetry }}" hint-placeholder-val="{{ false }}"><button onClick="{{ siRetryGo }}" style="height:52px;border:0;border-radius:999px;background:#E3B55B;color:#0B0F14;font:600 16px 'Geist';cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 10px 24px -10px rgba(227,181,91,.7)">{{ t.tryAgain }}</button></sc-if>
 </div>
@@ -673,7 +675,7 @@ class Component extends DCLogic {
     // 登入後的真資料（window.CRE8W，assets/vendor/cre8-wallet.js）：w＝登入狀態快照，pf＝/portfolios，pst＝各投組 /status 的總值，
     // cashWei＝錢包 USDT（鏈上），smx＝/me/mixes，acts＝合併的活動。null＝還沒載入（畫面顯示載入中，不顯示 0）。
     w: null, pf: null, pst: {}, cashWei: null, smx: null, acts: null, mixCovers: {},
-    si: null, gStep: 'start', invite: '', siEmail: false, emailVal: '', siErr: null, rc: false, copied: false,
+    si: null, gStep: 'start', invite: '', siEmail: false, gateCfg: { openSignup: true, viewPass: true }, vpOk: (() => { try { return localStorage.getItem('cre8.viewPass') === '1'; } catch (_) { return false; } })(), vpCode: '', vpBusy: false, vpErr: null, emailVal: '', siErr: null, rc: false, copied: false,
     payFaucet: false, procText: '', result: null,
     // Earn（docs/EARN_UX.zh-TW.md）。vaults＝GET /earn/vaults 的列表（null＝載入中，'unavailable'＝讀不到）；
     // earnAcct＝GET /me/earn（錢包可用與現金生息部位，跟投組分開）；seMk＝GET /strategy-earn/markets 依代號 { NVDA: { open, bps } }；
@@ -701,6 +703,8 @@ class Component extends DCLogic {
     this.loadFunds(); this.loadEarnPublic();
     // tst 一進來就要登入（邀請碼）：錢包程式馬上載。
     this.loadWallet(true);
+    // 入口頁的開關（backend deploy/waitlist-gate.json）：openSignup＝X＋Google 都綁就放行；viewPass＝通行碼可以不登入逛。
+    api('/waitlist/gate').then(g => { if (g && typeof g.openSignup === 'boolean' && typeof g.viewPass === 'boolean') this.setState({ gateCfg: { openSignup: g.openSignup, viewPass: g.viewPass } }); }).catch(() => {});
   }
   componentDidUpdate() {
     this.syncNav(); if (this.state.fund) this.loadDetail(this.state.fund);
@@ -825,7 +829,7 @@ class Component extends DCLogic {
     const go = () => { const W = window.CRE8W; W.mount({ waitlist: 'manual' }); this.unsubW = W.subscribe(w => this.onWallet(w)); };
     if (window.CRE8W) return go();
     addEventListener('cre8w:ready', go, { once: true });
-    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=675d2163c7'; el.async = true; document.head.appendChild(el); };
+    const add = () => { const el = document.createElement('script'); el.src = 'assets/vendor/cre8-wallet.js?v=73bd8cf65f'; el.async = true; document.head.appendChild(el); };
     if (now) add(); else (window.requestIdleCallback || (f => setTimeout(f, 1500)))(add);
   }
   onWallet(w) {
@@ -1512,6 +1516,16 @@ class Component extends DCLogic {
   // gate：tst 一進來的入口頁（使用者 2026-11-23：通過前看不到 app 內容）。open：app 內要簽名時 session 過期的備用登入頁。
   // 邀請碼格式（同 cre8-app normalizeInviteCode）：8–10 個字母數字，不含易混淆字。先記在分頁，登入回來後兌換（/waitlist/redeem）。
   // 入口頁：登入後還沒放行 → 輸入邀請碼（/waitlist/redeem）。成功後等換好 session 就進 app（redeeming 期間顯示載入中）。
+  // 通行碼（投資人用）：只讓人不登入逛 app，後端只檢查碼、不放行交易。記在這個瀏覽器（不過期），之後不再問。
+  async vpGo() {
+    const code = this.state.vpCode.trim(); if (!code || this.state.vpBusy) return;
+    this.setState({ vpBusy: true, vpErr: null });
+    try {
+      await api('/waitlist/gate', { method: 'POST', body: { code } });
+      try { localStorage.setItem('cre8.viewPass', '1'); } catch (_) {}
+      this.setState({ vpBusy: false, vpOk: true, vpCode: '' });
+    } catch (e) { this.setState({ vpBusy: false, vpErr: e && e.status === 404 ? tr('That code isn’t valid.', '访问码无效。') : e && e.status === 429 ? tr('Too many tries. Wait a minute.', '试太多次了，等一分钟。') : tr('Couldn’t check the code. Try again.', '暂时验证不了访问码，再试一次。') }); }
+  }
   async gCodeGo() {
     const W = window.CRE8W; if (!W || this.state.redeeming) return;
     this.setState({ redeeming: true, siErr: null });
@@ -1519,7 +1533,10 @@ class Component extends DCLogic {
     catch (e) { this.setState({ redeeming: false, siErr: plainError(e) }); }
   }
   signInView(s) {
-    const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn), open = gate || !!it, gs = s.gStep || 'start';
+    // 有通行碼（而且開關還開著）就不用入口頁、直接逛；登入後還沒放行（要補綁 X／Google）時才回到入口頁。
+    const cfg = s.gateCfg || { openSignup: false, viewPass: false }, viewing = cfg.viewPass && s.vpOk && !(w0 => w0 && w0.pending)(s.w);
+    const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn) && !viewing, open = gate || !!it, gs = s.gStep || 'start';
+    const linked = k => !!(w && (w.methods || []).some(m => m.kind === k));
     const what = it && it.for === 'buy' ? tr('buy ', '买入') + (it.target && it.target.name || tr('this portfolio', '这个组合')) : it && it.for === 'sell' ? tr('sell', '卖出') : it && it.for === 'build' ? tr('start your basket', '创建组合') : tr('see your portfolio', '查看持仓');
     const ph = w ? w.phase : 'loading', wl = w && w.waitlist ? w.waitlist : { state: 'idle' };
     const waiting = wl.state === 'waiting';
@@ -1536,7 +1553,7 @@ class Component extends DCLogic {
     return {
       gated: gate, inApp: !gate,
       // 入口頁每一步自己的標題（invite‑only 用不斷行連字號）。
-      gTitle: gBusy ? (s.redeeming ? tr('Checking your code…', '正在验证邀请码…') : tr('Signing you in…', '正在登录…')) : gPending ? tr('Enter your invite code', '输入邀请码') : gErr ? tr('Sign-in didn’t finish', '登录没完成') : gs === 'signin' ? (s.siEmail ? (codeStep ? tr('Check your email', '查收验证码') : tr('Sign in with email', '邮箱登录')) : tr('Sign in', '登录')) : tr('CRE8 testnet is invite\u2011only.', 'CRE8 测试网\n凭邀请码进入'),
+      gTitle: gBusy ? (s.redeeming ? tr('Checking your code…', '正在验证邀请码…') : tr('Signing you in…', '正在登录…')) : gPending ? (cfg.openSignup ? tr('Link X and Google', '绑定 X 和 Google') : tr('Enter your invite code', '输入邀请码')) : gErr ? tr('Sign-in didn’t finish', '登录没完成') : gs === 'signin' ? (s.siEmail ? (codeStep ? tr('Check your email', '查收验证码') : tr('Sign in with email', '邮箱登录')) : tr('Sign in', '登录')) : tr('CRE8 testnet is invite\u2011only.', 'CRE8 测试网\n凭邀请码进入'),
       // 同一組欄位給入口頁與 app 內的登入頁；入口頁顯示時，登入頁的內容不畫（免得同一個按鈕出現兩次）。
       sh_siBusy: !gate && busy, sh_siForm: !gate && open && !busy && !waiting && ph !== 'error', sh_siRetry: !gate && open && !busy && (waiting || ph === 'error'), sh_siEmail: !gate && s.siEmail, sh_siErr: !gate && open ? err : null,
       siO: !gate && it ? 1 : 0, siPE: !gate && it ? 'auto' : 'none', siY: !gate && it ? 0 : 110,
@@ -1544,7 +1561,13 @@ class Component extends DCLogic {
       siTitle: waiting ? tr('You’re on the waitlist.', '你已在等候名单上') : busy ? (gate ? tr('Signing you in…', '正在登录…') : tr('Setting up your account', '正在开通账户')) : gate ? tr('CRE8 testnet is invite-only.', 'CRE8 测试网凭邀请码进入') : tr('Sign in to ' + what, '登录后' + what),
       siSub: waiting ? tr('We’ll let you in soon.', '很快就轮到你。') : busy ? (gate ? null : tr('This takes a few seconds.', '几秒就好。')) : gate ? (LANG === 'zh' ? { code: '输入邀请码。', methods: '登录后使用邀请码。', signin: '欢迎回来。' } : { code: 'Enter your invite code.', methods: 'Sign in to use your code.', signin: 'Welcome back.' })[gs] || null : tr('You’ll come right back here. We create a wallet for you; only you hold the key.', '登录完回到这里。我们会帮你创建钱包，私钥只在你手上。'),
       // 入口頁的步驟：start（Join waitlist／I have an invite code）→ code（輸入碼）→ methods（X／Google／Email）；signin＝已放行的人直接登入。
-      gStart: gForm && gs !== 'signin', gMethods: gForm && gs === 'signin', gCode: gate && gPending, gBack: gate && !gBusy && (gs === 'signin' || gPending || gErr),
+      gStart: gForm && gs !== 'signin', gMethods: gForm && gs === 'signin', gCode: gate && gPending,
+      // 開放登入時：第一頁只有「登入」（X＋Google）和通行碼兩條路；還沒放行時補綁缺的那個。
+      gJoin: !cfg.openSignup, gSignInOnly: cfg.openSignup, gVp: gForm && gs !== 'signin' && cfg.viewPass,
+      vpCode: s.vpCode, onVp: e => this.setState({ vpCode: e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16), vpErr: null }), vpKey: e => { if (e.key === 'Enter') this.vpGo(); }, vpGo: () => this.vpGo(), vpErr: s.vpErr, vpBtn: s.vpBusy ? '…' : tr('Continue', '继续'), vpPh: tr('Access code', '访问码'),
+      gCodeOld: gate && gPending && !cfg.openSignup, gCodeNew: gate && gPending && cfg.openSignup,
+      gLinkX: gate && gPending && cfg.openSignup && !linked('x'), gLinkG: gate && gPending && cfg.openSignup && !linked('google'),
+      linkXGo: W2(() => W.link('x')), linkGGo: W2(() => W.link('google')), gLinkErr: gate && gPending && w ? w.linkError : null, gBack: gate && !gBusy && (gs === 'signin' || gPending || gErr),
       // 返回：還沒登入就回第一頁；已登入（等邀請碼或出錯）就登出再回第一頁。
       gBackGo: () => { this.setState({ gStep: 'start', siErr: null, siEmail: false, invite: '' }); if ((gPending || gErr) && W) W.logout(); },
       gToSignIn: () => this.setState({ gStep: 'signin', siErr: null, siEmail: false }),
