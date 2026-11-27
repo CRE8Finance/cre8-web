@@ -1225,7 +1225,7 @@ class Component extends DCLogic {
     // 每個資產借哪種穩定幣、存進哪個金庫＝後端 mainnetRates 的路線（借 X 存 X，挑利差最高的；主網真實利率）。金庫卡每個不同的金庫一欄。
     // 測試網錢實際在策略金庫 MockEarnVault，所以 BscScan 連結仍是策略金庫；主網上線時改成各路線的金庫地址。沒有路線資料時用 CRE8 mark。
     const VENUE = { venus: ['Venus', 'app/l-venus.png'], lista: ['Lista', 'app/l-lista.png'], aave: ['Aave', 'app/l-aave.png'], aave_v3: ['Aave', 'app/l-aave.png'] };
-    const logo = n <= 7 ? 28 : n <= 9 ? 24 : 22, gap = n <= 7 ? 9 : n <= 9 ? 8 : 6, GG = 22, fs = n <= 7 ? 10.5 : n <= 9 ? 9.5 : 9, fsp = n <= 7 ? 8 : 7;
+    const logo = n <= 4 ? 44 : n <= 6 ? 38 : n <= 7 ? 34 : n <= 9 ? 30 : 22, gap = n <= 4 ? 12 : n <= 6 ? 10 : n <= 7 ? 9 : n <= 9 ? 8 : 6, GG = 22, fs = n <= 6 ? 11.5 : n <= 7 ? 10.5 : n <= 9 ? 9.5 : 9, fsp = n <= 6 ? 8.5 : n <= 7 ? 8 : 7;
     const by = {}; elig.forEach(([t]) => { const p = mk[t] ? mk[t].protocol : 'lista'; (by[p] = by[p] || []).push(t); });
     const rank = p => p === 'lista' ? 0 : p === 'venus' ? 1 : 2, order = Object.keys(by).sort((a, b) => rank(a) - rank(b));
     let x = 0, ai = 0, vault = null, dOn = '', dOff = ''; const dots = [], groups = [], vg = {}, loans = {}; let incAny = 0;
