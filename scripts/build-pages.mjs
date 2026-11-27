@@ -33,6 +33,7 @@ const APP = 'https://tst.cre8.finance/';
 const WAITLIST = 'https://cre8.finance/waitlist';
 const WAITLIST_ZH = '/zh/waitlist'; // 簡體 waitlist（由 waitlist.html 產生）
 const WL = (lang) => (lang === 'zh' ? WAITLIST_ZH : WAITLIST);
+// 開放登入期間（使用者 2026-11-27）：按鈕改成 Launch app（APP），直接進測試網 app。收回邀請碼時改回 WL(lang)／Join waitlist。
 const X = 'https://x.com/CRE8Finance';
 const BUILT = new Date().toISOString().slice(0, 10);
 
@@ -158,13 +159,13 @@ const ld = (obj) => `<script type="application/ld+json">${JSON.stringify(obj).re
 const T = {
   en: {
     lang: 'en', htmlLang: 'en', locale: 'en_US', home: 'Home', portfolios: 'Portfolios', how: 'How it works', compare: 'Compare', blog: 'Blog', faq: 'Questions',
-    openApp: 'Join waitlist', other: '中文', otherLabel: '简体中文', openTestnet: 'Open the testnet', apyLabel: 'Model APY', min: 'USDT minimum',
+    openApp: 'Launch app', other: '中文', otherLabel: '简体中文', openTestnet: 'Open the testnet', apyLabel: 'Model APY', min: 'USDT minimum',
     kinds: { person: 'People', theme: 'Theme', leveraged: 'Leveraged' },
     groups: { person: 'People portfolios', theme: 'Theme portfolios', leveraged: 'Leveraged portfolios' },
   },
   zh: {
     lang: 'zh', htmlLang: 'zh-Hans', locale: 'zh_CN', home: '首页', portfolios: '组合', how: '使用指南', compare: '横向对比', blog: '文章', faq: '常见问题',
-    openApp: '加入等候名单', other: 'EN', otherLabel: 'English', openTestnet: '进入测试网', apyLabel: '模型年化', min: 'USDT 起投',
+    openApp: '打开 App', other: 'EN', otherLabel: 'English', openTestnet: '进入测试网', apyLabel: '模型年化', min: 'USDT 起投',
     kinds: { person: '人物', theme: '主题', leveraged: '杠杆' },
     groups: { person: '人物组合', theme: '主题组合', leveraged: '杠杆组合' },
   },
@@ -222,7 +223,7 @@ function siteHead(lang, path) {
   return `<header class="site-head"><div class="site-head__bar">
 <a class="site-head__logo" href="${P(lang, '/')}"><img src="/assets/cre8-logo-dark.svg" alt="CRE8" width="107" height="20"></a>
 <nav aria-label="${lang === 'zh' ? '主导航' : 'Main'}"><a href="${P(lang, '/portfolios')}"${cur('/portfolios')}>${t.portfolios}</a><a href="${P(lang, '/how-it-works')}"${cur('/how-it-works')}>${t.how}</a><a href="${P(lang, '/compare')}"${cur('/compare')}>${t.compare}</a><a href="${P(lang, '/blog')}"${cur('/blog')}>${t.blog}</a></nav>
-<div class="site-head__right"><a class="site-head__lang" href="${other}" hreflang="${lang === 'zh' ? 'en' : 'zh-Hans'}" lang="${lang === 'zh' ? 'en' : 'zh-Hans'}">${t.other}</a><a class="btn btn--gold btn--sm" href="${WL(lang)}">${t.openApp} <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div>
+<div class="site-head__right"><a class="site-head__lang" href="${other}" hreflang="${lang === 'zh' ? 'en' : 'zh-Hans'}" lang="${lang === 'zh' ? 'en' : 'zh-Hans'}">${t.other}</a><a class="btn btn--gold btn--sm" href="${APP}">${t.openApp} <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div>
 </div></header>`;
 }
 
@@ -261,8 +262,8 @@ function fundRow(f, lang, opts = {}) {
 
 const ctaBand = (lang) =>
   lang === 'zh'
-    ? `<section class="cta"><h2>50 USDT 就能上车</h2><p>目前在测试网，测试 USDT 免费领，登录需要邀请码。</p><div class="actions"><a class="btn btn--light" href="${WAITLIST_ZH}">加入等候名单 <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div></section>`
-    : `<section class="cta"><h2>Start with 50 USDT.</h2><p>CRE8 is on testnet. Test USDT is free, and signing in needs an invite code.</p><div class="actions"><a class="btn btn--light" href="${WAITLIST}">Join waitlist <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div></section>`;
+    ? `<section class="cta"><h2>50 USDT 就能上车</h2><p>目前在测试网，测试 USDT 免费领，登录需要邀请码。</p><div class="actions"><a class="btn btn--light" href="${APP}">打开 App <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div></section>`
+    : `<section class="cta"><h2>Start with 50 USDT.</h2><p>CRE8 is on testnet. Test USDT is free, and signing in needs an invite code.</p><div class="actions"><a class="btn btn--light" href="${APP}">Launch app <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a></div></section>`;
 
 // ---------------------------------------------------------------- 基金頁
 function sourceText(f, lang) {
@@ -389,7 +390,7 @@ ${c.html}
 <div><b>${f.holdings.length}</b><span>${zh ? '个资产' : f.holdings.length > 1 ? 'assets' : 'asset'}</span></div>
 <div><b>${f.min}</b><span>${t.min}</span></div>
 </div>
-<div class="actions"><a class="btn btn--gold" href="${WL(lang)}">${zh ? '加入等候名单' : 'Join waitlist'} <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a><a class="btn btn--line" href="${P(lang, '/how-it-works')}">${t.how}</a></div>
+<div class="actions"><a class="btn btn--gold" href="${APP}">${zh ? '打开 App' : 'Launch app'} <span aria-hidden="true"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-.125em;flex:none"><path d="M4 12h16M14 6l6 6-6 6"/></svg></span></a><a class="btn btn--line" href="${P(lang, '/how-it-works')}">${t.how}</a></div>
 ${crown}
 </div>
 <div class="hero__art"><img src="/app/${f.meta.img}.jpg" alt="${esc(m.name)}" width="1200" height="900" fetchpriority="high"></div>
@@ -801,7 +802,6 @@ async function zhHome(enHtml, funds) {
   html = html.replace(/(src|href)="(assets|app)\//g, '$1="/$2/').replace(/url\((assets|app)\//g, 'url(/$1/').replace(/"\.\/(support|image-slot)\.js"/g, '"/$1.js"').replace(/":"assets\/vendor\//g, '":"/assets/vendor/');
   // 連到中文版對應頁；語言切換改成 EN → 英文首頁。
   html = html.replace(/href="\/(portfolios|how-it-works|compare|blog)/g, 'href="/zh/$1');
-  html = mustReplace(html, `href="${WAITLIST}"`, `href="${WAITLIST_ZH}"`, name);
   html = mustReplace(html, 'href="/zh" lang="zh-Hans" hreflang="zh-Hans" aria-label="简体中文"', 'href="/" lang="en" hreflang="en" aria-label="English"', name);
   html = mustReplace(html, '>中文</a>', '>EN</a>', name);
   html = mustReplace(html, 'href="/zh" lang="zh-Hans"', 'href="/" lang="en"', name);

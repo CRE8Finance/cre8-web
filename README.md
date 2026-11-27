@@ -56,7 +56,7 @@ Cloudflare Worker `cre8-web` (`wrangler.jsonc`, `_worker.js`). Run `npx wrangler
 - `cre8.finance`, `www.cre8.finance` → `index.html`; content pages serve `<path>/index.html`, unknown paths 301 to `/`
 - `tst.cre8.finance` → `app.html`
 - `cre8.finance/waitlist` → `waitlist.html` (`/waitlist.html` and `tst.cre8.finance/waitlist` redirect there). On the landing domain `/api` only forwards `/api/auth/*` and `/api/waitlist/*`, which the waitlist page needs.
-- All landing and content-page CTAs say “Join waitlist” and link to `/waitlist` (content pages: `scripts/build-pages.mjs`).
+- While sign-up is open, all landing and content-page CTAs say “Launch app” and link to the testnet app (content pages: `scripts/build-pages.mjs`); with invites back on they say “Join waitlist” and link to `/waitlist`.
 - `/api/*` on `tst.cre8.finance` and `localhost` is forwarded to the testnet backend (Railway `website` service, see `API_ORIGIN` in `_worker.js`). The landing domain doesn't forward it.
 
 ## Languages in `app.html` (English, 简体中文)
