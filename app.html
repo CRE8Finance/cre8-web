@@ -1533,8 +1533,8 @@ class Component extends DCLogic {
     catch (e) { this.setState({ redeeming: false, siErr: plainError(e) }); }
   }
   signInView(s) {
-    // 有通行碼（而且開關還開著）就不用入口頁、直接逛；登入後還沒放行（要補綁 X／Google）時才回到入口頁。
-    const cfg = s.gateCfg || { openSignup: false, viewPass: false }, viewing = cfg.viewPass && s.vpOk && !(w0 => w0 && w0.pending)(s.w);
+    // 開放登入期間（openSignup）人人直接逛、按買／賣／建立才登入；有通行碼（而且開關還開著）也一樣。登入後還沒放行（要補綁 X／Google）時才回到入口頁。
+    const cfg = s.gateCfg || { openSignup: false, viewPass: false }, viewing = (cfg.openSignup || (cfg.viewPass && s.vpOk)) && !(w0 => w0 && w0.pending)(s.w);
     const w = s.w, W = window.CRE8W, it = s.si, gate = !(w && w.signedIn) && !viewing, open = gate || !!it, gs = s.gStep || 'start';
     const linked = k => !!(w && (w.methods || []).some(m => m.kind === k));
     const what = it && it.for === 'buy' ? tr('buy ', '买入') + (it.target && it.target.name || tr('this portfolio', '这个组合')) : it && it.for === 'sell' ? tr('sell', '卖出') : it && it.for === 'build' ? tr('start your basket', '创建组合') : tr('see your portfolio', '查看持仓');
