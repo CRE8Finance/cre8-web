@@ -1221,13 +1221,13 @@ class Component extends DCLogic {
     // 市場資料讀到了，但這檔可加息的資產一個借款路線都沒有（protocol 全是 'none'）：跟沒有可加息資產的基金一樣，不顯示這一區。
     if (s.seMk && !elig.some(([t]) => s.seMk[t] && s.seMk[t].protocol && s.seMk[t].protocol !== 'none')) return { show: false, groups: [], dots: [] };
     const mk = s.seMk || {}, sk = !s.seMk, MAIN = 'https://bscscan.com/address/', MOOLAH_56 = '0x8f73b65b4caaf64fba2af91cc5d4a2a1318e5d8c', scan = a => 'https://testnet.bscscan.com/address/' + a, M = '−';
-    // lista_loop：BNB 的 slisBNB 循環（BNB 換 slisBNB 抵押、借 BNB 存 BNB 金庫），只顯示，利率不划算時照常顯示暫停。
-    const PROTO = { lista: ['LISTA', 'app/l-lista.png'], lista_loop: ['SLISBNB LOOP', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
+    // lista_vault：BNB 直接存 Lista BNB 金庫（不借款），上方顯示金庫年化。lista_loop：BNB 的 slisBNB 循環（BNB 換 slisBNB 抵押、借 BNB 存 BNB 金庫），只顯示，利率不划算時照常顯示暫停。
+    const PROTO = { lista: ['LISTA', 'app/l-lista.png'], lista_loop: ['SLISBNB LOOP', 'app/l-lista.png'], lista_vault: ['LISTA VAULT', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
     // 每個資產借哪種穩定幣、存進哪個金庫＝後端 mainnetRates 的路線（借 X 存 X，挑利差最高的；主網真實利率）。金庫卡每個不同的金庫一欄。
     // 測試網錢實際在策略金庫 MockEarnVault，所以 BscScan 連結仍是策略金庫；主網上線時改成各路線的金庫地址。沒有路線資料時用 CRE8 mark。
     const VENUE = { venus: ['Venus', 'app/l-venus.png'], lista: ['Lista', 'app/l-lista.png'], aave: ['Aave', 'app/l-aave.png'], aave_v3: ['Aave', 'app/l-aave.png'] };
     const logo = n <= 4 ? 44 : n <= 6 ? 38 : n <= 7 ? 34 : n <= 9 ? 30 : 22, gap = n <= 4 ? 12 : n <= 6 ? 10 : n <= 7 ? 9 : n <= 9 ? 8 : 6, GG = 22, fs = n <= 6 ? 11.5 : n <= 7 ? 10.5 : n <= 9 ? 9.5 : 9, fsp = n <= 6 ? 8.5 : n <= 7 ? 8 : 7;
-    const by = {}; elig.forEach(([t]) => { const p = mk[t] ? (mk[t].via === 'slisBNB' ? 'lista_loop' : mk[t].protocol) : 'lista'; (by[p] = by[p] || []).push(t); });
+    const by = {}; elig.forEach(([t]) => { const p = mk[t] ? (mk[t].via === 'slisBNB' ? 'lista_loop' : mk[t].via === 'vault' ? 'lista_vault' : mk[t].protocol) : 'lista'; (by[p] = by[p] || []).push(t); });
     const rank = p => p === 'lista' ? 0 : p === 'venus' ? 1 : 2, order = Object.keys(by).sort((a, b) => rank(a) - rank(b));
     let x = 0, ai = 0, vault = null, dOn = '', dOff = ''; const dots = [], groups = [], vg = {}, loans = {}; let incAny = 0;
     const w = order.reduce((a, p, i) => a + by[p].length * (logo + gap) - gap + (i ? GG : 0), 0), cx = w / 2;
@@ -1244,7 +1244,7 @@ class Component extends DCLogic {
         if (inc) incAny = 1;
         // 連結一律指向主網：Lista 走 Moolah 合約，Venus 走該穩定幣的 vToken（mainnet.marketId）。
         return { logo: LOGO(t), href: m && m.mn ? (m.mn.venue === 'venus' ? (m.mn.onchain ? scan(m.mn.marketId) : MAIN + m.mn.marketId) : MAIN + MOOLAH_56) : null, aria: t + ' · ' + (PROTO[p] || [p])[0],
-          rate: sk ? '\u00a0' : paused ? tr('Paused', '暂停') : (cost > 0 ? M : '+') + (Math.abs(cost) / 100).toFixed(2), inc: inc ? '+' + (inc / 100).toFixed(2) + '%' : '\u00a0', incT: inc ? (p === 'venus' ? '$XVS' : '$LISTA') : '\u00a0', pct: sk || paused ? '' : '%', rc: paused ? '#8A929B' : '#3C4651',
+          rate: sk ? '\u00a0' : paused ? tr('Paused', '暂停') : m.via === 'vault' ? '+' + (b.vaultBps / 100).toFixed(2) : (cost > 0 ? M : '+') + (Math.abs(cost) / 100).toFixed(2), inc: inc ? '+' + (inc / 100).toFixed(2) + '%' : '\u00a0', incT: inc ? (p === 'venus' ? '$XVS' : '$LISTA') : '\u00a0', pct: sk || paused ? '' : '%', rc: paused ? '#8A929B' : '#3C4651',
           rsk: sk ? SKEL + 'width:28px;height:10px;margin-top:2px' : '', op: paused ? .35 : 1, flt: paused ? 'grayscale(1)' : 'none', lim: !sk && !paused && m && m.limited ? tr('Limited', '额度有限') : '\u00a0', loan: !sk && !paused && m && m.loan ? m.loan : '' };
       }) });
       x += by[p].length * (logo + gap) - gap;
