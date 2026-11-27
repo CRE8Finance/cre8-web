@@ -491,7 +491,7 @@ const seKey = a => a === 'WBNB' ? 'BNB' : a === 'XAUt' ? 'XAUT' : String(a).repl
 // tp＝測試網市場本身的協議：只給詳情抽屜用——v1 部位實際就在那個市場，主網沒有路線時部位那一列照實寫它。
 // min＝後端的 minValueUsd：這個資產在組合裡至少值多少美元加息才開得起來（低於它後端不開）。門檻只有後端知道，這裡不寫死。
 const seMkFrom = d => { const mk = {}, mn = !!(d && d.mainnetRates); ((d && d.markets) || []).forEach(m => { const x = m.mainnet || null, none = mn && !x, b = none ? null : x ? { vaultBps: x.vaultBps, vaultIncentiveBps: x.vaultIncentiveBps, borrowBps: x.borrowBps, borrowIncentiveBps: x.borrowIncentiveBps, ratioBps: x.ratioBps, carryBps: x.carryBps, collateralBps: x.collateralBps, collateralIncentiveBps: x.collateralIncentiveBps } : m.breakdown, bps = none ? 0 : x ? x.extraApyBps : m.extraApyBps, reason = none ? 'no_market' : x && !x.open ? x.reason : m.reason;
-  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, tp: m.protocol || null, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), min: typeof m.minValueUsd === 'number' ? m.minValueUsd : null, loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, c: m.contracts || null, at: m.updatedAt }; });
+  mk[seKey(m.asset)] = { sym: m.asset, open: m.status === 'open' && (!x || x.open) && typeof bps === 'number' && bps > 0, bps: typeof bps === 'number' ? bps : null, protocol: x && x.venue ? x.venue : none ? 'none' : m.protocol, tp: m.protocol || null, b, target: m.targetLtvBps, del: m.deleverageLtvBps, liq: m.liquidationLtvBps, bu: m.borrowUtilizationBps, vu: m.vaultUtilizationBps, reason, limited: !!(x && x.limited), min: typeof m.minValueUsd === 'number' ? m.minValueUsd : null, loan: x && x.loan || null, vault: x && x.vault ? { venue: x.vault.venue, token: x.vault.token, apy: x.vault.apyBps, address: x.vault.address } : null, mn: x ? { venue: x.venue, marketId: x.marketId } : null, via: x && x.via || null, c: m.contracts || null, at: m.updatedAt }; });
   Object.defineProperty(mk, '__venue', { value: d && d.mainnetRates && d.mainnetRates.vault ? d.mainnetRates.vault.venue : null, enumerable: false });
   // 每種穩定幣最佳金庫的基礎年化／激勵（mainnetRates.vaults），金庫卡分開顯示。
   Object.defineProperty(mk, '__vaults', { value: d && d.mainnetRates && d.mainnetRates.vaults || {}, enumerable: false }); return mk; };
@@ -1221,12 +1221,13 @@ class Component extends DCLogic {
     // 市場資料讀到了，但這檔可加息的資產一個借款路線都沒有（protocol 全是 'none'）：跟沒有可加息資產的基金一樣，不顯示這一區。
     if (s.seMk && !elig.some(([t]) => s.seMk[t] && s.seMk[t].protocol && s.seMk[t].protocol !== 'none')) return { show: false, groups: [], dots: [] };
     const mk = s.seMk || {}, sk = !s.seMk, MAIN = 'https://bscscan.com/address/', MOOLAH_56 = '0x8f73b65b4caaf64fba2af91cc5d4a2a1318e5d8c', scan = a => 'https://testnet.bscscan.com/address/' + a, M = '−';
-    const PROTO = { lista: ['LISTA', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
+    // lista_loop：BNB 的 slisBNB 循環（BNB 換 slisBNB 抵押、借 BNB 存 BNB 金庫），只顯示，利率不划算時照常顯示暫停。
+    const PROTO = { lista: ['LISTA', 'app/l-lista.png'], lista_loop: ['SLISBNB LOOP', 'app/l-lista.png'], venus: ['VENUS', 'app/l-venus.png'], aave_v3: ['AAVE', 'app/l-aave.png'] };
     // 每個資產借哪種穩定幣、存進哪個金庫＝後端 mainnetRates 的路線（借 X 存 X，挑利差最高的；主網真實利率）。金庫卡每個不同的金庫一欄。
     // 測試網錢實際在策略金庫 MockEarnVault，所以 BscScan 連結仍是策略金庫；主網上線時改成各路線的金庫地址。沒有路線資料時用 CRE8 mark。
     const VENUE = { venus: ['Venus', 'app/l-venus.png'], lista: ['Lista', 'app/l-lista.png'], aave: ['Aave', 'app/l-aave.png'], aave_v3: ['Aave', 'app/l-aave.png'] };
     const logo = n <= 4 ? 44 : n <= 6 ? 38 : n <= 7 ? 34 : n <= 9 ? 30 : 22, gap = n <= 4 ? 12 : n <= 6 ? 10 : n <= 7 ? 9 : n <= 9 ? 8 : 6, GG = 22, fs = n <= 6 ? 11.5 : n <= 7 ? 10.5 : n <= 9 ? 9.5 : 9, fsp = n <= 6 ? 8.5 : n <= 7 ? 8 : 7;
-    const by = {}; elig.forEach(([t]) => { const p = mk[t] ? mk[t].protocol : 'lista'; (by[p] = by[p] || []).push(t); });
+    const by = {}; elig.forEach(([t]) => { const p = mk[t] ? (mk[t].via === 'slisBNB' ? 'lista_loop' : mk[t].protocol) : 'lista'; (by[p] = by[p] || []).push(t); });
     const rank = p => p === 'lista' ? 0 : p === 'venus' ? 1 : 2, order = Object.keys(by).sort((a, b) => rank(a) - rank(b));
     let x = 0, ai = 0, vault = null, dOn = '', dOff = ''; const dots = [], groups = [], vg = {}, loans = {}; let incAny = 0;
     const w = order.reduce((a, p, i) => a + by[p].length * (logo + gap) - gap + (i ? GG : 0), 0), cx = w / 2;
